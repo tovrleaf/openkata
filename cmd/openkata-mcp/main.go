@@ -28,9 +28,19 @@ func main() {
 	s.AddTool(listSkillsTool(), listSkillsHandler(skillsDir))
 	s.AddTool(installSkillTool(), installSkillHandler(skillsDir))
 
-	if err := server.ServeStdio(s); err != nil {
-		fmt.Fprintf(os.Stderr, "server error: %v\n", err)
-		os.Exit(1)
+	addr := os.Getenv("OPENKATA_ADDR")
+	if addr != "" {
+		fmt.Fprintf(os.Stderr, "OpenKata MCP server listening on %s\n", addr)
+		httpServer := server.NewStreamableHTTPServer(s)
+		if err := httpServer.Start(addr); err != nil {
+			fmt.Fprintf(os.Stderr, "server error: %v\n", err)
+			os.Exit(1)
+		}
+	} else {
+		if err := server.ServeStdio(s); err != nil {
+			fmt.Fprintf(os.Stderr, "server error: %v\n", err)
+			os.Exit(1)
+		}
 	}
 }
 
