@@ -1,0 +1,129 @@
+---
+name: create-adr
+description: >
+  Detects architectural decisions in conversation and guides creation of
+  Architecture Decision Records. Activate when the user is making, discussing,
+  or debating: technology choices (languages, frameworks, databases, cloud
+  services), structural patterns (monolith vs microservices, event-driven,
+  CQRS, API design), cross-cutting conventions (error handling, logging,
+  authentication, API versioning), hard-to-reverse decisions (data models,
+  public API contracts, infrastructure topology), or deviations from existing
+  standards. Also activate when the user explicitly asks to create an ADR.
+---
+
+# Create ADR
+
+Document decisions, not just code. The most valuable documentation captures
+the *why* — the context, constraints, and trade-offs that led to a decision.
+Code shows what was built; an ADR explains why it was built this way and what
+alternatives were considered.
+
+This skill guides the creation of Architecture Decision Records (ADRs) using
+a customized Michael Nygard format with YAML frontmatter, decision drivers,
+structured alternatives, and categorized consequences.
+
+## ADR Lifecycle
+
+```
+PROPOSED → ACCEPTED → (SUPERSEDED or DEPRECATED)
+```
+
+- New ADRs start as `PROPOSED`.
+- Don't delete old ADRs — they capture historical context.
+- When a decision changes, write a new ADR that supersedes the old one.
+  Update the old ADR's status to `SUPERSEDED` and link to the new one.
+
+## When to suggest an ADR
+
+Proactively suggest creating an ADR when the conversation involves:
+
+- **Choosing or replacing a technology** — language, framework, database,
+  message broker, cloud service, CI/CD tool
+- **Defining a structural pattern** — monolith vs microservices, event-driven
+  architecture, CQRS, API gateway, data pipeline topology
+- **Establishing a cross-cutting convention** — error handling strategy,
+  logging format, authentication approach, API versioning scheme
+- **Making a hard-to-reverse decision** — data model design, public API
+  contracts, infrastructure topology, deployment strategy
+- **Resolving a disagreement** — the team debated multiple options and needs
+  to record why one was chosen
+- **Deviating from an existing standard** — breaking from a previously
+  recorded ADR or an industry/team norm
+
+## When NOT to suggest an ADR
+
+- Trivial or easily reversible decisions (variable naming, minor refactors)
+- Bug fixes or implementation details that don't affect architecture
+- An existing ADR already covers the decision — update or supersede it instead
+
+## Workflow
+
+1. **Detect** — Recognize that the conversation involves an architectural
+   decision based on the criteria above.
+2. **Propose** — Ask the user: "This looks like an architectural decision.
+   Would you like to record it as an ADR?"
+3. **Gather context** — If the user agrees, collect:
+   - What was decided (the core decision)
+   - The key decision drivers (constraints, requirements, forces that shaped
+     the choice)
+   - Why this option was chosen (rationale)
+   - What alternatives were considered, with pros, cons, and rejection reasons
+   - What consequences follow (positive, negative, and neutral)
+   - Any non-goals (what's explicitly out of scope)
+   - Links and references discovered during research
+4. **Generate** — Create the ADR using the template at
+   [assets/adr-template.md](assets/adr-template.md). Fill every section with
+   real content — do not leave placeholder text. The ADR must include:
+   - YAML frontmatter with `status`, `date`, and `authors`
+   - Context explaining the problem and forces at play
+   - Decision drivers as a prioritized list
+   - The decision in active voice
+   - At least two alternatives with pros, cons, and rejection reasons
+   - Consequences split into positive, negative, and neutral
+   - Non-goals section if anything is explicitly out of scope (omit if none)
+   - References section listing any links, related ADRs, or resources
+     discovered during research (omit if none)
+5. **Place the file** — Save to `docs/adr/NNNN-<slug>.md` where:
+   - `NNNN` is the next sequential number (zero-padded to 4 digits)
+   - `<slug>` is a lowercase, hyphenated summary of the decision
+   - Check existing files in `docs/adr/` to determine the next number
+   - Example: `docs/adr/0003-use-postgresql-for-persistence.md`
+6. **Confirm** — Show the user the generated ADR and ask if any adjustments
+   are needed before finalizing.
+
+## Quality self-check (E.C.A.D.R.)
+
+Before finalizing an ADR, verify:
+
+- **E**xplicit problem statement — Context makes the problem unambiguous
+- **C**omprehensive options analysis — at least 2 alternatives with honest
+  pros/cons
+- **A**ctionable decision — specific enough to act on, in active voice
+- **D**ocumented consequences — positive, negative, and neutral impacts
+- **R**eferences included — any links from research are listed
+
+For sections that cannot be filled from available data, insert investigation
+prompts: `[INVESTIGATE: description of what needs follow-up]`
+
+## Match depth to complexity
+
+Simple decisions get simple ADRs. Omit optional sections (Non-goals,
+References) when they add no information. A two-paragraph ADR for a
+straightforward choice is better than a bloated one that discourages
+future ADR creation.
+
+When a decision directly maps to code changes, the agent may add an
+Implementation Plan section describing affected paths and patterns to follow.
+This is not part of the standard template but is useful for agent-first
+workflows.
+
+## Gotchas
+
+- Always check `docs/adr/` for existing ADRs before assigning a number.
+  Never reuse or skip numbers.
+- The `status` field in YAML frontmatter for a new ADR should always be
+  `PROPOSED` unless the user explicitly says it's already accepted.
+- The `authors` field in YAML frontmatter is required.
+- If the decision supersedes an existing ADR, update the old ADR's status
+  to `SUPERSEDED` and add a note linking to the new one.
+- Create the `docs/adr/` directory if it doesn't exist.
