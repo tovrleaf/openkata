@@ -8,7 +8,7 @@ authors: [niko.kivela]
 
 ## Context
 
-The openkata project needs a standard format for packaging and distributing
+The OpenKata project needs a standard format for packaging and distributing
 reusable capabilities for AI coding agents. Several options exist: custom
 markdown conventions, MCP server tools, or the Agent Skills format
 (agentskills.io) — an open specification originally developed by Anthropic

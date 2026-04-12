@@ -55,6 +55,11 @@ this decision was needed.]
 [Optional. What is explicitly out of scope for this decision? Stating
 non-goals prevents scope creep and tells agents what NOT to implement.]
 
+## Reversibility
+
+[Optional. How would this decision be undone if needed? What conditions
+should trigger reconsideration?]
+
 ## References
 
 [Optional. Links discovered during research, related ADRs, prior art,
