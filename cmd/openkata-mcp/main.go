@@ -8,10 +8,17 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
+
+const source = "github.com/tovrleaf/openkata"
+
+var skipFiles = map[string]bool{
+	"CHANGELOG.md": true,
+}
 
 func main() {
 	skillsDir := os.Getenv("OPENKATA_SKILLS_DIR")
@@ -44,9 +51,11 @@ func main() {
 	}
 }
 
+// --- Tools ---
+
 func listSkillsTool() mcp.Tool {
 	return mcp.NewTool("list_skills",
-		mcp.WithDescription("List available OpenKata skills with their descriptions"),
+		mcp.WithDescription("List available OpenKata skills with their descriptions and versions"),
 	)
 }
 
@@ -56,7 +65,6 @@ func listSkillsHandler(skillsDir string) server.ToolHandlerFunc {
 		if err != nil {
 			return mcp.NewToolResultError(fmt.Sprintf("failed to list skills: %v", err)), nil
 		}
-
 		out, _ := json.MarshalIndent(skills, "", "  ")
 		return mcp.NewToolResultText(string(out)), nil
 	}
@@ -64,7 +72,7 @@ func listSkillsHandler(skillsDir string) server.ToolHandlerFunc {
 
 func installSkillTool() mcp.Tool {
 	return mcp.NewTool("install_skill",
-		mcp.WithDescription("Install an OpenKata skill into a target project"),
+		mcp.WithDescription("Install an OpenKata skill into a target project. Copies skill files and writes a .manifest.json with version and origin."),
 		mcp.WithString("skill",
 			mcp.Required(),
 			mcp.Description("Name of the skill to install"),
@@ -89,7 +97,9 @@ func installSkillHandler(skillsDir string) server.ToolHandlerFunc {
 		}
 
 		src := filepath.Join(skillsDir, skill)
-		if _, err := os.Stat(filepath.Join(src, "SKILL.md")); err != nil {
+		skillMD := filepath.Join(src, "SKILL.md")
+		data, err := os.ReadFile(skillMD)
+		if err != nil {
 			return mcp.NewToolResultError(fmt.Sprintf("skill %q not found", skill)), nil
 		}
 
@@ -98,12 +108,44 @@ func installSkillHandler(skillsDir string) server.ToolHandlerFunc {
 			return mcp.NewToolResultError(fmt.Sprintf("failed to install: %v", err)), nil
 		}
 
-		return mcp.NewToolResultText(fmt.Sprintf("Installed %q to %s", skill, dest)), nil
+		version := extractFrontmatterField(string(data), "version")
+		manifest := manifest{
+			Name:        skill,
+			Version:     version,
+			Source:      source,
+			InstalledAt: time.Now().UTC().Format(time.RFC3339),
+		}
+		if err := writeManifest(dest, manifest); err != nil {
+			return mcp.NewToolResultError(fmt.Sprintf("installed but failed to write manifest: %v", err)), nil
+		}
+
+		msg := fmt.Sprintf("Installed %q v%s to %s", skill, version, dest)
+		return mcp.NewToolResultText(msg), nil
 	}
 }
 
+// --- Manifest ---
+
+type manifest struct {
+	Name        string `json:"name"`
+	Version     string `json:"version"`
+	Source      string `json:"source"`
+	InstalledAt string `json:"installedAt"`
+}
+
+func writeManifest(skillDir string, m manifest) error {
+	data, err := json.MarshalIndent(m, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(filepath.Join(skillDir, ".manifest.json"), append(data, '\n'), 0644)
+}
+
+// --- Discovery ---
+
 type skillInfo struct {
 	Name        string `json:"name"`
+	Version     string `json:"version"`
 	Description string `json:"description"`
 }
 
@@ -122,13 +164,19 @@ func discoverSkills(skillsDir string) ([]skillInfo, error) {
 		if err != nil {
 			continue
 		}
-		desc := extractDescription(string(data))
-		skills = append(skills, skillInfo{Name: e.Name(), Description: desc})
+		content := string(data)
+		skills = append(skills, skillInfo{
+			Name:        e.Name(),
+			Version:     extractFrontmatterField(content, "version"),
+			Description: extractDescription(content),
+		})
 	}
 	return skills, nil
 }
 
-func extractDescription(content string) string {
+// --- Frontmatter parsing ---
+
+func extractFrontmatterField(content, field string) string {
 	if !strings.HasPrefix(content, "---") {
 		return ""
 	}
@@ -141,18 +189,18 @@ func extractDescription(content string) string {
 
 	for i, line := range lines {
 		trimmed := strings.TrimSpace(line)
-		if !strings.HasPrefix(trimmed, "description:") {
+		prefix := field + ":"
+		if !strings.HasPrefix(trimmed, prefix) {
 			continue
 		}
-		value := strings.TrimSpace(strings.TrimPrefix(trimmed, "description:"))
+		value := strings.TrimSpace(strings.TrimPrefix(trimmed, prefix))
 		value = strings.Trim(value, `"'`)
 
-		// Single-line value
 		if value != "" && value != ">" && value != "|" {
 			return value
 		}
 
-		// Multi-line folded/literal scalar: collect indented continuation lines
+		// Multi-line folded/literal scalar
 		var parts []string
 		for j := i + 1; j < len(lines); j++ {
 			l := lines[j]
@@ -167,6 +215,12 @@ func extractDescription(content string) string {
 	return ""
 }
 
+func extractDescription(content string) string {
+	return extractFrontmatterField(content, "description")
+}
+
+// --- File copying ---
+
 func copyDir(src, dest string) error {
 	return filepath.WalkDir(src, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
@@ -174,6 +228,11 @@ func copyDir(src, dest string) error {
 		}
 
 		rel, _ := filepath.Rel(src, path)
+
+		if skipFiles[d.Name()] {
+			return nil
+		}
+
 		target := filepath.Join(dest, rel)
 
 		if d.IsDir() {
