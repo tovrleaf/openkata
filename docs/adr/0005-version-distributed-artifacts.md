@@ -43,6 +43,25 @@ mirror directory paths. The repo itself has no version.
 - Each distributed artifact has a `CHANGELOG.md` in its directory
 - Git tags follow the pattern `<directory-path>/v<major>.<minor>.<patch>`
 - The dojo binary version is set in the Go source
+- `CHANGELOG.md` is not copied to the target project on install — it
+  stays in the source repository only
+
+### Install manifest
+
+When the dojo installs an artifact, it writes a `.manifest.json` in the
+installed directory to track provenance:
+
+```json
+{
+  "name": "create-adr",
+  "version": "1.0.0",
+  "source": "github.com/tovrleaf/openkata",
+  "installedAt": "2026-04-16T20:26:45Z"
+}
+```
+
+This allows the dojo to compare installed versions against available
+versions and trace any installed artifact back to its origin.
 
 ### CHANGELOG format
 
