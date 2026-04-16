@@ -41,9 +41,10 @@ is not distributed — it's for maintainers of this repository only.
    frontmatter (SKILL.md or equivalent).
 
 6. **Update changelog** — Prepend a new entry to the artifact's
-   CHANGELOG.md with:
+   CHANGELOG.md using [Keep a Changelog](https://keepachangelog.com/)
+   categories (Added, Changed, Deprecated, Removed, Fixed, Security):
    - The new version number and today's date
-   - A concise list of changes derived from the diff
+   - Changes grouped by category, omitting empty categories
    
    If CHANGELOG.md doesn't exist, create it.
 

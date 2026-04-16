@@ -1,7 +1,7 @@
 # Changelog
 
 ## 1.0.0 — 2026-04-12
-
+### Added
 - Customized Nygard ADR template with YAML frontmatter, decision drivers,
   structured alternatives, and categorized consequences
 - Optional Non-goals, Reversibility, and References sections

@@ -65,15 +65,24 @@ versions and trace any installed artifact back to its origin.
 
 ### CHANGELOG format
 
+Follows [Keep a Changelog](https://keepachangelog.com/) categories:
+
 ```markdown
 # Changelog
 
 ## 1.1.0 — 2026-04-15
-- Added Reversibility section to template
+### Added
+- Reversibility section to template
+### Changed
+- Status values now uppercase
 
 ## 1.0.0 — 2026-04-12
+### Added
 - Initial release
 ```
+
+Categories: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**,
+**Security**. Omit categories with no entries.
 
 ## Alternatives Considered
 
