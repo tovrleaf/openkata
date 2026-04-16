@@ -32,6 +32,7 @@ Or use the dojo (MCP server) to install kata into your project — see
 | Kata | Description |
 |------|-------------|
 | [create-adr](skills/create-adr/) | Detects architectural decisions in conversation and guides creation of Architecture Decision Records |
+| [commit-conventions](skills/commit-conventions/) | Enforces Conventional Commits format and branch naming conventions |
 
 ## For contributors
 
