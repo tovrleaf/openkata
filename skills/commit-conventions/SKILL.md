@@ -2,9 +2,11 @@
 name: commit-conventions
 version: 1.0.0
 description: >
-  Enforces Conventional Commits format and branch naming conventions.
-  Activate when the user asks to commit, create a branch, or review
-  commit messages. Also activate when preparing a pull request.
+  Enforces Conventional Commits format and branch naming conventions,
+  validating commit message structure (type/scope/description header),
+  suggesting branch name patterns (feature/*, fix/*, hotfix/*), and
+  enforcing breaking change notation. Use when the user asks to commit,
+  create a branch, review commit messages, or prepare a pull request.
 ---
 
 # Git Conventions
@@ -17,7 +19,7 @@ a project using Conventional Commits and kebab-case branch names.
 ```
 type(scope): description
 
-Body explaining why, not what. Wrap at 72-74 characters.
+Body explaining why. Wrap at 72-74 characters.
 
 Footer references.
 ```
@@ -26,38 +28,20 @@ Footer references.
 
 - **Format:** `type(scope): description`
 - **Scope:** Optional. Use the area of the codebase affected.
-- **Description:** Imperative mood ("Add feature" not "Added feature"),
-  capitalize the first word, no period at the end
+- **Description:** Imperative mood, lowercase first word, no trailing period
 - **Length:** Max 72 characters for the entire header line
 
 ### Types
 
-| Type | When to use |
-|------|-------------|
-| `feat` | New feature or capability |
-| `fix` | Bug fix |
-| `docs` | Documentation only |
-| `style` | Formatting, no code change |
-| `refactor` | Code change that neither fixes a bug nor adds a feature |
-| `test` | Adding or updating tests |
-| `chore` | Maintenance, dependencies, CI |
-| `perf` | Performance improvement |
-| `ci` | CI/CD changes |
-| `build` | Build system or external dependencies |
+`feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`, `ci`, `build`
 
 ### Body
 
-Optional for simple, self-explanatory changes. Required when:
+Optional for simple changes. Required when:
 
 - The fix isn't immediately obvious
 - The change affects behavior in non-obvious ways
 - Someone might ask "why did they do it this way?"
-
-**Include:** Why the change is needed, how the solution works, side
-effects, alternatives considered.
-
-**Do not:** Describe what changed (the diff shows that), be vague
-("fixed some stuff"), or apologize.
 
 Leave a blank line between header and body. Wrap at 72-74 characters.
 
@@ -71,16 +55,16 @@ Leave a blank line between header and body. Wrap at 72-74 characters.
 
 ### Examples
 
-Simple commit (no body needed):
+Simple commit:
 
 ```
-feat(dashboard): Add loading spinner to dashboard page
+feat(dashboard): add loading spinner to dashboard page
 ```
 
-Bug fix with explanation:
+Bug fix with body and footer:
 
 ```
-fix(auth): Fix race condition in authentication middleware
+fix(auth): fix race condition in authentication middleware
 
 The middleware was checking token validity before the database
 connection was fully established, causing intermittent 401 errors
@@ -90,21 +74,6 @@ Adds a connection readiness check before token validation with
 retry and exponential backoff (max 3 attempts).
 
 Fixes #142
-```
-
-Feature with detailed body:
-
-```
-feat(export): Add user profile export functionality
-
-Users can now export their profile data in JSON or CSV format
-from account settings. This addresses GDPR data portability
-requirements.
-
-Large exports are processed asynchronously and delivered via
-email with a secure download link valid for 7 days.
-
-Closes #234
 ```
 
 ## Branch Naming
@@ -145,6 +114,7 @@ hotfix/security-vulnerability
 3. Stage specific files (prefer `git add <file>` over `git add .`)
 4. Write commit message following the format above
 5. Commit
+6. Validate: run `git log -1` to confirm the message format is correct
 
 ## Gotchas
 
