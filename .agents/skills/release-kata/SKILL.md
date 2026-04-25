@@ -1,6 +1,6 @@
 ---
 name: release-kata
-version: 1.0.0
+version: 1.1.0
 description: >
   Release a new version of an OpenKata artifact. Detects changes since the
   last release, recommends a semver bump, updates frontmatter and changelog,
@@ -93,3 +93,5 @@ List all tags for an artifact: `git tag -l "skills/create-adr/v*"`
 - If the user disagrees with the recommended bump level, use theirs.
 - Local skills (`.agents/skills/`) get version bumps and changelogs but
   no git tags — tags are reserved for distributable artifacts (ADR 0005).
+- Changelogs document skill-facing changes only. Dev-only artifacts
+  (tile.json, tessl.json) are not changelog-worthy.
