@@ -2,3 +2,6 @@
 bin/
 *.exe
 openkata-mcp
+
+# Local tool config
+.kiro/
