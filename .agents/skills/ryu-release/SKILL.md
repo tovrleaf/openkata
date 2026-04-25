@@ -1,5 +1,5 @@
 ---
-name: release
+name: ryu-release
 version: 2.0.0
 description: >
   Release a new version of an OpenKata artifact (skill or rule). Detects
@@ -9,7 +9,7 @@ description: >
   artifact name.
 ---
 
-# Release
+# Ryu Release
 
 Internal skill for releasing new versions of OpenKata artifacts. Supports
 skills (SKILL.md) and rules (RULE.md). This skill is not distributed — it's

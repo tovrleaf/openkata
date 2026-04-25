@@ -1,10 +1,10 @@
 {
-  "name": "local/release",
+  "name": "local/ryu-release",
   "version": "0.1.0",
   "private": true,
   "summary": "Release a new version of an OpenKata artifact (skill or rule). Detects changes since the last release, recommends a semver bump, updates frontmatter and changelog, commits, and creates a git tag. Use when the maintainer says \"release\", \"bump\", \"version\", or \"tag\" followed by an artifact name.\n",
   "skills": {
-    "release": {
+    "ryu-release": {
       "path": "SKILL.md"
     }
   }

@@ -59,7 +59,7 @@ or distributable (shared via the dojo).
    ```
 
    Follow the style of existing skills in this project — see
-   `release` and `create-adr` for reference.
+   `ryu-release` and `create-adr` for reference.
 
 5. **Import to Tessl** — Run `tessl skill import <skill-directory>` to
    generate the `tile.json` required by the Tessl quality toolchain

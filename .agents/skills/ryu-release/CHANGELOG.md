@@ -2,7 +2,7 @@
 
 ## 2.0.0 — 2026-04-25
 ### Changed
-- Renamed from `release-kata` to `release`
+- Renamed from `release-kata` to `ryu-release`
 - Extended to support both skills (SKILL.md) and rules (RULE.md)
 - Artifact resolution now checks skills/, rules/, .agents/skills/,
   and .agents/rules/

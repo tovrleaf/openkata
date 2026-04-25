@@ -99,7 +99,7 @@ Each skill has two version fields:
 
 | Field | File | Managed by | Purpose |
 |-------|------|-----------|---------|
-| `version` in frontmatter | SKILL.md | `release` | Source of truth. Follows ADR 0005 semver scheme. |
+| `version` in frontmatter | SKILL.md | `ryu-release` | Source of truth. Follows ADR 0005 semver scheme. |
 | `version` in tile.json | tile.json | `tessl skill publish` | Tessl-internal. Defaults to `0.1.0` on import. |
 
 The SKILL.md version is what users see and what the dojo uses. The
