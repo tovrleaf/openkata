@@ -37,11 +37,17 @@ Footer references.
 
 ### Body
 
-Optional for simple changes. Required when:
+Optional for simple, self-evident changes (typo fixes, dependency bumps,
+single-line config changes). Required when:
 
-- The fix isn't immediately obvious
+- The change involves a decision or trade-off
+- The fix isn't immediately obvious from the diff
 - The change affects behavior in non-obvious ways
 - Someone might ask "why did they do it this way?"
+
+A header-only commit is fine when the diff tells the full story. Add a
+body when the *reasoning* matters — decisions, refactors, and non-trivial
+fixes almost always need one.
 
 Leave a blank line between header and body. Wrap at 72-74 characters.
 
@@ -115,6 +121,7 @@ hotfix/security-vulnerability
 4. Write commit message following the format above
 5. Commit
 6. Validate: run `git log -1` to confirm the message format is correct
+7. If the format is incorrect: run `git commit --amend` to fix the message
 
 ## Gotchas
 
