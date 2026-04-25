@@ -1,0 +1,11 @@
+{
+  "name": "local/review-skill",
+  "version": "0.1.0",
+  "private": true,
+  "summary": "Lints, reviews, and optimizes a skill using the Tessl toolchain. Validates structure, evaluates quality, and applies improvements. Use when the user creates a new skill, updates an existing skill, asks to review or optimize a skill, or says \"lint\", \"review\", or \"optimize\" in the context of skills.\n",
+  "skills": {
+    "review-skill": {
+      "path": "SKILL.md"
+    }
+  }
+}
