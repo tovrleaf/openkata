@@ -7,6 +7,7 @@ Codified practices for AI agents — teach your agents the way.
 | Concept | Kata term | Description |
 |---------|-----------|-------------|
 | Skills | **kata** | Codified practices agents follow |
+| Rules | **dojo kun** | Always-on constraints applied to every session |
 | Roles | **sensei profiles** | Agent role definitions with scoped permissions |
 | Prompts | **kata forms** | Standardized templates for commits, PRs, reviews |
 | ADRs | **dojo records** | Architecture decisions preserved for the school |

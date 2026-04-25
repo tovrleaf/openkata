@@ -2,6 +2,7 @@
 bin/
 *.exe
 openkata-mcp
+!cmd/openkata-mcp/
 
 # Local tool config
 .kiro/

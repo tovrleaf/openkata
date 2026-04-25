@@ -18,6 +18,7 @@ const source = "github.com/tovrleaf/openkata"
 
 var skipFiles = map[string]bool{
 	"CHANGELOG.md": true,
+	"tile.json":    true,
 }
 
 func main() {
@@ -26,14 +27,21 @@ func main() {
 		skillsDir = "skills"
 	}
 
+	rulesDir := os.Getenv("OPENKATA_RULES_DIR")
+	if rulesDir == "" {
+		rulesDir = "rules"
+	}
+
 	s := server.NewMCPServer(
 		"openkata",
-		"0.1.0",
+		"0.2.0",
 		server.WithToolCapabilities(false),
 	)
 
 	s.AddTool(listSkillsTool(), listSkillsHandler(skillsDir))
 	s.AddTool(installSkillTool(), installSkillHandler(skillsDir))
+	s.AddTool(listRulesTool(), listRulesHandler(rulesDir))
+	s.AddTool(installRuleTool(), installRuleHandler(rulesDir))
 
 	addr := os.Getenv("OPENKATA_ADDR")
 	if addr != "" {
@@ -124,6 +132,67 @@ func installSkillHandler(skillsDir string) server.ToolHandlerFunc {
 	}
 }
 
+// --- Rule Tools ---
+
+func listRulesTool() mcp.Tool {
+	return mcp.NewTool("list_rules",
+		mcp.WithDescription("List available OpenKata rules (always-on constraints for agent sessions)"),
+	)
+}
+
+func listRulesHandler(rulesDir string) server.ToolHandlerFunc {
+	return func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		rules, err := discoverRules(rulesDir)
+		if err != nil {
+			return mcp.NewToolResultError(fmt.Sprintf("failed to list rules: %v", err)), nil
+		}
+		out, _ := json.MarshalIndent(rules, "", "  ")
+		return mcp.NewToolResultText(string(out)), nil
+	}
+}
+
+func installRuleTool() mcp.Tool {
+	return mcp.NewTool("install_rule",
+		mcp.WithDescription("Install an OpenKata rule into a target project. Copies rule files to .agents/rules/."),
+		mcp.WithString("rule",
+			mcp.Required(),
+			mcp.Description("Name of the rule to install"),
+		),
+		mcp.WithString("target_dir",
+			mcp.Required(),
+			mcp.Description("Absolute path to the target project root"),
+		),
+	)
+}
+
+func installRuleHandler(rulesDir string) server.ToolHandlerFunc {
+	return func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		rule, err := req.RequireString("rule")
+		if err != nil {
+			return mcp.NewToolResultError(err.Error()), nil
+		}
+
+		targetDir, err := req.RequireString("target_dir")
+		if err != nil {
+			return mcp.NewToolResultError(err.Error()), nil
+		}
+
+		src := filepath.Join(rulesDir, rule)
+		ruleMD := filepath.Join(src, "RULE.md")
+		if _, err := os.ReadFile(ruleMD); err != nil {
+			return mcp.NewToolResultError(fmt.Sprintf("rule %q not found", rule)), nil
+		}
+
+		dest := filepath.Join(targetDir, ".agents", "rules", rule)
+		if err := copyDir(src, dest); err != nil {
+			return mcp.NewToolResultError(fmt.Sprintf("failed to install: %v", err)), nil
+		}
+
+		msg := fmt.Sprintf("Installed rule %q to %s", rule, dest)
+		return mcp.NewToolResultText(msg), nil
+	}
+}
+
 // --- Manifest ---
 
 type manifest struct {
@@ -172,6 +241,43 @@ func discoverSkills(skillsDir string) ([]skillInfo, error) {
 		})
 	}
 	return skills, nil
+}
+
+type ruleInfo struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+func discoverRules(rulesDir string) ([]ruleInfo, error) {
+	entries, err := os.ReadDir(rulesDir)
+	if err != nil {
+		return nil, err
+	}
+
+	var rules []ruleInfo
+	for _, e := range entries {
+		if !e.IsDir() {
+			continue
+		}
+		data, err := os.ReadFile(filepath.Join(rulesDir, e.Name(), "RULE.md"))
+		if err != nil {
+			continue
+		}
+		content := string(data)
+		// Use the first heading as description
+		desc := ""
+		for _, line := range strings.Split(content, "\n") {
+			if strings.HasPrefix(line, "# ") {
+				desc = strings.TrimPrefix(line, "# ")
+				break
+			}
+		}
+		rules = append(rules, ruleInfo{
+			Name:        e.Name(),
+			Description: desc,
+		})
+	}
+	return rules, nil
 }
 
 // --- Frontmatter parsing ---
