@@ -17,7 +17,8 @@ is not distributed — it's for maintainers of this repository only.
 
 1. **Identify the artifact** — Determine which artifact to release from
    the user's request (e.g., "release create-adr"). Resolve the directory
-   path (e.g., `skills/create-adr`).
+   path (e.g., `skills/create-adr`). Determine if it is distributable
+   (`skills/`) or local (`.agents/skills/`).
 
 2. **Find the last release** — Look for the most recent git tag matching
    `<directory-path>/v*` (e.g., `skills/create-adr/v1.0.0`). If no tag
@@ -52,11 +53,13 @@ is not distributed — it's for maintainers of this repository only.
 7. **Commit** — Stage the changed files and commit with message:
    `release(<artifact-name>): v<new-version>`
 
-8. **Tag** — Create a git tag: `<directory-path>/v<new-version>`
-   (e.g., `skills/create-adr/v1.1.0`).
+8. **Tag** — For distributable artifacts in `skills/` only: create a git
+   tag `<directory-path>/v<new-version>` (e.g., `skills/create-adr/v1.1.0`).
+   Skip tagging for local skills in `.agents/skills/` — they are versioned
+   but not distributed.
 
 9. **Confirm** — Show the user what was done: version bumped, changelog
-   entry, commit hash, tag name. Ask if they want to push.
+   entry, commit hash, and tag name (if tagged). Ask if they want to push.
 
 ## Bump Examples
 
@@ -88,3 +91,5 @@ List all tags for an artifact: `git tag -l "skills/create-adr/v*"`
 - The version in frontmatter and the git tag must match.
 - Never skip the changelog — it's the only human-readable release history.
 - If the user disagrees with the recommended bump level, use theirs.
+- Local skills (`.agents/skills/`) get version bumps and changelogs but
+  no git tags — tags are reserved for distributable artifacts (ADR 0005).
