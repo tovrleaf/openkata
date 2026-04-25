@@ -1,24 +1,26 @@
 ---
-name: release-kata
-version: 1.1.0
+name: release
+version: 2.0.0
 description: >
-  Release a new version of an OpenKata artifact. Detects changes since the
-  last release, recommends a semver bump, updates frontmatter and changelog,
-  commits, and creates a git tag. Use when the maintainer says "release",
-  "bump", "version", or "tag" followed by a skill name.
+  Release a new version of an OpenKata artifact (skill or rule). Detects
+  changes since the last release, recommends a semver bump, updates
+  frontmatter and changelog, commits, and creates a git tag. Use when the
+  maintainer says "release", "bump", "version", or "tag" followed by an
+  artifact name.
 ---
 
-# Release Kata
+# Release
 
-Internal skill for releasing new versions of OpenKata artifacts. This skill
-is not distributed — it's for maintainers of this repository only.
+Internal skill for releasing new versions of OpenKata artifacts. Supports
+skills (SKILL.md) and rules (RULE.md). This skill is not distributed — it's
+for maintainers of this repository only.
 
 ## Workflow
 
 1. **Identify the artifact** — Determine which artifact to release from
    the user's request (e.g., "release create-adr"). Resolve the directory
-   path (e.g., `skills/create-adr`). Determine if it is distributable
-   (`skills/`) or local (`.agents/skills/`).
+   path by checking both `skills/` and `rules/` for distributable artifacts,
+   and `.agents/skills/` and `.agents/rules/` for local ones.
 
 2. **Find the last release** — Look for the most recent git tag matching
    `<directory-path>/v*` (e.g., `skills/create-adr/v1.0.0`). If no tag
@@ -40,7 +42,7 @@ is not distributed — it's for maintainers of this repository only.
    or override.
 
 5. **Update version** — Bump the `version` field in the artifact's
-   frontmatter (SKILL.md or equivalent).
+   frontmatter (SKILL.md or RULE.md).
 
 6. **Update changelog** — Prepend a new entry to the artifact's
    CHANGELOG.md using [Keep a Changelog](https://keepachangelog.com/)
@@ -53,10 +55,9 @@ is not distributed — it's for maintainers of this repository only.
 7. **Commit** — Stage the changed files and commit with message:
    `release(<artifact-name>): v<new-version>`
 
-8. **Tag** — For distributable artifacts in `skills/` only: create a git
-   tag `<directory-path>/v<new-version>` (e.g., `skills/create-adr/v1.1.0`).
-   Skip tagging for local skills in `.agents/skills/` — they are versioned
-   but not distributed.
+8. **Tag** — For distributable artifacts (`skills/`, `rules/`) only:
+   create a git tag `<directory-path>/v<new-version>`. Skip tagging for
+   local artifacts in `.agents/` — they are versioned but not distributed.
 
 9. **Confirm** — Show the user what was done: version bumped, changelog
    entry, commit hash, and tag name (if tagged). Ask if they want to push.
@@ -78,7 +79,7 @@ Tags mirror directory paths per ADR 0005:
 
 ```
 skills/create-adr/v1.0.0
-skills/create-adr/v1.1.0
+rules/markdown-consistency/v1.0.0
 dojo/v0.1.0
 ```
 
@@ -91,7 +92,8 @@ List all tags for an artifact: `git tag -l "skills/create-adr/v*"`
 - The version in frontmatter and the git tag must match.
 - Never skip the changelog — it's the only human-readable release history.
 - If the user disagrees with the recommended bump level, use theirs.
-- Local skills (`.agents/skills/`) get version bumps and changelogs but
-  no git tags — tags are reserved for distributable artifacts (ADR 0005).
-- Changelogs document skill-facing changes only. Dev-only artifacts
+- Local artifacts (`.agents/skills/`, `.agents/rules/`) get version bumps
+  and changelogs but no git tags — tags are reserved for distributable
+  artifacts (ADR 0005).
+- Changelogs document artifact-facing changes only. Dev-only files
   (tile.json, tessl.json) are not changelog-worthy.
