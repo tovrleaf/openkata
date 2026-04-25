@@ -35,6 +35,12 @@ Or use the dojo (MCP server) to install kata into your project — see
 | [create-adr](skills/create-adr/) | Detects architectural decisions in conversation and guides creation of Architecture Decision Records |
 | [commit-conventions](skills/commit-conventions/) | Enforces Conventional Commits format and branch naming conventions |
 
+## Available dojo kun
+
+| Rule | Description |
+|------|-------------|
+| [markdown-consistency](rules/markdown-consistency/) | Consistent markdown formatting conventions applied to all generated files |
+
 ## For contributors
 
 Kata in this repo follow the Agent Skills specification. Each skill folder
