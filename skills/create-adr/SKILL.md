@@ -14,15 +14,6 @@ description: >
 
 # Create ADR
 
-Document decisions, not just code. The most valuable documentation captures
-the *why* — the context, constraints, and trade-offs that led to a decision.
-Code shows what was built; an ADR explains why it was built this way and what
-alternatives were considered.
-
-This skill guides the creation of Architecture Decision Records (ADRs) using
-a customized Michael Nygard format with YAML frontmatter, decision drivers,
-structured alternatives, and categorized consequences.
-
 ## ADR Lifecycle
 
 ```
@@ -40,20 +31,14 @@ PROPOSED → ACCEPTED → (SUPERSEDED or DEPRECATED)
 
 ## When to suggest an ADR
 
-Proactively suggest creating an ADR when the conversation involves:
+Proactively suggest an ADR when the conversation involves any of:
 
-- **Choosing or replacing a technology** — language, framework, database,
-  message broker, cloud service, CI/CD tool
-- **Defining a structural pattern** — monolith vs microservices, event-driven
-  architecture, CQRS, API gateway, data pipeline topology
-- **Establishing a cross-cutting convention** — error handling strategy,
-  logging format, authentication approach, API versioning scheme
-- **Making a hard-to-reverse decision** — data model design, public API
-  contracts, infrastructure topology, deployment strategy
-- **Resolving a disagreement** — the team debated multiple options and needs
-  to record why one was chosen
-- **Deviating from an existing standard** — breaking from a previously
-  recorded ADR or an industry/team norm
+- Choosing or replacing a technology
+- Defining a structural pattern
+- Establishing a cross-cutting convention
+- Making a hard-to-reverse decision
+- Resolving a team disagreement between multiple options
+- Deviating from an existing standard or previously recorded ADR
 
 ## When NOT to suggest an ADR
 

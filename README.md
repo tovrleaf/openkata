@@ -39,6 +39,11 @@ Or use the dojo (MCP server) to install kata into your project — see
 Kata in this repo follow the Agent Skills specification. Each skill folder
 must contain a `SKILL.md` file with YAML frontmatter and markdown instructions.
 
+### Prerequisites
+
+- [Go 1.26+](https://go.dev/dl/) — for building the MCP server
+- [Tessl CLI](https://docs.tessl.io/introduction-to-tessl/installation) — for reviewing, evaluating, and publishing kata
+
 ### Local development
 
 This repo uses skills from `skills/` locally via symlinks in `.agents/skills/`.
