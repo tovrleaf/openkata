@@ -1,5 +1,6 @@
 ---
 name: release-kata
+version: 1.0.0
 description: >
   Release a new version of an OpenKata artifact. Detects changes since the
   last release, recommends a semver bump, updates frontmatter and changelog,
