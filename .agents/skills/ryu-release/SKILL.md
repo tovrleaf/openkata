@@ -49,7 +49,7 @@ for maintainers of this repository only.
    categories (Added, Changed, Deprecated, Removed, Fixed, Security):
    - The new version number and today's date
    - Changes grouped by category, omitting empty categories
-   
+
    If CHANGELOG.md doesn't exist, create it.
 
 7. **Commit** — Stage the changed files and commit with message:
@@ -77,7 +77,7 @@ for maintainers of this repository only.
 
 Tags mirror directory paths per ADR 0005:
 
-```
+```text
 skills/create-adr/v1.0.0
 rules/markdown-consistency/v1.0.0
 dojo/v0.1.0

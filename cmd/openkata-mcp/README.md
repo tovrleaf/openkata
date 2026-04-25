@@ -27,7 +27,8 @@ Add to your project's `.kiro/settings/mcp.json`:
 }
 ```
 
-Replace `<OPENKATA_REPO>` with the absolute path to your clone of this repository.
+Replace `<OPENKATA_REPO>` with the absolute path to your clone of
+this repository.
 
 ## Tools
 
@@ -41,4 +42,4 @@ Replace `<OPENKATA_REPO>` with the absolute path to your clone of this repositor
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `OPENKATA_SKILLS_DIR` | `skills` (relative to cwd) | Path to the directory containing skills |
-| `OPENKATA_ADDR` | _(unset)_ | Set to `host:port` to run as HTTP server instead of stdio |
+| `OPENKATA_ADDR` | *(unset)* | Set to `host:port` to run as HTTP server instead of stdio |

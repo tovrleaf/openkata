@@ -16,7 +16,7 @@ description: >
 
 ## ADR Lifecycle
 
-```
+```text
 PROPOSED → ACCEPTED → (SUPERSEDED or DEPRECATED)
 ```
 
@@ -112,8 +112,8 @@ prompts: `[INVESTIGATE: description of what needs follow-up]`
 ## Match depth to complexity
 
 Simple decisions get simple ADRs. Omit optional sections (Non-goals,
-Reversibility, References) when they add no information. A two-paragraph ADR for a
-straightforward choice is better than a bloated one that discourages
+Reversibility, References) when they add no information. A two-paragraph
+ADR for a straightforward choice is better than a bloated one that discourages
 future ADR creation.
 
 When a decision directly maps to code changes, the agent may add an

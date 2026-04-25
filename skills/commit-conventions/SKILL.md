@@ -16,7 +16,7 @@ a project using Conventional Commits and kebab-case branch names.
 
 ## Commit Message Format
 
-```
+```text
 type(scope): description
 
 Body explaining why. Wrap at 72-74 characters.
@@ -63,13 +63,13 @@ Leave a blank line between header and body. Wrap at 72-74 characters.
 
 Simple commit:
 
-```
+```text
 feat(dashboard): add loading spinner to dashboard page
 ```
 
 Bug fix with body and footer:
 
-```
+```text
 fix(auth): fix race condition in authentication middleware
 
 The middleware was checking token validity before the database
@@ -86,7 +86,7 @@ Fixes #142
 
 ### Format
 
-```
+```text
 type/short-description
 type/issue-number-short-description
 ```
@@ -104,7 +104,7 @@ type/issue-number-short-description
 
 ### Examples
 
-```
+```text
 feature/payment-integration
 fix/789-session-timeout
 refactor/api-error-handling
