@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.2 — 2026-04-26
+
+### Fixed
+
+- Applied markdown-consistency rule: added language specifier to
+  code block, blank lines around headings in changelog
+
 ## 1.0.1 — 2026-04-25
 
 ### Changed
