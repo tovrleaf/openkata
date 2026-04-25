@@ -53,14 +53,17 @@ must contain a `SKILL.md` file with YAML frontmatter and markdown instructions.
 
 ### Local development
 
-This repo uses skills from `skills/` locally via symlinks in `.agents/skills/`.
+This repo uses artifacts from `skills/` and `rules/` locally via
+symlinks in `.agents/skills/` and `.agents/rules/`.
 
 ```bash
 # Symlinks are already committed — just clone and go
 git clone https://github.com/tovrleaf/openkata.git
 ```
 
-See [.agents/skills/README.md](.agents/skills/README.md) for details on the symlink pattern.
+See [.agents/skills/README.md](.agents/skills/README.md) and
+[.agents/rules/README.md](.agents/rules/README.md) for details
+on the symlink pattern.
 
 ## License
 
