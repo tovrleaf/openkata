@@ -67,4 +67,4 @@ on the symlink pattern.
 
 ## License
 
-TBD
+MIT — see [LICENSE](LICENSE).
