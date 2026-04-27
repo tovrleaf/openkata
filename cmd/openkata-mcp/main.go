@@ -188,6 +188,16 @@ func installRuleHandler(rulesDir string) server.ToolHandlerFunc {
 			return mcp.NewToolResultError(fmt.Sprintf("failed to install: %v", err)), nil
 		}
 
+		m := manifest{
+			Name:        rule,
+			Version:     "",
+			Source:      source,
+			InstalledAt: time.Now().UTC().Format(time.RFC3339),
+		}
+		if err := writeManifest(dest, m); err != nil {
+			return mcp.NewToolResultError(fmt.Sprintf("installed but failed to write manifest: %v", err)), nil
+		}
+
 		msg := fmt.Sprintf("Installed rule %q to %s", rule, dest)
 		return mcp.NewToolResultText(msg), nil
 	}
