@@ -1,0 +1,11 @@
+{
+  "name": "local/openkata-skill-conventions",
+  "version": "0.1.0",
+  "private": true,
+  "summary": "Applies OpenKata project conventions when creating or updating skills in this repository. Adds Tessl integration, changelog management, versioning, and symlink placement on top of the generic create-skill workflow. Use alongside create-skill when working in the OpenKata repo.\n",
+  "skills": {
+    "openkata-skill-conventions": {
+      "path": "SKILL.md"
+    }
+  }
+}
