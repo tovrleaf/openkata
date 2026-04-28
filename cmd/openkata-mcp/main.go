@@ -17,8 +17,9 @@ import (
 const source = "github.com/tovrleaf/openkata"
 
 var skipFiles = map[string]bool{
-	"CHANGELOG.md": true,
-	"tile.json":    true,
+	"CHANGELOG.md":       true,
+	"ACKNOWLEDGMENTS.md": true,
+	"tile.json":          true,
 }
 
 func main() {
