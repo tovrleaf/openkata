@@ -1,0 +1,11 @@
+{
+  "name": "local/create-skill",
+  "version": "0.1.0",
+  "private": true,
+  "summary": "Creates new agent skills following the Agent Skills specification. Investigates the repo for conventions, designs the skill around progressive disclosure, writes SKILL.md with effective trigger descriptions, and validates with representative prompts. Use when the user wants to create a skill, build a SKILL.md, turn a workflow into a reusable skill, teach the agent a new task, or scaffold a new agent capability.\n",
+  "skills": {
+    "create-skill": {
+      "path": "SKILL.md"
+    }
+  }
+}
