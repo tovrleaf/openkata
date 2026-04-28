@@ -73,10 +73,3 @@ readable output regardless of which model or tool writes the file.
 - No hard tabs — use spaces
 - One sentence per line is acceptable for diffs, but wrap at 72–80
   characters for readability when the audience reads source directly
-
-## References
-
-- [markdownlint rules](https://github.com/markdownlint/markdownlint/blob/main/docs/RULES.md)
-- [Google Markdown style guide](https://google.github.io/styleguide/docguide/style.html)
-- [Markdown best practices for technical writing](https://markdowntorichtext.com/blog/markdown-best-practices/)
-- [Markdown Guide — extended syntax](https://www.markdownguide.org/extended-syntax/)
