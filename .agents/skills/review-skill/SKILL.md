@@ -36,6 +36,12 @@ on both new and updated skills in `.agents/skills/` or `skills/`.
 6. **Report** — Summarize what changed, the before/after review score,
    and any remaining warnings.
 
+7. **Feed learnings back** — After every review, check whether the
+   insights could improve `create-skill`, `create-rule`, or the
+   `markdown-consistency` rule. If a pattern keeps surfacing (e.g.,
+   a common mistake, a better convention), ask the user if they want
+   to update the relevant skill or rule so future artifacts benefit.
+
 ## When Applying Improvements
 
 - **Generalize from feedback.** Don't overfit fixes to specific cases.
