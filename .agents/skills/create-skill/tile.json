@@ -1,0 +1,11 @@
+{
+  "name": "local/create-skill",
+  "version": "0.1.0",
+  "private": true,
+  "summary": "Generates SKILL.md files with proper YAML frontmatter, writes step-by-step workflow instructions, and validates skill structure using the Tessl toolchain. Use when the user wants to create a new skill, add a SKILL.md, teach the agent a new task, add a custom instruction, define a new agent capability, or scaffold a new skill for the dojo.\n",
+  "skills": {
+    "create-skill": {
+      "path": "SKILL.md"
+    }
+  }
+}

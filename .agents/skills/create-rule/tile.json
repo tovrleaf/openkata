@@ -1,0 +1,11 @@
+{
+  "name": "local/create-rule",
+  "version": "0.1.0",
+  "private": true,
+  "summary": "Creates rule files (RULE.md) that define always-on constraints for agent sessions. Use when the user wants to create a new rule, add a convention, enforce a standard, define a dojo kun, or establish a project-wide constraint.\n",
+  "skills": {
+    "create-rule": {
+      "path": "SKILL.md"
+    }
+  }
+}
