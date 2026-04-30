@@ -10,3 +10,7 @@
 - [agentskills.io](https://agentskills.io/specification) —
   Agent Skills specification and directory structure
   (adopted in v1.0.0)
+- [antongulin/opencode-skill-creator](https://github.com/antongulin/opencode-skill-creator) (MIT) —
+  mandatory intake gate pattern, near-miss negative prompt
+  emphasis, staged workspace guidance
+  (adopted in v1.1.0)

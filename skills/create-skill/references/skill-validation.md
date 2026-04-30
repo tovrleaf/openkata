@@ -20,7 +20,12 @@ Write at least 3 prompts:
   trigger words
 - **positive-paraphrased** — same job, different wording
 - **negative-adjacent** — close enough to confuse a weak
-  description, but should not load the skill
+  description, but should not load the skill. The best
+  negatives are near-misses: queries that share keywords or
+  domain with the skill but need something different. "Write
+  a fibonacci function" is too easy as a negative for a
+  deploy skill — "set up a staging environment" is a real
+  near-miss that tests discrimination.
 
 Add more prompts only when the surface area is large or the
 user explicitly wants deeper validation.

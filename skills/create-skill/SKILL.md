@@ -20,11 +20,17 @@ frontmatter and markdown instructions.
 
 ## Workflow
 
-1. **Gather intent** — Understand what the skill should do. Collect:
+1. **Intake (mandatory gate)** — Understand what the skill
+   should do. Ask at least 3 targeted questions before
+   drafting anything. Collect:
    - A short name (lowercase, hyphenated)
    - What the skill enables the agent to do
    - When it should activate (trigger conditions)
    - What success looks like
+
+   Summarize your understanding and get explicit confirmation
+   before proceeding. Do not write SKILL.md until the user
+   confirms.
 
 2. **Investigate the repo** — Before asking questions, search the
    repo for facts that reduce ambiguity:
@@ -45,7 +51,10 @@ frontmatter and markdown instructions.
    - Whether the skill needs `references/`, `scripts/`, or
      `assets/`
 
-4. **Design the package** — Use progressive disclosure:
+4. **Design the package** — Use progressive disclosure. For
+   iterative development, draft in a temp directory (e.g.,
+   `/tmp/skills/skill-name/`) to avoid cluttering the repo
+   until the skill is validated.
 
    ```text
    skill-name/
