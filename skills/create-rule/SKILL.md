@@ -6,7 +6,9 @@ description: >
   a RULE.md with clear structure, and validates against real usage.
   Use when the user wants to create a rule, add a convention,
   enforce a standard, establish a project-wide constraint, define
-  coding style, or standardize formatting across generated files.
+  coding style, standardize formatting across generated files,
+  notices inconsistent output across sessions, or is setting up a
+  new project's conventions.
 ---
 
 # Create Rule
@@ -68,3 +70,33 @@ at session start and apply to all work.
 
 6. **Confirm** — Show the user the created rule and ask if
    adjustments are needed.
+
+## Example Scenario
+
+User: "Every model formats markdown differently, I want
+consistency."
+
+1. Skill checks repo for `.editorconfig`, linter configs,
+   existing rules — finds none
+2. Asks: "Which conventions matter most — headings, lists,
+   code blocks, line length?"
+3. Reads 2–3 existing markdown files to extract implicit
+   patterns
+4. Creates `markdown-consistency/RULE.md` with specific,
+   enforceable conventions grouped by concern
+5. Validates against existing files — no conflicts
+
+## Common Failures
+
+- **Too vague to enforce** — "use consistent formatting" is
+  unenforceable. "Use `-` for unordered lists" is clear.
+- **Conflicts with existing tooling** — the rule says one thing,
+  the linter config says another. Check for `.editorconfig`,
+  linter configs, and formatter settings first.
+- **Too long** — rules load every session. A 200-line rule costs
+  tokens on every interaction, even when irrelevant.
+- **Overlaps with existing rules** — check `.agents/rules/` for
+  rules that already cover the same concern.
+
+A good rule is enforceable by reading it literally. If an agent
+has to interpret intent, the rule is too vague.
