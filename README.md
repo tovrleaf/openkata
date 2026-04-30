@@ -14,6 +14,15 @@ Codified practices for AI agents — teach your agents the way.
 | MCP server | **the dojo** | Where kata are served and practiced |
 | Framework | **the ryu** (school) | The complete system of practices |
 
+## Design philosophy
+
+Kata in this repo are **platform-agnostic**. They follow the
+[Agent Skills specification](https://github.com/anthropics/agent-skills-spec)
+and work with any agent that supports it — Kiro, Claude Code,
+OpenCode, or others. Skills avoid coupling to specific tooling,
+MCP servers, or platform-specific features so they remain
+portable across environments.
+
 ## Using kata from this repository
 
 Each kata lives in its own folder under `skills/`. To use a kata:
