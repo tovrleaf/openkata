@@ -1,7 +1,6 @@
 # Markdown Consistency
 
-Apply these conventions to all markdown files. The goal is consistent,
-readable output regardless of which model or tool writes the file.
+Apply these conventions to all markdown files.
 
 ## Document Structure
 
@@ -28,7 +27,7 @@ readable output regardless of which model or tool writes the file.
 - `**bold**` for key terms and warnings — never `__bold__`
 - `*italic*` for emphasis and titles — never `_italic_`
 - `` `backticks` `` for code, file names, commands, and field names
-- Use emphasis sparingly — don't bold entire paragraphs
+- Don't bold entire sentences or paragraphs
 
 ## Lists
 
@@ -71,5 +70,6 @@ readable output regardless of which model or tool writes the file.
 
 - Prefer markdown over inline HTML
 - No hard tabs — use spaces
-- One sentence per line is acceptable for diffs, but wrap at 72–80
-  characters for readability when the audience reads source directly
+- Wrap prose at 72–80 characters
+- One sentence per line is allowed when the file is primarily
+  diff-reviewed, but wrap at 72–80 characters by default
