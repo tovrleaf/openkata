@@ -5,128 +5,98 @@ description: >
   Enforces Conventional Commits format and branch naming conventions,
   validating commit message structure (type/scope/description header),
   suggesting branch name patterns (feature/*, fix/*, hotfix/*), and
-  enforcing breaking change notation. Use when the user asks to commit,
-  create a branch, review commit messages, or prepare a pull request.
+  enforcing breaking change notation. Use when the user is about to
+  commit, creating a branch, reviewing commit history, preparing a
+  pull request, setting up commit linting, or asking about commit
+  message format, branch naming, or Conventional Commits.
 ---
 
 # Git Conventions
 
-This skill enforces consistent commit messages and branch naming across
-a project using Conventional Commits and kebab-case branch names.
-
-## Commit Message Format
-
-```text
-type(scope): description
-
-Body explaining why. Wrap at 72-74 characters.
-
-Footer references.
-```
-
-### Header Rules
-
-- **Format:** `type(scope): description`
-- **Scope:** Optional. Use the area of the codebase affected.
-- **Description:** Imperative mood, lowercase first word, no trailing period
-- **Length:** Max 72 characters for the entire header line
-
-### Types
-
-`feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`, `ci`, `build`
-
-### Body
-
-Optional for simple, self-evident changes (typo fixes, dependency bumps,
-single-line config changes). Required when:
-
-- The change involves a decision or trade-off
-- The fix isn't immediately obvious from the diff
-- The change affects behavior in non-obvious ways
-- Someone might ask "why did they do it this way?"
-
-A header-only commit is fine when the diff tells the full story. Add a
-body when the *reasoning* matters — decisions, refactors, and non-trivial
-fixes almost always need one.
-
-Leave a blank line between header and body. Wrap at 72-74 characters.
-
-### Footer
-
-- `Fixes #123` — closes the issue when merged
-- `Closes #456` — same as Fixes
-- `Relates to #789` — references without closing
-- `BREAKING CHANGE: description` — for breaking changes
-- `Co-authored-by: Name <email>` — for co-authors
-
-### Examples
-
-Simple commit:
-
-```text
-feat(dashboard): add loading spinner to dashboard page
-```
-
-Bug fix with body and footer:
-
-```text
-fix(auth): fix race condition in authentication middleware
-
-The middleware was checking token validity before the database
-connection was fully established, causing intermittent 401 errors
-during server startup.
-
-Adds a connection readiness check before token validation with
-retry and exponential backoff (max 3 attempts).
-
-Fixes #142
-```
-
-## Branch Naming
-
-### Format
-
-```text
-type/short-description
-type/issue-number-short-description
-```
-
-### Types
-
-`feature/`, `fix/`, `refactor/`, `docs/`, `test/`, `chore/`, `hotfix/`
-
-### Rules
-
-- Lowercase, kebab-case (hyphens, not underscores)
-- 2-5 words, short but descriptive
-- Include issue number when applicable: `fix/123-memory-leak`
-- Create from main, delete after merge
-
-### Examples
-
-```text
-feature/payment-integration
-fix/789-session-timeout
-refactor/api-error-handling
-docs/setup-instructions
-chore/upgrade-dependencies
-hotfix/security-vulnerability
-```
+Enforce consistent commit messages and branch naming using
+Conventional Commits and kebab-case branch names.
 
 ## Commit Workflow
 
-1. Review changes: `git status` and `git diff`
-2. Verify changes are atomic — one logical change per commit
-3. Stage specific files (prefer `git add <file>` over `git add .`)
-4. Write commit message following the format above
-5. Commit
-6. Validate: run `git log -1` to confirm the message format is correct
-7. If the format is incorrect: run `git commit --amend` to fix the message
+1. **Check existing conventions** — Before applying defaults,
+   look for `.commitlintrc`, `commitlint.config.js`, `.czrc`,
+   `CONTRIBUTING.md`, or recent commit history. If the repo has
+   established conventions, follow those instead.
+
+2. **Review changes** — Run `git status` and `git diff`.
+
+3. **Verify atomicity** — One logical change per commit. If you
+   need "and" in the message, split into multiple commits.
+
+4. **Stage specific files** — Prefer `git add <file>` over
+   `git add .`.
+
+5. **Write the commit message** — Follow the
+   [commit format](references/commit-format.md):
+
+   ```text
+   type(scope): description
+
+   Body explaining why. Wrap at 72-74 characters.
+
+   Footer references.
+   ```
+
+   Key rules:
+   - Imperative mood, lowercase, no trailing period
+   - Max 72 characters for the header
+   - Body required when the reasoning matters — decisions,
+     refactors, non-trivial fixes
+   - Header-only is fine when the diff tells the full story
+
+6. **Commit.**
+
+7. **Validate** — Run `git log -1` to confirm the format. If
+   incorrect, run `git commit --amend` to fix.
+
+## Branch Workflow
+
+1. **Check existing conventions** — Look for branch protection
+   rules, CI config, or existing branch patterns.
+
+2. **Create the branch** — Follow the
+   [branch naming format](references/branch-naming.md):
+
+   ```text
+   type/short-description
+   type/issue-number-short-description
+   ```
+
+   Types: `feature/`, `fix/`, `refactor/`, `docs/`, `test/`,
+   `chore/`, `hotfix/`
+
+3. **Create from main, delete after merge.**
+
+## Example Scenario
+
+User: "commit these changes"
+
+1. Skill checks for `.commitlintrc` — none found, uses defaults
+2. Runs `git status` and `git diff` to understand the changes
+3. Changes touch auth middleware — suggests scope `auth`
+4. Writes: `fix(auth): handle expired tokens during reconnect`
+5. Stages specific files, commits, validates with `git log -1`
+
+## Common Failures
+
+- **Repo already has conventions** — applying Conventional
+  Commits over an existing format creates inconsistent history.
+  Always check first (step 1).
+- **Scope too broad or missing** — `fix: stuff` tells nothing.
+  `fix(auth): resolve token expiry race condition` tells the
+  story.
+- **Body on trivial commits** — a one-line typo fix doesn't
+  need three paragraphs of reasoning.
+- **Non-atomic commits** — bundling unrelated changes makes
+  history useless. If you need "and", split.
 
 ## Gotchas
 
-- No "WIP", "temp", or "fix typo" commits — use `git commit --amend`
-  or `git rebase -i` to clean up before opening a pull request
+- No "WIP" or "temp" commits — use `git commit --amend` or
+  `git rebase -i` to clean up before opening a pull request
 - Use `git mv` for file renames to preserve history
-- Each commit should represent one logical change — if you need "and"
-  in the message, consider splitting into multiple commits
