@@ -29,17 +29,6 @@ PROPOSED → ACCEPTED → (SUPERSEDED or DEPRECATED)
 - Each ADR records exactly one decision. If you're capturing multiple
   decisions, split them into separate ADRs.
 
-## When to suggest an ADR
-
-Proactively suggest an ADR when the conversation involves any of:
-
-- Choosing or replacing a technology
-- Defining a structural pattern
-- Establishing a cross-cutting convention
-- Making a hard-to-reverse decision
-- Resolving a team disagreement between multiple options
-- Deviating from an existing standard or previously recorded ADR
-
 ## When NOT to suggest an ADR
 
 - Trivial or easily reversible decisions (variable naming, minor refactors)
@@ -123,14 +112,18 @@ workflows.
 
 ## Gotchas
 
-- Always check `docs/adr/` for existing ADRs before assigning a number.
-  Never reuse or skip numbers.
-- The `status` field in YAML frontmatter for a new ADR should always be
-  `PROPOSED` unless the user explicitly says it's already accepted.
+- Always check `docs/adr/` for existing ADRs before assigning a
+  number. Never reuse or skip numbers.
+- The `status` field in YAML frontmatter for a new ADR should
+  always be `PROPOSED` unless the user explicitly says it's
+  already accepted.
 - The `authors` field in YAML frontmatter is required.
-- If the decision supersedes an existing ADR, update the old ADR's status
-  to `SUPERSEDED` and add a note linking to the new one.
+- If the decision supersedes an existing ADR, update the old
+  ADR's status to `SUPERSEDED` and add a note linking to the
+  new one.
 - Create the `docs/adr/` directory if it doesn't exist.
+- Never leave placeholder text like `[Driver 1]` — fill every
+  section with real content or omit the section.
 
 ## Example Scenario
 
@@ -142,21 +135,3 @@ User: "Should we use Postgres or DynamoDB for the order service?"
 4. Drafts ADR with both options, pros/cons, and a recommendation
 5. Saves to `docs/adr/0007-use-postgresql-for-order-service.md`
 
-## Common Failures
-
-- **Vague context** — the problem statement doesn't explain why
-  the decision was needed. A reader can't tell what forces were
-  at play.
-- **Missing alternatives** — only the chosen option is described.
-  Without rejected alternatives, the ADR doesn't explain why
-  this option won over others.
-- **Placeholder text left in** — sections still contain template
-  brackets like `[Driver 1]` instead of real content.
-- **Wrong granularity** — the ADR captures multiple decisions in
-  one record. Split into separate ADRs.
-
-## References
-
-- [Documenting Architecture Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) — Michael Nygard's original ADR proposal
-- [MADR](https://adr.github.io/madr/) — Markdown Any Decision Records, source of Decision Drivers section
-- [adr.github.io](https://adr.github.io/) — Community resources, tooling, and template variations
