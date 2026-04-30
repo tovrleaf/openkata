@@ -1,3 +1,0 @@
-skillbuilder
-markdown
-makefile
