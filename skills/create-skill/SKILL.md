@@ -6,8 +6,10 @@ description: >
   progressive disclosure, writes SKILL.md with effective trigger
   descriptions, and validates with representative prompts. Use when
   the user wants to create a skill, build a SKILL.md, turn a
-  workflow into a reusable skill, teach the agent a new task, or
-  scaffold a new agent capability.
+  workflow into a reusable skill, teach the agent a new task,
+  scaffold a new agent capability, has a repeated workflow they
+  want to codify, is frustrated by inconsistent agent behavior, or
+  wants to package expertise for a team.
 ---
 
 # Create Skill
@@ -84,8 +86,9 @@ frontmatter and markdown instructions.
    Writing rules:
    - **Description optimizes activation, not teaching.** State
      the job and when to use it in words a user would actually
-     say. Include synonyms and paraphrases. Keep workflow details
-     out of the description.
+     say. Include both *actions* (what the user asks to do) and
+     *situations* (what the user is experiencing). Keep workflow
+     details out of the description.
 
      Bad: `Follows a 7-step process to generate SKILL.md files
      with YAML frontmatter containing name and description
@@ -93,7 +96,8 @@ frontmatter and markdown instructions.
 
      Good: `Creates agent skills. Use when the user wants to
      build a SKILL.md, turn a workflow into a reusable skill,
-     or teach the agent a new task.`
+     has a repeated workflow they want to codify, or is
+     frustrated by inconsistent agent behavior.`
    - **Body is procedural and imperative.** Tell the agent
      exactly how to proceed.
    - **Explain the why.** Reasoning is more effective than rigid
@@ -101,51 +105,8 @@ frontmatter and markdown instructions.
    - **Be concise.** Remove explanations of concepts the model
      already knows. Trim examples that restate the rules.
 
-   **Complete example** — A finished skill for running the test
-   suite looks like this:
-
-   ```markdown
-   ---
-   name: run-tests
-   description: >
-     Runs the project's test suite and reports results. Use when
-     the user wants to run tests, check if tests pass, verify
-     changes don't break anything, or asks about test failures.
-   ---
-
-   # Run Tests
-
-   Run the full test suite, surface failures clearly, and suggest
-   fixes when the cause is obvious.
-
-   ## Workflow
-
-   1. **Detect the test runner** — Check package.json scripts,
-      Makefile targets, or pyproject.toml for the test command.
-      Prefer `npm test`, `make test`, or `pytest` in that order.
-
-   2. **Run the suite** — Execute the detected command. Capture
-      stdout and stderr.
-
-   3. **Report results** — If all tests pass, confirm with a
-      one-line summary. If tests fail, list each failing test
-      with its error message and the file:line reference.
-
-   4. **Suggest fixes** — For failures with an obvious cause
-      (import error, missing env var, typo), propose a concrete
-      fix. For ambiguous failures, ask the user before changing
-      anything.
-
-   ## Conventions
-
-   - Never modify test files to make tests pass.
-   - Run the full suite unless the user explicitly scopes to a
-     subset.
-   ```
-
-   This example shows a realistic description with natural trigger
-   phrases, a tight four-step workflow, and conventions that
-   constrain behavior without being rigid rules.
+   See [example-skill.md](references/example-skill.md) for a
+   complete finished skill demonstrating these principles.
 
 6. **Validate** — Test the skill with representative prompts:
    - 2–3 realistic positive prompts (things users would say)
@@ -163,6 +124,34 @@ frontmatter and markdown instructions.
 
 8. **Confirm** — Show the user the created skill and ask if
    adjustments are needed.
+
+## Example Scenario
+
+User: "I keep doing the same database migration steps manually,
+can we turn that into a skill?"
+
+1. Skill investigates repo — finds Flyway config, existing
+   migration scripts, deploy docs
+2. Asks: "Should this skill also handle rollback, or just
+   forward migrations?"
+3. Creates `migrate-database/SKILL.md` with detect → plan →
+   execute → verify workflow
+4. Moves Flyway-specific edge cases into `references/`
+5. Validates with positive prompt ("run the migration") and
+   negative ("change the database schema" — different job)
+
+## Common Failures
+
+- **Description too vague to trigger** — "helps with code" won't
+  activate. Include specific actions and situations.
+- **Description leaks workflow** — the agent reads the summary
+  and skips the body, following a shortcut instead of the full
+  procedure.
+- **Body too abstract to act on** — "investigate the problem"
+  isn't actionable. "Run `git log --oneline -20` to check
+  recent patterns" is.
+- **No investigation step** — the skill asks the user questions
+  it could have answered by reading the repo.
 
 ## Quality Checklist
 
