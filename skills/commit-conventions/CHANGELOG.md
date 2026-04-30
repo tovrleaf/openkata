@@ -1,5 +1,27 @@
 # Changelog
 
+## 2.0.0 — 2026-04-30
+
+### Added
+
+- "Check existing conventions" as step 1 in both workflows
+- Example scenario showing end-to-end commit flow
+- Common failures section
+- references/commit-format.md with full header/body/footer spec
+- references/branch-naming.md with format, types, and examples
+
+### Changed
+
+- Restructured as workflow-first skill — format details moved
+  to references/
+- Description now includes situations alongside actions
+- Separate commit and branch workflows
+
+### Removed
+
+- Inline commit format specification (moved to references/)
+- Inline branch naming specification (moved to references/)
+
 ## 1.1.1 — 2026-04-26
 
 ### Fixed
