@@ -33,8 +33,7 @@
 2. Place in `rules/<name>/` for distributable,
    `.agents/rules/<name>/` for local
 3. Symlink distributable rules into `.agents/rules/`
-4. Validate against the rule design checklist in
-   `skills/create-rule/references/`
+4. Validate against the [rule design checklist](skills/create-rule/references/rule-design-checklist.md)
 5. Include CHANGELOG.md and ACKNOWLEDGMENTS.md as needed
 
 ## Quality bar

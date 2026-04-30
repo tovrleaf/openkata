@@ -49,6 +49,8 @@ Apply these conventions to all markdown files.
 ## Links
 
 - Use descriptive link text — never "click here" or "link"
+- When referencing a repo file in prose, use a relative link.
+  Paths inside code blocks or inline code are exempt.
 - Use reference-style links when the URL would break line length or
   when the same URL appears multiple times
 - Use relative paths for links within the same repository

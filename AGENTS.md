@@ -30,13 +30,15 @@ make rules
 - `#!/usr/bin/env bash` with `set -euo pipefail`
 - 2-space indent, 80 char line limit
 - `[[ ]]` not `[ ]`, `"${var}"` not `$var`
-- See `rules/bash-style/RULE.md` for full conventions
+- See [`rules/bash-style/RULE.md`](rules/bash-style/RULE.md)
+  for full conventions
 
 ### Markdown
 
 - Wrap prose at 72–80 characters
 - ATX headings, `-` for lists, fenced code blocks
-- See `rules/markdown-consistency/RULE.md` for full conventions
+- See [`rules/markdown-consistency/RULE.md`](rules/markdown-consistency/RULE.md)
+  for full conventions
 
 ## Commits
 
