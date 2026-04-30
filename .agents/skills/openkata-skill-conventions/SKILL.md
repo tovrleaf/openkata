@@ -47,6 +47,8 @@ After the generic `create-skill` workflow, also do:
 
 ## Conventions
 
+- Always ask the user before running Tessl commands — do not
+  run lint, review, or optimize without confirmation
 - Local skills go in `.agents/skills/<name>/`
 - Distributable skills go in `skills/<name>/` with a symlink
   in `.agents/skills/`
