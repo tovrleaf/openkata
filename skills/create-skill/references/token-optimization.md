@@ -35,10 +35,14 @@ without reducing execution quality.
 The main file is probably too large if:
 
 - Multiple sections repeat the same workflow in different words
+- The body restates trigger criteria already in the description
+  (e.g., a "When to use" section that duplicates the description)
 - Examples are longer than the instructions they illustrate
 - Reference material dominates the core procedure
 - The skill explains common concepts instead of workflow-specific
   guidance
+- Multiple sections serve the same purpose (e.g., a quality
+  checklist and a common failures section that overlap)
 
 ## Final Pass
 

@@ -17,6 +17,8 @@ Use this before finalizing a generated or revised skill.
 - Does it avoid vague language like "helps with" or "handles"?
 - If over-triggering is a risk, does the description narrow
   scope clearly?
+- Does the body avoid restating trigger criteria already
+  covered by the description?
 
 ## Workflow Quality
 

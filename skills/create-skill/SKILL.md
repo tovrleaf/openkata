@@ -99,7 +99,9 @@ frontmatter and markdown instructions.
      has a repeated workflow they want to codify, or is
      frustrated by inconsistent agent behavior.`
    - **Body is procedural and imperative.** Tell the agent
-     exactly how to proceed.
+     exactly how to proceed. Don't restate trigger criteria
+     from the description — if the body has a "When to use"
+     section, it's duplicating the description.
    - **Explain the why.** Reasoning is more effective than rigid
      `ALWAYS`/`NEVER` rules.
    - **Be concise.** Remove explanations of concepts the model
