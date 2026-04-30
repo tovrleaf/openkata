@@ -51,30 +51,13 @@ Or use the dojo (MCP server) to install kata into your project — see
 | Rule | Description |
 |------|-------------|
 | [markdown-consistency](rules/markdown-consistency/) | Consistent markdown formatting conventions applied to all generated files |
+| [bash-style](rules/bash-style/) | Bash scripting conventions based on the Google Shell Style Guide |
 
-## For contributors
+## Contributing
 
-Kata in this repo follow the Agent Skills specification. Each skill folder
-must contain a `SKILL.md` file with YAML frontmatter and markdown instructions.
-
-### Prerequisites
-
-- [Go 1.26+](https://go.dev/dl/) — for building the MCP server
-- [Tessl CLI](https://docs.tessl.io/introduction-to-tessl/installation) — for reviewing, evaluating, and publishing kata
-
-### Local development
-
-This repo uses artifacts from `skills/` and `rules/` locally via
-symlinks in `.agents/skills/` and `.agents/rules/`.
-
-```bash
-# Symlinks are already committed — just clone and go
-git clone https://github.com/tovrleaf/openkata.git
-```
-
-See [.agents/skills/README.md](.agents/skills/README.md) and
-[.agents/rules/README.md](.agents/rules/README.md) for details
-on the symlink pattern.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add skills
+and rules. See [AGENTS.md](AGENTS.md) for build commands, code
+style, and commit conventions.
 
 ## License
 
