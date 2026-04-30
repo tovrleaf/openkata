@@ -1,6 +1,6 @@
 ---
 name: create-adr
-version: 1.0.2
+version: 1.1.0
 description: >
   Detects architectural decisions in conversation and guides creation of
   Architecture Decision Records. Activate when the user is making, discussing,

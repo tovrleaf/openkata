@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.1.0 — 2026-04-30
+
+### Added
+
+- Example scenario showing end-to-end ADR creation flow
+- Gotcha: never leave placeholder text in sections
+- references/ACKNOWLEDGMENTS.md for source attribution
+
+### Changed
+
+- Moved References to references/ACKNOWLEDGMENTS.md
+- Merged Common Failures into Gotchas to reduce overlap with
+  E.C.A.D.R. quality checklist
+
+### Removed
+
+- "When to suggest" section (duplicated the description)
+- Inline References section (moved to ACKNOWLEDGMENTS.md)
+
 ## 1.0.2 — 2026-04-26
 
 ### Fixed
