@@ -83,7 +83,9 @@ consistency."
 3. Reads 2–3 existing markdown files to extract implicit
    patterns
 4. Creates `markdown-consistency/RULE.md` with specific,
-   enforceable conventions grouped by concern
+   enforceable conventions grouped by concern — see
+   [example-rule.md](references/example-rule.md) for the
+   finished output
 5. Validates against existing files — no conflicts
 
 ## Common Failures
@@ -100,3 +102,11 @@ consistency."
 
 A good rule is enforceable by reading it literally. If an agent
 has to interpret intent, the rule is too vague.
+
+## Quality References
+
+Before finalizing, check the rule against:
+
+- [Rule design checklist](references/rule-design-checklist.md)
+- [Rule validation](references/rule-validation.md)
+- [Rule token optimization](references/rule-token-optimization.md)
