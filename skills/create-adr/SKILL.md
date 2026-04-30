@@ -132,6 +132,29 @@ workflows.
   to `SUPERSEDED` and add a note linking to the new one.
 - Create the `docs/adr/` directory if it doesn't exist.
 
+## Example Scenario
+
+User: "Should we use Postgres or DynamoDB for the order service?"
+
+1. Skill detects a technology choice decision
+2. Asks: "This looks like an architectural decision. Want an ADR?"
+3. Reads existing ADRs, checks go.mod/package.json for current DB
+4. Drafts ADR with both options, pros/cons, and a recommendation
+5. Saves to `docs/adr/0007-use-postgresql-for-order-service.md`
+
+## Common Failures
+
+- **Vague context** — the problem statement doesn't explain why
+  the decision was needed. A reader can't tell what forces were
+  at play.
+- **Missing alternatives** — only the chosen option is described.
+  Without rejected alternatives, the ADR doesn't explain why
+  this option won over others.
+- **Placeholder text left in** — sections still contain template
+  brackets like `[Driver 1]` instead of real content.
+- **Wrong granularity** — the ADR captures multiple decisions in
+  one record. Split into separate ADRs.
+
 ## References
 
 - [Documenting Architecture Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) — Michael Nygard's original ADR proposal
