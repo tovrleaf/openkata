@@ -49,6 +49,15 @@ Conventional Commits, lowercase descriptions:
 Scope is the artifact name when applicable. See the
 `commit-conventions` skill for full details.
 
+Add an `Assisted-by` trailer to every AI-assisted commit.
+Format: `Assisted-by: <agent>:<model_name>`
+
+For Kiro, read the model from the current session:
+
+    ls -t ~/.kiro/sessions/cli/*.json | head -1 \
+      | xargs grep -o '"model_name": "[^"]*"' \
+      | cut -d'"' -f4
+
 ## Skills and rules
 
 - Distributable artifacts must be platform-agnostic
