@@ -1,5 +1,6 @@
 ---
 name: create-skill
+version: 1.0.0
 description: >
   Creates new agent skills following the Agent Skills specification.
   Investigates the repo for conventions, designs the skill around
