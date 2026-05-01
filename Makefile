@@ -1,3 +1,8 @@
+.PHONY: check
+
+check: ## Check development prerequisites
+	@./scripts/check-prereqs.sh
+
 .PHONY: skills
 
 skills: ## List all skills with type, version, and change status
