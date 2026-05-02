@@ -2,6 +2,8 @@
 
 Codified practices for AI agents — teach your agents the way.
 
+See the [Manifesto](MANIFESTO.md) for why this exists.
+
 ## Vocabulary
 
 | Concept | Kata term | Description |
