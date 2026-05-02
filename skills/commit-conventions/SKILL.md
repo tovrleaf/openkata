@@ -1,6 +1,5 @@
 ---
 name: commit-conventions
-version: 2.0.0
 description: >
   Enforces Conventional Commits format and branch naming conventions,
   validating commit message structure (type/scope/description header),

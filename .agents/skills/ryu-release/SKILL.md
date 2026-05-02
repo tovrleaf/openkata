@@ -1,6 +1,5 @@
 ---
 name: ryu-release
-version: 2.0.0
 description: >
   Release a new version of an OpenKata artifact (skill or rule). Detects
   changes since the last release, recommends a semver bump, updates

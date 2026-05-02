@@ -39,10 +39,12 @@ mirror directory paths. The repo itself has no version.
 
 ### Implementation
 
-- Each distributed artifact has a `version` field in its frontmatter
+- Git tags are the single source of truth for artifact versions
 - Each distributed artifact has a `CHANGELOG.md` in its directory
 - Git tags follow the pattern `<directory-path>/v<major>.<minor>.<patch>`
 - The dojo binary version is set in the Go source
+- The dojo resolves the version from the git tag at install time and
+  writes it to `.manifest.json` — frontmatter does not carry version
 - `CHANGELOG.md` is not copied to the target project on install — it
   stays in the source repository only
 
@@ -118,12 +120,15 @@ Categories: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**,
 - Git tags are unambiguous — `skills/create-adr/v1.2.0` can't collide
   with a prompt of the same name
 - Changelogs give users human-readable release history
-- The dojo can compare frontmatter versions to detect updates
+- The dojo can compare manifest versions against git tags to detect
+  updates
 
 ### Negative
 
-- Maintainers must remember to bump version, update changelog, and
-  create a git tag for each release
+- Maintainers must remember to update changelog and create a git tag
+  for each release
+- Version is not visible by reading SKILL.md alone — check the tag
+  or changelog
 - More tags in the repo as the number of artifacts grows
 
 ### Neutral

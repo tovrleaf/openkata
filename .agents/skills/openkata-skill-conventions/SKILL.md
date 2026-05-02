@@ -1,6 +1,5 @@
 ---
 name: openkata-skill-conventions
-version: 1.0.0
 description: >
   Applies OpenKata project conventions when creating or updating
   skills in this repository. Adds Tessl integration, changelog

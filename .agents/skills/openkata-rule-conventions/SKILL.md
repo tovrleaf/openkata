@@ -1,6 +1,5 @@
 ---
 name: openkata-rule-conventions
-version: 1.0.0
 description: >
   Applies OpenKata project conventions when creating or updating
   rules in this repository. Adds changelog management, symlink

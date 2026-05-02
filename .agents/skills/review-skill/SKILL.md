@@ -1,6 +1,5 @@
 ---
 name: review-skill
-version: 1.0.0
 description: >
   Lints, reviews, and optimizes a skill using the Tessl toolchain. Validates
   structure, evaluates quality, and applies improvements. Use when the user

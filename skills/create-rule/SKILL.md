@@ -1,6 +1,5 @@
 ---
 name: create-rule
-version: 1.0.0
 description: >
   Creates rule files that define always-on constraints for agent
   sessions. Investigates the repo for existing conventions, writes
