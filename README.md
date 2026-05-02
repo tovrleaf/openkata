@@ -47,6 +47,7 @@ Or use the dojo (MCP server) to install kata into your project — see
 | [commit-conventions](skills/commit-conventions/) | Enforces Conventional Commits format and branch naming conventions |
 | [create-skill](skills/create-skill/) | Creates agent skills by investigating repo conventions, designing workflows, and writing SKILL.md files |
 | [create-rule](skills/create-rule/) | Creates always-on agent rules by investigating repo conventions and writing RULE.md files |
+| [makefile-conventions](skills/makefile-conventions/) | Structures Makefiles as a universal command interface using modular includes and self-documenting help |
 
 ## Available dojo kun
 
