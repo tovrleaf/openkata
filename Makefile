@@ -1,14 +1,25 @@
-.PHONY: check
+.DEFAULT_GOAL := help
 
-check: ## Check development prerequisites
-	@./scripts/check-prereqs.sh
+.PHONY: help
+help: ## Show this help
+	@echo "Open Kata - Make Commands"
+	@echo "========================="
+	@echo ""
+	@echo "Catalog:"
+	@echo "  make skills  - List all skills with type and version"
+	@echo "  make rules   - List all rules with type and version"
+	@echo ""
+	@echo "Development:"
+	@echo "  make check   - Check development prerequisites"
 
 .PHONY: skills
-
 skills: ## List all skills with type, version, and change status
 	@./scripts/list-skills.sh
 
 .PHONY: rules
-
 rules: ## List all rules with type and version
 	@./scripts/list-rules.sh
+
+.PHONY: check
+check: ## Check development prerequisites
+	@./scripts/check-prereqs.sh
