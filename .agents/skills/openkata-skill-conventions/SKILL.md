@@ -36,8 +36,13 @@ After the generic `create-skill` workflow, also do:
    ln -s ../../skills/<name> .agents/skills/<name>
    ```
 
-5. **Quality check** — Follow the `review-skill` workflow to
-   lint, review, and optimize.
+5. **Quality check (mandatory gate)** — Do not commit until
+   all checks pass. Follow the `review-skill` workflow to
+   lint, review, and optimize. The skill must:
+   - Score 95%+ on `tessl skill review`
+   - Pass the skill design checklist
+   - Survive 2–3 positive and 1 negative representative
+     prompt
 
 6. **Acknowledge sources** — If the skill draws on external
    practices, add or update `references/ACKNOWLEDGMENTS.md`
