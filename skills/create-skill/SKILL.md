@@ -1,6 +1,5 @@
 ---
 name: create-skill
-version: 1.0.0
 description: >
   Creates new agent skills following the Agent Skills specification.
   Investigates the repo for conventions, designs the skill around
@@ -79,19 +78,11 @@ frontmatter and markdown instructions.
      What the skill does and produces. Use when the user wants
      to <scenario>, mentions <keyword>, or asks about <topic>.
    ---
-
-   # Skill Name
-
-   One-line stance on what this skill does.
-
-   ## Workflow
-
-   1. **Step** — Description.
-
-   ## Conventions
-
-   - Key constraints.
    ```
+
+   Frontmatter rules:
+   - Only use `name` and `description` in frontmatter.
+     `version` is not part of the spec and triggers warnings.
 
    Writing rules:
    - **Description optimizes activation, not teaching.** State
@@ -115,7 +106,16 @@ frontmatter and markdown instructions.
    - **Explain the why.** Reasoning is more effective than rigid
      `ALWAYS`/`NEVER` rules.
    - **Be concise.** Remove explanations of concepts the model
-     already knows. Trim examples that restate the rules.
+     already knows. Don't explain what `.PHONY` does or why
+     tabs matter in Makefiles — the model knows. Use terse
+     reminders instead of tutorials.
+   - **Include a complete example.** A full, copy-paste-ready
+     example scores higher on actionability than scattered
+     snippets. Show the whole working artifact, not just
+     fragments.
+   - **Common failures must be non-obvious.** Don't list things
+     the model already knows as failure modes. Focus on
+     mistakes that come from the skill's specific domain.
 
    See [example-skill.md](references/example-skill.md) for a
    complete finished skill demonstrating these principles.
