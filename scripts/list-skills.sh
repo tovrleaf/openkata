@@ -12,8 +12,15 @@ for dir in .agents/skills/*/; do
     type="dist"
   fi
 
+  # Resolve version: git tag first, then CHANGELOG.md
   tag="$(git tag -l "${skill_dir}/v*" 2>/dev/null | sort -V | tail -1)"
-  version="$(echo "${tag}" | grep -o 'v[0-9].*' || echo "?")"
+  version="$(echo "${tag}" | grep -o 'v[0-9].*' || true)"
+
+  if [[ -z "${version}" ]]; then
+    version="$(grep -m1 '^## ' "${skill_dir}/CHANGELOG.md" 2>/dev/null \
+      | sed 's/^## //' | tr -d '[]' | sed 's/[[:space:]].*//' || echo "?")"
+    version="v${version}"
+  fi
 
   changes=""
   if [[ -n "${tag}" ]]; then
