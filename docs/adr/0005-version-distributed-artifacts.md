@@ -40,13 +40,24 @@ mirror directory paths. The repo itself has no version.
 ### Implementation
 
 - Git tags are the single source of truth for artifact versions
-- Each distributed artifact has a `CHANGELOG.md` in its directory
+- Each artifact (distributable and local) has a `CHANGELOG.md`
 - Git tags follow the pattern `<directory-path>/v<major>.<minor>.<patch>`
 - The dojo binary version is set in the Go source
 - The dojo resolves the version from the git tag at install time and
   writes it to `.manifest.json` — frontmatter does not carry version
 - `CHANGELOG.md` is not copied to the target project on install — it
   stays in the source repository only
+
+### Version resolution chain
+
+Tools that need an artifact's version resolve it in this order:
+
+1. **Git tag** — authoritative for released distributable artifacts
+2. **CHANGELOG.md** — first `## ` heading, with or without brackets
+   (`## 1.0.0` and `## [1.0.0]` both work)
+
+Local artifacts (`.agents/`) are not tagged. Their version comes
+from CHANGELOG.md only.
 
 ### Install manifest
 
