@@ -8,6 +8,7 @@ help: ## Show this help
 	@echo "Catalog:"
 	@echo "  make skills  - List all skills with type and version"
 	@echo "  make rules   - List all rules with type and version"
+	@echo "  make adrs    - List all architecture decision records"
 	@echo ""
 	@echo "Development:"
 	@echo "  make check   - Check development prerequisites"
@@ -23,3 +24,7 @@ rules: ## List all rules with type and version
 .PHONY: check
 check: ## Check development prerequisites
 	@./scripts/check-prereqs.sh
+
+.PHONY: adrs
+adrs: ## List all architecture decision records
+	@./scripts/list-adrs.sh
