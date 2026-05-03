@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 
@@ -106,9 +108,7 @@ func installSkillHandler(skillsDir string) server.ToolHandlerFunc {
 		}
 
 		src := filepath.Join(skillsDir, skill)
-		skillMD := filepath.Join(src, "SKILL.md")
-		data, err := os.ReadFile(skillMD)
-		if err != nil {
+		if _, err := os.ReadFile(filepath.Join(src, "SKILL.md")); err != nil {
 			return mcp.NewToolResultError(fmt.Sprintf("skill %q not found", skill)), nil
 		}
 
@@ -117,14 +117,14 @@ func installSkillHandler(skillsDir string) server.ToolHandlerFunc {
 			return mcp.NewToolResultError(fmt.Sprintf("failed to install: %v", err)), nil
 		}
 
-		version := extractFrontmatterField(string(data), "version")
-		manifest := manifest{
+		version := resolveVersion("skills/" + skill)
+		m := manifest{
 			Name:        skill,
 			Version:     version,
 			Source:      source,
 			InstalledAt: time.Now().UTC().Format(time.RFC3339),
 		}
-		if err := writeManifest(dest, manifest); err != nil {
+		if err := writeManifest(dest, m); err != nil {
 			return mcp.NewToolResultError(fmt.Sprintf("installed but failed to write manifest: %v", err)), nil
 		}
 
@@ -189,9 +189,10 @@ func installRuleHandler(rulesDir string) server.ToolHandlerFunc {
 			return mcp.NewToolResultError(fmt.Sprintf("failed to install: %v", err)), nil
 		}
 
+		version := resolveVersion("rules/" + rule)
 		m := manifest{
 			Name:        rule,
-			Version:     "",
+			Version:     version,
 			Source:      source,
 			InstalledAt: time.Now().UTC().Format(time.RFC3339),
 		}
@@ -244,11 +245,10 @@ func discoverSkills(skillsDir string) ([]skillInfo, error) {
 		if err != nil {
 			continue
 		}
-		content := string(data)
 		skills = append(skills, skillInfo{
 			Name:        e.Name(),
-			Version:     extractFrontmatterField(content, "version"),
-			Description: extractDescription(content),
+			Version:     resolveVersion("skills/" + e.Name()),
+			Description: extractDescription(string(data)),
 		})
 	}
 	return skills, nil
@@ -256,6 +256,7 @@ func discoverSkills(skillsDir string) ([]skillInfo, error) {
 
 type ruleInfo struct {
 	Name        string `json:"name"`
+	Version     string `json:"version"`
 	Description string `json:"description"`
 }
 
@@ -274,21 +275,32 @@ func discoverRules(rulesDir string) ([]ruleInfo, error) {
 		if err != nil {
 			continue
 		}
-		content := string(data)
-		// Use the first heading as description
-		desc := ""
-		for _, line := range strings.Split(content, "\n") {
-			if strings.HasPrefix(line, "# ") {
-				desc = strings.TrimPrefix(line, "# ")
-				break
-			}
-		}
 		rules = append(rules, ruleInfo{
 			Name:        e.Name(),
-			Description: desc,
+			Version:     resolveVersion("rules/" + e.Name()),
+			Description: extractDescription(string(data)),
 		})
 	}
 	return rules, nil
+}
+
+// --- Version resolution ---
+
+// resolveVersion finds the latest semver tag for a given artifact
+// path prefix (e.g. "skills/create-adr" or "rules/bash-style").
+func resolveVersion(prefix string) string {
+	out, err := exec.Command("git", "tag", "-l", prefix+"/v*").Output()
+	if err != nil || len(out) == 0 {
+		return ""
+	}
+	tags := strings.Split(strings.TrimSpace(string(out)), "\n")
+	sort.Strings(tags)
+	last := tags[len(tags)-1]
+	// Extract version from "skills/name/v1.2.3" -> "1.2.3"
+	if i := strings.LastIndex(last, "/v"); i >= 0 {
+		return last[i+2:]
+	}
+	return ""
 }
 
 // --- Frontmatter parsing ---
