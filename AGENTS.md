@@ -50,7 +50,12 @@ Scope is the artifact name when applicable. See the
 `commit-conventions` skill for full details.
 
 Add an `Assisted-by` trailer to every AI-assisted commit.
-Format: `Assisted-by: <agent>:<model_name>`
+Format: `Assisted-by: Agent:model_name`
+
+This follows the Linux kernel convention from
+`Documentation/process/coding-assistants.rst`. We use
+`Assisted-by` rather than `Co-authored-by` because the
+human is the author; the AI assisted.
 
 For Kiro, read the model from the current session:
 
