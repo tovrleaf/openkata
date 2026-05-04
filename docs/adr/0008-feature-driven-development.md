@@ -43,11 +43,11 @@ specify → design → tasks → implement.
 
 ```text
 .specs/
-├── _current                    # Active feature directory name
-└── 001-design-system/
-    ├── spec.md                 # Story, requirements, acceptance criteria
-    ├── design.md               # Architecture, file paths, approach
-    └── tasks.md                # Ordered task breakdown
+├── _current                      # Active feature directory name
+└── 0001-design-system/
+    ├── spec.md                   # Story, requirements, acceptance criteria
+    ├── design.md                 # Architecture, file paths, approach
+    └── tasks.md                  # Ordered task breakdown
 ```
 
 ### Depth adaptation
