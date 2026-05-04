@@ -68,10 +68,9 @@ Apply these conventions to all markdown files.
 - Always include descriptive alt text
 - Use relative paths for local images
 
-## General
+## Formatting
 
 - Prefer markdown over inline HTML
 - No hard tabs — use spaces
-- Wrap prose at 72–80 characters
 - One sentence per line is allowed when the file is primarily
   diff-reviewed, but wrap at 72–80 characters by default

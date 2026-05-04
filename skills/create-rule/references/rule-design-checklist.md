@@ -16,6 +16,8 @@ Use this before finalizing a generated or revised rule.
   intent?
 - Are conventions stated as directives, not explanations?
 - Are hard requirements distinguishable from preferences?
+- Is each convention stated exactly once? No duplicates
+  across sections.
 
 ## Packaging
 
