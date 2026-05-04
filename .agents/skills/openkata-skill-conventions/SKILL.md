@@ -61,4 +61,3 @@ After the generic `create-skill` workflow, also do:
 - Every skill gets a CHANGELOG.md
 - Changelogs document skill-facing changes only — dev-only
   artifacts (tile.json, tessl.json) are not changelog-worthy
-- Version field in SKILL.md frontmatter follows ADR 0005

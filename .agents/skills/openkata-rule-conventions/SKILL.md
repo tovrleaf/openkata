@@ -38,8 +38,15 @@ After the generic `create-rule` workflow, also do:
    link, license, what was adapted, and the version it was
    adopted in.
 
+5. **Quality check (mandatory gate)** — Do not commit until
+   all checks pass:
+   - Pass the rule design checklist from `create-rule`
+   - Every convention is literally enforceable
+   - RULE.md is under 100 lines
+
 ## Conventions
 
+- Always ask the user before running destructive commands
 - Local rules go in `.agents/rules/<name>/`
 - Distributable rules go in `rules/<name>/` with a symlink
   in `.agents/rules/`
