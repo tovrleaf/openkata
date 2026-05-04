@@ -36,10 +36,10 @@ on both new and updated skills in `.agents/skills/` or `skills/`.
    and any remaining warnings.
 
 7. **Feed learnings back** — After every review, check whether the
-   insights could improve `create-skill`, `create-rule`, or the
-   `markdown-consistency` rule. If a pattern keeps surfacing (e.g.,
-   a common mistake, a better convention), ask the user if they want
-   to update the relevant skill or rule so future artifacts benefit.
+   insights could improve `create-skill` or the skill design
+   checklist. If a pattern keeps surfacing (e.g., a common mistake,
+   a better convention), ask the user if they want to update the
+   skill creation workflow so future skills benefit.
 
 ## When Applying Improvements
 
@@ -63,6 +63,3 @@ on both new and updated skills in `.agents/skills/` or `skills/`.
 - Markdown links in SKILL.md are validated by the linter as file paths
   relative to the skill directory. Use plain text references for files
   outside the skill folder.
-- If the skill version was bumped during optimization, ensure the
-  version in SKILL.md frontmatter and tile.json stay in sync by
-  re-running `tessl skill import --force <skill-directory>`.
