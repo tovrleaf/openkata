@@ -58,7 +58,7 @@ when the feature enters the Implement phase.
 
 ### Resumability
 
-The agent reads `.specs/_current` to find the active feature,
+The agent reads `specs/_current` to find the active feature,
 then reads `spec.md` and `tasks.md` to determine the current
 phase and next action:
 
@@ -74,7 +74,7 @@ During implementation, commits reference the feature:
 ```text
 feat(website): add templ layout templates
 
-Part of .specs/0001-website task 3.
+Part of specs/0001-website task 3.
 ```
 
 Commits are frequent — after each task, not at the end.

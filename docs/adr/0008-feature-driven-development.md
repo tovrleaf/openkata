@@ -25,13 +25,13 @@ from zero.
 
 ## Decision
 
-Store feature specs in `.specs/` as numbered directories with
+Store feature specs in `specs/` as numbered directories with
 separate files per phase.
 
 ### Directory structure
 
 ```text
-.specs/
+specs/
 ├── _current                      # Active feature directory name
 └── 0001-design-system/
     ├── spec.md                   # Story, requirements, acceptance
