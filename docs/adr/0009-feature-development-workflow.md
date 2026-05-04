@@ -161,3 +161,11 @@ Within the implementation loop, the agent works autonomously.
 - [cc-sdd](https://github.com/gotalab/cc-sdd) — boundary
   annotations on tasks, implementation notes propagating
   forward between tasks
+- [get-shit-done](https://github.com/gsd-build/get-shit-done)
+  — discuss phase, auto-detect next step, context engineering
+- [don-cheli-sdd](https://github.com/doncheli/don-cheli-sdd)
+  — worktree isolation, drift detection between spec and code
+- [agent-os](https://github.com/buildermethods/agent-os) —
+  standards discovery and injection into agent context
+- [shotgun](https://github.com/shotgun-sh/shotgun) —
+  codebase-aware research before specification, staged PRs
