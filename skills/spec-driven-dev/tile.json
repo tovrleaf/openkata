@@ -1,0 +1,11 @@
+{
+  "name": "tovrleaf/spec-driven-dev",
+  "version": "0.1.0",
+  "private": true,
+  "summary": "Drives feature development through a phased workflow: specify requirements, design architecture, break into tasks, then implement autonomously with frequent commits. Use when the user wants to build a feature, start a new feature, plan and implement something, spec out a feature, or says \"let's build\" or \"new feature.\"\n",
+  "skills": {
+    "spec-driven-dev": {
+      "path": "SKILL.md"
+    }
+  }
+}

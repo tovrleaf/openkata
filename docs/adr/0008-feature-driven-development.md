@@ -43,7 +43,8 @@ specs/
 
 The depth determines which files are created:
 
-- **Quick** — no spec directory. Small fix or config change.
+- **Quick** — `brief.md` only. Small fix or config change.
+  A few sentences capturing scope for the record.
 - **Standard** — `spec.md` + `tasks.md`. Typical feature work.
 - **Deep** — `spec.md` + `design.md` + `tasks.md`. Complex or
   cross-cutting feature needing a design phase.
@@ -162,3 +163,5 @@ determine the next number.
   spec.md + plan.md + tasks.md per feature
 - [OpenSpec](https://openspec.dev/) — proposal.md + design.md
   + tasks.md
+- [cc-sdd](https://github.com/gotalab/cc-sdd) — brief.md
+  for lightweight scope capture, boundary annotations on tasks

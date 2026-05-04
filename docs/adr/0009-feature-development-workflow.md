@@ -158,3 +158,6 @@ Within the implementation loop, the agent works autonomously.
 - [Superpowers](https://github.com/obra/superpowers) —
   two-stage review (spec compliance + code quality),
   fresh-agent validation
+- [cc-sdd](https://github.com/gotalab/cc-sdd) — boundary
+  annotations on tasks, implementation notes propagating
+  forward between tasks
