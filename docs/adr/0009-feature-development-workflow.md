@@ -169,3 +169,5 @@ Within the implementation loop, the agent works autonomously.
   standards discovery and injection into agent context
 - [shotgun](https://github.com/shotgun-sh/shotgun) —
   codebase-aware research before specification, staged PRs
+- [specswarm](https://github.com/MartyBonacci/specswarm) —
+  quality scoring (0-100), tech stack drift prevention
