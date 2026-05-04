@@ -26,8 +26,9 @@ human gates at key decision points.
 
 ## Decision
 
-Adopt a phased workflow: specify → design → tasks → implement.
-The agent drives each phase, the human confirms transitions.
+Adopt a phased workflow: specify → design → tasks → implement
+→ validate. The agent drives each phase, the human confirms
+transitions.
 
 ### Phases
 
@@ -51,6 +52,12 @@ The agent drives each phase, the human confirms transitions.
    6. Update task status and progress log
    7. Move to next task
 
+5. **Validate** — A fresh agent session is recommended to
+   avoid builder bias. Read `spec.md` requirements and the
+   code diff. Write `validation-report.md` checking each
+   requirement against the implementation. If issues are
+   found, return to Implement for fixes.
+
 ### Branch strategy
 
 One branch per feature: `feature/{number}-{slug}`. Created
@@ -65,7 +72,8 @@ phase and next action:
 - No `tasks.md` → still in Specify or Design phase
 - `tasks.md` exists, all Pending → ready to start implementing
 - `tasks.md` with some Done → resume from first Pending task
-- All tasks Done → feature complete
+- All tasks Done, no `validation-report.md` → ready to validate
+- `validation-report.md` exists → feature complete
 
 ### Commit conventions
 
@@ -145,3 +153,8 @@ Within the implementation loop, the agent works autonomously.
   plan → tasks → implement phased workflow
 - [BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD)
   — scale-adaptive depth, "what's next?" resumability
+- [MUSUBI](https://github.com/nahisaho/MUSUBI) — validation
+  reports per feature, review gates between phases
+- [Superpowers](https://github.com/obra/superpowers) —
+  two-stage review (spec compliance + code quality),
+  fresh-agent validation
