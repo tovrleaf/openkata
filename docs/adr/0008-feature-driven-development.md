@@ -4,40 +4,29 @@ date: 2026-05-03
 authors: [niko.kivela]
 ---
 
-# 0008. Feature-driven development with repo-stored specs
+# 0008. Repo-stored feature specs
 
 ## Context
 
 As the project grows beyond skills and rules into a website,
-MCP server, and design system, we need a structured way to
-plan and execute feature work. Without it, features are built
-ad-hoc — requirements live in chat history, design decisions
-are implicit, and there is no record of what was planned vs
-what was built.
-
-The workflow must support AI-assisted development: an agent
-should be able to read the current feature state, understand
-what phase it is in, and continue working autonomously with
-frequent commits.
+MCP server, and design system, feature requirements and design
+decisions need a persistent home. Chat history doesn't survive
+across sessions. Without stored specs, every new session starts
+from zero.
 
 ## Decision Drivers
 
-- Feature specs must survive across sessions — chat history
-  does not
-- An agent must be able to resume work without re-explaining
-  the feature
-- The process must adapt to feature size — a bug fix should
-  not require a full spec cycle
-- No external tools or issue trackers — everything in the repo
+- Feature specs must survive across sessions
+- An agent must be able to read the current feature state and
+  resume without re-explaining
 - Separate files per phase to minimize context window usage
-  during implementation
+- No external tools or issue trackers — everything in the repo
+- The format must adapt to feature size
 
 ## Decision
 
-Adopt a feature-driven workflow where each feature is a
-numbered directory in `.specs/` containing separate files
-for each phase. The workflow progresses through phases:
-specify → design → tasks → implement.
+Store feature specs in `.specs/` as numbered directories with
+separate files per phase.
 
 ### Directory structure
 
@@ -45,8 +34,8 @@ specify → design → tasks → implement.
 .specs/
 ├── _current                      # Active feature directory name
 └── 0001-design-system/
-    ├── spec.md                   # Story, requirements, acceptance criteria
-    ├── design.md                 # Architecture, file paths, approach
+    ├── spec.md                   # Story, requirements, acceptance
+    ├── design.md                 # Architecture, approach (Deep)
     └── tasks.md                  # Ordered task breakdown
 ```
 
@@ -55,13 +44,9 @@ specify → design → tasks → implement.
 The depth determines which files are created:
 
 - **Quick** — no spec directory. Small fix or config change.
-  Jump straight to implementation.
-- **Standard** — `spec.md` + `tasks.md`. Typical feature
-  work. Story and requirements flow directly into tasks
-  without a separate design phase.
-- **Deep** — `spec.md` + `design.md` + `tasks.md`. Complex
-  or cross-cutting feature. Full design phase with
-  architecture decisions before task breakdown.
+- **Standard** — `spec.md` + `tasks.md`. Typical feature work.
+- **Deep** — `spec.md` + `design.md` + `tasks.md`. Complex or
+  cross-cutting feature needing a design phase.
 
 ### File formats
 
@@ -113,38 +98,15 @@ As a ..., I want ..., so that ...
 - **Goal**: What this achieves
 - **Done when**: Observable criteria
 
-### 2. Next task
-...
-
 ## Progress Log
 - [Date] Task N: Summary, decisions made
 ```
 
-### Implementation loop
+### Numbering
 
-For each task, the agent works autonomously:
-
-1. Read the current task from `tasks.md`
-2. Build the implementation
-3. Run tests
-4. Verify against the "done when" criteria
-5. Commit with a reference to the feature and task
-6. Update task status and progress log
-7. Move to next task
-
-Commits are frequent — after each task, not at the end of
-the feature.
-
-### Branch strategy
-
-One branch per feature: `feature/{number}-{slug}`. Created
-when the feature enters implementation.
-
-### "Where am I?" capability
-
-The skill reads `.specs/_current`, opens the active feature
-directory, determines the current phase and next action, and
-guides the user or continues autonomously.
+Directories use 4-digit zero-padded numbers (`0001-name/`)
+matching the ADR convention. Check existing directories to
+determine the next number.
 
 ## Alternatives Considered
 
@@ -158,33 +120,21 @@ guides the user or continues autonomously.
 
 ### Spec-kit (github/spec-kit)
 
-- **Pros:** Mature ecosystem (92K stars), extensive extensions,
-  CLI tooling, same separate-file pattern
+- **Pros:** Mature ecosystem (92K stars), same separate-file
+  pattern, CLI tooling
 - **Cons:** Requires Python + uv, opinionated `.specify/`
   structure, heavy for a small project
 - **Rejected because:** adds a language dependency to a Go
-  project. The phased workflow and separate-file pattern are
-  adopted without the tooling.
-
-### BMAD Method
-
-- **Pros:** Scale-adaptive, 12+ specialized agents, complete
-  lifecycle coverage
-- **Cons:** Framework-level complexity, requires npm, 34+
-  workflows
-- **Rejected because:** designed for multi-agent orchestration
-  at enterprise scale. The scale-adaptive depth idea is
-  adopted without the framework.
+  project. The separate-file pattern is adopted without the
+  tooling.
 
 ### Single file per feature
 
 - **Pros:** All context in one place, no file management
 - **Cons:** Gets long for complex features, agent loads full
-  story when it only needs the current task, wastes context
-  window
+  story when it only needs the current task
 - **Rejected because:** separate files let the agent load
-  only what it needs per phase. spec-kit and OpenSpec both
-  use separate files for this reason.
+  only what it needs per phase.
 
 ## Consequences
 
@@ -192,33 +142,23 @@ guides the user or continues autonomously.
 
 - Feature state survives across sessions and context resets
 - Agent loads only the file relevant to the current phase
-- Depth adapts to feature size — no overhead for small changes
-- Progress log creates an audit trail of decisions
+- Depth adapts to feature size
+- Progress log creates an audit trail
 - Follows the most common convention (spec-kit, OpenSpec)
-- No external dependencies or tooling required
 
 ### Negative
 
 - More files per feature than a single-file approach
 - No built-in visualization (no kanban board)
-- Requires discipline to keep spec and tasks in sync
 
 ### Neutral
 
-- The workflow skill is local to this project initially but
-  could become distributable if the pattern proves useful
 - Spec files are committed to the repo and visible in
   git history
 
 ## References
 
-- [spec-kit](https://github.com/github/spec-kit) — phased
-  specify → plan → tasks → implement workflow, separate files
-- [BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD)
-  — scale-adaptive depth, "what's next?" guidance
-- [OpenSpec](https://openspec.dev/) — generates proposal.md +
-  design.md + tasks.md
-- [spec-engineer](https://github.com/villetakanen/asdlc-io)
-  — spec-anchored development, same-commit rule
-- [user-story-clarifier](https://github.com/n-n-code/n-n-code-skills)
-  — story card format, Definition of Ready checklist
+- [spec-kit](https://github.com/github/spec-kit) — separate
+  spec.md + plan.md + tasks.md per feature
+- [OpenSpec](https://openspec.dev/) — proposal.md + design.md
+  + tasks.md
