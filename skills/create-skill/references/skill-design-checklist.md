@@ -53,3 +53,10 @@ Use this before finalizing a generated or revised skill.
 - Does the skill avoid environment assumptions it cannot
   justify?
 - If the skill is repo-bound, does it say so plainly?
+
+## Boundaries
+
+- Does the skill state what it DOES?
+- Does it state what it Does NOT do?
+- Are the boundaries specific enough to prevent scope creep?
+- Would an agent know which files and actions are off-limits?

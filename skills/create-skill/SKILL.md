@@ -116,6 +116,9 @@ frontmatter and markdown instructions.
    - **Common failures must be non-obvious.** Don't list things
      the model already knows as failure modes. Focus on
      mistakes that come from the skill's specific domain.
+   - **Include a Boundaries section.** State what the skill
+     DOES and Does NOT do. This prevents scope creep and
+     makes it clear which files and actions are in scope.
 
    See [example-skill.md](references/example-skill.md) for a
    complete finished skill demonstrating these principles.

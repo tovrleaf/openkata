@@ -137,6 +137,15 @@ avoid builder bias.
 - The agent works autonomously within a task but does not
   skip phase transitions without user confirmation
 
+## Boundaries
+
+- DOES create and update files in `specs/`
+- DOES create feature branches when asked
+- DOES commit during implementation phase
+- Does NOT modify files outside the current task's boundary
+- Does NOT skip phase gates without user confirmation
+- Does NOT delete or overwrite existing specs
+
 ## Example Scenario
 
 User: "Let's build the design system for the website"
