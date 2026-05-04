@@ -1,5 +1,5 @@
 ---
-status: PROPOSED
+status: ACCEPTED
 date: 2026-05-03
 authors: [niko.kivela]
 ---
