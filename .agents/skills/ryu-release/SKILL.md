@@ -40,10 +40,7 @@ for maintainers of this repository only.
    Present the recommendation with justification. Let the user confirm
    or override.
 
-5. **Update version** — Bump the `version` field in the artifact's
-   frontmatter (SKILL.md or RULE.md).
-
-6. **Update changelog** — Prepend a new entry to the artifact's
+5. **Update changelog** — Prepend a new entry to the artifact's
    CHANGELOG.md using [Keep a Changelog](https://keepachangelog.com/)
    categories (Added, Changed, Deprecated, Removed, Fixed, Security):
    - The new version number and today's date
@@ -51,7 +48,11 @@ for maintainers of this repository only.
 
    If CHANGELOG.md doesn't exist, create it.
 
-7. **Commit** — Stage the changed files and commit with message:
+6. **Regenerate root changelog** — Run `make changelog` to update
+   the aggregate CHANGELOG.md at the repo root.
+
+7. **Commit** — Stage the changed files (including root CHANGELOG.md)
+   and commit with message:
    `release(<artifact-name>): v<new-version>`
 
 8. **Tag** — For distributable artifacts (`skills/`, `rules/`) only:
@@ -88,7 +89,6 @@ List all tags for an artifact: `git tag -l "skills/create-adr/v*"`
 
 - Always check for uncommitted changes in the artifact directory before
   starting. Refuse to release with a dirty working tree.
-- The version in frontmatter and the git tag must match.
 - Never skip the changelog — it's the only human-readable release history.
 - If the user disagrees with the recommended bump level, use theirs.
 - Local artifacts (`.agents/skills/`, `.agents/rules/`) get version bumps

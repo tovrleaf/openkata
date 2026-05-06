@@ -11,7 +11,8 @@ help: ## Show this help
 	@echo "  make adrs    - List all architecture decision records"
 	@echo ""
 	@echo "Development:"
-	@echo "  make check   - Check development prerequisites"
+	@echo "  make check     - Check development prerequisites"
+	@echo "  make changelog - Generate root CHANGELOG.md"
 
 .PHONY: skills
 skills: ## List all skills with type, version, and change status
@@ -28,3 +29,7 @@ check: ## Check development prerequisites
 .PHONY: adrs
 adrs: ## List all architecture decision records
 	@./scripts/list-adrs.sh
+
+.PHONY: changelog
+changelog: ## Generate root CHANGELOG.md from artifact changelogs
+	@./scripts/generate-changelog.sh
