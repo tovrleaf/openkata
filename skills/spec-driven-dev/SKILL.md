@@ -12,8 +12,8 @@ description: >
 # Spec-Driven Dev
 
 Drive feature work from idea to implementation through
-repo-stored specs. One skill, four phases: specify → design
-→ tasks → implement.
+repo-stored specs. One skill, five phases: specify → design
+→ tasks → implement → validate.
 
 ## Mode Detection
 
