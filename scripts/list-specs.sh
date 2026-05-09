@@ -15,5 +15,5 @@ for dir in specs/[0-9]*/; do
     title="(no spec.md)"
   fi
 
-  printf "  %s  %-12s %s\n" "${name}" "${status}" "${title}"
+  printf "  \033[36m%s\033[0m  %-12s %s\n" "${name}" "${status}" "${title}"
 done

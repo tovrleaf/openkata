@@ -16,5 +16,5 @@ for dir in .agents/rules/*/; do
   status=""
   if [[ -n "${changes}" ]]; then status=" *"; fi
 
-  printf "  %-25s %-7s%s\n" "${name}" "${type}" "${status}"
+  printf "  \033[36m%-25s\033[0m %-7s%s\n" "${name}" "${type}" "${status}"
 done
