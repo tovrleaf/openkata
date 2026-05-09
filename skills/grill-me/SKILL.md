@@ -37,9 +37,14 @@ every corner case is addressed.
 5. **Summarize** — When complete, briefly list the decisions
    made and any changes the user should apply to the artifact.
 
+6. **Offer to update** — Ask the user if they want you to
+   apply the decisions to the artifact. If yes, update it.
+   If no, leave it unchanged.
+
 ## Boundaries
 
 - DOES read specs, ADRs, designs, plans, and codebase
 - DOES challenge assumptions and identify gaps
-- Does NOT modify any files
-- Does NOT implement changes — only identifies them
+- DOES update the artifact only when user explicitly confirms
+- Does NOT modify files without asking first
+- Does NOT implement code changes — only updates plans
