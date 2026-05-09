@@ -15,6 +15,24 @@ Drive feature work from idea to implementation through
 repo-stored specs. One skill, five phases: specify → design
 → tasks → implement → validate.
 
+## When to Use This Skill
+
+Activate when the request matches ANY of:
+
+- Introduces a new dependency or runtime
+- Changes where files live (directory restructuring)
+- Adds infrastructure (deploy targets, cloud resources)
+- Touches 3+ files across different concerns
+- Requires decisions with trade-offs the user hasn't made
+- Creates a new user-facing workflow with multiple parts
+- The user says "let's plan", "let's spec", "new feature"
+
+Skip when it's a bug fix, docs update, cosmetic change, or
+single-file edit — or the user says "just do it."
+
+When uncertain, ask: "This touches [X concerns]. Want me
+to write a quick spec first, or just implement it?"
+
 ## Mode Detection
 
 Read `specs/_current` to determine state:
@@ -150,17 +168,11 @@ avoid builder bias.
 
 User: "Let's build the design system for the website"
 
-1. Skill checks `specs/_current` — empty, new feature
-2. Asks depth — user says Deep
-3. Creates `specs/0001-design-system/`
-4. Asks about branch — user says yes
-5. Collects requirements, writes `spec.md`, confirms
-6. Investigates codebase, writes `design.md`, confirms
-7. Breaks into tasks, writes `tasks.md`, confirms
-8. Implements task by task with commits
-9. User starts a fresh agent session for validation
-10. Validator reads spec.md and code diff, writes report
-11. Clears `_current` when validated
+Agent detects spec-worthy work (new dependency, multiple
+concerns), asks depth → Deep. Follows phases 1–5: creates
+`specs/0001-design-system/`, collects requirements, writes
+design, breaks into tasks, implements with commits, then
+validates in a fresh session.
 
 ## Common Failures
 
