@@ -2,7 +2,7 @@ root = "../.."
 tmp_dir = "tmp"
 
 [build]
-  cmd = "~/go/bin/templ generate ./cmd/openkata-web/templates/ && go build -o ./tmp/openkata-web ./cmd/openkata-web/"
+  cmd = "$(go env GOPATH)/bin/templ generate ./cmd/openkata-web/templates/ && go build -o ./tmp/openkata-web ./cmd/openkata-web/"
   bin = "./tmp/openkata-web"
   include_ext = ["go", "templ", "css"]
   exclude_dir = ["tmp", "node_modules", ".git", "bin"]
