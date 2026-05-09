@@ -1,0 +1,17 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  cmd = "$(go env GOPATH)/bin/templ generate ./cmd/openkata-web/templates/ && go build -o ./tmp/openkata-web ./cmd/openkata-web/"
+  bin = "./tmp/openkata-web"
+  include_ext = ["go", "templ", "css"]
+  include_dir = ["cmd/openkata-web", "web"]
+  exclude_dir = ["tmp", "node_modules", ".git", "bin", "skills", "rules", "docs", ".agents"]
+  exclude_regex = ["_templ\\.go$"]
+  delay = 1000
+
+[log]
+  time = false
+
+[misc]
+  clean_on_exit = true

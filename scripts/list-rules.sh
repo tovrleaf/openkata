@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# List all rules with type and change status
+# List all rules with type, version, and change status
 set -euo pipefail
 
 for dir in .agents/rules/*/; do
@@ -12,9 +12,32 @@ for dir in .agents/rules/*/; do
     type="dist"
   fi
 
-  changes="$(git diff HEAD -- "${rule_dir}" 2>/dev/null)"
+  # Resolve version: git tag first, then CHANGELOG.md
+  tag="$(git tag -l "${rule_dir}/v*" 2>/dev/null | sort -V | tail -1)"
+  version="$(echo "${tag}" | grep -o 'v[0-9].*' || true)"
+
+  if [[ -z "${version}" ]]; then
+    version="$(grep -m1 '^## ' "${rule_dir}/CHANGELOG.md" 2>/dev/null \
+      | sed 's/^## //' | tr -d '[]' | sed 's/[[:space:]].*//' || echo "?")"
+    version="v${version}"
+  fi
+
+  changes=""
+  if [[ -n "${tag}" ]]; then
+    changes="$(git diff "${tag}" -- "${rule_dir}" 2>/dev/null)"
+  else
+    changes="$(git diff HEAD -- "${rule_dir}" 2>/dev/null)"
+  fi
+
   status=""
   if [[ -n "${changes}" ]]; then status=" *"; fi
 
-  printf "  %-25s %-7s%s\n" "${name}" "${type}" "${status}"
+  # Color the type
+  if [[ "${type}" == "dist" ]]; then
+    type_color="\033[32m${type}\033[0m"
+  else
+    type_color="\033[2m${type}\033[0m"
+  fi
+
+  printf "  \033[36m%-25s\033[0m ${type_color}  %s%s\n" "${name}" "${version}" "${status}"
 done

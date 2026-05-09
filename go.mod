@@ -2,7 +2,10 @@ module github.com/tovrleaf/openkata
 
 go 1.26.1
 
-require github.com/mark3labs/mcp-go v0.47.1
+require (
+	github.com/a-h/templ v0.3.1001
+	github.com/mark3labs/mcp-go v0.47.1
+)
 
 require (
 	github.com/google/jsonschema-go v0.4.2 // indirect
