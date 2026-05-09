@@ -42,4 +42,5 @@ changelog: ## Generate root CHANGELOG.md from artifact changelogs
 
 .PHONY: dev
 dev: ## Start local dev server with hot reload
+	@lsof -ti:8080 | xargs kill 2>/dev/null || true
 	@$(shell go env GOPATH)/bin/air
