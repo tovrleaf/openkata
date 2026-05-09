@@ -40,7 +40,11 @@ If no `specs/` directory exists, create it.
 2. **Create the directory** — Next sequential 4-digit number:
    `specs/NNNN-slug/`. Check existing directories.
 
-3. **Collect requirements** — Ask targeted questions:
+3. **Ask about branching** — "Would you like me to create a
+   feature branch? Suggested name:
+   `feature/NNNN-slug`"
+
+4. **Collect requirements** — Ask targeted questions:
    - What does the user want to build?
    - What does success look like?
    - What is out of scope?
@@ -75,11 +79,7 @@ If no `specs/` directory exists, create it.
 2. **Write tasks.md** — Use the tasks.md template from
    [spec-templates](references/spec-templates.md).
 
-3. **Ask about branching** — "Would you like me to create a
-   feature branch? Suggested name:
-   `feature/NNNN-slug`"
-
-4. **Confirm** — Show the task breakdown. Do not start
+3. **Confirm** — Show the task breakdown. Do not start
    implementing without confirmation.
 
 ## Phase 4: Implement
@@ -153,10 +153,10 @@ User: "Let's build the design system for the website"
 1. Skill checks `specs/_current` — empty, new feature
 2. Asks depth — user says Deep
 3. Creates `specs/0001-design-system/`
-4. Collects requirements, writes `spec.md`, confirms
-5. Investigates codebase, writes `design.md`, confirms
-6. Breaks into tasks, writes `tasks.md`, confirms
-7. Asks about branch — user says yes
+4. Asks about branch — user says yes
+5. Collects requirements, writes `spec.md`, confirms
+6. Investigates codebase, writes `design.md`, confirms
+7. Breaks into tasks, writes `tasks.md`, confirms
 8. Implements task by task with commits
 9. User starts a fresh agent session for validation
 10. Validator reads spec.md and code diff, writes report
