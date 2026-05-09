@@ -9,6 +9,7 @@ help: ## Show this help
 	@echo "  make skills  - List all skills with type and version"
 	@echo "  make rules   - List all rules with type and version"
 	@echo "  make adrs    - List all architecture decision records"
+	@echo "  make specs   - List all feature specs with status"
 	@echo ""
 	@echo "Development:"
 	@echo "  make check     - Check development prerequisites"
@@ -29,6 +30,10 @@ check: ## Check development prerequisites
 .PHONY: adrs
 adrs: ## List all architecture decision records
 	@./scripts/list-adrs.sh
+
+.PHONY: specs
+specs: ## List all feature specs with status
+	@./scripts/list-specs.sh
 
 .PHONY: changelog
 changelog: ## Generate root CHANGELOG.md from artifact changelogs
