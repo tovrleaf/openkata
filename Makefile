@@ -42,4 +42,4 @@ changelog: ## Generate root CHANGELOG.md from artifact changelogs
 
 .PHONY: dev
 dev: ## Start local dev server with hot reload
-	@cd web && $(shell go env GOPATH)/bin/air -c .air.toml
+	@$(shell go env GOPATH)/bin/air
