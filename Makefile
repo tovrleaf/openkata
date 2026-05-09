@@ -14,6 +14,7 @@ help: ## Show this help
 	@echo "Development:"
 	@printf "  \033[36m%-12s\033[0m %s\n" "check" "Check development prerequisites"
 	@printf "  \033[36m%-12s\033[0m %s\n" "changelog" "Generate root CHANGELOG.md"
+	@printf "  \033[36m%-12s\033[0m %s\n" "dev" "Start local dev server with hot reload"
 
 .PHONY: skills
 skills: ## List all skills with type, version, and change status
@@ -38,3 +39,7 @@ specs: ## List all feature specs with status
 .PHONY: changelog
 changelog: ## Generate root CHANGELOG.md from artifact changelogs
 	@./scripts/generate-changelog.sh
+
+.PHONY: dev
+dev: ## Start local dev server with hot reload
+	@cd web && air -c .air.toml
