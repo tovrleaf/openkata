@@ -5,7 +5,7 @@ spec: 0002-infrastructure
 # Tasks
 
 ### 1. Adapt web server for Lambda
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Detect Lambda environment and use the Lambda
   adapter; embed static assets with go:embed
 - **Boundary**: `cmd/openkata-web/`
@@ -15,7 +15,7 @@ spec: 0002-infrastructure
   AWS_LAMBDA_FUNCTION_NAME is set
 
 ### 2. Create CloudFormation template
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Template with Lambda function (arm64,
   provided.al2023), Function URL, IAM role, and S3 bucket
   for deploy artifacts
@@ -25,7 +25,7 @@ spec: 0002-infrastructure
   passes
 
 ### 3. Create deploy workflow
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: `make deploy` builds the binary, zips it,
   uploads to S3, and runs `aws cloudformation deploy`
 - **Boundary**: `Makefile`, `scripts/deploy.sh`

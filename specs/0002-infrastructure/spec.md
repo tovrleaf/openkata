@@ -1,6 +1,6 @@
 ---
 title: Infrastructure for Lambda Deployment
-status: Draft
+status: Done
 depth: Standard
 created: 2026-05-09
 ---
