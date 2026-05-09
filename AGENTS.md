@@ -63,6 +63,12 @@ For Kiro, read the model from the current session:
       | xargs grep -o '"model_name": "[^"]*"' \
       | cut -d'"' -f4
 
+## Git operations
+
+- Do not push without explicit user confirmation
+- Do not force push without explaining the impact first
+- Commit freely when asked, but pushing is a separate action
+
 ## Skills and rules
 
 - Distributable artifacts must be platform-agnostic
