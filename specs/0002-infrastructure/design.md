@@ -45,37 +45,34 @@ if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") != "" {
 }
 ```
 
-## CDK Stack
+## CloudFormation Stack
 
-Single stack in `infra/`:
+Single template in `infra/`:
 
 ```text
 infra/
-├── go.mod           # Separate module for CDK deps
-├── infra.go         # Stack definition
-└── infra_test.go    # Optional: snapshot test
+└── template.yaml    # CloudFormation template
 ```
 
-Separate `go.mod` because CDK pulls in many dependencies
-that the main binary doesn't need.
+No extra tooling — just AWS CLI. State managed by AWS.
 
 Resources:
 - Lambda function (arm64, provided.al2023, 128MB, 10s timeout)
 - Function URL (auth type: NONE for public access)
 - IAM role with basic Lambda execution policy
+- S3 bucket for deployment artifacts (Lambda zip)
 
 ## Deploy Flow
 
 `make deploy` runs `scripts/deploy.sh`:
 
 1. `templ generate` templates
-2. `GOOS=linux GOARCH=arm64 go build -o infra/lambda/bootstrap ./cmd/openkata-web/`
-3. `cd infra && cdk deploy --require-approval never`
-
-CDK references the built binary from `infra/lambda/bootstrap`
-as an asset.
+2. `GOOS=linux GOARCH=arm64 go build -o bootstrap ./cmd/openkata-web/`
+3. `zip deploy.zip bootstrap`
+4. Upload zip to S3
+5. `aws cloudformation deploy --template-file infra/template.yaml`
 
 ## Air Config Update
 
-Air watches `cmd/openkata-web/` (including `static/`) and
-excludes `_templ.go` files. No `web/` directory needed.
+Air watches `cmd/openkata-web/` and `web/static/` and
+excludes `_templ.go` files.

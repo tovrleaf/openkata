@@ -14,29 +14,22 @@ spec: 0002-infrastructure
   locally unchanged, and handles Lambda events when
   AWS_LAMBDA_FUNCTION_NAME is set
 
-### 2. Initialize CDK project
+### 2. Create CloudFormation template
 - **Status**: Pending
-- **Goal**: Scaffold CDK Go project in `infra/`
-- **Boundary**: `infra/`
-- **Depends**: None
-- **Done when**: `cd infra && cdk synth` produces a
-  CloudFormation template
+- **Goal**: Template with Lambda function (arm64,
+  provided.al2023), Function URL, IAM role, and S3 bucket
+  for deploy artifacts
+- **Boundary**: `infra/template.yaml`
+- **Depends**: 1
+- **Done when**: `aws cloudformation validate-template`
+  passes
 
-### 3. Define Lambda stack
+### 3. Create deploy workflow
 - **Status**: Pending
-- **Goal**: CDK stack with Lambda function (arm64,
-  provided.al2023) and Function URL
-- **Boundary**: `infra/`
-- **Depends**: 1, 2
-- **Done when**: `cdk synth` includes Lambda function and
-  Function URL resources
-
-### 4. Create deploy workflow
-- **Status**: Pending
-- **Goal**: `make deploy` builds the binary, packages it,
-  and runs `cdk deploy`
+- **Goal**: `make deploy` builds the binary, zips it,
+  uploads to S3, and runs `aws cloudformation deploy`
 - **Boundary**: `Makefile`, `scripts/deploy.sh`
-- **Depends**: 3
+- **Depends**: 2
 - **Done when**: `make deploy` runs end-to-end (with
   configured AWS credentials)
 

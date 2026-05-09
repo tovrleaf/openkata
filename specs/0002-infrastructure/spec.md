@@ -15,7 +15,7 @@ deployable from a developer machine.
 
 ## Requirements
 
-1. CDK stack in Go defines all AWS resources
+1. CloudFormation template defines all AWS resources
 2. Lambda runs the openkata-web binary (arm64, provided.al2023)
 3. Lambda Function URL provides public HTTPS access
 4. Static assets embedded in the binary (go:embed)
