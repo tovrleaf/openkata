@@ -6,14 +6,14 @@ help: ## Show this help
 	@echo "========================="
 	@echo ""
 	@echo "Catalog:"
-	@echo "  make skills  - List all skills with type and version"
-	@echo "  make rules   - List all rules with type and version"
-	@echo "  make adrs    - List all architecture decision records"
-	@echo "  make specs   - List all feature specs with status"
+	@printf "  \033[36m%-12s\033[0m %s\n" "skills" "List all skills with type and version"
+	@printf "  \033[36m%-12s\033[0m %s\n" "rules" "List all rules with type and version"
+	@printf "  \033[36m%-12s\033[0m %s\n" "adrs" "List all architecture decision records"
+	@printf "  \033[36m%-12s\033[0m %s\n" "specs" "List all feature specs with status"
 	@echo ""
 	@echo "Development:"
-	@echo "  make check     - Check development prerequisites"
-	@echo "  make changelog - Generate root CHANGELOG.md"
+	@printf "  \033[36m%-12s\033[0m %s\n" "check" "Check development prerequisites"
+	@printf "  \033[36m%-12s\033[0m %s\n" "changelog" "Generate root CHANGELOG.md"
 
 .PHONY: skills
 skills: ## List all skills with type, version, and change status
