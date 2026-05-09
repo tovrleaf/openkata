@@ -6,4 +6,5 @@ openkata-mcp
 
 # Local tool config
 .kiro/
-TODO.mdtmp/
+TODO.md
+tmp/
