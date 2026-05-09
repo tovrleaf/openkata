@@ -10,8 +10,9 @@ following the Agent Skills specification. Skills live in
 ## Build and test
 
 ```bash
-# Build the MCP server
-cd cmd/openkata-mcp && go build .
+# Build binaries (always output to bin/)
+go build -o bin/openkata-mcp ./cmd/openkata-mcp/
+go build -o bin/openkata-web ./cmd/openkata-web/
 
 # List skills and rules
 make skills
