@@ -2,6 +2,7 @@ root = "."
 tmp_dir = "tmp"
 
 [build]
+  pre_cmd = ["lsof -ti:8080 | xargs kill 2>/dev/null || true"]
   cmd = "$(go env GOPATH)/bin/templ generate ./cmd/openkata-web/templates/ && go build -o ./tmp/openkata-web ./cmd/openkata-web/"
   bin = "./tmp/openkata-web"
   include_ext = ["go", "templ", "css"]
