@@ -32,5 +32,12 @@ for dir in .agents/skills/*/; do
   status=""
   if [[ -n "${changes}" ]]; then status=" *"; fi
 
-  printf "  \033[36m%-25s\033[0m %-7s %s%s\n" "${name}" "${type}" "${version}" "${status}"
+  # Color the type
+  if [[ "${type}" == "dist" ]]; then
+    type_color="\033[32m${type}\033[0m"
+  else
+    type_color="\033[2m${type}\033[0m"
+  fi
+
+  printf "  \033[36m%-25s\033[0m ${type_color}  %s%s\n" "${name}" "${version}" "${status}"
 done

@@ -15,5 +15,12 @@ for dir in specs/[0-9]*/; do
     title="(no spec.md)"
   fi
 
-  printf "  \033[36m%s\033[0m  %-12s %s\n" "${name}" "${status}" "${title}"
+  # Color the status
+  case "${status}" in
+    Done) status_color="\033[32m%-12s\033[0m" ;;
+    "In Progress") status_color="\033[33m%-12s\033[0m" ;;
+    *) status_color="\033[33m%-12s\033[0m" ;;
+  esac
+
+  printf "  \033[36m%s\033[0m  ${status_color} %s\n" "${name}" "${status}" "${title}"
 done
