@@ -45,3 +45,32 @@ aws cloudformation delete-stack \
   --stack-name openkata-web \
   --region eu-north-1
 ```
+
+## CI/CD (GitHub Actions)
+
+### OIDC Setup (one-time, in AWS console)
+
+1. IAM → Identity providers → Add provider
+   - Type: OpenID Connect
+   - URL: `https://token.actions.githubusercontent.com`
+   - Audience: `sts.amazonaws.com`
+
+2. IAM → Roles → Create role
+   - Trusted entity: Web identity
+   - Provider: `token.actions.githubusercontent.com`
+   - Organization: `tovrleaf`
+   - Repository: `openkata`
+   - Branch: `main`
+   - Role name: `openkata-ci`
+
+3. Attach inline policy to the role:
+   - Paste contents of [iam-ci-policy.json](iam-ci-policy.json)
+   - Name: `openkata-deploy`
+
+### Branch Protection (in GitHub)
+
+1. Settings → Branches → Add rule
+   - Branch name pattern: `main`
+   - Require pull request before merging
+   - Require approvals: 1
+   - Do not allow bypassing
