@@ -1,6 +1,6 @@
 ---
 title: Custom Domain with CloudFront
-status: Draft
+status: Done
 depth: Standard
 created: 2026-05-10
 ---
