@@ -55,6 +55,9 @@ Tools that need an artifact's version resolve it in this order:
 1. **Git tag** — authoritative for released distributable artifacts
 2. **CHANGELOG.md** — first `## ` heading, with or without brackets
    (`## 1.0.0` and `## [1.0.0]` both work)
+3. **`versions.json`** — embedded build artifact for environments
+   without git (e.g. Lambda deployments). Generated at build time
+   from git tags.
 
 Local artifacts (`.agents/`) are not tagged. Their version comes
 from CHANGELOG.md only.
