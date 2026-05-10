@@ -19,11 +19,7 @@ Two policies for different contexts:
 ## Create infrastructure (one-time)
 
 ```bash
-aws cloudformation deploy \
-  --template-file infra/openkata-stack.yaml \
-  --stack-name openkata-web \
-  --capabilities CAPABILITY_NAMED_IAM \
-  --region eu-north-1
+./infra/create-stack.sh
 ```
 
 ## Deploy code
