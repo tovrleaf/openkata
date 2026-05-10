@@ -1,8 +1,31 @@
-/* Open Kata — placeholder stylesheet */
+/* Open Kata Design System */
+@import "tokens.css";
+@import "base.css";
+@import "typography.css";
+@import "components/card.css";
+@import "layouts/grid.css";
 
-body {
-  font-family: system-ui, -apple-system, sans-serif;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
+/* Page-specific */
+
+.hero {
+  margin-bottom: var(--space-xl);
+}
+
+.tagline {
+  font-size: var(--font-size-lg);
+  color: var(--color-ink-muted);
+}
+
+.intro {
+  color: var(--color-ink-muted);
+  max-width: 600px;
+}
+
+.section-intro {
+  color: var(--color-ink-muted);
+}
+
+.get-started {
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-xl);
 }
