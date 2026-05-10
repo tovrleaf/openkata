@@ -12,14 +12,12 @@ for dir in .agents/rules/*/; do
     type="dist"
   fi
 
-  # Resolve version: git tag first, then CHANGELOG.md
+  # Resolve version: git tag only
   tag="$(git tag -l "${rule_dir}/v*" 2>/dev/null | sort -V | tail -1)"
   version="$(echo "${tag}" | grep -o 'v[0-9].*' || true)"
 
   if [[ -z "${version}" ]]; then
-    version="$(grep -m1 '^## ' "${rule_dir}/CHANGELOG.md" 2>/dev/null \
-      | sed 's/^## //' | tr -d '[]' | sed 's/[[:space:]].*//' || echo "?")"
-    version="v${version}"
+    version="unreleased"
   fi
 
   changes=""
