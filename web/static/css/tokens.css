@@ -38,3 +38,14 @@
   --max-width: 760px;
   --radius: 2px;
 }
+
+/* Indigo theme */
+[data-theme="indigo"] {
+  --color-ink: #f0eeeb;
+  --color-ink-muted: #a0a0a0;
+  --color-surface: #1a1a2e;
+  --color-surface-raised: #2a2a3e;
+  --color-border: #3a3a5e;
+  --color-accent: #d42b1e;
+  --color-accent-secondary: #e8943b;
+}
