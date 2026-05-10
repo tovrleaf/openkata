@@ -47,6 +47,8 @@ If no `specs/` directory exists, create it.
 
 ## Phase 1: Specify
 
+Before asking about requirements, complete these in order:
+
 1. **Determine depth** — Ask the user:
    - **Quick** — small fix or change. Write a `brief.md`
      (a few sentences capturing scope) then skip to
@@ -63,7 +65,11 @@ If no `specs/` directory exists, create it.
    `feature/NNNN-slug`"
    Do not create the branch without confirmation.
 
-4. **Collect requirements** — Ask targeted questions:
+Then collect requirements:
+
+Then collect requirements:
+
+4. **Ask targeted questions:**
    - What does the user want to build?
    - What does success look like?
    - What is out of scope?
