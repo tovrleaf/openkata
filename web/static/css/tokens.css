@@ -1,7 +1,7 @@
-/* Design tokens — single source of truth */
+/* Design tokens — structural (non-color) */
 
 :root {
-  /* Palette */
+  /* Palette — raw values for badge use */
   --color-red: #d42b1e;
   --color-purple: #6b3a6b;
   --color-green: #2d3d2d;
@@ -9,18 +9,9 @@
   --color-orange: #e8943b;
   --color-black: #0a0a0a;
 
-  /* Semantic mapping */
-  --color-ink: var(--color-black);
-  --color-ink-muted: #6b6b6b;
-  --color-surface: #fcfcfc;
-  --color-surface-raised: #fff;
-  --color-border: #e0e0e0;
-  --color-accent: var(--color-red);
-  --color-accent-secondary: var(--color-orange);
-
   /* Typography */
-  --font-body: system-ui, -apple-system, sans-serif;
-  --font-mono: ui-monospace, "JetBrains Mono", monospace;
+  --font-body: "Noto Sans JP", "Noto Sans", sans-serif;
+  --font-mono: "Noto Sans Mono", ui-monospace, monospace;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
   --font-size-lg: 1.25rem;
@@ -37,15 +28,4 @@
   /* Layout */
   --max-width: 760px;
   --radius: 2px;
-}
-
-/* Indigo theme */
-[data-theme="indigo"] {
-  --color-ink: #f0eeeb;
-  --color-ink-muted: #a0a0a0;
-  --color-surface: #1a1a2e;
-  --color-surface-raised: #2a2a3e;
-  --color-border: #3a3a5e;
-  --color-accent: #d42b1e;
-  --color-accent-secondary: #e8943b;
 }

@@ -1,8 +1,12 @@
 /* Open Kata Design System */
 @import "tokens.css";
+@import "themes/japandi.css";
+@import "themes/hokusai.css";
+@import "themes/indigo.css";
 @import "base.css";
 @import "typography.css";
 @import "components/card.css";
+@import "components/theme-switcher.css";
 @import "layouts/grid.css";
 
 /* Page-specific */
@@ -39,12 +43,24 @@
   margin-bottom: var(--space-lg);
   padding-bottom: var(--space-md);
   border-bottom: 1px solid var(--color-border);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  padding-left: var(--space-lg);
+  padding-right: var(--space-lg);
 }
 
 .nav-brand {
   font-weight: 600;
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base);
+  font-family: var(--font-mono);
   color: var(--color-ink);
+}
+
+.nav-brand::before {
+  content: "// ";
+  color: var(--color-ink-muted);
 }
 
 .nav-brand:hover {
@@ -138,6 +154,39 @@ hr {
 
 section {
   margin-bottom: var(--space-lg);
+}
+
+/* Footer */
+
+.footer {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-md);
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.05em;
+  color: var(--color-ink-muted);
+  text-align: center;
+  position: relative;
+}
+
+.footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.footer a {
+  color: var(--color-ink-muted);
+  text-decoration: underline;
+}
+
+.footer a:hover {
+  color: var(--color-accent);
 }
 
 /* Theme toggle */

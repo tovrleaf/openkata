@@ -1,0 +1,10 @@
+/* Japandi theme (default) */
+:root, [data-theme="japandi"] {
+  --color-ink: #0a0a0a;
+  --color-ink-muted: #6b6b6b;
+  --color-surface: #fcfcfc;
+  --color-surface-raised: #fff;
+  --color-border: #e0e0e0;
+  --color-accent: #d42b1e;
+  --color-accent-secondary: #e8943b;
+}
