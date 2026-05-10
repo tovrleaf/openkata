@@ -61,6 +61,7 @@ If no `specs/` directory exists, create it.
 3. **Ask about branching** — "Would you like me to create a
    feature branch? Suggested name:
    `feature/NNNN-slug`"
+   Do not create the branch without confirmation.
 
 4. **Collect requirements** — Ask targeted questions:
    - What does the user want to build?
