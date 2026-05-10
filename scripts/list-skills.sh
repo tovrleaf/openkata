@@ -2,6 +2,9 @@
 # List all skills with type, version, and change status
 set -euo pipefail
 
+dist_output=""
+local_output=""
+
 for dir in .agents/skills/*/; do
   name="$(basename "${dir}")"
   skill_dir="${dir}"
@@ -12,14 +15,22 @@ for dir in .agents/skills/*/; do
     type="dist"
   fi
 
-  # Resolve version: git tag first, then CHANGELOG.md
-  tag="$(git tag -l "${skill_dir}/v*" 2>/dev/null | sort -V | tail -1)"
-  version="$(echo "${tag}" | grep -o 'v[0-9].*' || true)"
-
-  if [[ -z "${version}" ]]; then
+  # Resolve version
+  if [[ "${type}" == "dist" ]]; then
+    # Dist: git tag only
+    tag="$(git tag -l "${skill_dir}/v*" 2>/dev/null | sort -V | tail -1)"
+    version="$(echo "${tag}" | grep -o 'v[0-9].*' || true)"
+    if [[ -z "${version}" ]]; then
+      version="unreleased"
+    fi
+  else
+    # Local: CHANGELOG.md
+    tag=""
     version="$(grep -m1 '^## ' "${skill_dir}/CHANGELOG.md" 2>/dev/null \
-      | sed 's/^## //' | tr -d '[]' | sed 's/[[:space:]].*//' || echo "?")"
-    version="v${version}"
+      | sed 's/^## //' | tr -d '[]' | sed 's/[[:space:]].*//' || true)"
+    if [[ -n "${version}" ]]; then
+      version="v${version}"
+    fi
   fi
 
   changes=""
@@ -32,12 +43,16 @@ for dir in .agents/skills/*/; do
   status=""
   if [[ -n "${changes}" ]]; then status=" *"; fi
 
-  # Color the type
-  if [[ "${type}" == "dist" ]]; then
-    type_color="\033[32m${type}\033[0m"
-  else
-    type_color="\033[2m${type}\033[0m"
-  fi
+  line="$(printf "  \033[36m%-25s\033[0m %s%s\n" "${name}" "${version}" "${status}")"
 
-  printf "  \033[36m%-25s\033[0m ${type_color}  %s%s\n" "${name}" "${version}" "${status}"
+  if [[ "${type}" == "dist" ]]; then
+    dist_output+="${line}\n"
+  else
+    local_output+="${line}\n"
+  fi
 done
+
+printf "Distributable:\n"
+printf "${dist_output}"
+printf "\nLocal:\n"
+printf "${local_output}"

@@ -2,6 +2,10 @@
 
 All releases across Open Kata skills and rules, newest first.
 
+## 2026-05-09
+
+- **[grill-me](skills/grill-me/CHANGELOG.md)** v1.0.0 — Interview workflow for challenging plans, specs, and ADRs
+
 ## 2026-05-05
 
 - **[create-rule](skills/create-rule/CHANGELOG.md)** v1.1.0 — "No duplicate conventions across sections" check in rule
