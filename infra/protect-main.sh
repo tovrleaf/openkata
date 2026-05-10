@@ -10,19 +10,18 @@ gh api \
   "repos/${REPO}/branches/main/protection" \
   --input - <<'EOF'
 {
-  "required_pull_request_reviews": {
-    "required_approving_review_count": 1,
-    "dismiss_stale_reviews": true
-  },
+  "required_pull_request_reviews": null,
   "enforce_admins": true,
   "required_status_checks": null,
-  "restrictions": null
+  "restrictions": null,
+  "allow_force_pushes": false,
+  "allow_deletions": false
 }
 EOF
 
 echo ""
 echo "=== Done ==="
 echo "Main branch is now protected:"
-echo "  - Requires PR with 1 approval"
-echo "  - Stale reviews dismissed on new commits"
-echo "  - Admins cannot bypass"
+echo "  - Direct pushes blocked"
+echo "  - Force pushes blocked"
+echo "  - No review required (solo project)"

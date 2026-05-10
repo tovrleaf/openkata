@@ -6,3 +6,4 @@ bin/
 .kiro/
 TODO.md
 tmp/
+specs/_current
