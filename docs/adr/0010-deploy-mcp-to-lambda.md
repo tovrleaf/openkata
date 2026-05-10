@@ -131,9 +131,9 @@ versions for a given skill (resolved by listing S3
 prefixes). Not included in `list_skills` to keep that
 response lightweight.
 
-Web downloads support versioning via query parameter:
-- `/skills/create-adr/download` → latest
-- `/skills/create-adr/download?v=1.0.0` → pinned
+Web downloads support versioning via path:
+- `/skills/create-adr/archive/latest` → latest
+- `/skills/create-adr/archive/1.0.0` → pinned
 
 ### Manifest format
 
