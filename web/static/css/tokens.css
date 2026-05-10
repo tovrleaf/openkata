@@ -12,8 +12,8 @@
   /* Semantic mapping */
   --color-ink: var(--color-black);
   --color-ink-muted: #6b6b6b;
-  --color-surface: #ffffff;
-  --color-surface-raised: #ffffff;
+  --color-surface: #fcfcfc;
+  --color-surface-raised: #fff;
   --color-border: #e0e0e0;
   --color-accent: var(--color-red);
   --color-accent-secondary: var(--color-orange);
