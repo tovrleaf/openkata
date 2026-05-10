@@ -13,3 +13,7 @@ func handleHome(w http.ResponseWriter, r *http.Request) {
 	}
 	templates.Home().Render(r.Context(), w)
 }
+
+func handleDesignSystem(w http.ResponseWriter, r *http.Request) {
+	templates.DesignSystem().Render(r.Context(), w)
+}

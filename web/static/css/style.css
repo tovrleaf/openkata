@@ -1,8 +1,207 @@
-/* Open Kata — placeholder stylesheet */
+/* Open Kata Design System */
+@import "tokens.css";
+@import "themes/japandi.css";
+@import "themes/hokusai.css";
+@import "themes/indigo.css";
+@import "base.css";
+@import "typography.css";
+@import "components/card.css";
+@import "components/theme-switcher.css";
+@import "layouts/grid.css";
 
-body {
-  font-family: system-ui, -apple-system, sans-serif;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
+/* Page-specific */
+
+.hero {
+  margin-bottom: var(--space-xl);
+}
+
+.tagline {
+  font-size: var(--font-size-lg);
+  color: var(--color-ink-muted);
+}
+
+.intro {
+  color: var(--color-ink-muted);
+  max-width: 600px;
+}
+
+.section-intro {
+  color: var(--color-ink-muted);
+}
+
+.get-started {
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-xl);
+}
+
+/* Navigation */
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  padding-left: var(--space-lg);
+  padding-right: var(--space-lg);
+}
+
+.nav-brand {
+  font-weight: 600;
+  font-size: var(--font-size-base);
+  font-family: var(--font-mono);
+  color: var(--color-ink);
+}
+
+.nav-brand::before {
+  content: "// ";
+  color: var(--color-ink-muted);
+}
+
+.nav-brand:hover {
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: var(--space-lg);
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-sm);
+}
+
+.nav-links a:hover {
+  color: var(--color-accent);
+}
+
+/* Blockquote */
+
+blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding-left: var(--space-md);
+  color: var(--color-ink-muted);
+  margin: var(--space-md) 0;
+}
+
+/* Lists */
+
+ul, ol {
+  padding-left: var(--space-lg);
+  margin-bottom: var(--space-md);
+}
+
+li {
+  margin-bottom: var(--space-xs);
+}
+
+/* Table */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--space-md);
+  font-size: var(--font-size-sm);
+}
+
+th, td {
+  text-align: left;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+th {
+  font-weight: 600;
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Badges */
+
+.badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius);
+  margin-right: var(--space-xs);
+}
+
+.badge-red { background: var(--color-red); color: #fff; }
+.badge-orange { background: var(--color-orange); color: #fff; }
+.badge-yellow { background: var(--color-yellow); color: var(--color-black); }
+.badge-green { background: var(--color-green); color: #fff; }
+.badge-purple { background: var(--color-purple); color: #fff; }
+
+/* Horizontal rule */
+
+hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: var(--space-lg) 0;
+}
+
+/* Sections */
+
+section {
+  margin-bottom: var(--space-lg);
+}
+
+/* Footer */
+
+.footer {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-md);
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.05em;
+  color: var(--color-ink-muted);
+  text-align: center;
+  position: relative;
+}
+
+.footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.footer a {
+  color: var(--color-ink-muted);
+  text-decoration: underline;
+}
+
+.footer a:hover {
+  color: var(--color-accent);
+}
+
+/* Theme toggle */
+
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-muted);
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
 }

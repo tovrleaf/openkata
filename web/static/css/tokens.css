@@ -1,0 +1,31 @@
+/* Design tokens — structural (non-color) */
+
+:root {
+  /* Palette — raw values for badge use */
+  --color-red: #d42b1e;
+  --color-purple: #6b3a6b;
+  --color-green: #2d3d2d;
+  --color-yellow: #f5e03b;
+  --color-orange: #e8943b;
+  --color-black: #0a0a0a;
+
+  /* Typography */
+  --font-body: "Noto Sans JP", "Noto Sans", sans-serif;
+  --font-mono: "Noto Sans Mono", ui-monospace, monospace;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 2rem;
+  --line-height: 1.7;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --space-xl: 4rem;
+
+  /* Layout */
+  --max-width: 760px;
+  --radius: 2px;
+}

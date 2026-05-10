@@ -24,6 +24,9 @@ func main() {
 
 	// Routes
 	mux.HandleFunc("/", handleHome)
+	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") == "" {
+		mux.HandleFunc("/design-system/", handleDesignSystem)
+	}
 
 	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") != "" {
 		lambda.Start(httpadapter.NewV2(mux).ProxyWithContext)

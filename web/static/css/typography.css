@@ -1,0 +1,81 @@
+/* Typography */
+
+h1, h2, h3 {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+h1 {
+  font-size: var(--font-size-xl);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-sm);
+}
+
+h2 {
+  font-size: var(--font-size-lg);
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-md);
+}
+
+h2::before {
+  content: "// ";
+  color: var(--color-ink-muted);
+}
+
+h3 {
+  font-size: var(--font-size-base);
+  font-weight: 500;
+}
+
+p {
+  margin-bottom: var(--space-md);
+}
+
+code, pre {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+}
+
+pre {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  overflow-x: auto;
+  margin-bottom: var(--space-md);
+}
+
+/* Section divider */
+hr {
+  border: 0;
+  height: 1px;
+  background: var(--color-border);
+  margin: var(--space-xl) 0;
+}
+
+/* Comment-style muted text */
+.comment {
+  color: var(--color-ink-muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+}
+
+.comment::before {
+  content: "/* ";
+}
+
+.comment::after {
+  content: " */";
+}
+
+/* Blinking cursor on hero */
+.cursor::after {
+  content: "_";
+  animation: blink 1s step-end infinite;
+  color: var(--color-ink-muted);
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
