@@ -131,8 +131,8 @@ Triggers on: `skills/*/v*` and `rules/*/v*` tags.
 2. Parse tag → artifact path + version
 3. git archive <tag> -- <path> → extract files
 4. Upload to S3: openkata-artifacts/<path>/<version>/
-5. Regenerate versions.json from all S3 prefixes
-6. Upload versions.json to S3
+5. Run cmd/generate-versions/ → regenerates and uploads
+   versions.json by scanning all S3 prefixes
 ```
 
 ### deploy-mcp.yaml (on push to main)
@@ -206,8 +206,11 @@ Archive routes:
 ### New files
 
 - `infra/create-mcp-stack.sh` — Lambda + DynamoDB + S3 setup
+- `infra/iam-mcp-role-policy.json` — MCP Lambda role permissions
+- `infra/iam-web-role-mcp-policy.json` — web Lambda role additions
 - `.github/workflows/publish.yaml` — tag → S3 publish
 - `.github/workflows/deploy-mcp.yaml` — deploy MCP Lambda
+- `cmd/generate-versions/main.go` — scans S3, builds versions.json
 
 ### Modified files
 

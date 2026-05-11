@@ -13,11 +13,15 @@ following the Agent Skills specification. Skills live in
 # Build binaries (always output to bin/)
 go build -o bin/openkata-mcp ./cmd/openkata-mcp/
 go build -o bin/openkata-web ./cmd/openkata-web/
+go build -o bin/generate-versions ./cmd/generate-versions/
 
 # List skills and rules
 make skills
 make rules
 ```
+
+Never run `go build` without `-o bin/`. Binaries at the
+project root indicate a build error.
 
 ## Code style
 

@@ -1,0 +1,56 @@
+name: Publish skill/rule to S3
+
+on:
+  push:
+    tags:
+      - 'skills/*/v*'
+      - 'rules/*/v*'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::152406482128:role/openkata-ci
+          aws-region: eu-north-1
+
+      - name: Parse tag
+        id: tag
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          TYPE="$(echo "${TAG}" | cut -d/ -f1)"
+          NAME="$(echo "${TAG}" | cut -d/ -f2)"
+          VERSION="$(echo "${TAG}" | cut -d/ -f3 | sed 's/^v//')"
+          echo "tag=${TAG}" >> "${GITHUB_OUTPUT}"
+          echo "type=${TYPE}" >> "${GITHUB_OUTPUT}"
+          echo "name=${NAME}" >> "${GITHUB_OUTPUT}"
+          echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
+
+      - name: Extract files at tag
+        run: |
+          mkdir -p /tmp/artifact
+          git archive "${{ steps.tag.outputs.tag }}" \
+            -- "${{ steps.tag.outputs.type }}/${{ steps.tag.outputs.name }}/" \
+            | tar -x -C /tmp/artifact --strip-components=2
+
+      - name: Upload to S3
+        run: |
+          aws s3 sync /tmp/artifact/ \
+            "s3://openkata-artifacts/${{ steps.tag.outputs.type }}/${{ steps.tag.outputs.name }}/${{ steps.tag.outputs.version }}/" \
+            --delete
+
+      - name: Regenerate versions.json
+        run: go run ./cmd/generate-versions/
