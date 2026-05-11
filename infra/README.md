@@ -1,49 +1,47 @@
 # Infrastructure
 
-CloudFormation template for the Open Kata website.
+AWS infrastructure for Open Kata (website + MCP server).
 
 ## Prerequisites
 
 - AWS CLI configured (`aws configure`)
-- IAM role with the policy below
+- IAM user with [iam-admin-policy.json](iam-admin-policy.json)
 
 ## IAM Policies
 
-Two policies for different contexts:
-
-- [iam-admin-policy.json](iam-admin-policy.json) — for your
-  machine. Creates/destroys infrastructure and deploys code.
-- [iam-ci-policy.json](iam-ci-policy.json) — for GitHub
-  Actions. Only deploys code to an existing Lambda.
+| File | Purpose | Apply to |
+|------|---------|----------|
+| [iam-admin-policy.json](iam-admin-policy.json) | Create/destroy infra, deploy | Your IAM user |
+| [iam-ci-policy.json](iam-ci-policy.json) | Deploy code, publish skills to S3 | `openkata-ci` role |
+| [iam-mcp-role-policy.json](iam-mcp-role-policy.json) | S3 read, DynamoDB access | `openkata-mcp-role` (Lambda execution) |
+| [iam-web-role-mcp-policy.json](iam-web-role-mcp-policy.json) | S3 read, DynamoDB access | `openkata-web-role` (Lambda execution) |
 
 ## Create infrastructure (one-time)
 
+Run in order:
+
 ```bash
-./infra/create-stack.sh
+# 1. Web server (Lambda + Function URL)
+./infra/create-web-stack.sh
+
+# 2. MCP server (Lambda + S3 + DynamoDB + Function URL)
+./infra/create-mcp-stack.sh
+
+# 3. Add MCP permissions to web Lambda role
+#    Console: IAM → Roles → openkata-web-role → Add inline policy
+#    Paste contents of iam-web-role-mcp-policy.json
+#    Name: openkata-web-mcp-access
+
+# 4. Update CI role
+#    Console: IAM → Roles → openkata-ci → Update inline policy
+#    Replace with contents of iam-ci-policy.json
 ```
 
 ## Deploy code
 
 ```bash
-make deploy
-```
-
-## Get the URL
-
-```bash
-aws cloudformation describe-stacks \
-  --stack-name openkata-web \
-  --region eu-north-1 \
-  --query "Stacks[0].Outputs[?OutputKey=='FunctionUrl'].OutputValue" \
-  --output text
-```
-
-## Destroy
-
-```bash
-aws cloudformation delete-stack \
-  --stack-name openkata-web \
-  --region eu-north-1
+make deploy          # web server
+make deploy-mcp      # MCP server (TODO)
 ```
 
 ## CI/CD (GitHub Actions)
@@ -66,11 +64,3 @@ aws cloudformation delete-stack \
 3. Attach inline policy to the role:
    - Paste contents of [iam-ci-policy.json](iam-ci-policy.json)
    - Name: `openkata-deploy`
-
-### Branch Protection (in GitHub)
-
-1. Settings → Branches → Add rule
-   - Branch name pattern: `main`
-   - Require pull request before merging
-   - Require approvals: 1
-   - Do not allow bypassing
