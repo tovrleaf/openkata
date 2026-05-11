@@ -2,61 +2,103 @@ package main
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"io/fs"
+	"io"
 	"os"
-	"os/exec"
-	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
+	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
 
 const source = "github.com/tovrleaf/openkata"
 
-var skipFiles = map[string]bool{
-	"CHANGELOG.md":       true,
-	"ACKNOWLEDGMENTS.md": true,
-	"tile.json":          true,
+var (
+	bucket   string
+	table    string
+	s3Client *s3.Client
+	dbClient *dynamodb.Client
+	versions *versionsFile
+)
+
+type artifactInfo struct {
+	Version     string `json:"version"`
+	Description string `json:"description"`
+	Tags        string `json:"tags,omitempty"`
+}
+
+type versionsFile struct {
+	Skills map[string]artifactInfo `json:"skills"`
+	Rules  map[string]artifactInfo `json:"rules"`
 }
 
 func main() {
-	skillsDir := os.Getenv("OPENKATA_SKILLS_DIR")
-	if skillsDir == "" {
-		skillsDir = "skills"
+	bucket = os.Getenv("OPENKATA_BUCKET")
+	if bucket == "" {
+		bucket = "openkata-artifacts"
+	}
+	table = os.Getenv("OPENKATA_TABLE")
+	if table == "" {
+		table = "openkata-downloads"
 	}
 
-	rulesDir := os.Getenv("OPENKATA_RULES_DIR")
-	if rulesDir == "" {
-		rulesDir = "rules"
+	ctx := context.Background()
+	cfg, err := config.LoadDefaultConfig(ctx)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "aws config: %v\n", err)
+		os.Exit(1)
 	}
 
-	s := server.NewMCPServer(
-		"openkata",
-		"0.2.0",
+	s3Client = s3.NewFromConfig(cfg)
+	dbClient = dynamodb.NewFromConfig(cfg)
+
+	// Load versions.json from S3
+	versions, err = loadVersions(ctx)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "load versions: %v\n", err)
+		versions = &versionsFile{
+			Skills: make(map[string]artifactInfo),
+			Rules:  make(map[string]artifactInfo),
+		}
+	}
+
+	s := server.NewMCPServer("openkata", "0.3.0",
 		server.WithToolCapabilities(false),
 	)
 
-	s.AddTool(listSkillsTool(), listSkillsHandler(skillsDir))
-	s.AddTool(installSkillTool(), installSkillHandler(skillsDir))
-	s.AddTool(listRulesTool(), listRulesHandler(rulesDir))
-	s.AddTool(installRuleTool(), installRuleHandler(rulesDir))
+	s.AddTool(listSkillsTool(), listSkillsHandler)
+	s.AddTool(listRulesTool(), listRulesHandler)
+	s.AddTool(installSkillTool(), installSkillHandler)
+	s.AddTool(installRuleTool(), installRuleHandler)
+	s.AddTool(skillVersionsTool(), skillVersionsHandler)
+	s.AddTool(ruleVersionsTool(), ruleVersionsHandler)
 
-	addr := os.Getenv("OPENKATA_ADDR")
-	if addr != "" {
-		fmt.Fprintf(os.Stderr, "OpenKata MCP server listening on %s\n", addr)
-		httpServer := server.NewStreamableHTTPServer(s)
-		if err := httpServer.Start(addr); err != nil {
-			fmt.Fprintf(os.Stderr, "server error: %v\n", err)
-			os.Exit(1)
-		}
+	httpServer := server.NewStreamableHTTPServer(s,
+		server.WithStateLess(true),
+	)
+
+	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") != "" {
+		lambda.Start(httpadapter.NewV2(httpServer).ProxyWithContext)
 	} else {
-		if err := server.ServeStdio(s); err != nil {
-			fmt.Fprintf(os.Stderr, "server error: %v\n", err)
+		addr := os.Getenv("OPENKATA_ADDR")
+		if addr == "" {
+			addr = ":8081"
+		}
+		fmt.Fprintf(os.Stderr, "listening on %s\n", addr)
+		if err := httpServer.Start(addr); err != nil {
+			fmt.Fprintf(os.Stderr, "server: %v\n", err)
 			os.Exit(1)
 		}
 	}
@@ -66,312 +108,339 @@ func main() {
 
 func listSkillsTool() mcp.Tool {
 	return mcp.NewTool("list_skills",
-		mcp.WithDescription("List available OpenKata skills with their descriptions and versions"),
+		mcp.WithDescription("List available OpenKata skills with descriptions, versions, tags, and download counts"),
 	)
 }
 
-func listSkillsHandler(skillsDir string) server.ToolHandlerFunc {
-	return func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		skills, err := discoverSkills(skillsDir)
-		if err != nil {
-			return mcp.NewToolResultError(fmt.Sprintf("failed to list skills: %v", err)), nil
-		}
-		out, _ := json.MarshalIndent(skills, "", "  ")
-		return mcp.NewToolResultText(string(out)), nil
-	}
+func listRulesTool() mcp.Tool {
+	return mcp.NewTool("list_rules",
+		mcp.WithDescription("List available OpenKata rules with descriptions, versions, tags, and download counts"),
+	)
 }
 
 func installSkillTool() mcp.Tool {
 	return mcp.NewTool("install_skill",
-		mcp.WithDescription("Install an OpenKata skill into a target project. Copies skill files and writes a .manifest.json with version and origin."),
-		mcp.WithString("skill",
-			mcp.Required(),
-			mcp.Description("Name of the skill to install"),
-		),
-		mcp.WithString("target_dir",
-			mcp.Required(),
-			mcp.Description("Absolute path to the target project root"),
-		),
+		mcp.WithDescription("Install an OpenKata skill. Returns all files and a .manifest.json. Write files to .agents/skills/<name>/ in your project."),
+		mcp.WithString("skill", mcp.Required(), mcp.Description("Name of the skill to install")),
+		mcp.WithString("version", mcp.Description("Version to install (default: latest)")),
 	)
-}
-
-func installSkillHandler(skillsDir string) server.ToolHandlerFunc {
-	return func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		skill, err := req.RequireString("skill")
-		if err != nil {
-			return mcp.NewToolResultError(err.Error()), nil
-		}
-
-		targetDir, err := req.RequireString("target_dir")
-		if err != nil {
-			return mcp.NewToolResultError(err.Error()), nil
-		}
-
-		src := filepath.Join(skillsDir, skill)
-		if _, err := os.ReadFile(filepath.Join(src, "SKILL.md")); err != nil {
-			return mcp.NewToolResultError(fmt.Sprintf("skill %q not found", skill)), nil
-		}
-
-		dest := filepath.Join(targetDir, ".agents", "skills", skill)
-		if err := copyDir(src, dest); err != nil {
-			return mcp.NewToolResultError(fmt.Sprintf("failed to install: %v", err)), nil
-		}
-
-		version := resolveVersion("skills/" + skill)
-		m := manifest{
-			Name:        skill,
-			Version:     version,
-			Source:      source,
-			InstalledAt: time.Now().UTC().Format(time.RFC3339),
-		}
-		if err := writeManifest(dest, m); err != nil {
-			return mcp.NewToolResultError(fmt.Sprintf("installed but failed to write manifest: %v", err)), nil
-		}
-
-		msg := fmt.Sprintf("Installed %q v%s to %s", skill, version, dest)
-		return mcp.NewToolResultText(msg), nil
-	}
-}
-
-// --- Rule Tools ---
-
-func listRulesTool() mcp.Tool {
-	return mcp.NewTool("list_rules",
-		mcp.WithDescription("List available OpenKata rules (always-on constraints for agent sessions)"),
-	)
-}
-
-func listRulesHandler(rulesDir string) server.ToolHandlerFunc {
-	return func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		rules, err := discoverRules(rulesDir)
-		if err != nil {
-			return mcp.NewToolResultError(fmt.Sprintf("failed to list rules: %v", err)), nil
-		}
-		out, _ := json.MarshalIndent(rules, "", "  ")
-		return mcp.NewToolResultText(string(out)), nil
-	}
 }
 
 func installRuleTool() mcp.Tool {
 	return mcp.NewTool("install_rule",
-		mcp.WithDescription("Install an OpenKata rule into a target project. Copies rule files to .agents/rules/."),
-		mcp.WithString("rule",
-			mcp.Required(),
-			mcp.Description("Name of the rule to install"),
-		),
-		mcp.WithString("target_dir",
-			mcp.Required(),
-			mcp.Description("Absolute path to the target project root"),
-		),
+		mcp.WithDescription("Install an OpenKata rule. Returns all files and a .manifest.json. Write files to .agents/rules/<name>/ in your project."),
+		mcp.WithString("rule", mcp.Required(), mcp.Description("Name of the rule to install")),
+		mcp.WithString("version", mcp.Description("Version to install (default: latest)")),
 	)
 }
 
-func installRuleHandler(rulesDir string) server.ToolHandlerFunc {
-	return func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-		rule, err := req.RequireString("rule")
-		if err != nil {
-			return mcp.NewToolResultError(err.Error()), nil
-		}
+func skillVersionsTool() mcp.Tool {
+	return mcp.NewTool("skill_versions",
+		mcp.WithDescription("List all available versions of a skill"),
+		mcp.WithString("skill", mcp.Required(), mcp.Description("Name of the skill")),
+	)
+}
 
-		targetDir, err := req.RequireString("target_dir")
-		if err != nil {
-			return mcp.NewToolResultError(err.Error()), nil
-		}
+func ruleVersionsTool() mcp.Tool {
+	return mcp.NewTool("rule_versions",
+		mcp.WithDescription("List all available versions of a rule"),
+		mcp.WithString("rule", mcp.Required(), mcp.Description("Name of the rule")),
+	)
+}
 
-		src := filepath.Join(rulesDir, rule)
-		ruleMD := filepath.Join(src, "RULE.md")
-		if _, err := os.ReadFile(ruleMD); err != nil {
-			return mcp.NewToolResultError(fmt.Sprintf("rule %q not found", rule)), nil
-		}
+// --- Handlers ---
 
-		dest := filepath.Join(targetDir, ".agents", "rules", rule)
-		if err := copyDir(src, dest); err != nil {
-			return mcp.NewToolResultError(fmt.Sprintf("failed to install: %v", err)), nil
-		}
-
-		version := resolveVersion("rules/" + rule)
-		m := manifest{
-			Name:        rule,
-			Version:     version,
-			Source:      source,
-			InstalledAt: time.Now().UTC().Format(time.RFC3339),
-		}
-		if err := writeManifest(dest, m); err != nil {
-			return mcp.NewToolResultError(fmt.Sprintf("installed but failed to write manifest: %v", err)), nil
-		}
-
-		msg := fmt.Sprintf("Installed rule %q to %s", rule, dest)
-		return mcp.NewToolResultText(msg), nil
+func listSkillsHandler(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	counts := loadCounts(ctx, "skills")
+	type entry struct {
+		Name        string `json:"name"`
+		Version     string `json:"version"`
+		Description string `json:"description"`
+		Tags        string `json:"tags,omitempty"`
+		Downloads   int    `json:"downloads"`
 	}
+	var result []entry
+	for name, info := range versions.Skills {
+		result = append(result, entry{
+			Name:        name,
+			Version:     info.Version,
+			Description: info.Description,
+			Tags:        info.Tags,
+			Downloads:   counts["skills/"+name],
+		})
+	}
+	sort.Slice(result, func(i, j int) bool { return result[i].Name < result[j].Name })
+	out, _ := json.MarshalIndent(result, "", "  ")
+	return mcp.NewToolResultText(string(out)), nil
 }
 
-// --- Manifest ---
-
-type manifest struct {
-	Name        string `json:"name"`
-	Version     string `json:"version"`
-	Source      string `json:"source"`
-	InstalledAt string `json:"installedAt"`
+func listRulesHandler(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	counts := loadCounts(ctx, "rules")
+	type entry struct {
+		Name        string `json:"name"`
+		Version     string `json:"version"`
+		Description string `json:"description"`
+		Tags        string `json:"tags,omitempty"`
+		Downloads   int    `json:"downloads"`
+	}
+	var result []entry
+	for name, info := range versions.Rules {
+		result = append(result, entry{
+			Name:        name,
+			Version:     info.Version,
+			Description: info.Description,
+			Tags:        info.Tags,
+			Downloads:   counts["rules/"+name],
+		})
+	}
+	sort.Slice(result, func(i, j int) bool { return result[i].Name < result[j].Name })
+	out, _ := json.MarshalIndent(result, "", "  ")
+	return mcp.NewToolResultText(string(out)), nil
 }
 
-func writeManifest(skillDir string, m manifest) error {
-	data, err := json.MarshalIndent(m, "", "  ")
+func installSkillHandler(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	return installArtifact(ctx, req, "skills", "skill")
+}
+
+func installRuleHandler(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	return installArtifact(ctx, req, "rules", "rule")
+}
+
+func installArtifact(ctx context.Context, req mcp.CallToolRequest, artifactType, paramName string) (*mcp.CallToolResult, error) {
+	name, err := req.RequireString(paramName)
 	if err != nil {
-		return err
+		return mcp.NewToolResultError(err.Error()), nil
 	}
-	return os.WriteFile(filepath.Join(skillDir, ".manifest.json"), append(data, '\n'), 0644)
+
+	version := ""
+	if v, err := req.RequireString("version"); err == nil {
+		version = v
+	}
+
+	// Resolve version
+	var info artifactInfo
+	var found bool
+	if artifactType == "skills" {
+		info, found = versions.Skills[name]
+	} else {
+		info, found = versions.Rules[name]
+	}
+	if !found {
+		return mcp.NewToolResultError(fmt.Sprintf("%s %q not found", paramName, name)), nil
+	}
+	if version == "" {
+		version = info.Version
+	}
+
+	// Read all files from S3
+	prefix := artifactType + "/" + name + "/" + version + "/"
+	files, err := readAllFiles(ctx, prefix)
+	if err != nil {
+		return mcp.NewToolResultError(fmt.Sprintf("read files: %v", err)), nil
+	}
+	if len(files) == 0 {
+		return mcp.NewToolResultError(fmt.Sprintf("version %s not found for %s", version, name)), nil
+	}
+
+	// Generate checksums
+	checksums := make(map[string]string)
+	for path, content := range files {
+		h := sha256.Sum256([]byte(content))
+		checksums[path] = "sha256:" + hex.EncodeToString(h[:])
+	}
+
+	// Build manifest
+	manifest := map[string]interface{}{
+		"name":        name,
+		"version":     version,
+		"source":      source,
+		"installedAt": time.Now().UTC().Format(time.RFC3339),
+		"checksums":   checksums,
+	}
+
+	// Increment download counter
+	incrementCount(ctx, artifactType+"/"+name)
+
+	// Build response
+	response := map[string]interface{}{
+		"name":     name,
+		"version":  version,
+		"manifest": manifest,
+		"files":    files,
+	}
+	out, _ := json.MarshalIndent(response, "", "  ")
+	return mcp.NewToolResultText(string(out)), nil
 }
 
-// --- Discovery ---
-
-type skillInfo struct {
-	Name        string `json:"name"`
-	Version     string `json:"version"`
-	Description string `json:"description"`
+func skillVersionsHandler(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	return listArtifactVersions(ctx, req, "skills", "skill")
 }
 
-func discoverSkills(skillsDir string) ([]skillInfo, error) {
-	entries, err := os.ReadDir(skillsDir)
+func ruleVersionsHandler(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	return listArtifactVersions(ctx, req, "rules", "rule")
+}
+
+func listArtifactVersions(ctx context.Context, req mcp.CallToolRequest, artifactType, paramName string) (*mcp.CallToolResult, error) {
+	name, err := req.RequireString(paramName)
+	if err != nil {
+		return mcp.NewToolResultError(err.Error()), nil
+	}
+
+	prefix := artifactType + "/" + name + "/"
+	versionList, err := listPrefixes(ctx, prefix)
+	if err != nil {
+		return mcp.NewToolResultError(fmt.Sprintf("list versions: %v", err)), nil
+	}
+	if len(versionList) == 0 {
+		return mcp.NewToolResultError(fmt.Sprintf("%s %q not found", paramName, name)), nil
+	}
+
+	sortVersions(versionList)
+	out, _ := json.MarshalIndent(versionList, "", "  ")
+	return mcp.NewToolResultText(string(out)), nil
+}
+
+// --- S3 helpers ---
+
+func loadVersions(ctx context.Context) (*versionsFile, error) {
+	key := "versions.json"
+	resp, err := s3Client.GetObject(ctx, &s3.GetObjectInput{
+		Bucket: &bucket,
+		Key:    &key,
+	})
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var v versionsFile
+	if err := json.NewDecoder(resp.Body).Decode(&v); err != nil {
+		return nil, err
+	}
+	if v.Skills == nil {
+		v.Skills = make(map[string]artifactInfo)
+	}
+	if v.Rules == nil {
+		v.Rules = make(map[string]artifactInfo)
+	}
+	return &v, nil
+}
+
+func listPrefixes(ctx context.Context, prefix string) ([]string, error) {
+	delim := "/"
+	resp, err := s3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
+		Bucket:    &bucket,
+		Prefix:    &prefix,
+		Delimiter: &delim,
+	})
+	if err != nil {
+		return nil, err
+	}
+	var names []string
+	for _, p := range resp.CommonPrefixes {
+		name := strings.TrimPrefix(*p.Prefix, prefix)
+		name = strings.TrimSuffix(name, "/")
+		if name != "" {
+			names = append(names, name)
+		}
+	}
+	return names, nil
+}
+
+func readAllFiles(ctx context.Context, prefix string) (map[string]string, error) {
+	resp, err := s3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
+		Bucket: &bucket,
+		Prefix: &prefix,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	var skills []skillInfo
-	for _, e := range entries {
-		if !e.IsDir() {
+	files := make(map[string]string)
+	for _, obj := range resp.Contents {
+		key := *obj.Key
+		relPath := strings.TrimPrefix(key, prefix)
+		if relPath == "" || strings.HasSuffix(relPath, "/") {
 			continue
 		}
-		data, err := os.ReadFile(filepath.Join(skillsDir, e.Name(), "SKILL.md"))
-		if err != nil {
-			continue
-		}
-		skills = append(skills, skillInfo{
-			Name:        e.Name(),
-			Version:     resolveVersion("skills/" + e.Name()),
-			Description: extractDescription(string(data)),
+
+		getResp, err := s3Client.GetObject(ctx, &s3.GetObjectInput{
+			Bucket: &bucket,
+			Key:    &key,
 		})
-	}
-	return skills, nil
-}
-
-type ruleInfo struct {
-	Name        string `json:"name"`
-	Version     string `json:"version"`
-	Description string `json:"description"`
-}
-
-func discoverRules(rulesDir string) ([]ruleInfo, error) {
-	entries, err := os.ReadDir(rulesDir)
-	if err != nil {
-		return nil, err
-	}
-
-	var rules []ruleInfo
-	for _, e := range entries {
-		if !e.IsDir() {
-			continue
-		}
-		data, err := os.ReadFile(filepath.Join(rulesDir, e.Name(), "RULE.md"))
 		if err != nil {
 			continue
 		}
-		rules = append(rules, ruleInfo{
-			Name:        e.Name(),
-			Version:     resolveVersion("rules/" + e.Name()),
-			Description: extractDescription(string(data)),
-		})
-	}
-	return rules, nil
-}
-
-// --- Version resolution ---
-
-// resolveVersion finds the latest semver tag for a given artifact
-// path prefix (e.g. "skills/create-adr" or "rules/bash-style").
-func resolveVersion(prefix string) string {
-	out, err := exec.Command("git", "tag", "-l", prefix+"/v*").Output()
-	if err != nil || len(out) == 0 {
-		return ""
-	}
-	tags := strings.Split(strings.TrimSpace(string(out)), "\n")
-	sort.Strings(tags)
-	last := tags[len(tags)-1]
-	// Extract version from "skills/name/v1.2.3" -> "1.2.3"
-	if i := strings.LastIndex(last, "/v"); i >= 0 {
-		return last[i+2:]
-	}
-	return ""
-}
-
-// --- Frontmatter parsing ---
-
-func extractFrontmatterField(content, field string) string {
-	if !strings.HasPrefix(content, "---") {
-		return ""
-	}
-	end := strings.Index(content[3:], "---")
-	if end < 0 {
-		return ""
-	}
-	frontmatter := content[3 : end+3]
-	lines := strings.Split(frontmatter, "\n")
-
-	for i, line := range lines {
-		trimmed := strings.TrimSpace(line)
-		prefix := field + ":"
-		if !strings.HasPrefix(trimmed, prefix) {
+		data, err := io.ReadAll(getResp.Body)
+		getResp.Body.Close()
+		if err != nil {
 			continue
 		}
-		value := strings.TrimSpace(strings.TrimPrefix(trimmed, prefix))
-		value = strings.Trim(value, `"'`)
-
-		if value != "" && value != ">" && value != "|" {
-			return value
-		}
-
-		// Multi-line folded/literal scalar
-		var parts []string
-		for j := i + 1; j < len(lines); j++ {
-			l := lines[j]
-			if len(l) == 0 || l[0] == ' ' || l[0] == '\t' {
-				parts = append(parts, strings.TrimSpace(l))
-			} else {
-				break
-			}
-		}
-		return strings.Join(parts, " ")
+		files[relPath] = string(data)
 	}
-	return ""
+	return files, nil
 }
 
-func extractDescription(content string) string {
-	return extractFrontmatterField(content, "description")
-}
+// --- DynamoDB helpers ---
 
-// --- File copying ---
-
-func copyDir(src, dest string) error {
-	return filepath.WalkDir(src, func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-
-		rel, _ := filepath.Rel(src, path)
-
-		if skipFiles[d.Name()] {
-			return nil
-		}
-
-		target := filepath.Join(dest, rel)
-
-		if d.IsDir() {
-			return os.MkdirAll(target, 0755)
-		}
-
-		data, err := os.ReadFile(path)
-		if err != nil {
-			return err
-		}
-		return os.WriteFile(target, data, 0644)
+func incrementCount(ctx context.Context, artifact string) {
+	dbClient.UpdateItem(ctx, &dynamodb.UpdateItemInput{
+		TableName: &table,
+		Key: map[string]types.AttributeValue{
+			"artifact": &types.AttributeValueMemberS{Value: artifact},
+		},
+		UpdateExpression: strPtr("ADD downloads :inc"),
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":inc": &types.AttributeValueMemberN{Value: "1"},
+		},
 	})
 }
+
+func loadCounts(ctx context.Context, artifactType string) map[string]int {
+	counts := make(map[string]int)
+	resp, err := dbClient.Scan(ctx, &dynamodb.ScanInput{
+		TableName: &table,
+	})
+	if err != nil {
+		return counts
+	}
+	for _, item := range resp.Items {
+		artAttr, ok := item["artifact"].(*types.AttributeValueMemberS)
+		if !ok {
+			continue
+		}
+		dlAttr, ok := item["downloads"].(*types.AttributeValueMemberN)
+		if !ok {
+			continue
+		}
+		n, _ := strconv.Atoi(dlAttr.Value)
+		counts[artAttr.Value] = n
+	}
+	return counts
+}
+
+// --- Helpers ---
+
+func sortVersions(vers []string) {
+	sort.Slice(vers, func(i, j int) bool {
+		a := parseVersion(vers[i])
+		b := parseVersion(vers[j])
+		for k := 0; k < 3; k++ {
+			if a[k] != b[k] {
+				return a[k] < b[k]
+			}
+		}
+		return false
+	})
+}
+
+func parseVersion(v string) [3]int {
+	parts := strings.Split(v, ".")
+	var result [3]int
+	for i := 0; i < 3 && i < len(parts); i++ {
+		result[i], _ = strconv.Atoi(parts[i])
+	}
+	return result
+}
+
+func strPtr(s string) *string { return &s }
