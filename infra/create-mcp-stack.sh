@@ -117,6 +117,14 @@ else
     --function-url-auth-type NONE \
     --region "${REGION}" \
     --no-cli-pager
+
+  aws lambda add-permission \
+    --function-name "${FUNCTION_NAME}" \
+    --statement-id FunctionURLInvoke \
+    --action lambda:InvokeFunction \
+    --principal "*" \
+    --region "${REGION}" \
+    --no-cli-pager
 fi
 
 echo ""
