@@ -109,12 +109,14 @@ func main() {
 func listSkillsTool() mcp.Tool {
 	return mcp.NewTool("list_skills",
 		mcp.WithDescription("List available OpenKata skills with descriptions, versions, tags, and download counts"),
+		mcp.WithString("tag", mcp.Description("Filter by tag (comma-separated tags in skill metadata)")),
 	)
 }
 
 func listRulesTool() mcp.Tool {
 	return mcp.NewTool("list_rules",
 		mcp.WithDescription("List available OpenKata rules with descriptions, versions, tags, and download counts"),
+		mcp.WithString("tag", mcp.Description("Filter by tag (comma-separated tags in rule metadata)")),
 	)
 }
 
@@ -151,6 +153,7 @@ func ruleVersionsTool() mcp.Tool {
 // --- Handlers ---
 
 func listSkillsHandler(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	tagFilter, _ := req.RequireString("tag")
 	counts := loadCounts(ctx, "skills")
 	type entry struct {
 		Name        string `json:"name"`
@@ -161,6 +164,9 @@ func listSkillsHandler(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallT
 	}
 	var result []entry
 	for name, info := range versions.Skills {
+		if tagFilter != "" && !hasTag(info.Tags, tagFilter) {
+			continue
+		}
 		result = append(result, entry{
 			Name:        name,
 			Version:     info.Version,
@@ -175,6 +181,7 @@ func listSkillsHandler(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallT
 }
 
 func listRulesHandler(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	tagFilter, _ := req.RequireString("tag")
 	counts := loadCounts(ctx, "rules")
 	type entry struct {
 		Name        string `json:"name"`
@@ -185,6 +192,9 @@ func listRulesHandler(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallTo
 	}
 	var result []entry
 	for name, info := range versions.Rules {
+		if tagFilter != "" && !hasTag(info.Tags, tagFilter) {
+			continue
+		}
 		result = append(result, entry{
 			Name:        name,
 			Version:     info.Version,
@@ -444,3 +454,12 @@ func parseVersion(v string) [3]int {
 }
 
 func strPtr(s string) *string { return &s }
+
+func hasTag(tags, filter string) bool {
+	for _, t := range strings.Split(tags, ",") {
+		if strings.TrimSpace(t) == filter {
+			return true
+		}
+	}
+	return false
+}

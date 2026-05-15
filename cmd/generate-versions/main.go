@@ -184,6 +184,21 @@ func readFrontmatter(ctx context.Context, client *s3.Client, bucket, key string)
 			tags = strings.TrimSpace(strings.TrimPrefix(trimmed, "tags:"))
 			tags = strings.Trim(tags, `"'`)
 		}
+
+		// Read tags from metadata.tags
+		if trimmed == "metadata:" {
+			for j := i + 1; j < len(lines); j++ {
+				ml := strings.TrimSpace(lines[j])
+				if strings.HasPrefix(ml, "tags:") {
+					tags = strings.TrimSpace(strings.TrimPrefix(ml, "tags:"))
+					tags = strings.Trim(tags, `"'`)
+					break
+				}
+				if len(lines[j]) > 0 && lines[j][0] != ' ' && lines[j][0] != '\t' {
+					break
+				}
+			}
+		}
 	}
 	return
 }
