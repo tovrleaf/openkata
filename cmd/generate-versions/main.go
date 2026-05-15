@@ -21,8 +21,9 @@ type artifactInfo struct {
 }
 
 type versionsFile struct {
-	Skills map[string]artifactInfo `json:"skills"`
-	Rules  map[string]artifactInfo `json:"rules"`
+	Skills   map[string]artifactInfo `json:"skills"`
+	Rules    map[string]artifactInfo `json:"rules"`
+	Profiles map[string]artifactInfo `json:"profiles"`
 }
 
 func main() {
@@ -40,11 +41,12 @@ func main() {
 
 	client := s3.NewFromConfig(cfg)
 	versions := versionsFile{
-		Skills: make(map[string]artifactInfo),
-		Rules:  make(map[string]artifactInfo),
+		Skills:   make(map[string]artifactInfo),
+		Rules:    make(map[string]artifactInfo),
+		Profiles: make(map[string]artifactInfo),
 	}
 
-	for _, artifactType := range []string{"skills", "rules"} {
+	for _, artifactType := range []string{"skills", "rules", "profiles"} {
 		names, err := listPrefixes(ctx, client, bucket, artifactType+"/")
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "listing %s: %v\n", artifactType, err)
@@ -63,6 +65,8 @@ func main() {
 			mdFile := "SKILL.md"
 			if artifactType == "rules" {
 				mdFile = "RULE.md"
+			} else if artifactType == "profiles" {
+				mdFile = name + ".md"
 			}
 
 			key := artifactType + "/" + name + "/" + latest + "/" + mdFile
@@ -74,10 +78,13 @@ func main() {
 				Tags:        tags,
 			}
 
-			if artifactType == "skills" {
+			switch artifactType {
+			case "skills":
 				versions.Skills[name] = info
-			} else {
+			case "rules":
 				versions.Rules[name] = info
+			case "profiles":
+				versions.Profiles[name] = info
 			}
 		}
 	}

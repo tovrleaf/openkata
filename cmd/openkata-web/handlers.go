@@ -369,3 +369,86 @@ func sha256Sum(data []byte) string {
 	h := sha256.Sum256(data)
 	return hex.EncodeToString(h[:])
 }
+
+func handleProfiles(w http.ResponseWriter, r *http.Request) {
+	path := strings.TrimPrefix(r.URL.Path, "/profiles/")
+
+	if path == "" {
+		profiles := loadProfilesList(r.Context())
+		templates.Profiles(profiles).Render(r.Context(), w)
+		return
+	}
+
+	parts := strings.Split(strings.TrimSuffix(path, "/"), "/")
+	if len(parts) >= 2 && parts[1] == "archive" {
+		version := ""
+		if len(parts) >= 3 {
+			version = parts[2]
+		}
+		handleArchive(w, r, "profiles", parts[0], version)
+		return
+	}
+
+	http.NotFound(w, r)
+}
+
+func loadProfilesList(ctx context.Context) []templates.SkillEntry {
+	if s3Client == nil {
+		return nil
+	}
+
+	key := "versions.json"
+	resp, err := s3Client.GetObject(ctx, &s3.GetObjectInput{
+		Bucket: &bucket,
+		Key:    &key,
+	})
+	if err != nil {
+		return nil
+	}
+	defer resp.Body.Close()
+
+	var versions struct {
+		Profiles map[string]struct {
+			Version     string `json:"version"`
+			Description string `json:"description"`
+			Tags        string `json:"tags"`
+		} `json:"profiles"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&versions); err != nil {
+		return nil
+	}
+
+	counts := make(map[string]int)
+	if dbClient != nil {
+		scanResp, err := dbClient.Scan(ctx, &dynamodb.ScanInput{
+			TableName: &table,
+		})
+		if err == nil {
+			for _, item := range scanResp.Items {
+				artAttr, ok := item["artifact"].(*types.AttributeValueMemberS)
+				if !ok {
+					continue
+				}
+				dlAttr, ok := item["downloads"].(*types.AttributeValueMemberN)
+				if !ok {
+					continue
+				}
+				n, _ := strconv.Atoi(dlAttr.Value)
+				counts[artAttr.Value] = n
+			}
+		}
+	}
+
+	var profiles []templates.SkillEntry
+	for name, info := range versions.Profiles {
+		profiles = append(profiles, templates.SkillEntry{
+			Name:        name,
+			Version:     info.Version,
+			Description: info.Description,
+			Tags:        info.Tags,
+			Downloads:   counts["profiles/"+name],
+		})
+	}
+	sort.Slice(profiles, func(i, j int) bool { return profiles[i].Name < profiles[j].Name })
+	return profiles
+}

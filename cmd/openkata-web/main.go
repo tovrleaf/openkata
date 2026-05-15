@@ -55,6 +55,7 @@ func main() {
 	mux.HandleFunc("/", handleHome)
 	mux.HandleFunc("/skills/", handleSkills)
 	mux.HandleFunc("/rules/", handleRules)
+	mux.HandleFunc("/profiles/", handleProfiles)
 	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") == "" {
 		mux.HandleFunc("/design-system/", handleDesignSystem)
 	}

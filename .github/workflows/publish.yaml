@@ -5,6 +5,7 @@ on:
     tags:
       - 'skills/*/v*'
       - 'rules/*/v*'
+      - 'profiles/*/v*'
 
 permissions:
   id-token: write

@@ -40,8 +40,9 @@ type artifactInfo struct {
 }
 
 type versionsFile struct {
-	Skills map[string]artifactInfo `json:"skills"`
-	Rules  map[string]artifactInfo `json:"rules"`
+	Skills   map[string]artifactInfo `json:"skills"`
+	Rules    map[string]artifactInfo `json:"rules"`
+	Profiles map[string]artifactInfo `json:"profiles"`
 }
 
 func main() {
@@ -69,8 +70,9 @@ func main() {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "load versions: %v\n", err)
 		versions = &versionsFile{
-			Skills: make(map[string]artifactInfo),
-			Rules:  make(map[string]artifactInfo),
+			Skills:   make(map[string]artifactInfo),
+			Rules:    make(map[string]artifactInfo),
+			Profiles: make(map[string]artifactInfo),
 		}
 	}
 
@@ -80,10 +82,13 @@ func main() {
 
 	s.AddTool(listSkillsTool(), listSkillsHandler)
 	s.AddTool(listRulesTool(), listRulesHandler)
+	s.AddTool(listProfilesTool(), listProfilesHandler)
 	s.AddTool(installSkillTool(), installSkillHandler)
 	s.AddTool(installRuleTool(), installRuleHandler)
+	s.AddTool(installProfileTool(), installProfileHandler)
 	s.AddTool(skillVersionsTool(), skillVersionsHandler)
 	s.AddTool(ruleVersionsTool(), ruleVersionsHandler)
+	s.AddTool(profileVersionsTool(), profileVersionsHandler)
 
 	httpServer := server.NewStreamableHTTPServer(s,
 		server.WithStateLess(true),
@@ -147,6 +152,28 @@ func ruleVersionsTool() mcp.Tool {
 	return mcp.NewTool("rule_versions",
 		mcp.WithDescription("List all available versions of a rule"),
 		mcp.WithString("rule", mcp.Required(), mcp.Description("Name of the rule")),
+	)
+}
+
+func listProfilesTool() mcp.Tool {
+	return mcp.NewTool("list_profiles",
+		mcp.WithDescription("List available OpenKata agent profiles with descriptions, versions, and download counts"),
+		mcp.WithString("tag", mcp.Description("Filter by tag")),
+	)
+}
+
+func installProfileTool() mcp.Tool {
+	return mcp.NewTool("install_profile",
+		mcp.WithDescription("Install an OpenKata agent profile. Returns the profile file and a .manifest.json. Write to profiles/<name>/ in your project."),
+		mcp.WithString("profile", mcp.Required(), mcp.Description("Name of the profile to install")),
+		mcp.WithString("version", mcp.Description("Version to install (default: latest)")),
+	)
+}
+
+func profileVersionsTool() mcp.Tool {
+	return mcp.NewTool("profile_versions",
+		mcp.WithDescription("List all available versions of a profile"),
+		mcp.WithString("profile", mcp.Required(), mcp.Description("Name of the profile")),
 	)
 }
 
@@ -216,6 +243,42 @@ func installRuleHandler(ctx context.Context, req mcp.CallToolRequest) (*mcp.Call
 	return installArtifact(ctx, req, "rules", "rule")
 }
 
+func listProfilesHandler(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	tagFilter, _ := req.RequireString("tag")
+	counts := loadCounts(ctx, "profiles")
+	type entry struct {
+		Name        string `json:"name"`
+		Version     string `json:"version"`
+		Description string `json:"description"`
+		Tags        string `json:"tags,omitempty"`
+		Downloads   int    `json:"downloads"`
+	}
+	var result []entry
+	for name, info := range versions.Profiles {
+		if tagFilter != "" && !hasTag(info.Tags, tagFilter) {
+			continue
+		}
+		result = append(result, entry{
+			Name:        name,
+			Version:     info.Version,
+			Description: info.Description,
+			Tags:        info.Tags,
+			Downloads:   counts["profiles/"+name],
+		})
+	}
+	sort.Slice(result, func(i, j int) bool { return result[i].Name < result[j].Name })
+	out, _ := json.MarshalIndent(result, "", "  ")
+	return mcp.NewToolResultText(string(out)), nil
+}
+
+func installProfileHandler(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	return installArtifact(ctx, req, "profiles", "profile")
+}
+
+func profileVersionsHandler(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	return listArtifactVersions(ctx, req, "profiles", "profile")
+}
+
 func installArtifact(ctx context.Context, req mcp.CallToolRequest, artifactType, paramName string) (*mcp.CallToolResult, error) {
 	name, err := req.RequireString(paramName)
 	if err != nil {
@@ -230,10 +293,13 @@ func installArtifact(ctx context.Context, req mcp.CallToolRequest, artifactType,
 	// Resolve version
 	var info artifactInfo
 	var found bool
-	if artifactType == "skills" {
+	switch artifactType {
+	case "skills":
 		info, found = versions.Skills[name]
-	} else {
+	case "rules":
 		info, found = versions.Rules[name]
+	case "profiles":
+		info, found = versions.Profiles[name]
 	}
 	if !found {
 		return mcp.NewToolResultError(fmt.Sprintf("%s %q not found", paramName, name)), nil
@@ -332,6 +398,9 @@ func loadVersions(ctx context.Context) (*versionsFile, error) {
 	}
 	if v.Rules == nil {
 		v.Rules = make(map[string]artifactInfo)
+	}
+	if v.Profiles == nil {
+		v.Profiles = make(map[string]artifactInfo)
 	}
 	return &v, nil
 }
