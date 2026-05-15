@@ -8,6 +8,7 @@ help: ## Show this help
 	@echo "Catalog:"
 	@printf "  \033[36m%-12s\033[0m %s\n" "skills" "List all skills with type and version"
 	@printf "  \033[36m%-12s\033[0m %s\n" "rules" "List all rules with type and version"
+	@printf "  \033[36m%-12s\033[0m %s\n" "profiles" "List all agent profiles"
 	@printf "  \033[36m%-12s\033[0m %s\n" "adrs" "List all architecture decision records"
 	@printf "  \033[36m%-12s\033[0m %s\n" "specs" "List all feature specs with status"
 	@echo ""
@@ -24,6 +25,10 @@ skills: ## List all skills with type, version, and change status
 .PHONY: rules
 rules: ## List all rules with type and version
 	@./scripts/list-rules.sh
+
+.PHONY: profiles
+profiles: ## List all agent profiles
+	@./scripts/list-profiles.sh
 
 .PHONY: check
 check: ## Check development prerequisites
