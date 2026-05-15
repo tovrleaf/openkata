@@ -1,0 +1,44 @@
+package templates
+
+import "fmt"
+
+templ Rules(rules []SkillEntry) {
+	@Layout("Rules") {
+		<nav class="nav">
+			<a href="/" class="nav-brand">OPENKATA.dev</a>
+			<div class="theme-switcher">
+				<button class="theme-switcher__btn" onclick="cycleTheme()" aria-label="Next theme"></button>
+			</div>
+		</nav>
+
+		<main>
+			<section class="hero">
+				<h1>Rules</h1>
+				<p class="comment">Always-on constraints applied to every agent session.</p>
+			</section>
+
+			if len(rules) == 0 {
+				<p>No rules available yet.</p>
+			} else {
+				<div class="skill-list">
+					for _, r := range rules {
+						<article class="skill-card">
+							<h2>{ r.Name }</h2>
+							<p class="skill-description">{ r.Description }</p>
+							<div class="skill-meta">
+								<span class="skill-version">v{ r.Version }</span>
+								if r.Downloads > 0 {
+									<span class="skill-downloads">{ fmt.Sprintf("%d", r.Downloads) } downloads</span>
+								}
+							</div>
+						</article>
+					}
+				</div>
+			}
+		</main>
+
+		<footer class="footer">
+			© 2026 OPENKATA.dev // License: <a href="https://github.com/tovrleaf/openkata/blob/main/LICENSE" target="_blank" rel="noopener">MIT</a>
+		</footer>
+	}
+}

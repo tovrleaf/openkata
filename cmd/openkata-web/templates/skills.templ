@@ -1,0 +1,44 @@
+package templates
+
+import "fmt"
+
+templ Skills(skills []SkillEntry) {
+	@Layout("Skills") {
+		<nav class="nav">
+			<a href="/" class="nav-brand">OPENKATA.dev</a>
+			<div class="theme-switcher">
+				<button class="theme-switcher__btn" onclick="cycleTheme()" aria-label="Next theme"></button>
+			</div>
+		</nav>
+
+		<main>
+			<section class="hero">
+				<h1>Skills</h1>
+				<p class="comment">Portable, platform-agnostic practices for AI agents.</p>
+			</section>
+
+			if len(skills) == 0 {
+				<p>No skills available yet.</p>
+			} else {
+				<div class="skill-list">
+					for _, s := range skills {
+						<article class="skill-card">
+							<h2>{ s.Name }</h2>
+							<p class="skill-description">{ s.Description }</p>
+							<div class="skill-meta">
+								<span class="skill-version">v{ s.Version }</span>
+								if s.Downloads > 0 {
+									<span class="skill-downloads">{ fmt.Sprintf("%d", s.Downloads) } downloads</span>
+								}
+							</div>
+						</article>
+					}
+				</div>
+			}
+		</main>
+
+		<footer class="footer">
+			© 2026 OPENKATA.dev // License: <a href="https://github.com/tovrleaf/openkata/blob/main/LICENSE" target="_blank" rel="noopener">MIT</a>
+		</footer>
+	}
+}

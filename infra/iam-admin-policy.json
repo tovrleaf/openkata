@@ -14,9 +14,13 @@
         "lambda:CreateFunctionUrlConfig",
         "lambda:DeleteFunctionUrlConfig",
         "lambda:AddPermission",
-        "lambda:RemovePermission"
+        "lambda:RemovePermission",
+        "lambda:PutFunctionConcurrency"
       ],
-      "Resource": "arn:aws:lambda:eu-north-1:*:function:openkata-web"
+      "Resource": [
+        "arn:aws:lambda:eu-north-1:*:function:openkata-web",
+        "arn:aws:lambda:eu-north-1:*:function:openkata-mcp"
+      ]
     },
     {
       "Sid": "IAM",
@@ -27,9 +31,38 @@
         "iam:GetRole",
         "iam:AttachRolePolicy",
         "iam:DetachRolePolicy",
+        "iam:PutRolePolicy",
+        "iam:DeleteRolePolicy",
         "iam:PassRole"
       ],
-      "Resource": "arn:aws:iam::*:role/openkata-web-role"
+      "Resource": [
+        "arn:aws:iam::*:role/openkata-web-role",
+        "arn:aws:iam::*:role/openkata-mcp-role"
+      ]
+    },
+    {
+      "Sid": "S3",
+      "Effect": "Allow",
+      "Action": [
+        "s3:CreateBucket",
+        "s3:PutBucketPublicAccessBlock",
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::openkata-artifacts",
+        "arn:aws:s3:::openkata-artifacts/*"
+      ]
+    },
+    {
+      "Sid": "DynamoDB",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:CreateTable",
+        "dynamodb:DescribeTable"
+      ],
+      "Resource": "arn:aws:dynamodb:eu-north-1:*:table/openkata-downloads"
     },
     {
       "Sid": "Route53",

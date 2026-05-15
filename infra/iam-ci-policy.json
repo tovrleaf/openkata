@@ -5,7 +5,19 @@
       "Sid": "DeployCode",
       "Effect": "Allow",
       "Action": "lambda:UpdateFunctionCode",
-      "Resource": "arn:aws:lambda:eu-north-1:*:function:openkata-web"
+      "Resource": [
+        "arn:aws:lambda:eu-north-1:*:function:openkata-web",
+        "arn:aws:lambda:eu-north-1:*:function:openkata-mcp"
+      ]
+    },
+    {
+      "Sid": "PublishArtifacts",
+      "Effect": "Allow",
+      "Action": ["s3:PutObject", "s3:GetObject", "s3:ListBucket"],
+      "Resource": [
+        "arn:aws:s3:::openkata-artifacts",
+        "arn:aws:s3:::openkata-artifacts/*"
+      ]
     }
   ]
 }

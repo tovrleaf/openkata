@@ -43,6 +43,7 @@ aws lambda create-function \
   --zip-file fileb:///tmp/deploy.zip \
   --memory-size 128 \
   --timeout 10 \
+  --environment "Variables={OPENKATA_BUCKET=openkata-artifacts,OPENKATA_TABLE=openkata-downloads}" \
   --region "${REGION}" \
   --no-cli-pager
 
