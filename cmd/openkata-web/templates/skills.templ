@@ -12,26 +12,35 @@ templ Skills(skills []SkillEntry) {
 		</nav>
 
 		<main>
-			<section class="hero">
-				<h1>Skills</h1>
-				<p class="comment">Portable, platform-agnostic practices for AI agents.</p>
+			<section class="hero hero--kanji">
+				<span class="hero-kanji">技</span>
+				<div class="hero-text">
+					<h1 class="cursor">Skills</h1>
+					<p class="comment">Portable, platform-agnostic practices for AI agents.</p>
+				</div>
 			</section>
 
 			if len(skills) == 0 {
 				<p>No skills available yet.</p>
 			} else {
 				<div class="skill-list">
-					for _, s := range skills {
-						<article class="skill-card">
-							<h2>{ s.Name }</h2>
-							<p class="skill-description">{ s.Description }</p>
-							<div class="skill-meta">
-								<span class="skill-version">v{ s.Version }</span>
-								if s.Downloads > 0 {
-									<span class="skill-downloads">{ fmt.Sprintf("%d", s.Downloads) } downloads</span>
-								}
+					for i, s := range skills {
+						<details class="skill-entry">
+							<summary class="skill-summary">
+								<span class="skill-number">{ fmt.Sprintf("%02d", i+1) }</span>
+								<a class="skill-name" href={ templ.SafeURL(fmt.Sprintf("/skills/%s/", s.Name)) }>{ s.Name }</a>
+								<span class="skill-summary-right">
+									<span class="skill-downloads">{ fmt.Sprintf("%d", s.Downloads) } ↓</span>
+									<span class="skill-sep">|</span>
+									<span class="skill-version">v{ s.Version }</span>
+									<span class="skill-toggle-icon"></span>
+								</span>
+							</summary>
+							<div class="skill-body">
+								<p class="skill-description">{ s.Description }</p>
+								<pre class="skill-install"><code>cp -r skills/{ s.Name } .agents/skills/</code></pre>
 							</div>
-						</article>
+						</details>
 					}
 				</div>
 			}
