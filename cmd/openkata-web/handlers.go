@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"sort"
 	"strconv"
 	"strings"
@@ -53,15 +54,33 @@ func handleSkills(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// /skills/:name/ — detail page
+	if len(parts) == 1 {
+		skill := loadSkillDetail(r.Context(), parts[0])
+		if skill == nil {
+			http.NotFound(w, r)
+			return
+		}
+		templates.SkillDetailPage(*skill).Render(r.Context(), w)
+		return
+	}
+
 	http.NotFound(w, r)
 }
 
-func loadSkillsList(ctx context.Context) []templates.SkillEntry {
+func loadVersionsJSON(ctx context.Context) []byte {
+	// In dev mode, try local file first
+	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") == "" {
+		data, err := os.ReadFile("web/static/versions.json")
+		if err == nil {
+			return data
+		}
+	}
+
+	// Fall back to S3
 	if s3Client == nil {
 		return nil
 	}
-
-	// Read versions.json from S3
 	key := "versions.json"
 	resp, err := s3Client.GetObject(ctx, &s3.GetObjectInput{
 		Bucket: &bucket,
@@ -71,6 +90,18 @@ func loadSkillsList(ctx context.Context) []templates.SkillEntry {
 		return nil
 	}
 	defer resp.Body.Close()
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil
+	}
+	return data
+}
+
+func loadSkillsList(ctx context.Context) []templates.SkillEntry {
+	data := loadVersionsJSON(ctx)
+	if data == nil {
+		return nil
+	}
 
 	var versions struct {
 		Skills map[string]struct {
@@ -79,7 +110,7 @@ func loadSkillsList(ctx context.Context) []templates.SkillEntry {
 			Tags        string `json:"tags"`
 		} `json:"skills"`
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&versions); err != nil {
+	if err := json.Unmarshal(data, &versions); err != nil {
 		return nil
 	}
 
@@ -107,6 +138,9 @@ func loadSkillsList(ctx context.Context) []templates.SkillEntry {
 
 	var skills []templates.SkillEntry
 	for name, info := range versions.Skills {
+		if info.Version == "0.0.0" {
+			continue
+		}
 		skills = append(skills, templates.SkillEntry{
 			Name:        name,
 			Version:     info.Version,
@@ -117,6 +151,195 @@ func loadSkillsList(ctx context.Context) []templates.SkillEntry {
 	}
 	sort.Slice(skills, func(i, j int) bool { return skills[i].Name < skills[j].Name })
 	return skills
+}
+
+func loadSkillDetail(ctx context.Context, name string) *templates.SkillDetail {
+	// Dev mode: read from local filesystem
+	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") == "" {
+		return loadSkillDetailLocal(name)
+	}
+
+	if s3Client == nil {
+		return nil
+	}
+
+	version := resolveLatestVersion(ctx, "skills", name)
+	if version == "" {
+		return nil
+	}
+
+	// Get metadata from versions.json
+	key := "versions.json"
+	resp, err := s3Client.GetObject(ctx, &s3.GetObjectInput{
+		Bucket: &bucket,
+		Key:    &key,
+	})
+	if err != nil {
+		return nil
+	}
+	defer resp.Body.Close()
+
+	var versions struct {
+		Skills map[string]struct {
+			Version     string `json:"version"`
+			Description string `json:"description"`
+		} `json:"skills"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&versions); err != nil {
+		return nil
+	}
+
+	info, ok := versions.Skills[name]
+	if !ok {
+		return nil
+	}
+
+	// List files in the skill prefix
+	prefix := "skills/" + name + "/" + version + "/"
+	listResp, err := s3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
+		Bucket: &bucket,
+		Prefix: &prefix,
+	})
+	if err != nil {
+		return nil
+	}
+
+	detail := &templates.SkillDetail{
+		Name:        name,
+		Version:     version,
+		Description: info.Description,
+	}
+
+	// Get download count
+	if dbClient != nil {
+		scanResp, err := dbClient.Scan(ctx, &dynamodb.ScanInput{
+			TableName: &table,
+		})
+		if err == nil {
+			for _, item := range scanResp.Items {
+				artAttr, ok := item["artifact"].(*types.AttributeValueMemberS)
+				if !ok {
+					continue
+				}
+				if artAttr.Value == "skills/"+name {
+					dlAttr, ok := item["downloads"].(*types.AttributeValueMemberN)
+					if ok {
+						n, _ := strconv.Atoi(dlAttr.Value)
+						detail.Downloads = n
+					}
+				}
+			}
+		}
+	}
+
+	// Fetch key files and build file list
+	for _, obj := range listResp.Contents {
+		relPath := strings.TrimPrefix(*obj.Key, prefix)
+		if relPath == "" || strings.HasSuffix(relPath, "/") || relPath == "tile.json" {
+			continue
+		}
+		detail.Files = append(detail.Files, relPath)
+
+		// Fetch content for known markdown files
+		var target *string
+		switch relPath {
+		case "SKILL.md":
+			target = &detail.Docs
+		case "CHANGELOG.md":
+			target = &detail.Changelog
+		case "references/ACKNOWLEDGMENTS.md":
+			target = &detail.Acknowledgments
+		default:
+			continue
+		}
+
+		getResp, err := s3Client.GetObject(ctx, &s3.GetObjectInput{
+			Bucket: &bucket,
+			Key:    obj.Key,
+		})
+		if err != nil {
+			continue
+		}
+		data, err := io.ReadAll(getResp.Body)
+		getResp.Body.Close()
+		if err != nil {
+			continue
+		}
+		*target = renderMarkdown(data)
+	}
+
+	sort.Strings(detail.Files)
+	return detail
+}
+
+func loadSkillDetailLocal(name string) *templates.SkillDetail {
+	dir := "skills/" + name
+	mdPath := dir + "/SKILL.md"
+	data, err := os.ReadFile(mdPath)
+	if err != nil {
+		return nil
+	}
+
+	// Get version and description from versions.json
+	var version, description string
+	vjData, err := os.ReadFile("web/static/versions.json")
+	if err == nil {
+		var vj struct {
+			Skills map[string]struct {
+				Version     string `json:"version"`
+				Description string `json:"description"`
+			} `json:"skills"`
+		}
+		if json.Unmarshal(vjData, &vj) == nil {
+			if info, ok := vj.Skills[name]; ok {
+				version = info.Version
+				description = info.Description
+			}
+		}
+	}
+
+	detail := &templates.SkillDetail{
+		Name:        name,
+		Version:     version,
+		Description: description,
+		Docs:        renderMarkdown(data),
+	}
+
+	// Changelog
+	if cl, err := os.ReadFile(dir + "/CHANGELOG.md"); err == nil {
+		detail.Changelog = renderMarkdown(cl)
+	}
+
+	// Acknowledgments
+	if ack, err := os.ReadFile(dir + "/references/ACKNOWLEDGMENTS.md"); err == nil {
+		detail.Acknowledgments = renderMarkdown(ack)
+	}
+
+	// File list
+	entries, _ := os.ReadDir(dir)
+	for _, e := range entries {
+		if e.Name() == "tile.json" {
+			continue
+		}
+		if e.IsDir() {
+			sub, _ := os.ReadDir(dir + "/" + e.Name())
+			for _, s := range sub {
+				detail.Files = append(detail.Files, e.Name()+"/"+s.Name())
+			}
+		} else {
+			detail.Files = append(detail.Files, e.Name())
+		}
+	}
+	sort.Strings(detail.Files)
+	return detail
+}
+
+func renderMarkdown(src []byte) string {
+	// Simple passthrough — render as preformatted text wrapped in a div
+	// TODO: replace with goldmark when added as dependency
+	escaped := strings.ReplaceAll(string(src), "<", "&lt;")
+	escaped = strings.ReplaceAll(escaped, ">", "&gt;")
+	return "<pre class=\"markdown-raw\">" + escaped + "</pre>"
 }
 
 func handleRules(w http.ResponseWriter, r *http.Request) {
@@ -144,19 +367,10 @@ func handleRules(w http.ResponseWriter, r *http.Request) {
 }
 
 func loadRulesList(ctx context.Context) []templates.SkillEntry {
-	if s3Client == nil {
+	data := loadVersionsJSON(ctx)
+	if data == nil {
 		return nil
 	}
-
-	key := "versions.json"
-	resp, err := s3Client.GetObject(ctx, &s3.GetObjectInput{
-		Bucket: &bucket,
-		Key:    &key,
-	})
-	if err != nil {
-		return nil
-	}
-	defer resp.Body.Close()
 
 	var versions struct {
 		Rules map[string]struct {
@@ -165,7 +379,7 @@ func loadRulesList(ctx context.Context) []templates.SkillEntry {
 			Tags        string `json:"tags"`
 		} `json:"rules"`
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&versions); err != nil {
+	if err := json.Unmarshal(data, &versions); err != nil {
 		return nil
 	}
 
@@ -393,19 +607,10 @@ func handleProfiles(w http.ResponseWriter, r *http.Request) {
 }
 
 func loadProfilesList(ctx context.Context) []templates.SkillEntry {
-	if s3Client == nil {
+	data := loadVersionsJSON(ctx)
+	if data == nil {
 		return nil
 	}
-
-	key := "versions.json"
-	resp, err := s3Client.GetObject(ctx, &s3.GetObjectInput{
-		Bucket: &bucket,
-		Key:    &key,
-	})
-	if err != nil {
-		return nil
-	}
-	defer resp.Body.Close()
 
 	var versions struct {
 		Profiles map[string]struct {
@@ -414,7 +619,7 @@ func loadProfilesList(ctx context.Context) []templates.SkillEntry {
 			Tags        string `json:"tags"`
 		} `json:"profiles"`
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&versions); err != nil {
+	if err := json.Unmarshal(data, &versions); err != nil {
 		return nil
 	}
 
