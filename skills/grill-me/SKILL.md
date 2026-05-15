@@ -5,6 +5,8 @@ description: >
   relentlessly until all corners are covered. Use when the user
   wants to stress-test a plan, get grilled on their design, says
   "grill me", "challenge this", or "poke holes in this."
+metadata:
+  tags: "category:review, category:architecture"
 ---
 
 # Grill Me

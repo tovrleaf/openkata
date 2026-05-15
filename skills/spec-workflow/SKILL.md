@@ -9,6 +9,8 @@ description: >
   trade-off decisions? If yes, activate this skill. Also activate
   when the user says "let's spec this", "new feature", or
   "let's plan."
+metadata:
+  tags: "category:planning, category:workflow"
 ---
 
 # Spec-Driven Dev

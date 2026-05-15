@@ -9,6 +9,8 @@ description: >
   coding style, standardize formatting across generated files,
   notices inconsistent output across sessions, or is setting up a
   new project's conventions.
+metadata:
+  tags: "category:scaffolding, category:conventions"
 ---
 
 # Create Rule

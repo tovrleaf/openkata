@@ -1,3 +1,12 @@
+---
+name: markdown-style
+description: >
+  Consistent markdown formatting conventions applied to all
+  generated files.
+metadata:
+  tags: "category:conventions, language:markdown"
+---
+
 # Markdown Style
 
 Apply these conventions to all markdown files.

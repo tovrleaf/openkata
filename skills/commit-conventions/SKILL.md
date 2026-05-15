@@ -8,6 +8,8 @@ description: >
   commit, creating a branch, reviewing commit history, preparing a
   pull request, setting up commit linting, or asking about commit
   message format, branch naming, or Conventional Commits.
+metadata:
+  tags: "category:conventions, category:version-control, tool:git"
 ---
 
 # Git Conventions
@@ -26,6 +28,10 @@ Conventional Commits and kebab-case branch names.
 
 3. **Verify atomicity** — One logical change per commit. If you
    need "and" in the message, split into multiple commits.
+   When asked to "commit all" or "commit everything", first
+   review the diff for unrelated changes. If multiple logical
+   changes are present, propose a split with one commit per
+   concern and confirm the grouping before proceeding.
 
 4. **Stage specific files** — Prefer `git add <file>` over
    `git add .`.

@@ -3,6 +3,8 @@ name: bash-style
 description: >
   Bash scripting conventions based on the Google Shell Style Guide.
   Applied to all .sh files and bash scripts.
+metadata:
+  tags: "category:conventions, language:bash"
 ---
 
 # Bash Style
