@@ -48,4 +48,4 @@ dev: ## Start local dev server with hot reload
 
 .PHONY: deploy
 deploy: ## Deploy web server to AWS Lambda
-	@./scripts/deploy.sh
+	@./scripts/deploy-web.sh

@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  deploy:
+  deploy-web:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -28,4 +28,22 @@ jobs:
         run: go install github.com/a-h/templ/cmd/templ@latest
 
       - name: Deploy
-        run: ./scripts/deploy.sh
+        run: ./scripts/deploy-web.sh
+
+  deploy-mcp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::152406482128:role/openkata-ci
+          aws-region: eu-north-1
+
+      - name: Deploy
+        run: ./scripts/deploy-mcp.sh

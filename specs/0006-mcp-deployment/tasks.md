@@ -61,6 +61,6 @@ title: MCP Server Deployment — Tasks
 - [ ] CI workflow: `.github/workflows/deploy-mcp.yaml`
 - [x] Test `list_skills` via curl
 - [x] Test `install_skill` via curl
-- [ ] Test `skill_versions` via curl
+- [x] Test `skill_versions` via curl
 - [ ] Test web download route
 - [x] Verify DynamoDB counters increment
