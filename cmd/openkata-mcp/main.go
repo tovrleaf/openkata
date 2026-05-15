@@ -373,6 +373,9 @@ func readAllFiles(ctx context.Context, prefix string) (map[string]string, error)
 		if relPath == "" || strings.HasSuffix(relPath, "/") {
 			continue
 		}
+		if relPath == "tile.json" || relPath == "references/ACKNOWLEDGMENTS.md" {
+			continue
+		}
 
 		getResp, err := s3Client.GetObject(ctx, &s3.GetObjectInput{
 			Bucket: &bucket,
