@@ -1,4 +1,4 @@
-# Markdown Consistency
+# Markdown Style
 
 Apply these conventions to all markdown files.
 

@@ -24,7 +24,7 @@ After the generic `create-rule` workflow, also do:
 
 2. **Create CHANGELOG.md** — Every rule gets a changelog
    starting at v1.0.0 with an initial `### Added` entry.
-   Follow the markdown-consistency rule for formatting.
+   Follow the markdown-style rule for formatting.
 
 3. **Symlink if distributable** — For rules in `rules/`, ask
    the user if they want it symlinked into `.agents/rules/`:

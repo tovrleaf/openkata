@@ -42,7 +42,7 @@ project root indicate a build error.
 
 - Wrap prose at 72–80 characters
 - ATX headings, `-` for lists, fenced code blocks
-- See [`rules/markdown-consistency/RULE.md`](rules/markdown-consistency/RULE.md)
+- See [`rules/markdown-style/RULE.md`](rules/markdown-style/RULE.md)
   for full conventions
 
 ## Commits

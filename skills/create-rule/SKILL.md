@@ -82,7 +82,7 @@ consistency."
    code blocks, line length?"
 3. Reads 2–3 existing markdown files to extract implicit
    patterns
-4. Creates `markdown-consistency/RULE.md` with specific,
+4. Creates `markdown-style/RULE.md` with specific,
    enforceable conventions grouped by concern — see
    [example-rule.md](references/example-rule.md) for the
    finished output

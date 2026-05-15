@@ -24,7 +24,7 @@ After the generic `create-skill` workflow, also do:
 
 2. **Create CHANGELOG.md** — Every skill gets a changelog
    starting at v1.0.0 with an initial `### Added` entry.
-   Follow the markdown-consistency rule for formatting.
+   Follow the markdown-style rule for formatting.
 
 3. **Import to Tessl** — Run
    `tessl skill import <skill-directory>` to generate `tile.json`

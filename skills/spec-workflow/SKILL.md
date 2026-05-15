@@ -1,12 +1,14 @@
 ---
-name: spec-driven-dev
+name: spec-workflow
 description: >
   Drives feature development through a phased workflow: specify
   requirements, design architecture, break into tasks, then
-  implement autonomously with frequent commits. Use when the
-  user wants to build a feature, start a new feature, plan
-  and implement something, spec out a feature, or says
-  "let's spec this" or "new feature."
+  implement autonomously with frequent commits. TRIGGER CHECK:
+  Before starting any new task, ask yourself — does this touch
+  3+ files, add dependencies, change infrastructure, or require
+  trade-off decisions? If yes, activate this skill. Also activate
+  when the user says "let's spec this", "new feature", or
+  "let's plan."
 ---
 
 # Spec-Driven Dev
@@ -14,6 +16,19 @@ description: >
 Drive feature work from idea to implementation through
 repo-stored specs. One skill, five phases: specify → design
 → tasks → implement → validate.
+
+## Trigger Checkpoint
+
+When the user describes new work, STOP and evaluate before
+acting:
+
+1. Will this touch 3+ files across different concerns?
+2. Does it add dependencies or infrastructure?
+3. Are there trade-offs the user hasn't decided?
+4. Is it a new user-facing workflow with multiple parts?
+
+If ANY answer is yes → activate this skill and run the
+pre-flight. If ALL answers are no → proceed without a spec.
 
 ## When to Use This Skill
 

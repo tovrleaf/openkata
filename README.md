@@ -49,20 +49,21 @@ Or use the dojo (MCP server) to install kata into your project — see
 | [create-rule](skills/create-rule/) | Creates always-on agent rules by investigating repo conventions and writing RULE.md files |
 | [grill-me](skills/grill-me/) | Challenges a plan, spec, or ADR by interviewing the user until all corners are covered |
 | [makefile-conventions](skills/makefile-conventions/) | Structures Makefiles as a universal command interface using modular includes and self-documenting help |
-| [spec-driven-dev](skills/spec-driven-dev/) | Drives feature development through a phased workflow: specify, design, tasks, implement, and validate |
+| [spec-workflow](skills/spec-workflow/) | Drives feature development through a phased workflow: specify, design, tasks, implement, and validate |
 
 ## Available dojo kun
 
 | Rule | Description |
 |------|-------------|
-| [markdown-consistency](rules/markdown-consistency/) | Consistent markdown formatting conventions applied to all generated files |
+| [markdown-style](rules/markdown-style/) | Consistent markdown formatting conventions applied to all generated files |
 | [bash-style](rules/bash-style/) | Bash scripting conventions based on the Google Shell Style Guide |
 
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add skills
 and rules. See [AGENTS.md](AGENTS.md) for build commands, code
-style, and commit conventions.
+style, and commit conventions. See [RELEASING.md](RELEASING.md)
+for how to publish skills and deploy.
 
 ## License
 
