@@ -2,7 +2,6 @@
 (function() {
   var themes = [
     { id: 'japandi', color: '#fcfcfc' },
-    { id: 'hokusai', color: '#d9d1ba' },
     { id: 'indigo', color: '#1a1a2e' }
   ];
 
