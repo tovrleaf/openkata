@@ -27,18 +27,31 @@ templ Skills(skills []SkillEntry) {
 					for i, s := range skills {
 						<details class="skill-entry">
 							<summary class="skill-summary">
-								<span class="skill-number">{ fmt.Sprintf("%02d", i+1) }</span>
-								<a class="skill-name" href={ templ.SafeURL(fmt.Sprintf("/skills/%s/", s.Name)) }>{ s.Name }</a>
-								<span class="skill-summary-right">
-									<span class="skill-downloads">{ fmt.Sprintf("%d", s.Downloads) } ↓</span>
-									<span class="skill-sep">|</span>
-									<span class="skill-version">v{ s.Version }</span>
-									<span class="skill-toggle-icon"></span>
-								</span>
+								<div class="skill-summary-top">
+									<span class="skill-number">{ fmt.Sprintf("%02d", i+1) }</span>
+									<span class="skill-name">{ s.Name }</span>
+									<span class="skill-summary-right">
+										<span class="skill-downloads">{ fmt.Sprintf("%d", s.Downloads) } ↓</span>
+										<span class="skill-sep">|</span>
+										<span class="skill-version">v{ s.Version }</span>
+										<span class="skill-toggle-icon"></span>
+									</span>
+								</div>
+								<div class="skill-tags">
+									if len(SplitTags(s.Tags)) > 0 {
+										for _, tag := range SplitTags(s.Tags) {
+											<span class={ TagClass(tag) }>{ tag }</span>
+										}
+									}
+									<a class="btn-open" href={ templ.SafeURL(fmt.Sprintf("/skills/%s/", s.Name)) }>Open</a>
+								</div>
 							</summary>
 							<div class="skill-body">
-								<p class="skill-description">{ s.Description }</p>
-								<pre class="skill-install"><code>cp -r skills/{ s.Name } .agents/skills/</code></pre>
+																if len(FirstSentence(s.Description)) > 200 {
+									<p class="skill-description"><strong>{ FirstSentence(s.Description) }</strong></p>
+								} else {
+									<p class="skill-description"><strong>{ FirstSentence(s.Description) }</strong><br/>{ AfterFirstSentence(s.Description) }</p>
+								}
 							</div>
 						</details>
 					}
