@@ -17,7 +17,6 @@ Creates and maintains skills, rules, and profiles for the ryu.
 Modify only:
 - `skills/`, `rules/`, `profiles/`
 - `.agents/skills/`, `.agents/rules/`
-- `docs/adr/`
 - CHANGELOGs and tile.json within artifact directories
 
 Do not touch: application code, infrastructure, CI, web UI,
