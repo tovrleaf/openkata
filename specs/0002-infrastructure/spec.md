@@ -1,27 +1,26 @@
 ---
-title: Infrastructure for Lambda Deployment
 status: Done
 depth: Standard
-created: 2026-05-09
 ---
 
 # Infrastructure for Lambda Deployment
 
-## Goal
+## Story
 
-Deploy the openkata-web server to AWS Lambda using CDK (Go)
-so the site is publicly accessible. Everything as code,
-deployable from a developer machine.
+As a maintainer, I want the website deployed to AWS Lambda
+so that the site is publicly accessible without managing
+servers.
 
 ## Requirements
 
-1. CloudFormation template defines all AWS resources
-2. Lambda runs the openkata-web binary (arm64, provided.al2023)
-3. Lambda Function URL provides public HTTPS access
-4. Static assets embedded in the binary (go:embed)
-5. Single command deploys: `make deploy`
-6. Infrastructure lives in `infra/` directory
-7. No custom domain (use Function URL directly)
+- CloudFormation template defines all AWS resources
+- Lambda runs the openkata-web binary (arm64,
+  provided.al2023)
+- Lambda Function URL provides public HTTPS access
+- Static assets embedded in the binary (go:embed)
+- Single command deploys: `make deploy`
+- Infrastructure lives in `infra/` directory
+- No custom domain (use Function URL directly)
 
 ## Out of Scope
 
@@ -34,10 +33,3 @@ deployable from a developer machine.
 ## Open Questions
 
 - None — ADR 0007 covers the architecture decisions.
-
-## Acceptance Criteria
-
-- `make deploy` succeeds from a configured machine
-- CloudFront URL returns the landing page HTML
-- Static assets (CSS, htmx.js) load correctly
-- Cold start under 500ms

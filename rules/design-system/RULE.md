@@ -1,3 +1,12 @@
+---
+name: design-system
+description: >
+  Token-based CSS design system conventions. Applied when writing
+  or modifying CSS, templates, or page layouts.
+metadata:
+  tags: "category:conventions, language:css"
+---
+
 # Design System
 
 Always-on conventions for token-based CSS design systems.

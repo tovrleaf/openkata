@@ -1,8 +1,6 @@
----
-spec: 0004-ci-cd
----
+# Tasks: CI/CD with GitHub Actions
 
-# Tasks
+## Tasks
 
 ### 1. Create build workflow
 - **Status**: Pending

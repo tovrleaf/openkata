@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
@@ -21,14 +23,132 @@ type artifactInfo struct {
 }
 
 type versionsFile struct {
-	Skills map[string]artifactInfo `json:"skills"`
-	Rules  map[string]artifactInfo `json:"rules"`
+	Skills   map[string]artifactInfo `json:"skills"`
+	Rules    map[string]artifactInfo `json:"rules"`
+	Profiles map[string]artifactInfo `json:"profiles"`
 }
 
+var (
+	local  = flag.Bool("local", false, "Read from local filesystem instead of S3")
+	output = flag.String("out", "", "Output path (default: /tmp/versions.json, or web/static/versions.json with --local)")
+)
+
 func main() {
+	flag.Parse()
+
+	if *local {
+		runLocal()
+	} else {
+		runS3()
+	}
+}
+
+func runLocal() {
+	outPath := *output
+	if outPath == "" {
+		outPath = "web/static/versions.json"
+	}
+
+	versions := versionsFile{
+		Skills:   make(map[string]artifactInfo),
+		Rules:    make(map[string]artifactInfo),
+		Profiles: make(map[string]artifactInfo),
+	}
+
+	// Scan skills
+	scanLocal("skills", "SKILL.md", func(name string, info artifactInfo) {
+		versions.Skills[name] = info
+	})
+
+	// Scan rules
+	scanLocal("rules", "RULE.md", func(name string, info artifactInfo) {
+		versions.Rules[name] = info
+	})
+
+	// Scan profiles
+	entries, _ := os.ReadDir("profiles")
+	for _, e := range entries {
+		if e.IsDir() || !strings.HasSuffix(e.Name(), ".md") {
+			continue
+		}
+		name := strings.TrimSuffix(e.Name(), ".md")
+		data, err := os.ReadFile(filepath.Join("profiles", e.Name()))
+		if err != nil {
+			continue
+		}
+		desc, tags := parseFrontmatter(string(data))
+		versions.Profiles[name] = artifactInfo{
+			Version:     latestTag("profiles/" + name),
+			Description: desc,
+			Tags:        tags,
+		}
+	}
+
+	data, _ := json.MarshalIndent(versions, "", "  ")
+	data = append(data, '\n')
+
+	os.MkdirAll(filepath.Dir(outPath), 0755)
+	if err := os.WriteFile(outPath, data, 0644); err != nil {
+		fmt.Fprintf(os.Stderr, "write: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Wrote %s\n", outPath)
+	fmt.Println(string(data))
+}
+
+func scanLocal(dir, mdFile string, add func(string, artifactInfo)) {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return
+	}
+	for _, e := range entries {
+		if !e.IsDir() {
+			continue
+		}
+		name := e.Name()
+		path := filepath.Join(dir, name, mdFile)
+		data, err := os.ReadFile(path)
+		if err != nil {
+			continue
+		}
+		desc, tags := parseFrontmatter(string(data))
+		add(name, artifactInfo{
+			Version:     latestTag(dir + "/" + name),
+			Description: desc,
+			Tags:        tags,
+		})
+	}
+}
+
+func latestTag(prefix string) string {
+	// Try to find latest git tag for this artifact
+	// Fall back to "0.0.0" if none found
+	cmd := fmt.Sprintf("git tag -l '%s/v*' --sort=version:refname | tail -1", prefix)
+	out, err := execCmd(cmd)
+	if err != nil || out == "" {
+		return "0.0.0"
+	}
+	// Extract version from tag like "skills/create-adr/v1.0.0"
+	parts := strings.Split(strings.TrimSpace(out), "/")
+	v := parts[len(parts)-1]
+	return strings.TrimPrefix(v, "v")
+}
+
+func execCmd(cmd string) (string, error) {
+	out, err := execShell(cmd)
+	return strings.TrimSpace(string(out)), err
+}
+
+func runS3() {
 	bucket := os.Getenv("OPENKATA_BUCKET")
 	if bucket == "" {
 		bucket = "openkata-artifacts"
+	}
+
+	outPath := *output
+	if outPath == "" {
+		outPath = "/tmp/versions.json"
 	}
 
 	ctx := context.Background()
@@ -40,11 +160,12 @@ func main() {
 
 	client := s3.NewFromConfig(cfg)
 	versions := versionsFile{
-		Skills: make(map[string]artifactInfo),
-		Rules:  make(map[string]artifactInfo),
+		Skills:   make(map[string]artifactInfo),
+		Rules:    make(map[string]artifactInfo),
+		Profiles: make(map[string]artifactInfo),
 	}
 
-	for _, artifactType := range []string{"skills", "rules"} {
+	for _, artifactType := range []string{"skills", "rules", "profiles"} {
 		names, err := listPrefixes(ctx, client, bucket, artifactType+"/")
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "listing %s: %v\n", artifactType, err)
@@ -63,10 +184,12 @@ func main() {
 			mdFile := "SKILL.md"
 			if artifactType == "rules" {
 				mdFile = "RULE.md"
+			} else if artifactType == "profiles" {
+				mdFile = name + ".md"
 			}
 
 			key := artifactType + "/" + name + "/" + latest + "/" + mdFile
-			description, tags := readFrontmatter(ctx, client, bucket, key)
+			description, tags := readFrontmatterS3(ctx, client, bucket, key)
 
 			info := artifactInfo{
 				Version:     latest,
@@ -74,10 +197,13 @@ func main() {
 				Tags:        tags,
 			}
 
-			if artifactType == "skills" {
+			switch artifactType {
+			case "skills":
 				versions.Skills[name] = info
-			} else {
+			case "rules":
 				versions.Rules[name] = info
+			case "profiles":
+				versions.Profiles[name] = info
 			}
 		}
 	}
@@ -85,14 +211,13 @@ func main() {
 	data, _ := json.MarshalIndent(versions, "", "  ")
 	data = append(data, '\n')
 
-	// Write locally
-	if err := os.WriteFile("/tmp/versions.json", data, 0644); err != nil {
+	if err := os.WriteFile(outPath, data, 0644); err != nil {
 		fmt.Fprintf(os.Stderr, "write: %v\n", err)
 		os.Exit(1)
 	}
 
 	// Upload to S3
-	f, _ := os.Open("/tmp/versions.json")
+	f, _ := os.Open(outPath)
 	defer f.Close()
 	_, err = client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket:      &bucket,
@@ -130,7 +255,7 @@ func listPrefixes(ctx context.Context, client *s3.Client, bucket, prefix string)
 	return names, nil
 }
 
-func readFrontmatter(ctx context.Context, client *s3.Client, bucket, key string) (description, tags string) {
+func readFrontmatterS3(ctx context.Context, client *s3.Client, bucket, key string) (description, tags string) {
 	resp, err := client.GetObject(ctx, &s3.GetObjectInput{
 		Bucket: &bucket,
 		Key:    &key,
@@ -145,7 +270,10 @@ func readFrontmatter(ctx context.Context, client *s3.Client, bucket, key string)
 		return "", ""
 	}
 
-	content := string(data)
+	return parseFrontmatter(string(data))
+}
+
+func parseFrontmatter(content string) (description, tags string) {
 	if !strings.HasPrefix(content, "---") {
 		return "", ""
 	}
@@ -166,7 +294,6 @@ func readFrontmatter(ctx context.Context, client *s3.Client, bucket, key string)
 			if val != "" && val != ">" && val != "|" {
 				description = val
 			} else {
-				// Multi-line
 				var parts []string
 				for j := i + 1; j < len(lines); j++ {
 					l := lines[j]
@@ -185,7 +312,6 @@ func readFrontmatter(ctx context.Context, client *s3.Client, bucket, key string)
 			tags = strings.Trim(tags, `"'`)
 		}
 
-		// Read tags from metadata.tags
 		if trimmed == "metadata:" {
 			for j := i + 1; j < len(lines); j++ {
 				ml := strings.TrimSpace(lines[j])

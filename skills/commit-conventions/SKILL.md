@@ -8,6 +8,8 @@ description: >
   commit, creating a branch, reviewing commit history, preparing a
   pull request, setting up commit linting, or asking about commit
   message format, branch naming, or Conventional Commits.
+metadata:
+  tags: "category:conventions, category:version-control, tool:git"
 ---
 
 # Git Conventions
@@ -17,20 +19,30 @@ Conventional Commits and kebab-case branch names.
 
 ## Commit Workflow
 
-1. **Check existing conventions** — Before applying defaults,
+1. **Name branches by type** — Use the pattern `type/description`:
+   - `feature/*` for new functionality
+   - `fix/*` for bug fixes
+   - `hotfix/*` for urgent production fixes
+   Use lowercase kebab-case for the description part.
+
+2. **Check existing conventions** — Before applying defaults,
    look for `.commitlintrc`, `commitlint.config.js`, `.czrc`,
    `CONTRIBUTING.md`, or recent commit history. If the repo has
    established conventions, follow those instead.
 
-2. **Review changes** — Run `git status` and `git diff`.
+3. **Review changes** — Run `git status` and `git diff`.
 
-3. **Verify atomicity** — One logical change per commit. If you
+4. **Verify atomicity** — One logical change per commit. If you
    need "and" in the message, split into multiple commits.
+   When asked to "commit all" or "commit everything", first
+   review the diff for unrelated changes. If multiple logical
+   changes are present, propose a split with one commit per
+   concern and confirm the grouping before proceeding.
 
-4. **Stage specific files** — Prefer `git add <file>` over
+5. **Stage specific files** — Prefer `git add <file>` over
    `git add .`.
 
-5. **Write the commit message** — Follow the
+6. **Write the commit message** — Follow the
    [commit format](references/commit-format.md):
 
    ```text
@@ -48,9 +60,9 @@ Conventional Commits and kebab-case branch names.
      refactors, non-trivial fixes
    - Header-only is fine when the diff tells the full story
 
-6. **Commit.**
+7. **Commit.**
 
-7. **Validate** — Run `git log -1` to confirm the format. If
+8. **Validate** — Run `git log -1` to confirm the format. If
    incorrect, run `git commit --amend` to fix.
 
 ## Branch Workflow

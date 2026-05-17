@@ -1,0 +1,89 @@
+package templates
+
+import "fmt"
+
+templ SkillDetailPage(skill SkillDetail) {
+	@Layout(skill.Name) {
+		<nav class="nav">
+			<a href="/" class="nav-brand">OPENKATA.dev</a>
+			<div class="theme-switcher">
+				<button class="theme-switcher__btn" onclick="cycleTheme()" aria-label="Next theme"></button>
+			</div>
+		</nav>
+
+		<main>
+			<section class="detail-header">
+				<div class="detail-title">
+					<h1>{ skill.Name }</h1>
+					<span class="detail-version">v{ skill.Version }</span>
+				</div>
+				<p class="detail-description">{ skill.Description }</p>
+				<div class="detail-actions">
+					<pre class="detail-install"><code>cp -r skills/{ skill.Name } .agents/skills/</code></pre>
+					<a class="detail-download" href={ templ.SafeURL(fmt.Sprintf("/skills/%s/archive", skill.Name)) }>Download .tar.gz</a>
+				</div>
+				if skill.Downloads > 0 {
+					<span class="detail-downloads">{ fmt.Sprintf("%d", skill.Downloads) } downloads</span>
+				}
+			</section>
+
+			<nav class="tabs" aria-label="Skill sections">
+				<button class="tab active" data-tab="docs">Docs</button>
+				<button class="tab" data-tab="files">Files</button>
+				<button class="tab" data-tab="changelog">Changelog</button>
+				<button class="tab" data-tab="acknowledgments">Acknowledgments</button>
+			</nav>
+
+			<section class="tab-panel active" id="panel-docs">
+				if skill.Docs != "" {
+					@templ.Raw(skill.Docs)
+				} else {
+					<p class="comment">No documentation available.</p>
+				}
+			</section>
+
+			<section class="tab-panel" id="panel-files">
+				if len(skill.Files) > 0 {
+					<ul class="file-list">
+						for _, f := range skill.Files {
+							<li class="file-entry">{ f }</li>
+						}
+					</ul>
+				} else {
+					<p class="comment">No files available.</p>
+				}
+			</section>
+
+			<section class="tab-panel" id="panel-changelog">
+				if skill.Changelog != "" {
+					@templ.Raw(skill.Changelog)
+				} else {
+					<p class="comment">No changelog available.</p>
+				}
+			</section>
+
+			<section class="tab-panel" id="panel-acknowledgments">
+				if skill.Acknowledgments != "" {
+					@templ.Raw(skill.Acknowledgments)
+				} else {
+					<p class="comment">No acknowledgments.</p>
+				}
+			</section>
+
+			<script>
+				document.querySelectorAll('.tab').forEach(function(btn) {
+					btn.addEventListener('click', function() {
+						document.querySelectorAll('.tab').forEach(function(b) { b.classList.remove('active'); });
+						document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+						btn.classList.add('active');
+						document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+					});
+				});
+			</script>
+		</main>
+
+		<footer class="footer">
+			© 2026 OPENKATA.dev // License: <a href="https://github.com/tovrleaf/openkata/blob/main/LICENSE" target="_blank" rel="noopener">MIT</a>
+		</footer>
+	}
+}

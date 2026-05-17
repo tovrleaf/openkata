@@ -57,6 +57,13 @@ Or use the dojo (MCP server) to install kata into your project — see
 |------|-------------|
 | [markdown-style](rules/markdown-style/) | Consistent markdown formatting conventions applied to all generated files |
 | [bash-style](rules/bash-style/) | Bash scripting conventions based on the Google Shell Style Guide |
+| [design-system](rules/design-system/) | Token-based CSS design system conventions |
+
+## Available sensei profiles
+
+| Profile | Description |
+|---------|-------------|
+| [frontend](profiles/frontend.md) | Frontend developer scoped to web UI — templates, styles, and handlers only |
 
 ## Contributing
 

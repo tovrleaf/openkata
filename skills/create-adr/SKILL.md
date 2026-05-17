@@ -9,6 +9,8 @@ description: >
   authentication, API versioning), hard-to-reverse decisions (data models,
   public API contracts, infrastructure topology), or deviations from existing
   standards. Also activate when the user explicitly asks to create an ADR.
+metadata:
+  tags: "category:documentation, category:architecture"
 ---
 
 # Create ADR

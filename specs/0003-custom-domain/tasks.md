@@ -1,8 +1,6 @@
----
-spec: 0003-custom-domain
----
+# Tasks: Custom Domain with CloudFront
 
-# Tasks
+## Tasks
 
 ### 1. Create Route 53 hosted zone script
 - **Status**: Pending

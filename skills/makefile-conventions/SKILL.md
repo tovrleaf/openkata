@@ -6,6 +6,8 @@ description: >
   wants to add a make target, create a Makefile, organize build
   commands, set up a make-based workflow, or asks how to
   structure make targets.
+metadata:
+  tags: "category:conventions, tool:makefile"
 ---
 
 # Makefile Conventions

@@ -1,66 +1,62 @@
----
-title: MCP Server Deployment — Tasks
----
+# Tasks: MCP Server Deployment
 
-# Tasks
+## Tasks
 
-## Phase 1: Infrastructure
+### 1. Create infrastructure
+- **Status**: Done
+- **Goal**: S3 bucket, DynamoDB table, IAM roles, Lambda
+  function, and Function URL for the MCP server
+- **Boundary**: `infra/create-mcp-stack.sh`
+- **Depends**: None
+- **Done when**: Script creates all resources, Lambda has
+  a Function URL
 
-- [x] Create S3 bucket `openkata-artifacts` (block public)
-- [x] Create DynamoDB table `openkata-downloads`
-- [x] Create IAM role `openkata-mcp-role` (S3 read,
-      DynamoDB read/write)
-- [x] Create Lambda function `openkata-mcp` with role
-- [x] Create Function URL for `openkata-mcp`
-- [x] ~~Set reserved concurrency (10) on both Lambdas~~
-      Skipped: account concurrency limit too low
-- [x] Update `openkata-web-role`: add S3 read, DynamoDB
-      read/write
-- [x] Update `openkata-ci` role: add S3 PutObject +
-      ListObjects, Lambda UpdateFunctionCode for
-      `openkata-mcp`
-- [x] Script: `infra/create-mcp-stack.sh`
+### 2. Create publish workflow
+- **Status**: Done
+- **Goal**: CI workflow that publishes skills/rules to S3
+  on tag push, generates versions.json
+- **Boundary**: `.github/workflows/publish.yaml`
+- **Depends**: 1
+- **Done when**: Tagging a skill triggers upload to S3 and
+  versions.json is correct
 
-## Phase 2: Publish workflow
+### 3. Rewrite MCP server for Lambda
+- **Status**: Done
+- **Goal**: Remove local filesystem, add S3/DynamoDB
+  clients, implement all MCP tools, add Lambda adapter
+- **Boundary**: `cmd/openkata-mcp/`
+- **Depends**: 1
+- **Done when**: All tools work via Function URL (list,
+  install, versions)
 
-- [x] CI workflow: `.github/workflows/publish.yaml`
-      (triggers on skill/rule tag push)
-- [x] Publish existing 4 tagged skills to S3
-- [x] Verify versions.json is correct
+### 4. Add tags parsing
+- **Status**: Pending
+- **Goal**: Parse `metadata.tags` from skill/rule metadata
+- **Boundary**: `cmd/openkata-mcp/`
+- **Depends**: 3
+- **Done when**: Tags appear in list_skills/list_rules
+  responses
 
-## Phase 3: MCP server rewrite
+### 5. Web download routes
+- **Status**: In Progress
+- **Goal**: Archive download handler with DynamoDB counter
+  increment
+- **Boundary**: `cmd/openkata-web/handlers.go`
+- **Depends**: 1
+- **Done when**: `/skills/:name/archive` serves tar.gz and
+  increments download count
 
-- [x] Remove local filesystem reading (os.ReadDir)
-- [x] Remove stdio mode
-- [x] Remove `target_dir` parameter
-- [x] Add S3 client (read skills, versions.json)
-- [x] Add DynamoDB client (read/write counts)
-- [x] Cache versions.json in memory on init
-- [x] Implement `list_skills` from cache + DynamoDB
-- [x] Implement `list_rules` from cache + DynamoDB
-- [x] Implement `install_skill` (S3 read + manifest
-      generation + DynamoDB increment)
-- [x] Implement `install_rule` (same)
-- [x] Implement `skill_versions` (S3 ListObjects)
-- [x] Implement `rule_versions` (S3 ListObjects)
-- [x] Add `WithStateLess(true)` to server config
-- [x] Add Lambda adapter (httpadapter.NewV2)
-- [ ] Add tags parsing from metadata.tags
+### 6. Deploy and verify
+- **Status**: In Progress
+- **Goal**: Deploy MCP Lambda, create deploy workflow,
+  verify all tools end-to-end
+- **Boundary**: `.github/workflows/deploy-mcp.yaml`
+- **Depends**: 3
+- **Done when**: All MCP tools respond correctly via curl,
+  DynamoDB counters increment
 
-## Phase 4: Web downloads
+## Progress Log
 
-- [ ] Implement `/skills/:name/archive` handler
-- [x] Add S3 client to web server
-- [x] Add DynamoDB client to web server
-- [x] Display download counts on skills listing page
-- [ ] Increment counter on download
-
-## Phase 5: Deploy and verify
-
-- [x] Deploy MCP Lambda
-- [ ] CI workflow: `.github/workflows/deploy-mcp.yaml`
-- [x] Test `list_skills` via curl
-- [x] Test `install_skill` via curl
-- [x] Test `skill_versions` via curl
-- [ ] Test web download route
-- [x] Verify DynamoDB counters increment
+- [2026-05-10] Tasks 1-3 completed. Infrastructure created,
+  publish workflow working, MCP server deployed and verified
+  via curl.

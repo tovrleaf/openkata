@@ -1,8 +1,6 @@
----
-spec: 0002-infrastructure
----
+# Tasks: Infrastructure for Lambda Deployment
 
-# Tasks
+## Tasks
 
 ### 1. Adapt web server for Lambda
 - **Status**: Done

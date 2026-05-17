@@ -48,19 +48,57 @@ for maintainers of this repository only.
 
    If CHANGELOG.md doesn't exist, create it.
 
-6. **Regenerate root changelog** — Run `make changelog` to update
+6. **Generate tags** — Read the artifact's SKILL.md (or RULE.md)
+   content — title, description, workflow steps, and section
+   headings — and generate 2–5 namespaced tags describing what
+   the artifact does.
+
+   Tags use `namespace:value` format:
+   - `category:` — what the skill does (e.g., `category:documentation`,
+     `category:testing`, `category:workflow`)
+   - `language:` — programming language if applicable (e.g.,
+     `language:go`, `language:bash`)
+   - `tool:` — external tool the skill directly invokes or
+     operates on (e.g., `tool:git`, `tool:makefile`). Do not
+     add a tool tag just because the domain is related — only
+     if the skill actually calls or configures the tool.
+
+   Tags must be:
+   - Lowercase, hyphenated values (e.g., `category:code-review`)
+   - Derived from the skill's domain, actions, and outputs
+   - 2–5 tags per artifact
+   - Not redundant — avoid tagging the same concept in multiple
+     namespaces (e.g., don't use both `category:git` and
+     `tool:git`)
+
+   Write them into the frontmatter as `metadata.tags`:
+
+   ```yaml
+   ---
+   name: create-adr
+   description: Creates Architecture Decision Records
+   metadata:
+     tags: "category:documentation, category:architecture, tool:git"
+   ---
+   ```
+
+   Present the proposed tags to the user for review. Accept
+   edits before continuing.
+
+7. **Regenerate root changelog** — Run `make changelog` to update
    the aggregate CHANGELOG.md at the repo root.
 
-7. **Commit** — Stage the changed files (including root CHANGELOG.md)
+8. **Commit** — Stage the changed files (including root CHANGELOG.md)
    and commit with message:
    `release(<artifact-name>): v<new-version>`
 
-8. **Tag** — For distributable artifacts (`skills/`, `rules/`) only:
+9. **Tag** — For distributable artifacts (`skills/`, `rules/`) only:
    create a git tag `<directory-path>/v<new-version>`. Skip tagging for
    local artifacts in `.agents/` — they are versioned but not distributed.
 
-9. **Confirm** — Show the user what was done: version bumped, changelog
-   entry, commit hash, and tag name (if tagged). Ask if they want to push.
+10. **Confirm** — Show the user what was done: version bumped, changelog
+    entry, commit hash, and tag name (if tagged). Ask if they want to
+    push.
 
 ## Bump Examples
 
