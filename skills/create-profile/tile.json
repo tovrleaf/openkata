@@ -1,5 +1,5 @@
 {
-  "name": "local/create-profile",
+  "name": "openkata/create-profile",
   "version": "0.1.0",
   "private": true,
   "summary": "Creates sensei profiles that define agent roles with scoped permissions and constraints. Investigates the repo for existing profiles and conventions, writes a focused profile markdown file, and validates scope boundaries.",

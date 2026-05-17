@@ -1,5 +1,5 @@
 {
-  "name": "local/commit-conventions",
+  "name": "openkata/commit-conventions",
   "version": "0.1.0",
   "private": true,
   "summary": "Enforces Conventional Commits format and branch naming conventions. Activate when the user asks to commit, create a branch, or review commit messages. Also activate when preparing a pull request.\n",

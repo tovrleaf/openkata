@@ -1,5 +1,5 @@
 {
-  "name": "local/create-adr",
+  "name": "openkata/create-adr",
   "version": "0.1.0",
   "private": true,
   "summary": "Detects architectural decisions in conversation and guides creation of Architecture Decision Records. Activate when the user is making, discussing, or debating: technology choices (languages, frameworks, databases, cloud services), structural patterns (monolith vs microservices, event-driven, CQRS, API design), cross-cutting conventions (error handling, logging, authentication, API versioning), hard-to-reverse decisions (data models, public API contracts, infrastructure topology), or deviations from existing standards. Also activate when the user explicitly asks to create an ADR.\n",
