@@ -54,6 +54,26 @@ Use this before finalizing a generated or revised skill.
   justify?
 - If the skill is repo-bound, does it say so plainly?
 
+## Consistency
+
+- Does the name follow existing patterns (lowercase-hyphenated)?
+- Does the description avoid leaking workflow steps that would
+  let the agent skip the body?
+- Is there a companion rule or skill that should be referenced?
+- Does the CHANGELOG format match other artifacts?
+
+## Validation
+
+- Have you tested with at least one near-miss negative prompt?
+- Could someone verify the output is correct without re-reading
+  the whole skill?
+
+## Token Budget
+
+- Is the front-loaded cost justified for activation frequency?
+- Could any section move to `references/` without losing
+  workflow clarity?
+
 ## Boundaries
 
 - Does the skill state what it DOES?
