@@ -1,5 +1,5 @@
 ---
-name: ryu-release
+name: openkata-ryu-release
 description: >
   Release a new version of an OpenKata artifact (skill or rule). Detects
   changes since the last release, recommends a semver bump, updates
@@ -96,7 +96,12 @@ for maintainers of this repository only.
    create a git tag `<directory-path>/v<new-version>`. Skip tagging for
    local artifacts in `.agents/` — they are versioned but not distributed.
 
-10. **Confirm** — Show the user what was done: version bumped, changelog
+10. **Publish to registry** — If the artifact is distributable
+    (`skills/` or `rules/`) and has a `tile.json`, ask: "Want me
+    to publish this to the Tessl registry?" If yes, run
+    `tessl tile publish <directory-path>`.
+
+11. **Confirm** — Show the user what was done: version bumped, changelog
     entry, commit hash, and tag name (if tagged). Ask if they want to
     push.
 

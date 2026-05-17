@@ -1,5 +1,5 @@
 ---
-name: review-rule
+name: openkata-review-rule
 description: >
   Reviews a rule against the rule design checklist, validates
   conventions are enforceable, and checks token cost. Use when
