@@ -51,6 +51,8 @@ After the generic `create-skill` workflow, also do:
 
 ## Conventions
 
+- Skill names are lowercase-hyphenated: `create-profile`,
+  `commit-conventions`
 - Always ask the user before running Tessl commands — do not
   run lint, review, or optimize without confirmation
 - Local skills go in `.agents/skills/<name>/`

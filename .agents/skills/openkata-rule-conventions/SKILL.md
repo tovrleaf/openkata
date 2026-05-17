@@ -46,6 +46,8 @@ After the generic `create-rule` workflow, also do:
 
 ## Conventions
 
+- Rule names are lowercase-hyphenated: `git-naming`,
+  `markdown-style`
 - Always ask the user before running destructive commands
 - Local rules go in `.agents/rules/<name>/`
 - Distributable rules go in `rules/<name>/` with a symlink
