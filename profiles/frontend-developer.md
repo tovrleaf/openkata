@@ -1,4 +1,4 @@
-# Frontend Agent
+# Frontend Developer Agent
 
 Frontend developer scoped to web UI — templates, styles,
 and handlers only.

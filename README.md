@@ -65,7 +65,7 @@ Or use the dojo (MCP server) to install kata into your project — see
 
 | Profile | Description |
 |---------|-------------|
-| [frontend](profiles/frontend.md) | Frontend developer scoped to web UI — templates, styles, and handlers only |
+| [frontend-developer](profiles/frontend-developer.md) | Frontend developer scoped to web UI — templates, styles, and handlers only |
 
 ## Contributing
 
