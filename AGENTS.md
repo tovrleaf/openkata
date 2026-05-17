@@ -55,7 +55,10 @@ Scope is the artifact name when applicable. See the
 `commit-conventions` skill for full details.
 
 Add an `Assisted-by` trailer to every AI-assisted commit.
-Format: `Assisted-by: Agent:model_name`
+Format: `Assisted-by: <agent_name>:<model_name>`
+
+Use your own name as the agent (Kiro, Claude Code, OpenCode,
+etc.) and read the model from your session or environment.
 
 This follows the Linux kernel convention from
 `Documentation/process/coding-assistants.rst`. We use
