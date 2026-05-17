@@ -13,7 +13,7 @@
     }
   },
   "resources": [
-    "file://profiles/frontend-developer.md",
+    "file://.agents/profiles/frontend-developer.md",
     "file://AGENTS.md",
     "file://web/static/css/**/*.css",
     "file://rules/design-system/RULE.md"
