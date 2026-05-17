@@ -19,11 +19,9 @@ Conventional Commits and kebab-case branch names.
 
 ## Commit Workflow
 
-1. **Name branches by type** — Use the pattern `type/description`:
-   - `feature/*` for new functionality
-   - `fix/*` for bug fixes
-   - `hotfix/*` for urgent production fixes
-   Use lowercase kebab-case for the description part.
+1. **Name branches by type** — Follow the branch naming format
+   in the `git-naming` rule. If no rule is installed, see
+   [branch-naming.md](references/branch-naming.md).
 
 2. **Check existing conventions** — Before applying defaults,
    look for `.commitlintrc`, `commitlint.config.js`, `.czrc`,
@@ -42,16 +40,9 @@ Conventional Commits and kebab-case branch names.
 5. **Stage specific files** — Prefer `git add <file>` over
    `git add .`.
 
-6. **Write the commit message** — Follow the
-   [commit format](references/commit-format.md):
-
-   ```text
-   type(scope): description
-
-   Body explaining why. Wrap at 72-74 characters.
-
-   Footer references.
-   ```
+6. **Write the commit message** — Follow the `git-naming` rule
+   for format. If no rule is installed, see
+   [commit-format.md](references/commit-format.md).
 
    Key rules:
    - Imperative mood, lowercase, no trailing period
@@ -70,16 +61,9 @@ Conventional Commits and kebab-case branch names.
 1. **Check existing conventions** — Look for branch protection
    rules, CI config, or existing branch patterns.
 
-2. **Create the branch** — Follow the
-   [branch naming format](references/branch-naming.md):
-
-   ```text
-   type/short-description
-   type/issue-number-short-description
-   ```
-
-   Types: `feature/`, `fix/`, `refactor/`, `docs/`, `test/`,
-   `chore/`, `hotfix/`
+2. **Create the branch** — Follow the `git-naming` rule for
+   format. If no rule is installed, see
+   [branch-naming.md](references/branch-naming.md).
 
 3. **Create from main, delete after merge.**
 

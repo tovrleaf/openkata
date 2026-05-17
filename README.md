@@ -58,6 +58,7 @@ Or use the dojo (MCP server) to install kata into your project — see
 | [markdown-style](rules/markdown-style/) | Consistent markdown formatting conventions applied to all generated files |
 | [bash-style](rules/bash-style/) | Bash scripting conventions based on the Google Shell Style Guide |
 | [design-system](rules/design-system/) | Token-based CSS design system conventions |
+| [git-naming](rules/git-naming/) | Branch naming, commit message format, and trailer conventions |
 
 ## Available sensei profiles
 
