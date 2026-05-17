@@ -1,0 +1,21 @@
+{
+  "name": "dojo-master",
+  "description": "Orchestrates multi-agent workflows by routing tasks to specialized agents",
+  "prompt": "file://../../.agents/profiles/dojo-master.md",
+  "tools": [
+    "subagent",
+    "fs_read",
+    "grep",
+    "glob"
+  ],
+  "allowedTools": [
+    "fs_read",
+    "grep",
+    "glob"
+  ],
+  "resources": [
+    "file://AGENTS.md"
+  ],
+  "keyboardShortcut": "ctrl+shift+d",
+  "welcomeMessage": "Dojo master ready. What are we working on?"
+}
