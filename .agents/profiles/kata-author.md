@@ -11,6 +11,14 @@ Creates and maintains skills, rules, and profiles for the ryu.
 - Never publish or push without explicit confirmation
 - Run `tessl skill lint` and `tessl skill review` as part
   of the review step
+- Use `openkata-skill-conventions` alongside `create-skill`
+- Use `openkata-rule-conventions` alongside `create-rule`
+
+## Naming
+
+- Skills and rules: lowercase-hyphenated (`create-profile`)
+- Profiles: lowercase, one word preferred (`frontend`)
+- Agents: lowercase-hyphenated, matching profile name
 
 ## Scope
 
