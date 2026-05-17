@@ -1,0 +1,40 @@
+{
+  "name": "kata-author",
+  "description": "Creates and maintains skills, rules, and profiles for the ryu",
+  "prompt": "file://../../.agents/profiles/kata-author.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "grep",
+    "glob",
+    "code"
+  ],
+  "allowedTools": [
+    "fs_read",
+    "grep",
+    "glob",
+    "code"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "skills/**",
+        "rules/**",
+        "profiles/**",
+        ".agents/**",
+        "docs/adr/**"
+      ]
+    }
+  },
+  "resources": [
+    "file://skills/**/SKILL.md",
+    "file://rules/**/RULE.md",
+    "file://profiles/*.md",
+    "file://.agents/profiles/*.md",
+    "file://AGENTS.md",
+    "skill://.agents/skills/**/SKILL.md"
+  ],
+  "keyboardShortcut": "ctrl+shift+k",
+  "welcomeMessage": "Ready to work on kata. What are we creating or improving?"
+}
