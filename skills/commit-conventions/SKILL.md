@@ -38,8 +38,9 @@ Conventional Commits and kebab-case branch names.
    changes are present, propose a split with one commit per
    concern and confirm the grouping before proceeding.
 
-5. **Stage specific files** — Prefer `git add <file>` over
-   `git add .`.
+5. **Stage specific files** — Do not use `git add .` or
+   `git add -A`. Stage each file individually to avoid
+   committing unrelated changes.
 
 6. **Write the commit message** — Follow the `git-naming` rule
    for format. If no rule is installed, see

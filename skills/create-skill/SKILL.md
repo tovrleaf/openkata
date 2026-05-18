@@ -105,8 +105,10 @@ frontmatter and markdown instructions.
      exactly how to proceed. Don't restate trigger criteria
      from the description — if the body has a "When to use"
      section, it's duplicating the description.
-   - **Explain the why.** Reasoning is more effective than rigid
-     `ALWAYS`/`NEVER` rules.
+   - **Use imperative form, not soft language.** Agents treat
+     "prefer", "consider", and "try to" as optional. Use "Do
+     not", "Use", "Run" instead. Pair each instruction with
+     a brief reason so the agent understands why it matters.
    - **Be concise.** Remove explanations of concepts the model
      already knows. Don't explain what `.PHONY` does or why
      tabs matter in Makefiles — the model knows. Use terse
