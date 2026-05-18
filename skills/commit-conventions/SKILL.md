@@ -9,6 +9,7 @@ description: >
   pull request, setting up commit linting, or asking about commit
   message format, branch naming, or Conventional Commits.
 metadata:
+  version: "1.3.0"
   tags: "category:conventions, category:version-control, tool:git"
 ---
 
