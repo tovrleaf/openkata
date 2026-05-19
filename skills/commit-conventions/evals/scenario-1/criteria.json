@@ -1,0 +1,56 @@
+{
+  "context": "Tests whether the agent produces branch names that follow the type/description format with kebab-case, valid type prefixes, correct inclusion of issue numbers, and appropriate length.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "branch-plan.md exists",
+      "description": "A file named branch-plan.md is present in the workspace",
+      "max_score": 5
+    },
+    {
+      "name": "type/description format",
+      "description": "All four branch names follow the pattern 'type/short-description' (a slash-separated prefix and description)",
+      "max_score": 12
+    },
+    {
+      "name": "Valid type prefixes",
+      "description": "All four branch names use one of: feature/, fix/, refactor/, docs/, test/, chore/, hotfix/",
+      "max_score": 12
+    },
+    {
+      "name": "Correct type for bug fix",
+      "description": "The branch for issue #456 (session timeout bug) uses 'fix/' as the type prefix",
+      "max_score": 8
+    },
+    {
+      "name": "Correct type for feature",
+      "description": "The branch for issue #461 (saved searches panel) uses 'feature/' as the type prefix",
+      "max_score": 8
+    },
+    {
+      "name": "Issue number in bug branch",
+      "description": "The branch name for issue #456 includes '456' in the name (e.g. fix/456-session-token-expiry)",
+      "max_score": 12
+    },
+    {
+      "name": "Issue number in feature branch",
+      "description": "The branch name for issue #461 includes '461' in the name (e.g. feature/461-saved-searches)",
+      "max_score": 12
+    },
+    {
+      "name": "Kebab-case only",
+      "description": "All four branch names use hyphens as word separators — no underscores, spaces, or camelCase",
+      "max_score": 10
+    },
+    {
+      "name": "Lowercase only",
+      "description": "All four branch names are entirely lowercase — no uppercase letters",
+      "max_score": 10
+    },
+    {
+      "name": "Appropriate length",
+      "description": "All four branch descriptions (the part after the slash) are 2-5 words long",
+      "max_score": 11
+    }
+  ]
+}

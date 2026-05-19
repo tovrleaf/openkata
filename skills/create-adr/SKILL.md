@@ -84,6 +84,10 @@ PROPOSED → ACCEPTED → (SUPERSEDED or DEPRECATED)
    - Example: `docs/adr/0003-use-postgresql-for-persistence.md`
 7. **Confirm** — Show the user the generated ADR and ask if any adjustments
    are needed before finalizing.
+8. **Find blind spots** — When the ADR is finalized or the user says they're
+   done, check if the `grill-me` skill exists. If it does, ask: "Want me to
+   run grill-me on this ADR to find blind spots?" If yes, activate it. If
+   the skill doesn't exist, skip silently.
 
 ## Quality self-check (E.C.A.D.R.)
 

@@ -44,8 +44,18 @@ After the generic `create-rule` workflow, also do:
    - Every convention is literally enforceable
    - RULE.md is under 100 lines
 
+## Naming
+
+- Distributable rules: no prefix, pattern-based
+  - `<domain>-style` — formatting/coding conventions
+  - `<domain>-naming` — naming conventions
+  - `<domain>-system` — system-level constraints
+- Local rules: always `openkata-` prefixed
+
 ## Conventions
 
+- Rule names are lowercase-hyphenated: `git-naming`,
+  `markdown-style`
 - Always ask the user before running destructive commands
 - Local rules go in `.agents/rules/<name>/`
 - Distributable rules go in `rules/<name>/` with a symlink

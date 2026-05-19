@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.3.0 — 2026-05-18
+
+### Added
+
+- Branch naming step (step 1) referencing `git-naming` rule
+- Guidance for handling "commit all" requests with multiple
+  logical changes
+
+### Changed
+
+- Workflow steps renumbered (now 1–8 instead of 1–7)
+- Commit format and branch naming now delegate to `git-naming`
+  rule with fallback to references
+- Removed inline format examples from workflow body (delegated
+  to references)
+
 ## 1.2.0 — 2026-04-30
 
 ### Added

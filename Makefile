@@ -6,9 +6,10 @@ help: ## Show this help
 	@echo "========================="
 	@echo ""
 	@echo "Catalog:"
-	@printf "  \033[36m%-12s\033[0m %s\n" "skills" "List all skills with type and version"
+	@printf "  \033[36m%-12s\033[0m %s\n" "skills" "Show skills help"
 	@printf "  \033[36m%-12s\033[0m %s\n" "rules" "List all rules with type and version"
 	@printf "  \033[36m%-12s\033[0m %s\n" "profiles" "List all agent profiles"
+	@printf "  \033[36m%-12s\033[0m %s\n" "agents" "List all Kiro agent configs"
 	@printf "  \033[36m%-12s\033[0m %s\n" "adrs" "List all architecture decision records"
 	@printf "  \033[36m%-12s\033[0m %s\n" "specs" "List all feature specs with status"
 	@echo ""
@@ -21,7 +22,10 @@ help: ## Show this help
 
 .PHONY: skills
 skills: ## List all skills with type, version, and change status
-	@./scripts/list-skills.sh
+	@./scripts/list-skills.sh $(filter-out $@,$(MAKECMDGOALS))
+
+%:
+	@:
 
 .PHONY: rules
 rules: ## List all rules with type and version
@@ -30,6 +34,10 @@ rules: ## List all rules with type and version
 .PHONY: profiles
 profiles: ## List all agent profiles
 	@./scripts/list-profiles.sh
+
+.PHONY: agents
+agents: ## List all Kiro agent configs
+	@./scripts/list-agents.sh
 
 .PHONY: check
 check: ## Check development prerequisites

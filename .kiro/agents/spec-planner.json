@@ -1,0 +1,37 @@
+{
+  "name": "spec-planner",
+  "description": "Plans features through specs, designs, and task breakdowns",
+  "prompt": "file://../../.agents/profiles/spec-planner.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "grep",
+    "glob",
+    "code",
+    "web_search",
+    "web_fetch"
+  ],
+  "allowedTools": [
+    "fs_read",
+    "grep",
+    "glob",
+    "code",
+    "web_search",
+    "web_fetch"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "specs/**"
+      ]
+    }
+  },
+  "resources": [
+    "file://specs/_current",
+    "file://AGENTS.md",
+    "skill://.agents/skills/spec-workflow/SKILL.md"
+  ],
+  "keyboardShortcut": "ctrl+shift+s",
+  "welcomeMessage": "Ready to plan. What are we speccing out?"
+}

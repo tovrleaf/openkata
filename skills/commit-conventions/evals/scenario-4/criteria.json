@@ -1,0 +1,56 @@
+{
+  "context": "Tests whether the agent uses git mv for file renames (to preserve history), produces a clean non-WIP commit, and follows correct commit message format for a refactor/chore type change.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "git mv in rename script",
+      "description": "rename.sh contains 'git mv' commands (not 'mv' followed by 'git add', and not 'cp'+'rm')",
+      "max_score": 22
+    },
+    {
+      "name": "All three renames covered",
+      "description": "rename.sh includes git mv commands covering all three files: StringHelpers.js, DateHelpers.js, and APIHelpers.js",
+      "max_score": 12
+    },
+    {
+      "name": "Correct commit type",
+      "description": "The rename commit header uses 'refactor' or 'chore' as the type — not 'fix' or 'feat'",
+      "max_score": 10
+    },
+    {
+      "name": "Commit header format",
+      "description": "The rename commit header follows type(scope): description format with imperative mood and lowercase description start",
+      "max_score": 10
+    },
+    {
+      "name": "No trailing period",
+      "description": "The commit header does NOT end with a period",
+      "max_score": 5
+    },
+    {
+      "name": "Header 72-char limit",
+      "description": "The commit header is at most 72 characters",
+      "max_score": 5
+    },
+    {
+      "name": "No WIP commit",
+      "description": "git-log.txt does NOT contain a commit with 'WIP', 'wip', 'temp', or 'tmp' in the header",
+      "max_score": 10
+    },
+    {
+      "name": "rename.sh exists",
+      "description": "A file named rename.sh is present in the workspace",
+      "max_score": 10
+    },
+    {
+      "name": "git-log.txt exists",
+      "description": "A file named git-log.txt is present in the workspace with at least one commit entry",
+      "max_score": 8
+    },
+    {
+      "name": "Specific file staging",
+      "description": "rename.sh does NOT use 'git add .' or 'git add -A' — files are staged individually or via git mv which handles staging automatically",
+      "max_score": 8
+    }
+  ]
+}

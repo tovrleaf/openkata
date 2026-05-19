@@ -28,15 +28,20 @@ After the generic `create-skill` workflow, also do:
 
 3. **Import to Tessl** — Run
    `tessl skill import <skill-directory>` to generate `tile.json`
-   (ADR 0006).
+   (ADR 0006). After import, verify the `name` field uses
+   `openkata/<skill-name>` — fix if the workspace prefix is
+   wrong.
 
-4. **Symlink if distributable** — For skills in `skills/`, ask
+4. **Create `.tesslignore`** — Add a `.tesslignore` file to the
+   skill directory containing `CHANGELOG.md`.
+
+5. **Symlink if distributable** — For skills in `skills/`, ask
    the user if they want it symlinked into `.agents/skills/`:
    ```bash
    ln -s ../../skills/<name> .agents/skills/<name>
    ```
 
-5. **Quality check (mandatory gate)** — Do not commit until
+6. **Quality check (mandatory gate)** — Do not commit until
    all checks pass. Follow the `review-skill` workflow to
    lint, review, and optimize. The skill must:
    - Score 95%+ on `tessl skill review`
@@ -44,13 +49,27 @@ After the generic `create-skill` workflow, also do:
    - Survive 2–3 positive and 1 negative representative
      prompt
 
-6. **Acknowledge sources** — If the skill draws on external
+7. **Acknowledge sources** — If the skill draws on external
    practices, add or update `references/ACKNOWLEDGMENTS.md`
    with the source, license, what was adapted, and the version
    it was adopted in.
 
+## Naming
+
+- Distributable skills: no prefix, pattern-based
+  - `create-<artifact>` — produces a new file
+  - `review-<artifact>` — evaluates quality
+  - `<domain>-conventions` — enforces standards
+  - `<name>-workflow` — multi-phase process
+- Local skills: always `openkata-` prefixed
+  - `openkata-review-<artifact>` — repo-specific review
+  - `openkata-<domain>-conventions` — repo-specific standards
+  - `openkata-<name>-release` — repo-specific release process
+
 ## Conventions
 
+- Skill names are lowercase-hyphenated: `create-profile`,
+  `commit-conventions`
 - Always ask the user before running Tessl commands — do not
   run lint, review, or optimize without confirmation
 - Local skills go in `.agents/skills/<name>/`

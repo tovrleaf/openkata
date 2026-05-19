@@ -45,33 +45,12 @@ project root indicate a build error.
 - See [`rules/markdown-style/RULE.md`](rules/markdown-style/RULE.md)
   for full conventions
 
-## Commits
+## Git
 
-Conventional Commits, lowercase descriptions:
-
-    type(scope): description
-
-Scope is the artifact name when applicable. See the
-`commit-conventions` skill for full details.
-
-Add an `Assisted-by` trailer to every AI-assisted commit.
-Format: `Assisted-by: <agent_name>:<model_name>`
-
-Use your own name as the agent (Kiro, Claude Code, OpenCode,
-etc.) and read the model from your session or environment.
-
-This follows the Linux kernel convention from
-`Documentation/process/coding-assistants.rst`. We use
-`Assisted-by` rather than `Co-authored-by` because the
-human is the author; the AI assisted.
-
-For Kiro, read the model from the current session:
-
-    ls -t ~/.kiro/sessions/cli/*.json | head -1 \
-      | xargs grep -o '"model_name": "[^"]*"' \
-      | cut -d'"' -f4
-
-## Git operations
+Follow [`rules/git-naming/RULE.md`](rules/git-naming/RULE.md)
+for branch names, commit messages, and the `Assisted-by`
+trailer. See the `commit-conventions` skill for the full
+commit workflow.
 
 - Do not push without explicit user confirmation
 - Do not force push without explaining the impact first

@@ -1,0 +1,22 @@
+{
+  "name": "frontend-developer",
+  "description": "Frontend agent — templates, CSS, and web handlers",
+  "prompt": null,
+  "tools": ["fs_read", "fs_write", "execute_bash", "grep", "glob", "code"],
+  "allowedTools": ["fs_read", "grep", "glob"],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "web/**",
+        "cmd/openkata-web/**"
+      ]
+    }
+  },
+  "resources": [
+    "file://.agents/profiles/frontend-developer.md",
+    "file://AGENTS.md",
+    "file://web/static/css/**/*.css",
+    "file://rules/design-system/RULE.md"
+  ],
+  "welcomeMessage": "Frontend agent ready. I work with web/ and cmd/openkata-web/ only."
+}

@@ -1,5 +1,5 @@
 ---
-name: ryu-release
+name: openkata-ryu-release
 description: >
   Release a new version of an OpenKata artifact (skill or rule). Detects
   changes since the last release, recommends a semver bump, updates
@@ -47,6 +47,9 @@ for maintainers of this repository only.
    - Changes grouped by category, omitting empty categories
 
    If CHANGELOG.md doesn't exist, create it.
+
+   Also update `metadata.version` in the SKILL.md frontmatter to
+   match the new version.
 
 6. **Generate tags** — Read the artifact's SKILL.md (or RULE.md)
    content — title, description, workflow steps, and section
@@ -96,7 +99,20 @@ for maintainers of this repository only.
    create a git tag `<directory-path>/v<new-version>`. Skip tagging for
    local artifacts in `.agents/` — they are versioned but not distributed.
 
-10. **Confirm** — Show the user what was done: version bumped, changelog
+10. **Run evals** — If the artifact is a distributable skill
+    (`skills/`) and has an `evals/` directory, ask: "Want me to
+    run evals before publishing?" If yes, run
+    `tessl eval run <directory-path>` and wait for results.
+    The "With context" average must be 95% or above to proceed
+    with publishing. If below, report which scenarios failed and
+    suggest fixes before continuing.
+
+11. **Publish to registry** — If the artifact is distributable
+    (`skills/` or `rules/`) and has a `tile.json`, ask: "Want me
+    to publish this to the Tessl registry?" If yes, run
+    `tessl tile publish <directory-path>`.
+
+12. **Confirm** — Show the user what was done: version bumped, changelog
     entry, commit hash, and tag name (if tagged). Ask if they want to
     push.
 
@@ -132,5 +148,12 @@ List all tags for an artifact: `git tag -l "skills/create-adr/v*"`
 - Local artifacts (`.agents/skills/`, `.agents/rules/`) get version bumps
   and changelogs but no git tags — tags are reserved for distributable
   artifacts (ADR 0005).
-- Changelogs document artifact-facing changes only. Dev-only files
-  (tile.json, tessl.json) are not changelog-worthy.
+- Changelogs document user-facing changes only. Dev-only data
+  does not belong in changelogs. This includes: tile.json,
+  tessl.json, .tesslignore, metadata tags, frontmatter fields
+  used for packaging (version, metadata), and workspace naming.
+  If a change doesn't affect how the skill behaves for the user,
+  it's not changelog-worthy.
+- Skill versions (in CHANGELOG.md) and tile versions (in
+  tile.json) are independent. Do not sync them — they track
+  different things.

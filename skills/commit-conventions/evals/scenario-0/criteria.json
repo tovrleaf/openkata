@@ -1,0 +1,66 @@
+{
+  "context": "Tests whether the agent follows Conventional Commits format when making a refactor commit, including correct type, scope, body requirement for non-trivial changes, and specific file staging over a blanket add.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Correct commit type",
+      "description": "The commit message header uses 'refactor' as the type (not 'fix', 'feat', or other)",
+      "max_score": 10
+    },
+    {
+      "name": "Scope present",
+      "description": "The commit header includes a scope in parentheses, e.g. 'refactor(db):' or 'refactor(connection):'",
+      "max_score": 10
+    },
+    {
+      "name": "Imperative mood",
+      "description": "The commit description uses imperative mood (e.g. 'convert', 'migrate', 'replace') not past tense ('converted', 'migrated')",
+      "max_score": 8
+    },
+    {
+      "name": "Lowercase description start",
+      "description": "The first word of the commit description (after the colon and space) is lowercase",
+      "max_score": 8
+    },
+    {
+      "name": "No trailing period",
+      "description": "The commit header line does NOT end with a period",
+      "max_score": 5
+    },
+    {
+      "name": "Header 72-char limit",
+      "description": "The commit header line (type, scope, colon, space, description) is at most 72 characters long",
+      "max_score": 7
+    },
+    {
+      "name": "Body present",
+      "description": "The commit includes a body (text after a blank line following the header)",
+      "max_score": 12
+    },
+    {
+      "name": "Blank line before body",
+      "description": "There is a blank line separating the commit header from the body",
+      "max_score": 8
+    },
+    {
+      "name": "git-log.txt produced",
+      "description": "A file named git-log.txt exists in the workspace and contains a git log entry",
+      "max_score": 7
+    },
+    {
+      "name": "Specific file staging",
+      "description": "The agent staged files individually (e.g. git add src/db/connection.js) rather than using 'git add .' or 'git add -A' — evidence in a script, shell history file, or README the agent produces",
+      "max_score": 10
+    },
+    {
+      "name": "Single atomic commit",
+      "description": "git-log.txt shows exactly one commit for this work (not multiple unrelated commits bundled, not a WIP commit)",
+      "max_score": 8
+    },
+    {
+      "name": "No WIP/temp label",
+      "description": "The commit header does NOT contain 'WIP', 'wip', 'temp', or 'tmp'",
+      "max_score": 7
+    }
+  ]
+}

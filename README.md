@@ -47,6 +47,7 @@ Or use the dojo (MCP server) to install kata into your project — see
 | [commit-conventions](skills/commit-conventions/) | Enforces Conventional Commits format and branch naming conventions |
 | [create-skill](skills/create-skill/) | Creates agent skills by investigating repo conventions, designing workflows, and writing SKILL.md files |
 | [create-rule](skills/create-rule/) | Creates always-on agent rules by investigating repo conventions and writing RULE.md files |
+| [create-profile](skills/create-profile/) | Creates sensei profiles that define agent roles with scoped permissions and constraints |
 | [grill-me](skills/grill-me/) | Challenges a plan, spec, or ADR by interviewing the user until all corners are covered |
 | [makefile-conventions](skills/makefile-conventions/) | Structures Makefiles as a universal command interface using modular includes and self-documenting help |
 | [spec-workflow](skills/spec-workflow/) | Drives feature development through a phased workflow: specify, design, tasks, implement, and validate |
@@ -58,12 +59,14 @@ Or use the dojo (MCP server) to install kata into your project — see
 | [markdown-style](rules/markdown-style/) | Consistent markdown formatting conventions applied to all generated files |
 | [bash-style](rules/bash-style/) | Bash scripting conventions based on the Google Shell Style Guide |
 | [design-system](rules/design-system/) | Token-based CSS design system conventions |
+| [git-naming](rules/git-naming/) | Branch naming, commit message format, and trailer conventions |
 
 ## Available sensei profiles
 
 | Profile | Description |
 |---------|-------------|
-| [frontend](profiles/frontend.md) | Frontend developer scoped to web UI — templates, styles, and handlers only |
+| [frontend-developer](profiles/frontend-developer.md) | Frontend developer scoped to web UI — templates, styles, and handlers only |
+| [spec-planner](profiles/spec-planner.md) | Plans features through specs, designs, and task breakdowns |
 
 ## Contributing
 

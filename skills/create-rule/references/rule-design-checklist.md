@@ -43,6 +43,19 @@ Use this before finalizing a generated or revised rule.
   justify?
 - If the rule is repo-bound, does it say so plainly?
 
+## Boundaries
+
+- Is it clear where this rule's concern ends?
+- Could this rule conflict with a future rule in an adjacent
+  domain?
+
+## Consistency
+
+- Does the name follow existing patterns (lowercase-hyphenated)?
+- Is there a companion skill that enforces this rule's
+  conventions?
+- Does the CHANGELOG format match other artifacts?
+
 ## Token Cost
 
 - Is the rule under 100 lines? (Rules load every session.)

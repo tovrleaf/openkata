@@ -1,0 +1,37 @@
+{
+  "name": "adr-author",
+  "description": "Records architecture decisions by researching context and writing ADRs",
+  "prompt": "file://../../.agents/profiles/adr-author.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "grep",
+    "glob",
+    "code",
+    "web_search",
+    "web_fetch"
+  ],
+  "allowedTools": [
+    "fs_read",
+    "grep",
+    "glob",
+    "code",
+    "web_search",
+    "web_fetch"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "docs/adr/**"
+      ]
+    }
+  },
+  "resources": [
+    "file://docs/adr/*.md",
+    "file://AGENTS.md",
+    "skill://.agents/skills/create-adr/SKILL.md"
+  ],
+  "keyboardShortcut": "ctrl+shift+a",
+  "welcomeMessage": "Ready to research and record architecture decisions."
+}

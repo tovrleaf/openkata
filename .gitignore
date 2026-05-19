@@ -3,7 +3,7 @@ bin/
 *.exe
 
 # Local tool config
-.kiro/
+.kiro/settings/
 TODO.md
 tmp/
 specs/_current
