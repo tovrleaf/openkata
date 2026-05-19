@@ -103,6 +103,9 @@ for maintainers of this repository only.
     (`skills/`) and has an `evals/` directory, ask: "Want me to
     run evals before publishing?" If yes, run
     `tessl eval run <directory-path>` and wait for results.
+    The "With context" average must be 95% or above to proceed
+    with publishing. If below, report which scenarios failed and
+    suggest fixes before continuing.
 
 11. **Publish to registry** — If the artifact is distributable
     (`skills/` or `rules/`) and has a `tile.json`, ask: "Want me
