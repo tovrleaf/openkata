@@ -2,6 +2,21 @@
 # List all skills with type, version, and change status
 set -euo pipefail
 
+subcmd="${1:-help}"
+
+if [[ "${subcmd}" == "help" ]]; then
+  echo "Skills"
+  echo "======"
+  echo ""
+  printf "  \033[36m%-12s\033[0m %s\n" "list" "List all skills with type and version"
+  printf "  \033[36m%-12s\033[0m %s\n" "status" "List skills with registry status (network)"
+  exit 0
+fi
+
+if [[ "${subcmd}" == "status" ]]; then
+  TESSL_CHECK=1
+fi
+
 dist_output=""
 local_output=""
 
@@ -77,6 +92,8 @@ for dir in .agents/skills/*/; do
         else
           registry_indicator="\033[31m×\033[0m         "
         fi
+      else
+        registry_indicator="\033[31m×\033[0m         "
       fi
     fi
   fi
