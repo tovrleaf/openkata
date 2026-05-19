@@ -5,7 +5,8 @@ description: >
   modular includes and self-documenting help. Use when the user
   wants to add a make target, create a Makefile, organize build
   commands, set up a make-based workflow, or asks how to
-  structure make targets.
+  structure make targets. Also activate before modifying any
+  Makefile or mk/ file in this project.
 metadata:
   tags: "category:conventions, tool:makefile"
 ---
@@ -134,6 +135,9 @@ yaml:
 
 - `make` or `make help` shows all commands grouped by concern
 - `make <domain>` shows domain-specific help
+- When a domain has 2 or more subcommands, bare
+  `make <domain>` must show subcommand help. Do not make it
+  execute a default action.
 
 ### Delegation
 
