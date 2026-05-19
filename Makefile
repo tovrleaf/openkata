@@ -7,6 +7,7 @@ help: ## Show this help
 	@echo ""
 	@echo "Catalog:"
 	@printf "  \033[36m%-12s\033[0m %s\n" "skills" "List all skills with type and version"
+	@printf "  \033[36m%-12s\033[0m %s\n" "skills-status" "List skills with registry status (network)"
 	@printf "  \033[36m%-12s\033[0m %s\n" "rules" "List all rules with type and version"
 	@printf "  \033[36m%-12s\033[0m %s\n" "profiles" "List all agent profiles"
 	@printf "  \033[36m%-12s\033[0m %s\n" "agents" "List all Kiro agent configs"
@@ -23,6 +24,10 @@ help: ## Show this help
 .PHONY: skills
 skills: ## List all skills with type, version, and change status
 	@./scripts/list-skills.sh
+
+.PHONY: skills-status
+skills-status: ## List skills with registry publish status (network)
+	@TESSL_CHECK=1 ./scripts/list-skills.sh
 
 .PHONY: rules
 rules: ## List all rules with type and version
