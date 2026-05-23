@@ -4,8 +4,11 @@
     {
       "Sid": "S3ReadArtifacts",
       "Effect": "Allow",
-      "Action": ["s3:GetObject"],
-      "Resource": "arn:aws:s3:::openkata-artifacts/*"
+      "Action": ["s3:GetObject", "s3:ListBucket"],
+      "Resource": [
+        "arn:aws:s3:::openkata-artifacts",
+        "arn:aws:s3:::openkata-artifacts/*"
+      ]
     },
     {
       "Sid": "DynamoDBAccess",
