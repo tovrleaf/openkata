@@ -23,6 +23,18 @@ make rules
 Never run `go build` without `-o bin/`. Binaries at the
 project root indicate a build error.
 
+## Before pushing
+
+```bash
+templ generate ./cmd/openkata-web/templates/
+go build -o bin/openkata-web ./cmd/openkata-web/
+go test ./cmd/openkata-web/...
+```
+
+Run these before every push to catch stale generated
+files. CI regenerates templ output — if the committed
+`_templ.go` files are out of sync, the build fails.
+
 ## Code style
 
 ### Go
