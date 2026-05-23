@@ -30,14 +30,18 @@ Open a pull request for the current branch using `gh`.
    detect if the branch is behind the remote. If behind,
    warn and ask whether to pull first.
 
-4. **Push the branch** — Run:
+4. **Run verification** — Check AGENTS.md or the project's
+   build/test configuration for pre-push steps. Run them.
+   If any fail, stop and fix before pushing.
+
+5. **Push the branch** — Run:
    ```bash
    git push -u origin $(git branch --show-current)
    ```
    If push fails, report the error and suggest fixes
    (force push not allowed without explicit permission).
 
-5. **Create the PR** — Run:
+6. **Create the PR** — Run:
    ```bash
    gh pr create --fill
    ```
@@ -45,7 +49,7 @@ Open a pull request for the current branch using `gh`.
    is not installed, provide the manual URL:
    `https://github.com/{owner}/{repo}/compare/{branch}`
 
-6. **Ask about browser** — "Open the PR in your browser?"
+7. **Ask about browser** — "Open the PR in your browser?"
    If yes, run `gh pr view --web`.
 
 ## Conventions
