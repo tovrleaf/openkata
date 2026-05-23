@@ -30,6 +30,27 @@ project root indicate a build error.
 - Standard `go fmt` formatting
 - Build must pass with zero warnings
 
+### Testing
+
+- Standard library only — no testify or external test
+  frameworks
+- Table-driven tests with named subtests (`t.Run`)
+- Test files next to source: `handlers.go` →
+  `handlers_test.go`
+- Test fixtures in `testdata/` directories
+- HTTP handlers tested with `httptest`
+- Test behavior, not implementation details
+- Omit tests for trivial logic (simple getters, constant
+  returns). Prioritize business logic and conditional branches.
+- Use `errors.Is()` and `errors.As()` for error assertions,
+  not string comparison
+- Test helpers must call `t.Helper()` so failures point to
+  the caller
+- Failure messages must include function name, inputs, got,
+  and want: `t.Errorf("Func(%v) = %v, want %v", input, got, want)`
+- Run: `go test ./...`
+- Run with race detection: `go test -race ./...`
+
 ### Bash
 
 - `#!/usr/bin/env bash` with `set -euo pipefail`
