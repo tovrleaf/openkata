@@ -133,13 +133,20 @@ func sortTree(node *treeNode) {
 	}
 }
 
+// fileID converts a filepath to a valid HTML id.
+func fileID(path string) string {
+	id := strings.ReplaceAll(path, "/", "-")
+	id = strings.ReplaceAll(id, ".", "-")
+	return id
+}
+
 func renderNode(sb *strings.Builder, node *treeNode, prefix string, isLast bool) {
 	connector := "├── "
 	if isLast {
 		connector = "└── "
 	}
 	if node.isDir {
-		sb.WriteString(fmt.Sprintf(`<details class="file-tree-dir"><summary>%s%s%s/</summary>`, prefix, connector, node.name))
+		sb.WriteString(fmt.Sprintf(`<details class="file-tree-dir"><summary><span class="file-tree-prefix">%s%s</span><span class="file-tree-dirname">%s/</span></summary>`, prefix, connector, node.name))
 		childPrefix := prefix + "│   "
 		if isLast {
 			childPrefix = prefix + "    "
@@ -150,6 +157,6 @@ func renderNode(sb *strings.Builder, node *treeNode, prefix string, isLast bool)
 		}
 		sb.WriteString("</details>")
 	} else {
-		sb.WriteString(fmt.Sprintf(`<div class="file-tree-file" data-file="%s"><span>%s%s%s</span></div>`, node.path, prefix, connector, node.name))
+		sb.WriteString(fmt.Sprintf(`<div class="file-tree-file"><span class="file-tree-prefix">%s%s</span><a class="file-tree-link" href="#file-%s">%s</a></div>`, prefix, connector, fileID(node.path), node.name))
 	}
 }

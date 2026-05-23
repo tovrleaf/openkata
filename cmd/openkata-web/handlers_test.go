@@ -508,3 +508,30 @@ func TestCompareVersions(t *testing.T) {
 		})
 	}
 }
+
+func TestRenderMarkdownFull(t *testing.T) {
+	tests := []struct {
+		name string
+		in   string
+		want string
+	}{
+		{
+			name: "keeps first H1",
+			in:   "# Title\n\nBody text",
+			want: "<h1>",
+		},
+		{
+			name: "strips frontmatter but keeps H1",
+			in:   "---\nname: test\n---\n\n# Title\n\nBody",
+			want: "<h1>",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := renderMarkdownFull([]byte(tt.in))
+			if !strings.Contains(got, tt.want) {
+				t.Errorf("renderMarkdownFull(%q) = %q, want to contain %q", tt.in, got, tt.want)
+			}
+		})
+	}
+}
