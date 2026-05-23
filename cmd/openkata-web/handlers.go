@@ -2,6 +2,7 @@ package main
 
 import (
 	"archive/tar"
+	"bytes"
 	"compress/gzip"
 	"context"
 	"crypto/sha256"
@@ -19,6 +20,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/tovrleaf/openkata/cmd/openkata-web/templates"
+	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/renderer/html"
 )
 
 func handleHome(w http.ResponseWriter, r *http.Request) {
@@ -334,12 +337,79 @@ func loadSkillDetailLocal(name string) *templates.SkillDetail {
 	return detail
 }
 
+func stripFrontmatter(src []byte) []byte {
+	s := string(src)
+	if !strings.HasPrefix(s, "---") {
+		return src
+	}
+	end := strings.Index(s[3:], "\n---")
+	if end == -1 {
+		return src
+	}
+	return []byte(strings.TrimLeft(s[end+7:], "\n"))
+}
+
+func stripFirstH1(html string) string {
+	// Remove the first <h1>...</h1> block from rendered output
+	start := strings.Index(html, "<h1")
+	if start == -1 {
+		return html
+	}
+	end := strings.Index(html[start:], "</h1>")
+	if end == -1 {
+		return html
+	}
+	// Include the closing tag and any trailing newline
+	cut := start + end + len("</h1>")
+	if cut < len(html) && html[cut] == '\n' {
+		cut++
+	}
+	return html[:start] + html[cut:]
+}
+
 func renderMarkdown(src []byte) string {
-	// Simple passthrough — render as preformatted text wrapped in a div
-	// TODO: replace with goldmark when added as dependency
-	escaped := strings.ReplaceAll(string(src), "<", "&lt;")
-	escaped = strings.ReplaceAll(escaped, ">", "&gt;")
-	return "<pre class=\"markdown-raw\">" + escaped + "</pre>"
+	src = stripFrontmatter(src)
+
+	md := goldmark.New(
+		goldmark.WithRendererOptions(
+			html.WithUnsafe(),
+		),
+	)
+
+	var buf bytes.Buffer
+	if err := md.Convert(src, &buf); err != nil {
+		return ""
+	}
+
+	output := addTargetBlankToExternalLinks(buf.String())
+	return stripFirstH1(output)
+}
+
+func addTargetBlankToExternalLinks(s string) string {
+	// Add target="_blank" to links starting with http:// or https://
+	result := strings.Builder{}
+	for {
+		idx := strings.Index(s, "<a ")
+		if idx == -1 {
+			result.WriteString(s)
+			break
+		}
+		result.WriteString(s[:idx])
+		s = s[idx:]
+		end := strings.Index(s, ">")
+		if end == -1 {
+			result.WriteString(s)
+			break
+		}
+		tag := s[:end+1]
+		if strings.Contains(tag, "href=\"http://") || strings.Contains(tag, "href=\"https://") {
+			// Insert target="_blank" before closing >
+			tag = s[:end] + " target=\"_blank\">"
+		}
+		result.WriteString(tag)
+		s = s[end+1:]
+	}
+	return result.String()
 }
 
 func handleRules(w http.ResponseWriter, r *http.Request) {
