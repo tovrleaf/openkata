@@ -20,16 +20,25 @@ templ SkillDetailPage(skill SkillDetail) {
 					<div class="hero--kanji">
 						<span class="hero-kanji">技</span>
 						<div class="hero-text">
+							<span class="hero-label">Skill</span>
 							<h1>{ skill.Name }</h1>
 						</div>
 					</div>
 					if len(skill.Versions) > 1 {
 						<select class="version-select" data-skill={ skill.Name }>
-							for _, v := range skill.Versions {
+							for i, v := range skill.Versions {
 								if v == skill.Version {
-									<option value={ v } selected>v{ v }</option>
+									if i == 0 {
+										<option value={ v } selected>v{ v } (Latest)</option>
+									} else {
+										<option value={ v } selected>v{ v }</option>
+									}
 								} else {
-									<option value={ v }>v{ v }</option>
+									if i == 0 {
+										<option value={ v }>v{ v } (Latest)</option>
+									} else {
+										<option value={ v }>v{ v }</option>
+									}
 								}
 							}
 						</select>

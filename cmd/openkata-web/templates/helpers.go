@@ -139,7 +139,7 @@ func renderNode(sb *strings.Builder, node *treeNode, prefix string, isLast bool)
 		connector = "└── "
 	}
 	if node.isDir {
-		sb.WriteString(fmt.Sprintf(`<details class="file-tree-dir" open><summary>%s%s%s/</summary>`, prefix, connector, node.name))
+		sb.WriteString(fmt.Sprintf(`<details class="file-tree-dir"><summary>%s%s%s/</summary>`, prefix, connector, node.name))
 		childPrefix := prefix + "│   "
 		if isLast {
 			childPrefix = prefix + "    "

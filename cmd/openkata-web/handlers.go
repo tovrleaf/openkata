@@ -91,6 +91,19 @@ func handleSkills(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// /skills/:name/raw/:filepath... — latest version, redirect
+	if len(parts) >= 3 && parts[1] == "raw" {
+		name := parts[0]
+		skill := loadSkillDetailVersion(r.Context(), name, "")
+		if skill == nil {
+			http.NotFound(w, r)
+			return
+		}
+		filePath := strings.Join(parts[2:], "/")
+		http.Redirect(w, r, "/skills/"+name+"/"+skill.Version+"/raw/"+filePath, http.StatusFound)
+		return
+	}
+
 	// /skills/:name/:version/raw/:filepath...
 	if len(parts) >= 4 && parts[2] == "raw" {
 		name := parts[0]
@@ -333,7 +346,11 @@ func loadSkillDetailVersion(ctx context.Context, name, version string) *template
 				data, err := io.ReadAll(getResp.Body)
 				getResp.Body.Close()
 				if err == nil {
-					*target = renderMarkdown(data)
+					if relPath == "CHANGELOG.md" {
+						*target = renderMarkdown(filterChangelogByVersion(data, version))
+					} else {
+						*target = renderMarkdown(data)
+					}
 				}
 			}
 		}
@@ -351,6 +368,9 @@ func loadSkillDetailVersion(ctx context.Context, name, version string) *template
 					getResp.Body.Close()
 					if err == nil {
 						detail.FileContents[relPath] = string(data)
+						if strings.HasSuffix(relPath, ".md") {
+							detail.FileContents["__rendered__"+relPath] = renderMarkdown(data)
+						}
 					}
 				}
 			}
@@ -424,7 +444,7 @@ func loadSkillDetailLocal(name, version string) *templates.SkillDetail {
 
 	// Changelog
 	if cl, err := os.ReadFile(dir + "/CHANGELOG.md"); err == nil {
-		detail.Changelog = renderMarkdown(cl)
+		detail.Changelog = renderMarkdown(filterChangelogByVersion(cl, version))
 	}
 
 	// Acknowledgments
@@ -445,11 +465,81 @@ func loadSkillDetailLocal(name, version string) *templates.SkillDetail {
 		detail.Files = append(detail.Files, relPath)
 		if content, err := os.ReadFile(path); err == nil {
 			detail.FileContents[relPath] = string(content)
+			if strings.HasSuffix(relPath, ".md") {
+				detail.FileContents["__rendered__"+relPath] = renderMarkdown(content)
+			}
 		}
 		return nil
 	})
 	sort.Strings(detail.Files)
 	return detail
+}
+
+// filterChangelogByVersion keeps only changelog sections for versions <= the given version.
+// It splits raw markdown by "## " lines and compares version strings.
+func filterChangelogByVersion(raw []byte, version string) []byte {
+	lines := strings.Split(string(raw), "\n")
+	var result []string
+	var header []string
+	inSection := false
+	keep := true
+
+	for _, line := range lines {
+		if strings.HasPrefix(line, "## ") {
+			inSection = true
+			v := extractVersionFromHeading(line)
+			keep = v != "" && compareVersions(v, version) <= 0
+			if keep {
+				result = append(result, line)
+			}
+		} else if !inSection {
+			// Lines before first ## (e.g., title, preamble)
+			header = append(header, line)
+		} else if keep {
+			result = append(result, line)
+		}
+	}
+
+	return []byte(strings.Join(append(header, result...), "\n"))
+}
+
+// extractVersionFromHeading extracts a version from a changelog heading like "## [1.2.3] - 2025-05-19".
+func extractVersionFromHeading(line string) string {
+	// Look for [version] pattern
+	start := strings.Index(line, "[")
+	end := strings.Index(line, "]")
+	if start >= 0 && end > start {
+		return line[start+1 : end]
+	}
+	// Fallback: try bare version after "## "
+	parts := strings.Fields(line)
+	if len(parts) >= 2 {
+		return strings.TrimPrefix(parts[1], "v")
+	}
+	return ""
+}
+
+// compareVersions compares two semver-like version strings.
+// Returns -1 if a < b, 0 if a == b, 1 if a > b.
+func compareVersions(a, b string) int {
+	aParts := strings.Split(a, ".")
+	bParts := strings.Split(b, ".")
+	for i := 0; i < len(aParts) || i < len(bParts); i++ {
+		var ai, bi int
+		if i < len(aParts) {
+			ai, _ = strconv.Atoi(aParts[i])
+		}
+		if i < len(bParts) {
+			bi, _ = strconv.Atoi(bParts[i])
+		}
+		if ai < bi {
+			return -1
+		}
+		if ai > bi {
+			return 1
+		}
+	}
+	return 0
 }
 
 func stripFrontmatter(src []byte) []byte {

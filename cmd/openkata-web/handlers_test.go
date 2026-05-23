@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
@@ -369,5 +370,142 @@ func TestHandleSkillsRawContentType(t *testing.T) {
 	ct := rec.Header().Get("Content-Type")
 	if ct != "text/plain; charset=utf-8" {
 		t.Errorf("handleSkills raw Content-Type = %q, want %q", ct, "text/plain; charset=utf-8")
+	}
+}
+
+func TestHandleSkillsRawLatestRedirect(t *testing.T) {
+	origDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chdir(origDir) })
+
+	testDir := setupTestSkillDir(t)
+	if err := os.Chdir(testDir); err != nil {
+		t.Fatal(err)
+	}
+
+	req := httptest.NewRequest("GET", "/skills/test-skill/raw/helper.sh", nil)
+	rec := httptest.NewRecorder()
+	handleSkills(rec, req)
+
+	if rec.Code != http.StatusFound {
+		t.Errorf("handleSkills(/skills/test-skill/raw/helper.sh) status = %d, want %d", rec.Code, http.StatusFound)
+	}
+	loc := rec.Header().Get("Location")
+	want := "/skills/test-skill/1.2.0/raw/helper.sh"
+	if loc != want {
+		t.Errorf("handleSkills(/skills/test-skill/raw/helper.sh) Location = %q, want %q", loc, want)
+	}
+}
+
+func TestFilterChangelogByVersion(t *testing.T) {
+	tests := []struct {
+		name    string
+		input   string
+		version string
+		want    string
+	}{
+		{
+			name: "keeps only matching and older versions",
+			input: `# Changelog
+
+## [1.3.0] - 2025-06-01
+
+- New feature
+
+## [1.2.0] - 2025-05-15
+
+- Bug fix
+
+## [1.1.0] - 2025-04-01
+
+- Initial release
+`,
+			version: "1.2.0",
+			want: `# Changelog
+
+## [1.2.0] - 2025-05-15
+
+- Bug fix
+
+## [1.1.0] - 2025-04-01
+
+- Initial release
+`,
+		},
+		{
+			name: "keeps all when viewing latest",
+			input: `# Changelog
+
+## [1.3.0] - 2025-06-01
+
+- New feature
+
+## [1.2.0] - 2025-05-15
+
+- Bug fix
+`,
+			version: "1.3.0",
+			want: `# Changelog
+
+## [1.3.0] - 2025-06-01
+
+- New feature
+
+## [1.2.0] - 2025-05-15
+
+- Bug fix
+`,
+		},
+		{
+			name:    "empty changelog",
+			input:   "",
+			version: "1.0.0",
+			want:    "",
+		},
+		{
+			name: "no matching version keeps nothing after header",
+			input: `# Changelog
+
+## [2.0.0] - 2025-07-01
+
+- Breaking change
+`,
+			version: "1.0.0",
+			want: `# Changelog
+`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := string(filterChangelogByVersion([]byte(tt.input), tt.version))
+			if got != tt.want {
+				t.Errorf("filterChangelogByVersion(%q, %q) =\n%q\nwant:\n%q", tt.input, tt.version, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCompareVersions(t *testing.T) {
+	tests := []struct {
+		a, b string
+		want int
+	}{
+		{"1.0.0", "1.0.0", 0},
+		{"1.0.0", "1.0.1", -1},
+		{"1.1.0", "1.0.9", 1},
+		{"2.0.0", "1.9.9", 1},
+		{"0.1.0", "0.2.0", -1},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.a+"_vs_"+tt.b, func(t *testing.T) {
+			got := compareVersions(tt.a, tt.b)
+			if got != tt.want {
+				t.Errorf("compareVersions(%q, %q) = %d, want %d", tt.a, tt.b, got, tt.want)
+			}
+		})
 	}
 }

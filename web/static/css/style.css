@@ -31,6 +31,14 @@
   margin-bottom: var(--space-xs);
 }
 
+.hero-label {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
 .tagline {
   font-size: var(--font-size-lg);
   color: var(--color-ink-muted);
