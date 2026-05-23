@@ -2,6 +2,7 @@ package main
 
 import (
 	"archive/tar"
+	"bytes"
 	"compress/gzip"
 	"context"
 	"crypto/sha256"
@@ -11,6 +12,8 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
@@ -19,7 +22,40 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/tovrleaf/openkata/cmd/openkata-web/templates"
+	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/renderer/html"
 )
+
+// isExcludedFile returns true if the file should be excluded from the Files tab.
+func isExcludedFile(path string) bool {
+	switch path {
+	case "tile.json", ".tesslignore", "CHANGELOG.md", "references/ACKNOWLEDGMENTS.md":
+		return true
+	}
+	if strings.HasPrefix(path, "evals/") {
+		return true
+	}
+	return false
+}
+
+// gitVersions returns released versions for a skill by reading git tags.
+func gitVersions(name string) []string {
+	pattern := "skills/" + name + "/v*"
+	out, err := exec.Command("git", "tag", "-l", pattern).Output()
+	if err != nil {
+		return nil
+	}
+	prefix := "skills/" + name + "/v"
+	var versions []string
+	for _, line := range strings.Split(strings.TrimSpace(string(out)), "\n") {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, prefix) {
+			versions = append(versions, strings.TrimPrefix(line, prefix))
+		}
+	}
+	sort.Sort(sort.Reverse(sort.StringSlice(versions)))
+	return versions
+}
 
 func handleHome(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
@@ -43,8 +79,9 @@ func handleSkills(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// /skills/:name/archive or /skills/:name/archive/:version
 	parts := strings.Split(strings.TrimSuffix(path, "/"), "/")
+
+	// /skills/:name/archive or /skills/:name/archive/:version
 	if len(parts) >= 2 && parts[1] == "archive" {
 		version := ""
 		if len(parts) >= 3 {
@@ -54,9 +91,53 @@ func handleSkills(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// /skills/:name/ — detail page
+	// /skills/:name/raw/:filepath... — latest version, redirect
+	if len(parts) >= 3 && parts[1] == "raw" {
+		name := parts[0]
+		skill := loadSkillDetailVersion(r.Context(), name, "")
+		if skill == nil {
+			http.NotFound(w, r)
+			return
+		}
+		filePath := strings.Join(parts[2:], "/")
+		http.Redirect(w, r, "/skills/"+name+"/"+skill.Version+"/raw/"+filePath, http.StatusFound)
+		return
+	}
+
+	// /skills/:name/:version/raw/:filepath...
+	if len(parts) >= 4 && parts[2] == "raw" {
+		name := parts[0]
+		version := parts[1]
+		filePath := strings.Join(parts[3:], "/")
+		skill := loadSkillDetailVersion(r.Context(), name, version)
+		if skill == nil {
+			http.NotFound(w, r)
+			return
+		}
+		content, ok := skill.FileContents[filePath]
+		if !ok {
+			http.NotFound(w, r)
+			return
+		}
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.Write([]byte(content))
+		return
+	}
+
+	// /skills/:name/:version — detail page for specific version
+	if len(parts) == 2 {
+		skill := loadSkillDetailVersion(r.Context(), parts[0], parts[1])
+		if skill == nil {
+			http.NotFound(w, r)
+			return
+		}
+		templates.SkillDetailPage(*skill).Render(r.Context(), w)
+		return
+	}
+
+	// /skills/:name — show latest version
 	if len(parts) == 1 {
-		skill := loadSkillDetail(r.Context(), parts[0])
+		skill := loadSkillDetailVersion(r.Context(), parts[0], "")
 		if skill == nil {
 			http.NotFound(w, r)
 			return
@@ -153,19 +234,21 @@ func loadSkillsList(ctx context.Context) []templates.SkillEntry {
 	return skills
 }
 
-func loadSkillDetail(ctx context.Context, name string) *templates.SkillDetail {
+func loadSkillDetailVersion(ctx context.Context, name, version string) *templates.SkillDetail {
 	// Dev mode: read from local filesystem
 	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") == "" {
-		return loadSkillDetailLocal(name)
+		return loadSkillDetailLocal(name, version)
 	}
 
 	if s3Client == nil {
 		return nil
 	}
 
-	version := resolveLatestVersion(ctx, "skills", name)
 	if version == "" {
-		return nil
+		version = resolveLatestVersion(ctx, "skills", name)
+		if version == "" {
+			return nil
+		}
 	}
 
 	// Get metadata from versions.json
@@ -183,6 +266,7 @@ func loadSkillDetail(ctx context.Context, name string) *templates.SkillDetail {
 		Skills map[string]struct {
 			Version     string `json:"version"`
 			Description string `json:"description"`
+			Tags        string `json:"tags"`
 		} `json:"skills"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&versions); err != nil {
@@ -205,9 +289,12 @@ func loadSkillDetail(ctx context.Context, name string) *templates.SkillDetail {
 	}
 
 	detail := &templates.SkillDetail{
-		Name:        name,
-		Version:     version,
-		Description: info.Description,
+		Name:         name,
+		Version:      version,
+		Description:  info.Description,
+		Tags:         info.Tags,
+		Versions:     []string{version},
+		FileContents: make(map[string]string),
 	}
 
 	// Get download count
@@ -235,12 +322,11 @@ func loadSkillDetail(ctx context.Context, name string) *templates.SkillDetail {
 	// Fetch key files and build file list
 	for _, obj := range listResp.Contents {
 		relPath := strings.TrimPrefix(*obj.Key, prefix)
-		if relPath == "" || strings.HasSuffix(relPath, "/") || relPath == "tile.json" {
+		if relPath == "" || strings.HasSuffix(relPath, "/") {
 			continue
 		}
-		detail.Files = append(detail.Files, relPath)
 
-		// Fetch content for known markdown files
+		// Fetch content for special files regardless of exclusion
 		var target *string
 		switch relPath {
 		case "SKILL.md":
@@ -249,30 +335,53 @@ func loadSkillDetail(ctx context.Context, name string) *templates.SkillDetail {
 			target = &detail.Changelog
 		case "references/ACKNOWLEDGMENTS.md":
 			target = &detail.Acknowledgments
-		default:
-			continue
 		}
 
-		getResp, err := s3Client.GetObject(ctx, &s3.GetObjectInput{
-			Bucket: &bucket,
-			Key:    obj.Key,
-		})
-		if err != nil {
-			continue
+		if target != nil {
+			getResp, err := s3Client.GetObject(ctx, &s3.GetObjectInput{
+				Bucket: &bucket,
+				Key:    obj.Key,
+			})
+			if err == nil {
+				data, err := io.ReadAll(getResp.Body)
+				getResp.Body.Close()
+				if err == nil {
+					if relPath == "CHANGELOG.md" {
+						*target = renderMarkdown(filterChangelogByVersion(data, version))
+					} else {
+						*target = renderMarkdown(data)
+					}
+				}
+			}
 		}
-		data, err := io.ReadAll(getResp.Body)
-		getResp.Body.Close()
-		if err != nil {
-			continue
+
+		// Only add non-excluded files to the Files tab and FileContents
+		if !isExcludedFile(relPath) {
+			detail.Files = append(detail.Files, relPath)
+			if target == nil {
+				getResp, err := s3Client.GetObject(ctx, &s3.GetObjectInput{
+					Bucket: &bucket,
+					Key:    obj.Key,
+				})
+				if err == nil {
+					data, err := io.ReadAll(getResp.Body)
+					getResp.Body.Close()
+					if err == nil {
+						detail.FileContents[relPath] = string(data)
+						if strings.HasSuffix(relPath, ".md") {
+							detail.FileContents["__rendered__"+relPath] = renderMarkdownFull(data)
+						}
+					}
+				}
+			}
 		}
-		*target = renderMarkdown(data)
 	}
 
 	sort.Strings(detail.Files)
 	return detail
 }
 
-func loadSkillDetailLocal(name string) *templates.SkillDetail {
+func loadSkillDetailLocal(name, version string) *templates.SkillDetail {
 	dir := "skills/" + name
 	mdPath := dir + "/SKILL.md"
 	data, err := os.ReadFile(mdPath)
@@ -280,34 +389,62 @@ func loadSkillDetailLocal(name string) *templates.SkillDetail {
 		return nil
 	}
 
-	// Get version and description from versions.json
-	var version, description string
+	// Get version, description, and tags from versions.json
+	var latestVersion, description, tags string
 	vjData, err := os.ReadFile("web/static/versions.json")
 	if err == nil {
 		var vj struct {
 			Skills map[string]struct {
 				Version     string `json:"version"`
 				Description string `json:"description"`
+				Tags        string `json:"tags"`
 			} `json:"skills"`
 		}
 		if json.Unmarshal(vjData, &vj) == nil {
 			if info, ok := vj.Skills[name]; ok {
-				version = info.Version
+				latestVersion = info.Version
 				description = info.Description
+				tags = info.Tags
 			}
 		}
 	}
 
+	allVersions := gitVersions(name)
+
+	// If no version specified, use latest
+	if version == "" {
+		if len(allVersions) > 0 {
+			version = allVersions[0]
+		} else {
+			version = latestVersion
+		}
+	} else {
+		// Validate that the requested version exists
+		found := false
+		for _, v := range allVersions {
+			if v == version {
+				found = true
+				break
+			}
+		}
+		if !found && version != latestVersion {
+			return nil
+		}
+	}
+
 	detail := &templates.SkillDetail{
-		Name:        name,
-		Version:     version,
-		Description: description,
-		Docs:        renderMarkdown(data),
+		Name:         name,
+		Version:      version,
+		Description:  description,
+		Tags:         tags,
+		Versions:     allVersions,
+		Docs:         renderMarkdown(data),
+		FileContents: make(map[string]string),
 	}
 
 	// Changelog
 	if cl, err := os.ReadFile(dir + "/CHANGELOG.md"); err == nil {
-		detail.Changelog = renderMarkdown(cl)
+		detail.Changelog = renderMarkdown(filterChangelogByVersion(cl, version))
 	}
 
 	// Acknowledgments
@@ -315,31 +452,183 @@ func loadSkillDetailLocal(name string) *templates.SkillDetail {
 		detail.Acknowledgments = renderMarkdown(ack)
 	}
 
-	// File list
-	entries, _ := os.ReadDir(dir)
-	for _, e := range entries {
-		if e.Name() == "tile.json" {
-			continue
+	// Walk directory for file list and contents
+	filepath.WalkDir(dir, func(path string, d os.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return nil
 		}
-		if e.IsDir() {
-			sub, _ := os.ReadDir(dir + "/" + e.Name())
-			for _, s := range sub {
-				detail.Files = append(detail.Files, e.Name()+"/"+s.Name())
+		relPath, _ := filepath.Rel(dir, path)
+		relPath = filepath.ToSlash(relPath)
+		if isExcludedFile(relPath) {
+			return nil
+		}
+		detail.Files = append(detail.Files, relPath)
+		if content, err := os.ReadFile(path); err == nil {
+			detail.FileContents[relPath] = string(content)
+			if strings.HasSuffix(relPath, ".md") {
+				detail.FileContents["__rendered__"+relPath] = renderMarkdownFull(content)
 			}
-		} else {
-			detail.Files = append(detail.Files, e.Name())
 		}
-	}
+		return nil
+	})
 	sort.Strings(detail.Files)
 	return detail
 }
 
+// filterChangelogByVersion keeps only changelog sections for versions <= the given version.
+// It splits raw markdown by "## " lines and compares version strings.
+func filterChangelogByVersion(raw []byte, version string) []byte {
+	lines := strings.Split(string(raw), "\n")
+	var result []string
+	var header []string
+	inSection := false
+	keep := true
+
+	for _, line := range lines {
+		if strings.HasPrefix(line, "## ") {
+			inSection = true
+			v := extractVersionFromHeading(line)
+			keep = v != "" && compareVersions(v, version) <= 0
+			if keep {
+				result = append(result, line)
+			}
+		} else if !inSection {
+			// Lines before first ## (e.g., title, preamble)
+			header = append(header, line)
+		} else if keep {
+			result = append(result, line)
+		}
+	}
+
+	return []byte(strings.Join(append(header, result...), "\n"))
+}
+
+// extractVersionFromHeading extracts a version from a changelog heading like "## [1.2.3] - 2025-05-19".
+func extractVersionFromHeading(line string) string {
+	// Look for [version] pattern
+	start := strings.Index(line, "[")
+	end := strings.Index(line, "]")
+	if start >= 0 && end > start {
+		return line[start+1 : end]
+	}
+	// Fallback: try bare version after "## "
+	parts := strings.Fields(line)
+	if len(parts) >= 2 {
+		return strings.TrimPrefix(parts[1], "v")
+	}
+	return ""
+}
+
+// compareVersions compares two semver-like version strings.
+// Returns -1 if a < b, 0 if a == b, 1 if a > b.
+func compareVersions(a, b string) int {
+	aParts := strings.Split(a, ".")
+	bParts := strings.Split(b, ".")
+	for i := 0; i < len(aParts) || i < len(bParts); i++ {
+		var ai, bi int
+		if i < len(aParts) {
+			ai, _ = strconv.Atoi(aParts[i])
+		}
+		if i < len(bParts) {
+			bi, _ = strconv.Atoi(bParts[i])
+		}
+		if ai < bi {
+			return -1
+		}
+		if ai > bi {
+			return 1
+		}
+	}
+	return 0
+}
+
+func stripFrontmatter(src []byte) []byte {
+	s := string(src)
+	if !strings.HasPrefix(s, "---") {
+		return src
+	}
+	end := strings.Index(s[3:], "\n---")
+	if end == -1 {
+		return src
+	}
+	return []byte(strings.TrimLeft(s[end+7:], "\n"))
+}
+
+func stripFirstH1(html string) string {
+	// Remove the first <h1>...</h1> block from rendered output
+	start := strings.Index(html, "<h1")
+	if start == -1 {
+		return html
+	}
+	end := strings.Index(html[start:], "</h1>")
+	if end == -1 {
+		return html
+	}
+	// Include the closing tag and any trailing newline
+	cut := start + end + len("</h1>")
+	if cut < len(html) && html[cut] == '\n' {
+		cut++
+	}
+	return html[:start] + html[cut:]
+}
+
 func renderMarkdown(src []byte) string {
-	// Simple passthrough — render as preformatted text wrapped in a div
-	// TODO: replace with goldmark when added as dependency
-	escaped := strings.ReplaceAll(string(src), "<", "&lt;")
-	escaped = strings.ReplaceAll(escaped, ">", "&gt;")
-	return "<pre class=\"markdown-raw\">" + escaped + "</pre>"
+	src = stripFrontmatter(src)
+
+	md := goldmark.New(
+		goldmark.WithRendererOptions(
+			html.WithUnsafe(),
+		),
+	)
+
+	var buf bytes.Buffer
+	if err := md.Convert(src, &buf); err != nil {
+		return ""
+	}
+
+	output := addTargetBlankToExternalLinks(buf.String())
+	return stripFirstH1(output)
+}
+
+func renderMarkdownFull(src []byte) string {
+	src = stripFrontmatter(src)
+	md := goldmark.New(
+		goldmark.WithRendererOptions(
+			html.WithUnsafe(),
+		),
+	)
+	var buf bytes.Buffer
+	if err := md.Convert(src, &buf); err != nil {
+		return ""
+	}
+	return addTargetBlankToExternalLinks(buf.String())
+}
+
+func addTargetBlankToExternalLinks(s string) string {
+	// Add target="_blank" to links starting with http:// or https://
+	result := strings.Builder{}
+	for {
+		idx := strings.Index(s, "<a ")
+		if idx == -1 {
+			result.WriteString(s)
+			break
+		}
+		result.WriteString(s[:idx])
+		s = s[idx:]
+		end := strings.Index(s, ">")
+		if end == -1 {
+			result.WriteString(s)
+			break
+		}
+		tag := s[:end+1]
+		if strings.Contains(tag, "href=\"http://") || strings.Contains(tag, "href=\"https://") {
+			// Insert target="_blank" before closing >
+			tag = s[:end] + " target=\"_blank\">"
+		}
+		result.WriteString(tag)
+		s = s[end+1:]
+	}
+	return result.String()
 }
 
 func handleRules(w http.ResponseWriter, r *http.Request) {

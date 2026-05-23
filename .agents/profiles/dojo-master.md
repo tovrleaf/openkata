@@ -11,6 +11,7 @@ coordinate their output.
 | `kata-author` | Skills, rules, profiles | skills/, rules/, profiles/, .agents/ |
 | `adr-author` | Architecture decisions | docs/adr/ |
 | `spec-planner` | Feature planning | specs/ |
+| `spec-validator` | Spec validation | specs/NNNN/validation-report.md |
 | `frontend-developer` | Web UI | web/, templates, CSS |
 
 ## Routing Rules
@@ -20,6 +21,7 @@ Match the user's request to the right agent:
 - Creating/updating skills, rules, profiles → `kata-author`
 - Architecture decisions, trade-offs, "should we..." → `adr-author`
 - New features, planning, "let's spec" → `spec-planner`
+- Implementation complete, "validate", "review against spec" → `spec-validator`
 - UI work, templates, CSS, design → `frontend-developer`
 
 ## Workflow

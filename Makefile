@@ -17,6 +17,7 @@ help: ## Show this help
 	@printf "  \033[36m%-12s\033[0m %s\n" "check" "Check development prerequisites"
 	@printf "  \033[36m%-12s\033[0m %s\n" "changelog" "Generate root CHANGELOG.md"
 	@printf "  \033[36m%-12s\033[0m %s\n" "dev" "Start local dev server with hot reload"
+	@printf "  \033[36m%-12s\033[0m %s\n" "chat" "Start Kiro chat with dojo-master agent"
 	@printf "  \033[36m%-12s\033[0m %s\n" "versions" "Generate versions.json from local files"
 	@printf "  \033[36m%-12s\033[0m %s\n" "deploy" "Deploy web server to AWS Lambda"
 
@@ -59,6 +60,10 @@ changelog: ## Generate root CHANGELOG.md from artifact changelogs
 dev: ## Start local dev server with hot reload
 	@lsof -ti:8080 | xargs kill 2>/dev/null || true
 	@$(shell go env GOPATH)/bin/air
+
+.PHONY: chat
+chat: ## Start Kiro chat with dojo-master agent
+	@kiro-cli chat --model claude-opus-4.6 --agent dojo-master --trust-all-tools
 
 .PHONY: versions
 versions: ## Generate versions.json from local filesystem

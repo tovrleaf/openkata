@@ -1,0 +1,31 @@
+{
+  "name": "spec-validator",
+  "description": "Reviews implementations against spec requirements with no builder bias",
+  "prompt": "file://../../profiles/spec-validator.md",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "grep",
+    "glob",
+    "code"
+  ],
+  "allowedTools": [
+    "fs_read",
+    "grep",
+    "glob",
+    "code"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "specs/**"
+      ]
+    }
+  },
+  "resources": [
+    "file://AGENTS.md",
+    "skill://.agents/skills/spec-workflow/SKILL.md"
+  ],
+  "welcomeMessage": "Ready to validate. Which spec should I review?"
+}
