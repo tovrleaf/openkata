@@ -19,6 +19,11 @@ Use this before finalizing a generated or revised skill.
   scope clearly?
 - Does the body avoid restating trigger criteria already
   covered by the description?
+- Does the description answer both "what" and "when" in a
+  single read? (completeness)
+- Could this skill accidentally trigger instead of another
+  skill in the same workspace? Are the trigger terms unique
+  to this skill's domain? (distinctiveness)
 
 ## Workflow Quality
 
