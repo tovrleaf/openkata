@@ -145,6 +145,14 @@ frontmatter and markdown instructions.
 8. **Confirm** — Show the user the created skill and ask if
    adjustments are needed.
 
+## Boundaries
+
+- DOES create skill directories, SKILL.md, references/, scripts/
+- DOES validate with representative prompts
+- Does NOT publish, tag, or release skills
+- Does NOT modify existing skills (use review-skill for that)
+- Does NOT create rules or profiles (separate workflows)
+
 ## Example Scenario
 
 User: "I keep doing the same database migration steps manually,
