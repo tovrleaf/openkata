@@ -62,6 +62,18 @@ Read `specs/_current` to determine state:
 
 If no `specs/` directory exists, create it.
 
+## Resuming
+
+When `specs/_current` points to an active spec:
+
+1. Read the progress log for context from prior sessions
+2. Check `git status` and `git log --oneline -5` to see
+   what was last committed
+3. Find the first task with Status: Pending or In Progress
+4. Summarize to the user: "Resuming spec NNNN, task N:
+   [title]. Last completed: [summary]." Then continue
+   Phase 4.
+
 ## Phase 1: Specify
 
 Before asking about requirements, complete these in order:
@@ -80,9 +92,8 @@ Before asking about requirements, complete these in order:
 3. **Ask about branching** — "Would you like me to create a
    feature branch? Suggested name:
    `feature/NNNN-slug`"
-   Do not create the branch without confirmation.
-
-Then collect requirements:
+   Do not create the branch without confirmation. If the
+   branch already exists, switch to it instead of creating.
 
 Then collect requirements:
 
@@ -92,14 +103,14 @@ Then collect requirements:
    - What is out of scope?
    - Are there open questions that block implementation?
 
-4. **Write spec.md** — Use the spec.md template from
+5. **Write spec.md** — Use the spec.md template from
    [spec-templates](references/spec-templates.md). Set
    status to `Draft` and depth to the chosen level.
 
-5. **Set active** — Write the directory name to
+6. **Set active** — Write the directory name to
    `specs/_current`.
 
-6. **Confirm** — Show the spec to the user. Do not proceed
+7. **Confirm** — Show the spec to the user. Do not proceed
    to the next phase without confirmation.
 
 ## Phase 2: Design (Deep only)
@@ -116,7 +127,9 @@ Then collect requirements:
 ## Phase 3: Tasks
 
 1. **Break down the spec** (and design if present) into
-   ordered tasks.
+   ordered tasks. Each task should be completable in one
+   commit and touch one concern. If you need multiple
+   commits, split the task.
 
 2. **Write tasks.md** — Use the tasks.md template from
    [spec-templates](references/spec-templates.md).
@@ -132,8 +145,10 @@ For each task with Status: Pending:
 2. Read the progress log for notes from earlier tasks
 3. Read the task's goal, boundary, and done-when criteria
 4. Build the implementation
-5. Run tests
-5. Verify against done-when criteria
+5. Run tests and verify against done-when criteria. If
+   tests fail, fix before proceeding. For non-testable
+   criteria (visual, behavioral), describe what was
+   checked and the observed result in the progress log.
 6. Update task status to `Done`
 7. Add a progress log entry with date and summary
 8. Commit:
@@ -147,7 +162,8 @@ For each task with Status: Pending:
 When all tasks are Done:
 - Update `spec.md` status to `Done`
 - Clear `specs/_current`
-- Inform the user the feature is complete
+- Inform the user the feature is complete and ask whether
+  to push the branch and open a PR
 
 ## Phase 5: Validate
 
