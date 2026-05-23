@@ -309,6 +309,13 @@ th {
   margin-bottom: var(--space-lg);
 }
 
+.detail-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-sm);
+}
+
 .detail-title {
   display: flex;
   align-items: baseline;
@@ -324,6 +331,13 @@ th {
   font-family: var(--font-mono);
   font-size: var(--font-size-sm);
   color: var(--color-ink-muted);
+}
+
+.detail-meta {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-muted);
+  margin-bottom: var(--space-sm);
 }
 
 .detail-description {
@@ -346,23 +360,106 @@ th {
 .detail-download {
   font-family: var(--font-mono);
   font-size: var(--font-size-sm);
-  padding: var(--space-sm) var(--space-md);
-  border: 1px solid var(--color-accent);
-  border-radius: var(--radius);
   color: var(--color-accent);
-  white-space: nowrap;
 }
 
 .detail-download:hover {
-  background: var(--color-accent);
-  color: var(--color-surface);
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 .detail-downloads {
   font-family: var(--font-mono);
   font-size: var(--font-size-sm);
   color: var(--color-ink-muted);
+}
+
+.detail-docs {
+  margin-top: var(--space-md);
+}
+
+.version-select {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+/* File tree */
+
+.file-tree {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.file-tree-dir {
+  margin: 0;
+}
+
+.file-tree-dir summary {
+  cursor: pointer;
+  list-style: none;
+  white-space: pre;
+  color: var(--color-ink);
+}
+
+.file-tree-dir summary::-webkit-details-marker {
+  display: none;
+}
+
+.file-tree-file {
+  white-space: pre;
+  cursor: pointer;
+  color: var(--color-accent);
+}
+
+.file-tree-file:hover {
+  text-decoration: underline;
+}
+
+.file-highlight {
+  background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+}
+
+/* File viewer */
+
+.file-viewer {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  margin-top: var(--space-md);
+}
+
+.file-viewer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-raised);
+}
+
+.file-viewer-name {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink);
+}
+
+.file-viewer-actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.file-viewer-content {
+  padding: var(--space-md);
+  overflow-x: auto;
+}
+
+.file-viewer-content pre {
+  margin-bottom: 0;
 }
 
 /* Tabs */

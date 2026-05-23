@@ -43,148 +43,282 @@ func SkillDetailPage(skill SkillDetail) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<nav class=\"nav\"><a href=\"/\" class=\"nav-brand\">OPENKATA.dev</a><div class=\"theme-switcher\"><button class=\"theme-switcher__btn\" onclick=\"cycleTheme()\" aria-label=\"Next theme\"></button></div></nav><main><section class=\"detail-header\"><div class=\"detail-title\"><h1>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<nav class=\"nav\"><a href=\"/\" class=\"nav-brand\">OPENKATA.dev</a><div class=\"nav-links\"><a href=\"/skills/\" class=\"nav-link\">Skills</a></div><div class=\"theme-switcher\"><button class=\"theme-switcher__btn\" onclick=\"cycleTheme()\" aria-label=\"Next theme\"></button></div></nav><main><section class=\"detail-header\"><div class=\"detail-title-row\"><div class=\"hero--kanji\"><span class=\"hero-kanji\">技</span><div class=\"hero-text\"><h1>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(skill.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 17, Col: 21}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 23, Col: 23}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</h1><span class=\"detail-version\">v")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</h1></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var4 string
-			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(skill.Version)
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 18, Col: 50}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</span></div><p class=\"detail-description\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var5 string
-			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(skill.Description)
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 20, Col: 53}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</p><div class=\"detail-actions\"><pre class=\"detail-install\"><code>cp -r skills/")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var6 string
-			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(skill.Name)
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 22, Col: 64}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, " .agents/skills/</code></pre><a class=\"detail-download\" href=\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var7 templ.SafeURL
-			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/skills/%s/archive", skill.Name)))
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 23, Col: 99}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\">Download .tar.gz</a></div>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			if skill.Downloads > 0 {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<span class=\"detail-downloads\">")
+			if len(skill.Versions) > 1 {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<select class=\"version-select\" data-skill=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var8 string
-				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", skill.Downloads))
+				var templ_7745c5c3_Var4 string
+				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(skill.Name)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 26, Col: 72}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 27, Col: 60}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, " downloads</span>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				for _, v := range skill.Versions {
+					if v == skill.Version {
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<option value=\"")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						var templ_7745c5c3_Var5 string
+						templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(v)
+						if templ_7745c5c3_Err != nil {
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 30, Col: 26}
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\" selected>v")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						var templ_7745c5c3_Var6 string
+						templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(v)
+						if templ_7745c5c3_Err != nil {
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 30, Col: 42}
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</option>")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+					} else {
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<option value=\"")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						var templ_7745c5c3_Var7 string
+						templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(v)
+						if templ_7745c5c3_Err != nil {
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 32, Col: 26}
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\">v")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						var templ_7745c5c3_Var8 string
+						templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(v)
+						if templ_7745c5c3_Err != nil {
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 32, Col: 33}
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</option>")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+					}
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</select>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			} else {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<span class=\"detail-version\">v")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var9 string
+				templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(skill.Version)
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 37, Col: 51}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</span>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</section><nav class=\"tabs\" aria-label=\"Skill sections\"><button class=\"tab active\" data-tab=\"docs\">Docs</button> <button class=\"tab\" data-tab=\"files\">Files</button> <button class=\"tab\" data-tab=\"changelog\">Changelog</button> <button class=\"tab\" data-tab=\"acknowledgments\">Acknowledgments</button></nav><section class=\"tab-panel active\" id=\"panel-docs\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "</div><p class=\"detail-meta\"><span class=\"detail-downloads\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var10 string
+			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", skill.Downloads))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 41, Col: 72}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, " ↓</span> <span class=\"skill-sep\">|</span> <a class=\"detail-download\" href=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var11 templ.SafeURL
+			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/skills/%s/archive", skill.Name)))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 43, Col: 99}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "\">.tar.gz</a></p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if len(SplitTags(skill.Tags)) > 0 {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<div class=\"skill-tags\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				for _, tag := range SplitTags(skill.Tags) {
+					var templ_7745c5c3_Var12 = []any{TagClass(tag)}
+					templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var12...)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<span class=\"")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					var templ_7745c5c3_Var13 string
+					templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(templ.CSSClasses(templ_7745c5c3_Var12).String())
+					if templ_7745c5c3_Err != nil {
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 1, Col: 0}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "\">")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					var templ_7745c5c3_Var14 string
+					templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(tag)
+					if templ_7745c5c3_Err != nil {
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 48, Col: 42}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "</span>")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "</div>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</section><nav class=\"tabs\" aria-label=\"Skill sections\"><button class=\"tab active\" data-tab=\"overview\">Overview</button> <button class=\"tab\" data-tab=\"files\">Files</button> <button class=\"tab\" data-tab=\"changelog\">Changelog</button> ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if skill.Acknowledgments != "" {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<button class=\"tab\" data-tab=\"acknowledgments\">Acknowledgments</button>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "</nav><section class=\"tab-panel active\" id=\"panel-overview\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if skill.Description != "" {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<p class=\"detail-description\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var15 string
+				templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(skill.Description)
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 65, Col: 54}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</p>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
 			}
 			if skill.Docs != "" {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<div class=\"detail-docs\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
 				templ_7745c5c3_Err = templ.Raw(skill.Docs).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "</div>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
 			} else {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<p class=\"comment\">No documentation available.</p>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "<p class=\"comment\">No documentation available.</p>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</section><section class=\"tab-panel\" id=\"panel-files\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "</section><section class=\"tab-panel\" id=\"panel-files\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			if len(skill.Files) > 0 {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<ul class=\"file-list\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "<div class=\"file-tree\" id=\"file-tree\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				for _, f := range skill.Files {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<li class=\"file-entry\">")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					var templ_7745c5c3_Var9 string
-					templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(f)
-					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 49, Col: 33}
-					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "</li>")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
+				templ_7745c5c3_Err = templ.Raw(buildFileTree(skill.Files, skill.Name, skill.Version)).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</ul>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "</div><div class=\"file-viewer\" id=\"file-viewer\" style=\"display:none\"><div class=\"file-viewer-header\"><span class=\"file-viewer-name\" id=\"file-viewer-name\"></span><div class=\"file-viewer-actions\"><button class=\"tab active\" data-view=\"preview\" id=\"btn-preview\">Preview</button> <button class=\"tab\" data-view=\"code\" id=\"btn-code\">Code</button> <a class=\"tab\" id=\"btn-raw\" href=\"#\" target=\"_blank\" rel=\"noopener\">Raw</a></div></div><div class=\"file-viewer-content\" id=\"file-viewer-content\"></div></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			} else {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<p class=\"comment\">No files available.</p>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "<p class=\"comment\">No files available.</p>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "</section><section class=\"tab-panel\" id=\"panel-changelog\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "</section><section class=\"tab-panel\" id=\"panel-changelog\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -194,27 +328,30 @@ func SkillDetailPage(skill SkillDetail) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			} else {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<p class=\"comment\">No changelog available.</p>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "<p class=\"comment\">No changelog available.</p>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "</section><section class=\"tab-panel\" id=\"panel-acknowledgments\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "</section>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			if skill.Acknowledgments != "" {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "<section class=\"tab-panel\" id=\"panel-acknowledgments\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
 				templ_7745c5c3_Err = templ.Raw(skill.Acknowledgments).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-			} else {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "<p class=\"comment\">No acknowledgments.</p>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "</section>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "</section><script>\n\t\t\t\tdocument.querySelectorAll('.tab').forEach(function(btn) {\n\t\t\t\t\tbtn.addEventListener('click', function() {\n\t\t\t\t\t\tdocument.querySelectorAll('.tab').forEach(function(b) { b.classList.remove('active'); });\n\t\t\t\t\t\tdocument.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });\n\t\t\t\t\t\tbtn.classList.add('active');\n\t\t\t\t\t\tdocument.getElementById('panel-' + btn.dataset.tab).classList.add('active');\n\t\t\t\t\t});\n\t\t\t\t});\n\t\t\t</script></main><footer class=\"footer\">© 2026 OPENKATA.dev // License: <a href=\"https://github.com/tovrleaf/openkata/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT</a></footer>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 39, "<script>\n\t\t\t\t(function() {\n\t\t\t\t\t// Version select navigation\n\t\t\t\t\tvar versionSelect = document.querySelector('.version-select');\n\t\t\t\t\tif (versionSelect) {\n\t\t\t\t\t\tversionSelect.addEventListener('change', function() {\n\t\t\t\t\t\t\twindow.location.href = '/skills/' + this.dataset.skill + '/' + this.value;\n\t\t\t\t\t\t});\n\t\t\t\t\t}\n\n\t\t\t\t\t// Tab switching\n\t\t\t\t\tdocument.querySelectorAll('.tabs .tab').forEach(function(btn) {\n\t\t\t\t\t\tbtn.addEventListener('click', function() {\n\t\t\t\t\t\t\tswitchTab(btn.dataset.tab);\n\t\t\t\t\t\t});\n\t\t\t\t\t});\n\n\t\t\t\t\tfunction switchTab(name) {\n\t\t\t\t\t\tdocument.querySelectorAll('.tabs .tab').forEach(function(b) { b.classList.remove('active'); });\n\t\t\t\t\t\tdocument.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });\n\t\t\t\t\t\tvar activeBtn = document.querySelector('.tabs .tab[data-tab=\"'+name+'\"]');\n\t\t\t\t\t\tif (activeBtn) activeBtn.classList.add('active');\n\t\t\t\t\t\tvar panel = document.getElementById('panel-' + name);\n\t\t\t\t\t\tif (panel) panel.classList.add('active');\n\t\t\t\t\t}\n\n\t\t\t\t\t// Overview link interception — relative links switch to Files tab\n\t\t\t\t\tvar overview = document.getElementById('panel-overview');\n\t\t\t\t\tif (overview) {\n\t\t\t\t\t\toverview.addEventListener('click', function(e) {\n\t\t\t\t\t\t\tvar link = e.target.closest('a');\n\t\t\t\t\t\t\tif (!link) return;\n\t\t\t\t\t\t\tvar href = link.getAttribute('href');\n\t\t\t\t\t\t\tif (!href || href.startsWith('http') || href.startsWith('#')) return;\n\t\t\t\t\t\t\te.preventDefault();\n\t\t\t\t\t\t\tswitchTab('files');\n\t\t\t\t\t\t\thighlightFile(href);\n\t\t\t\t\t\t});\n\t\t\t\t\t}\n\n\t\t\t\t\t// File tree click handling\n\t\t\t\t\tvar fileTree = document.getElementById('file-tree');\n\t\t\t\t\tif (fileTree) {\n\t\t\t\t\t\tfileTree.addEventListener('click', function(e) {\n\t\t\t\t\t\t\tvar item = e.target.closest('[data-file]');\n\t\t\t\t\t\t\tif (!item) return;\n\t\t\t\t\t\t\te.preventDefault();\n\t\t\t\t\t\t\tshowFile(item.dataset.file);\n\t\t\t\t\t\t});\n\t\t\t\t\t}\n\n\t\t\t\t\t// File viewer view toggle\n\t\t\t\t\tvar btnPreview = document.getElementById('btn-preview');\n\t\t\t\t\tvar btnCode = document.getElementById('btn-code');\n\t\t\t\t\tif (btnPreview) btnPreview.addEventListener('click', function() { setView('preview'); });\n\t\t\t\t\tif (btnCode) btnCode.addEventListener('click', function() { setView('code'); });\n\n\t\t\t\t\tvar fileContents = {};\n\t\t\t\t\tvar currentFile = '';\n\t\t\t\t\tvar currentView = 'preview';\n\n\t\t\t\t\t// Embed file contents from server\n\t\t\t\t\tvar fc = document.getElementById('file-contents-data');\n\t\t\t\t\tif (fc) {\n\t\t\t\t\t\ttry { fileContents = JSON.parse(fc.textContent); } catch(e) {}\n\t\t\t\t\t}\n\n\t\t\t\t\tfunction showFile(path) {\n\t\t\t\t\t\tcurrentFile = path;\n\t\t\t\t\t\tvar viewer = document.getElementById('file-viewer');\n\t\t\t\t\t\tvar nameEl = document.getElementById('file-viewer-name');\n\t\t\t\t\t\tvar rawBtn = document.getElementById('btn-raw');\n\t\t\t\t\t\tviewer.style.display = 'block';\n\t\t\t\t\t\tnameEl.textContent = path;\n\t\t\t\t\t\trawBtn.href = '/skills/' + document.body.dataset.skillName + '/' + document.body.dataset.skillVersion + '/raw/' + path;\n\t\t\t\t\t\t// Default view: markdown → preview, else → code\n\t\t\t\t\t\tif (path.endsWith('.md')) {\n\t\t\t\t\t\t\tsetView('preview');\n\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\tsetView('code');\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\n\t\t\t\t\tfunction setView(view) {\n\t\t\t\t\t\tcurrentView = view;\n\t\t\t\t\t\tdocument.querySelectorAll('.file-viewer-actions .tab').forEach(function(b) { b.classList.remove('active'); });\n\t\t\t\t\t\tvar btn = document.querySelector('.file-viewer-actions [data-view=\"'+view+'\"]');\n\t\t\t\t\t\tif (btn) btn.classList.add('active');\n\t\t\t\t\t\trenderContent();\n\t\t\t\t\t}\n\n\t\t\t\t\tfunction renderContent() {\n\t\t\t\t\t\tvar content = fileContents[currentFile] || '';\n\t\t\t\t\t\tvar el = document.getElementById('file-viewer-content');\n\t\t\t\t\t\tif (currentView === 'code' || (currentView === 'preview' && !currentFile.endsWith('.md'))) {\n\t\t\t\t\t\t\tel.innerHTML = '<pre><code>' + escapeHtml(content) + '</code></pre>';\n\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t// Preview for .md — use pre-rendered HTML if available\n\t\t\t\t\t\t\tvar rendered = fileContents['__rendered__' + currentFile];\n\t\t\t\t\t\t\tif (rendered) {\n\t\t\t\t\t\t\t\tel.innerHTML = rendered;\n\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\tel.innerHTML = '<pre><code>' + escapeHtml(content) + '</code></pre>';\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\n\t\t\t\t\tfunction escapeHtml(s) {\n\t\t\t\t\t\tvar d = document.createElement('div');\n\t\t\t\t\t\td.textContent = s;\n\t\t\t\t\t\treturn d.innerHTML;\n\t\t\t\t\t}\n\n\t\t\t\t\tfunction highlightFile(path) {\n\t\t\t\t\t\t// Normalize path\n\t\t\t\t\t\tpath = path.replace(/^\\.\\//, '');\n\t\t\t\t\t\tvar item = document.querySelector('[data-file=\"'+path+'\"]');\n\t\t\t\t\t\tif (item) {\n\t\t\t\t\t\t\titem.classList.add('file-highlight');\n\t\t\t\t\t\t\tsetTimeout(function() { item.classList.remove('file-highlight'); }, 2000);\n\t\t\t\t\t\t\tshowFile(path);\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t})();\n\t\t\t</script><script type=\"application/json\" id=\"file-contents-data\">\n\t\t\t\t@templ.Raw(fileContentsJSON(skill.FileContents))\n\t\t\t</script><script>\n\t\t\t\tdocument.body.dataset.skillName = { skill.Name };\n\t\t\t\tdocument.body.dataset.skillVersion = { skill.Version };\n\t\t\t</script></main><footer class=\"footer\">© 2026 OPENKATA.dev // License: <a href=\"https://github.com/tovrleaf/openkata/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT</a></footer>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
