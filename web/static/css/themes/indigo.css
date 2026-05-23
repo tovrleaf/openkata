@@ -4,8 +4,13 @@
   --color-ink-muted: #a0a0a0;
   --color-surface: #1a1a2e;
   --color-surface-raised: #2a2a3e;
-  --color-border: #3a3a5e;
+  --color-border: #4a4a6e;
   --color-accent: #d42b1e;
   --color-accent-muted: #5a9fd4;
   --color-accent-secondary: #e8943b;
+  --color-red: #ff6b6b;
+  --color-purple: #b388ff;
+  --color-green: #69f0ae;
+  --color-yellow: #fff176;
+  --color-orange: #ffab40;
 }
