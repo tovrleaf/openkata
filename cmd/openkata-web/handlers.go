@@ -369,7 +369,7 @@ func loadSkillDetailVersion(ctx context.Context, name, version string) *template
 					if err == nil {
 						detail.FileContents[relPath] = string(data)
 						if strings.HasSuffix(relPath, ".md") {
-							detail.FileContents["__rendered__"+relPath] = renderMarkdown(data)
+							detail.FileContents["__rendered__"+relPath] = renderMarkdownFull(data)
 						}
 					}
 				}
@@ -466,7 +466,7 @@ func loadSkillDetailLocal(name, version string) *templates.SkillDetail {
 		if content, err := os.ReadFile(path); err == nil {
 			detail.FileContents[relPath] = string(content)
 			if strings.HasSuffix(relPath, ".md") {
-				detail.FileContents["__rendered__"+relPath] = renderMarkdown(content)
+				detail.FileContents["__rendered__"+relPath] = renderMarkdownFull(content)
 			}
 		}
 		return nil
@@ -588,6 +588,20 @@ func renderMarkdown(src []byte) string {
 
 	output := addTargetBlankToExternalLinks(buf.String())
 	return stripFirstH1(output)
+}
+
+func renderMarkdownFull(src []byte) string {
+	src = stripFrontmatter(src)
+	md := goldmark.New(
+		goldmark.WithRendererOptions(
+			html.WithUnsafe(),
+		),
+	)
+	var buf bytes.Buffer
+	if err := md.Convert(src, &buf); err != nil {
+		return ""
+	}
+	return addTargetBlankToExternalLinks(buf.String())
 }
 
 func addTargetBlankToExternalLinks(s string) string {
