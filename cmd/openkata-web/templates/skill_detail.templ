@@ -14,7 +14,7 @@ templ SkillDetailPage(skill SkillDetail) {
 			</div>
 		</nav>
 
-		<main>
+		<main data-skill-name={ skill.Name } data-skill-version={ skill.Version }>
 			<section class="detail-header">
 				<div class="detail-title-row">
 					<div class="hero--kanji">
@@ -191,7 +191,7 @@ templ SkillDetailPage(skill SkillDetail) {
 						var rawBtn = document.getElementById('btn-raw');
 						viewer.style.display = 'block';
 						nameEl.textContent = path;
-						rawBtn.href = '/skills/' + document.body.dataset.skillName + '/' + document.body.dataset.skillVersion + '/raw/' + path;
+						rawBtn.href = '/skills/' + document.querySelector('main').dataset.skillName + '/' + document.querySelector('main').dataset.skillVersion + '/raw/' + path;
 						// Default view: markdown → preview, else → code
 						if (path.endsWith('.md')) {
 							setView('preview');
@@ -242,13 +242,9 @@ templ SkillDetailPage(skill SkillDetail) {
 					}
 				})();
 			</script>
-			<script type="application/json" id="file-contents-data">
+			<div id="file-contents-data" hidden>
 				@templ.Raw(fileContentsJSON(skill.FileContents))
-			</script>
-			<script>
-				document.body.dataset.skillName = { skill.Name };
-				document.body.dataset.skillVersion = { skill.Version };
-			</script>
+			</div>
 		</main>
 
 		<footer class="footer">
