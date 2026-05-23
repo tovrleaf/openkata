@@ -87,22 +87,8 @@ templ SkillDetailPage(skill SkillDetail) {
 
 			<section class="tab-panel" id="panel-files">
 				if len(skill.Files) > 0 {
-					<div class="file-list-nav">
-						for _, f := range skill.Files {
-							if !strings.Contains(f, "/") {
-								<a class="file-list-link" href={ templ.SafeURL("#file-" + fileID(f)) }>{ f }</a>
-							}
-						}
-						for _, dir := range fileDirectories(skill.Files) {
-							<div class="file-list-dir">
-								<span class="file-list-dir-name">{ dir }/</span>
-								for _, f := range skill.Files {
-									if strings.HasPrefix(f, dir+"/") {
-										<a class="file-list-link file-list-link--nested" href={ templ.SafeURL("#file-" + fileID(f)) }>{ strings.TrimPrefix(f, dir+"/") }</a>
-									}
-								}
-							</div>
-						}
+					<div class="file-tree" id="file-tree">
+						@templ.Raw(buildFileTree(skill.Files, skill.Name, skill.Version))
 					</div>
 					<div class="file-blocks">
 						for _, f := range skill.Files {
@@ -112,7 +98,7 @@ templ SkillDetailPage(skill SkillDetail) {
 									<span class="file-block-modes">
 										if strings.HasSuffix(f, ".md") {
 											if _, ok := skill.FileContents["__rendered__"+f]; ok {
-												<button class="file-mode-btn active" data-view="preview" data-file={ f }>Preview</button>
+												<button class="file-mode-btn" data-view="preview" data-file={ f }>Preview</button>
 												<span class="file-mode-sep">|</span>
 												<button class="file-mode-btn" data-view="code" data-file={ f }>Code</button>
 												<span class="file-mode-sep">|</span>
@@ -185,8 +171,20 @@ templ SkillDetailPage(skill SkillDetail) {
 					}
 
 					var hash = location.hash.replace('#', '');
-					if (hash && document.querySelector('.tabs .tab[data-tab="'+hash+'"]')) {
-						switchTab(hash);
+					if (hash) {
+						var parts = hash.split(':');
+						var tabName = parts[0];
+						var fileId = parts[1] || '';
+						if (document.querySelector('.tabs .tab[data-tab="'+tabName+'"]')) {
+							switchTab(tabName);
+						}
+						if (fileId) {
+							var target = document.getElementById('file-' + fileId);
+							if (target) {
+								target.open = true;
+								target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+							}
+						}
 					}
 
 					// Overview link interception — relative links switch to Files tab
@@ -211,19 +209,29 @@ templ SkillDetailPage(skill SkillDetail) {
 							target.open = true;
 							target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 						}
+						// Highlight in tree
+						var treeLink = document.querySelector('.file-tree-link[href="#' + id + '"]');
+						if (treeLink) {
+							document.querySelectorAll('.file-tree-link').forEach(function(l) { l.classList.remove('file-highlight'); });
+							treeLink.classList.add('file-highlight');
+						}
 					}
 
-					// File list navigation - scroll to file block and open it
-					document.querySelectorAll('.file-list-link').forEach(function(link) {
-						link.addEventListener('click', function(e) {
+					// File tree navigation - scroll to file block and open it
+					var fileTree = document.getElementById('file-tree');
+					if (fileTree) {
+						fileTree.addEventListener('click', function(e) {
+							var link = e.target.closest('.file-tree-link');
+							if (!link) return;
 							e.preventDefault();
-							var target = document.querySelector(this.getAttribute('href'));
+							var target = document.querySelector(link.getAttribute('href'));
 							if (target) {
 								target.open = true;
 								target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+								history.replaceState(null, '', '#files:' + target.id.replace('file-', ''));
 							}
 						});
-					});
+					}
 
 					// Preview/Code toggle within file blocks
 					document.querySelectorAll('.file-mode-btn[data-view]').forEach(function(btn) {
@@ -243,6 +251,22 @@ templ SkillDetailPage(skill SkillDetail) {
 								if (code) code.style.display = 'block';
 							}
 							block.open = true;
+						});
+					});
+
+					// Activate Preview button when file block opens, clear on close
+					document.querySelectorAll('.file-block').forEach(function(block) {
+						block.addEventListener('toggle', function() {
+							if (block.open) {
+								var previewBtn = block.querySelector('.file-mode-btn[data-view="preview"]');
+								if (previewBtn && !block.querySelector('.file-mode-btn.active')) {
+									previewBtn.classList.add('active');
+								}
+								history.replaceState(null, '', '#files:' + block.id.replace('file-', ''));
+							} else {
+								block.querySelectorAll('.file-mode-btn').forEach(function(b) { b.classList.remove('active'); });
+								history.replaceState(null, '', '#files');
+							}
 						});
 					});
 				})();
