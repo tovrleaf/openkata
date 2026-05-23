@@ -63,7 +63,7 @@
 .nav {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: var(--space-lg);
   margin-bottom: var(--space-lg);
   padding-bottom: var(--space-md);
   border-bottom: 1px solid var(--color-border);
@@ -73,6 +73,10 @@
   width: 100vw;
   padding-left: var(--space-lg);
   padding-right: var(--space-lg);
+}
+
+.theme-switcher {
+  margin-left: auto;
 }
 
 .nav-brand {
@@ -319,7 +323,7 @@ th {
 
 .detail-title-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   margin-bottom: var(--space-sm);
 }
@@ -346,6 +350,7 @@ th {
   font-size: var(--font-size-sm);
   color: var(--color-ink-muted);
   margin-bottom: var(--space-sm);
+  text-align: left;
 }
 
 .detail-description {
@@ -501,10 +506,24 @@ th {
 
 .tab-panel {
   display: none;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
 }
 
 .tab-panel.active {
   display: block;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+}
+
+.tab-panel ul {
+  list-style-type: square;
+}
+
+.detail-header .skill-tags {
+  padding-left: 0;
 }
 
 /* File list */

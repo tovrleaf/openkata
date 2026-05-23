@@ -293,10 +293,9 @@ func TestHandleSkillsRouting(t *testing.T) {
 			wantCode: 200,
 		},
 		{
-			name:       "name redirects to latest version",
-			path:       "/skills/test-skill",
-			wantCode:   302,
-			wantHeader: "/skills/test-skill/1.2.0",
+			name:     "name renders latest version",
+			path:     "/skills/test-skill",
+			wantCode: 200,
 		},
 		{
 			name:     "specific version renders detail",

@@ -135,14 +135,14 @@ func handleSkills(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// /skills/:name — redirect to latest version
+	// /skills/:name — show latest version
 	if len(parts) == 1 {
 		skill := loadSkillDetailVersion(r.Context(), parts[0], "")
 		if skill == nil {
 			http.NotFound(w, r)
 			return
 		}
-		http.Redirect(w, r, "/skills/"+parts[0]+"/"+skill.Version, http.StatusFound)
+		templates.SkillDetailPage(*skill).Render(r.Context(), w)
 		return
 	}
 
