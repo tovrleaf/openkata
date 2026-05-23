@@ -7,3 +7,4 @@ bin/
 TODO.md
 tmp/
 specs/_current
+.worktrees/
