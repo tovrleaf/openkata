@@ -79,8 +79,9 @@ func handleSkills(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// /skills/:name/archive or /skills/:name/archive/:version
 	parts := strings.Split(strings.TrimSuffix(path, "/"), "/")
+
+	// /skills/:name/archive or /skills/:name/archive/:version
 	if len(parts) >= 2 && parts[1] == "archive" {
 		version := ""
 		if len(parts) >= 3 {
@@ -90,14 +91,45 @@ func handleSkills(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// /skills/:name/ — detail page
-	if len(parts) == 1 {
-		skill := loadSkillDetail(r.Context(), parts[0])
+	// /skills/:name/:version/raw/:filepath...
+	if len(parts) >= 4 && parts[2] == "raw" {
+		name := parts[0]
+		version := parts[1]
+		filePath := strings.Join(parts[3:], "/")
+		skill := loadSkillDetailVersion(r.Context(), name, version)
+		if skill == nil {
+			http.NotFound(w, r)
+			return
+		}
+		content, ok := skill.FileContents[filePath]
+		if !ok {
+			http.NotFound(w, r)
+			return
+		}
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.Write([]byte(content))
+		return
+	}
+
+	// /skills/:name/:version — detail page for specific version
+	if len(parts) == 2 {
+		skill := loadSkillDetailVersion(r.Context(), parts[0], parts[1])
 		if skill == nil {
 			http.NotFound(w, r)
 			return
 		}
 		templates.SkillDetailPage(*skill).Render(r.Context(), w)
+		return
+	}
+
+	// /skills/:name — redirect to latest version
+	if len(parts) == 1 {
+		skill := loadSkillDetailVersion(r.Context(), parts[0], "")
+		if skill == nil {
+			http.NotFound(w, r)
+			return
+		}
+		http.Redirect(w, r, "/skills/"+parts[0]+"/"+skill.Version, http.StatusFound)
 		return
 	}
 
@@ -189,19 +221,21 @@ func loadSkillsList(ctx context.Context) []templates.SkillEntry {
 	return skills
 }
 
-func loadSkillDetail(ctx context.Context, name string) *templates.SkillDetail {
+func loadSkillDetailVersion(ctx context.Context, name, version string) *templates.SkillDetail {
 	// Dev mode: read from local filesystem
 	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") == "" {
-		return loadSkillDetailLocal(name)
+		return loadSkillDetailLocal(name, version)
 	}
 
 	if s3Client == nil {
 		return nil
 	}
 
-	version := resolveLatestVersion(ctx, "skills", name)
 	if version == "" {
-		return nil
+		version = resolveLatestVersion(ctx, "skills", name)
+		if version == "" {
+			return nil
+		}
 	}
 
 	// Get metadata from versions.json
@@ -327,7 +361,7 @@ func loadSkillDetail(ctx context.Context, name string) *templates.SkillDetail {
 	return detail
 }
 
-func loadSkillDetailLocal(name string) *templates.SkillDetail {
+func loadSkillDetailLocal(name, version string) *templates.SkillDetail {
 	dir := "skills/" + name
 	mdPath := dir + "/SKILL.md"
 	data, err := os.ReadFile(mdPath)
@@ -336,7 +370,7 @@ func loadSkillDetailLocal(name string) *templates.SkillDetail {
 	}
 
 	// Get version, description, and tags from versions.json
-	var version, description, tags string
+	var latestVersion, description, tags string
 	vjData, err := os.ReadFile("web/static/versions.json")
 	if err == nil {
 		var vj struct {
@@ -348,10 +382,33 @@ func loadSkillDetailLocal(name string) *templates.SkillDetail {
 		}
 		if json.Unmarshal(vjData, &vj) == nil {
 			if info, ok := vj.Skills[name]; ok {
-				version = info.Version
+				latestVersion = info.Version
 				description = info.Description
 				tags = info.Tags
 			}
+		}
+	}
+
+	allVersions := gitVersions(name)
+
+	// If no version specified, use latest
+	if version == "" {
+		if len(allVersions) > 0 {
+			version = allVersions[0]
+		} else {
+			version = latestVersion
+		}
+	} else {
+		// Validate that the requested version exists
+		found := false
+		for _, v := range allVersions {
+			if v == version {
+				found = true
+				break
+			}
+		}
+		if !found && version != latestVersion {
+			return nil
 		}
 	}
 
@@ -360,7 +417,7 @@ func loadSkillDetailLocal(name string) *templates.SkillDetail {
 		Version:      version,
 		Description:  description,
 		Tags:         tags,
-		Versions:     gitVersions(name),
+		Versions:     allVersions,
 		Docs:         renderMarkdown(data),
 		FileContents: make(map[string]string),
 	}

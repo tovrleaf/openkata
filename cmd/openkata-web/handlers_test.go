@@ -1,6 +1,9 @@
 package main
 
 import (
+	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -220,5 +223,151 @@ func TestGitVersions(t *testing.T) {
 	versions := gitVersions("nonexistent-skill-xyz-12345")
 	if versions != nil {
 		t.Errorf("gitVersions(nonexistent) = %v, want nil", versions)
+	}
+}
+
+func setupTestSkillDir(t *testing.T) string {
+	t.Helper()
+	dir := t.TempDir()
+
+	// Create skill directory with SKILL.md
+	skillDir := filepath.Join(dir, "skills", "test-skill")
+	if err := os.MkdirAll(skillDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(skillDir, "SKILL.md"), []byte("# Test Skill\n\nA test."), 0644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(skillDir, "helper.sh"), []byte("#!/bin/bash\necho hello"), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	// Create versions.json
+	versionsDir := filepath.Join(dir, "web", "static")
+	if err := os.MkdirAll(versionsDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	versionsJSON := `{
+  "skills": {
+    "test-skill": {
+      "version": "1.2.0",
+      "description": "A test skill",
+      "tags": "category:test"
+    }
+  },
+  "rules": {}
+}`
+	if err := os.WriteFile(filepath.Join(versionsDir, "versions.json"), []byte(versionsJSON), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	return dir
+}
+
+func TestHandleSkillsRouting(t *testing.T) {
+	// Save and restore working directory
+	origDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chdir(origDir) })
+
+	testDir := setupTestSkillDir(t)
+	if err := os.Chdir(testDir); err != nil {
+		t.Fatal(err)
+	}
+
+	// Create a fake git tag so gitVersions returns something
+	// Since we can't easily mock git, we test with the versions.json fallback
+	tests := []struct {
+		name       string
+		path       string
+		wantCode   int
+		wantHeader string // for redirects
+		wantBody   string // substring match
+	}{
+		{
+			name:     "listing",
+			path:     "/skills/",
+			wantCode: 200,
+		},
+		{
+			name:       "name redirects to latest version",
+			path:       "/skills/test-skill",
+			wantCode:   302,
+			wantHeader: "/skills/test-skill/1.2.0",
+		},
+		{
+			name:     "specific version renders detail",
+			path:     "/skills/test-skill/1.2.0",
+			wantCode: 200,
+		},
+		{
+			name:     "raw file serves content",
+			path:     "/skills/test-skill/1.2.0/raw/helper.sh",
+			wantCode: 200,
+			wantBody: "#!/bin/bash",
+		},
+		{
+			name:     "raw file not found",
+			path:     "/skills/test-skill/1.2.0/raw/nonexistent.txt",
+			wantCode: 404,
+		},
+		{
+			name:     "unknown skill 404",
+			path:     "/skills/no-such-skill",
+			wantCode: 404,
+		},
+		{
+			name:     "unknown version 404",
+			path:     "/skills/test-skill/9.9.9",
+			wantCode: 404,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest("GET", tt.path, nil)
+			rec := httptest.NewRecorder()
+			handleSkills(rec, req)
+
+			if rec.Code != tt.wantCode {
+				t.Errorf("handleSkills(%s) status = %d, want %d", tt.path, rec.Code, tt.wantCode)
+			}
+			if tt.wantHeader != "" {
+				got := rec.Header().Get("Location")
+				if got != tt.wantHeader {
+					t.Errorf("handleSkills(%s) Location = %q, want %q", tt.path, got, tt.wantHeader)
+				}
+			}
+			if tt.wantBody != "" {
+				body := rec.Body.String()
+				if !strings.Contains(body, tt.wantBody) {
+					t.Errorf("handleSkills(%s) body missing %q, got %q", tt.path, tt.wantBody, body)
+				}
+			}
+		})
+	}
+}
+
+func TestHandleSkillsRawContentType(t *testing.T) {
+	origDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chdir(origDir) })
+
+	testDir := setupTestSkillDir(t)
+	if err := os.Chdir(testDir); err != nil {
+		t.Fatal(err)
+	}
+
+	req := httptest.NewRequest("GET", "/skills/test-skill/1.2.0/raw/helper.sh", nil)
+	rec := httptest.NewRecorder()
+	handleSkills(rec, req)
+
+	ct := rec.Header().Get("Content-Type")
+	if ct != "text/plain; charset=utf-8" {
+		t.Errorf("handleSkills raw Content-Type = %q, want %q", ct, "text/plain; charset=utf-8")
 	}
 }
