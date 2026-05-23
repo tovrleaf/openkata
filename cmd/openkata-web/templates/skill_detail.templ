@@ -1,6 +1,9 @@
 package templates
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 templ SkillDetailPage(skill SkillDetail) {
 	@Layout(skill.Name) {
@@ -84,19 +87,56 @@ templ SkillDetailPage(skill SkillDetail) {
 
 			<section class="tab-panel" id="panel-files">
 				if len(skill.Files) > 0 {
-					<div class="file-tree" id="file-tree">
-						@templ.Raw(buildFileTree(skill.Files, skill.Name, skill.Version))
-					</div>
-					<div class="file-viewer" id="file-viewer" style="display:none">
-						<div class="file-viewer-header">
-							<span class="file-viewer-name" id="file-viewer-name"></span>
-							<div class="file-viewer-actions">
-								<button class="tab active" data-view="preview" id="btn-preview">Preview</button>
-								<button class="tab" data-view="code" id="btn-code">Code</button>
-								<a class="tab" id="btn-raw" href="#" target="_blank" rel="noopener">Raw</a>
+					<div class="file-list-nav">
+						for _, f := range skill.Files {
+							if !strings.Contains(f, "/") {
+								<a class="file-list-link" href={ templ.SafeURL("#file-" + fileID(f)) }>{ f }</a>
+							}
+						}
+						for _, dir := range fileDirectories(skill.Files) {
+							<div class="file-list-dir">
+								<span class="file-list-dir-name">{ dir }/</span>
+								for _, f := range skill.Files {
+									if strings.HasPrefix(f, dir+"/") {
+										<a class="file-list-link file-list-link--nested" href={ templ.SafeURL("#file-" + fileID(f)) }>{ strings.TrimPrefix(f, dir+"/") }</a>
+									}
+								}
 							</div>
-						</div>
-						<div class="file-viewer-content" id="file-viewer-content"></div>
+						}
+					</div>
+					<div class="file-blocks">
+						for _, f := range skill.Files {
+							<details class="file-block" id={ "file-" + fileID(f) }>
+								<summary class="file-block-header">
+									<span class="file-block-name">{ f }</span>
+									<span class="file-block-modes">
+										if strings.HasSuffix(f, ".md") {
+											if _, ok := skill.FileContents["__rendered__"+f]; ok {
+												<button class="file-mode-btn active" data-view="preview" data-file={ f }>Preview</button>
+												<span class="file-mode-sep">|</span>
+												<button class="file-mode-btn" data-view="code" data-file={ f }>Code</button>
+												<span class="file-mode-sep">|</span>
+											}
+										}
+										<a class="file-mode-btn" href={ templ.SafeURL(fmt.Sprintf("/skills/%s/%s/raw/%s", skill.Name, skill.Version, f)) } target="_blank" rel="noopener" onclick="event.stopPropagation()">Raw</a>
+									</span>
+								</summary>
+								<div class="file-block-content">
+									<div class="file-block-body" data-file={ f }>
+										if strings.HasSuffix(f, ".md") {
+											if rendered, ok := skill.FileContents["__rendered__"+f]; ok {
+												<div class="file-preview" data-file={ f }>@templ.Raw(rendered)</div>
+												<pre class="file-code" data-file={ f } style="display:none"><code>{ skill.FileContents[f] }</code></pre>
+											} else {
+												<pre class="file-code" data-file={ f }><code>{ skill.FileContents[f] }</code></pre>
+											}
+										} else {
+											<pre class="file-code" data-file={ f }><code>{ skill.FileContents[f] }</code></pre>
+										}
+									</div>
+								</div>
+							</details>
+						}
 					</div>
 				} else {
 					<p class="comment">No files available.</p>
@@ -141,6 +181,12 @@ templ SkillDetailPage(skill SkillDetail) {
 						if (activeBtn) activeBtn.classList.add('active');
 						var panel = document.getElementById('panel-' + name);
 						if (panel) panel.classList.add('active');
+						history.replaceState(null, '', '#' + name);
+					}
+
+					var hash = location.hash.replace('#', '');
+					if (hash && document.querySelector('.tabs .tab[data-tab="'+hash+'"]')) {
+						switchTab(hash);
 					}
 
 					// Overview link interception — relative links switch to Files tab
@@ -152,99 +198,55 @@ templ SkillDetailPage(skill SkillDetail) {
 							var href = link.getAttribute('href');
 							if (!href || href.startsWith('http') || href.startsWith('#')) return;
 							e.preventDefault();
-							switchTab('files');
 							highlightFile(href);
 						});
 					}
 
-					// File tree click handling
-					var fileTree = document.getElementById('file-tree');
-					if (fileTree) {
-						fileTree.addEventListener('click', function(e) {
-							var item = e.target.closest('[data-file]');
-							if (!item) return;
-							e.preventDefault();
-							showFile(item.dataset.file);
-						});
-					}
-
-					// File viewer view toggle
-					var btnPreview = document.getElementById('btn-preview');
-					var btnCode = document.getElementById('btn-code');
-					if (btnPreview) btnPreview.addEventListener('click', function() { setView('preview'); });
-					if (btnCode) btnCode.addEventListener('click', function() { setView('code'); });
-
-					var fileContents = {};
-					var currentFile = '';
-					var currentView = 'preview';
-
-					// Embed file contents from server
-					var fc = document.getElementById('file-contents-data');
-					if (fc) {
-						try { fileContents = JSON.parse(fc.textContent); } catch(e) {}
-					}
-
-					function showFile(path) {
-						currentFile = path;
-						var viewer = document.getElementById('file-viewer');
-						var nameEl = document.getElementById('file-viewer-name');
-						var rawBtn = document.getElementById('btn-raw');
-						viewer.style.display = 'block';
-						nameEl.textContent = path;
-						rawBtn.href = '/skills/' + document.querySelector('main').dataset.skillName + '/' + document.querySelector('main').dataset.skillVersion + '/raw/' + path;
-						// Default view: markdown → preview, else → code
-						if (path.endsWith('.md')) {
-							setView('preview');
-						} else {
-							setView('code');
-						}
-					}
-
-					function setView(view) {
-						currentView = view;
-						document.querySelectorAll('.file-viewer-actions .tab').forEach(function(b) { b.classList.remove('active'); });
-						var btn = document.querySelector('.file-viewer-actions [data-view="'+view+'"]');
-						if (btn) btn.classList.add('active');
-						renderContent();
-					}
-
-					function renderContent() {
-						var content = fileContents[currentFile] || '';
-						var el = document.getElementById('file-viewer-content');
-						if (currentView === 'code' || (currentView === 'preview' && !currentFile.endsWith('.md'))) {
-							el.innerHTML = '<pre><code>' + escapeHtml(content) + '</code></pre>';
-						} else {
-							// Preview for .md — use pre-rendered HTML if available
-							var rendered = fileContents['__rendered__' + currentFile];
-							if (rendered) {
-								el.innerHTML = rendered;
-							} else {
-								el.innerHTML = '<pre><code>' + escapeHtml(content) + '</code></pre>';
-							}
-						}
-					}
-
-					function escapeHtml(s) {
-						var d = document.createElement('div');
-						d.textContent = s;
-						return d.innerHTML;
-					}
-
 					function highlightFile(path) {
-						// Normalize path
 						path = path.replace(/^\.\//, '');
-						var item = document.querySelector('[data-file="'+path+'"]');
-						if (item) {
-							item.classList.add('file-highlight');
-							setTimeout(function() { item.classList.remove('file-highlight'); }, 2000);
-							showFile(path);
+						var id = 'file-' + path.replace(/\//g, '-').replace(/\./g, '-');
+						var target = document.getElementById(id);
+						if (target) {
+							switchTab('files');
+							target.open = true;
+							target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 						}
 					}
+
+					// File list navigation - scroll to file block and open it
+					document.querySelectorAll('.file-list-link').forEach(function(link) {
+						link.addEventListener('click', function(e) {
+							e.preventDefault();
+							var target = document.querySelector(this.getAttribute('href'));
+							if (target) {
+								target.open = true;
+								target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+							}
+						});
+					});
+
+					// Preview/Code toggle within file blocks
+					document.querySelectorAll('.file-mode-btn[data-view]').forEach(function(btn) {
+						btn.addEventListener('click', function(e) {
+							e.preventDefault();
+							e.stopPropagation();
+							var block = btn.closest('.file-block');
+							block.querySelectorAll('.file-mode-btn[data-view]').forEach(function(b) { b.classList.remove('active'); });
+							btn.classList.add('active');
+							var preview = block.querySelector('.file-preview');
+							var code = block.querySelector('.file-code');
+							if (btn.dataset.view === 'preview' && preview) {
+								preview.style.display = 'block';
+								if (code) code.style.display = 'none';
+							} else if (btn.dataset.view === 'code') {
+								if (preview) preview.style.display = 'none';
+								if (code) code.style.display = 'block';
+							}
+							block.open = true;
+						});
+					});
 				})();
 			</script>
-			<div id="file-contents-data" hidden>
-				@templ.Raw(fileContentsJSON(skill.FileContents))
-			</div>
 		</main>
 
 		<footer class="footer">
