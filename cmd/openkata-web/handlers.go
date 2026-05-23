@@ -12,6 +12,8 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
@@ -23,6 +25,37 @@ import (
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/renderer/html"
 )
+
+// isExcludedFile returns true if the file should be excluded from the Files tab.
+func isExcludedFile(path string) bool {
+	switch path {
+	case "tile.json", ".tesslignore", "CHANGELOG.md", "references/ACKNOWLEDGMENTS.md":
+		return true
+	}
+	if strings.HasPrefix(path, "evals/") {
+		return true
+	}
+	return false
+}
+
+// gitVersions returns released versions for a skill by reading git tags.
+func gitVersions(name string) []string {
+	pattern := "skills/" + name + "/v*"
+	out, err := exec.Command("git", "tag", "-l", pattern).Output()
+	if err != nil {
+		return nil
+	}
+	prefix := "skills/" + name + "/v"
+	var versions []string
+	for _, line := range strings.Split(strings.TrimSpace(string(out)), "\n") {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, prefix) {
+			versions = append(versions, strings.TrimPrefix(line, prefix))
+		}
+	}
+	sort.Sort(sort.Reverse(sort.StringSlice(versions)))
+	return versions
+}
 
 func handleHome(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
@@ -186,6 +219,7 @@ func loadSkillDetail(ctx context.Context, name string) *templates.SkillDetail {
 		Skills map[string]struct {
 			Version     string `json:"version"`
 			Description string `json:"description"`
+			Tags        string `json:"tags"`
 		} `json:"skills"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&versions); err != nil {
@@ -208,9 +242,12 @@ func loadSkillDetail(ctx context.Context, name string) *templates.SkillDetail {
 	}
 
 	detail := &templates.SkillDetail{
-		Name:        name,
-		Version:     version,
-		Description: info.Description,
+		Name:         name,
+		Version:      version,
+		Description:  info.Description,
+		Tags:         info.Tags,
+		Versions:     []string{version},
+		FileContents: make(map[string]string),
 	}
 
 	// Get download count
@@ -238,12 +275,11 @@ func loadSkillDetail(ctx context.Context, name string) *templates.SkillDetail {
 	// Fetch key files and build file list
 	for _, obj := range listResp.Contents {
 		relPath := strings.TrimPrefix(*obj.Key, prefix)
-		if relPath == "" || strings.HasSuffix(relPath, "/") || relPath == "tile.json" {
+		if relPath == "" || strings.HasSuffix(relPath, "/") {
 			continue
 		}
-		detail.Files = append(detail.Files, relPath)
 
-		// Fetch content for known markdown files
+		// Fetch content for special files regardless of exclusion
 		var target *string
 		switch relPath {
 		case "SKILL.md":
@@ -252,23 +288,39 @@ func loadSkillDetail(ctx context.Context, name string) *templates.SkillDetail {
 			target = &detail.Changelog
 		case "references/ACKNOWLEDGMENTS.md":
 			target = &detail.Acknowledgments
-		default:
-			continue
 		}
 
-		getResp, err := s3Client.GetObject(ctx, &s3.GetObjectInput{
-			Bucket: &bucket,
-			Key:    obj.Key,
-		})
-		if err != nil {
-			continue
+		if target != nil {
+			getResp, err := s3Client.GetObject(ctx, &s3.GetObjectInput{
+				Bucket: &bucket,
+				Key:    obj.Key,
+			})
+			if err == nil {
+				data, err := io.ReadAll(getResp.Body)
+				getResp.Body.Close()
+				if err == nil {
+					*target = renderMarkdown(data)
+				}
+			}
 		}
-		data, err := io.ReadAll(getResp.Body)
-		getResp.Body.Close()
-		if err != nil {
-			continue
+
+		// Only add non-excluded files to the Files tab and FileContents
+		if !isExcludedFile(relPath) {
+			detail.Files = append(detail.Files, relPath)
+			if target == nil {
+				getResp, err := s3Client.GetObject(ctx, &s3.GetObjectInput{
+					Bucket: &bucket,
+					Key:    obj.Key,
+				})
+				if err == nil {
+					data, err := io.ReadAll(getResp.Body)
+					getResp.Body.Close()
+					if err == nil {
+						detail.FileContents[relPath] = string(data)
+					}
+				}
+			}
 		}
-		*target = renderMarkdown(data)
 	}
 
 	sort.Strings(detail.Files)
@@ -283,29 +335,34 @@ func loadSkillDetailLocal(name string) *templates.SkillDetail {
 		return nil
 	}
 
-	// Get version and description from versions.json
-	var version, description string
+	// Get version, description, and tags from versions.json
+	var version, description, tags string
 	vjData, err := os.ReadFile("web/static/versions.json")
 	if err == nil {
 		var vj struct {
 			Skills map[string]struct {
 				Version     string `json:"version"`
 				Description string `json:"description"`
+				Tags        string `json:"tags"`
 			} `json:"skills"`
 		}
 		if json.Unmarshal(vjData, &vj) == nil {
 			if info, ok := vj.Skills[name]; ok {
 				version = info.Version
 				description = info.Description
+				tags = info.Tags
 			}
 		}
 	}
 
 	detail := &templates.SkillDetail{
-		Name:        name,
-		Version:     version,
-		Description: description,
-		Docs:        renderMarkdown(data),
+		Name:         name,
+		Version:      version,
+		Description:  description,
+		Tags:         tags,
+		Versions:     gitVersions(name),
+		Docs:         renderMarkdown(data),
+		FileContents: make(map[string]string),
 	}
 
 	// Changelog
@@ -318,21 +375,22 @@ func loadSkillDetailLocal(name string) *templates.SkillDetail {
 		detail.Acknowledgments = renderMarkdown(ack)
 	}
 
-	// File list
-	entries, _ := os.ReadDir(dir)
-	for _, e := range entries {
-		if e.Name() == "tile.json" {
-			continue
+	// Walk directory for file list and contents
+	filepath.WalkDir(dir, func(path string, d os.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return nil
 		}
-		if e.IsDir() {
-			sub, _ := os.ReadDir(dir + "/" + e.Name())
-			for _, s := range sub {
-				detail.Files = append(detail.Files, e.Name()+"/"+s.Name())
-			}
-		} else {
-			detail.Files = append(detail.Files, e.Name())
+		relPath, _ := filepath.Rel(dir, path)
+		relPath = filepath.ToSlash(relPath)
+		if isExcludedFile(relPath) {
+			return nil
 		}
-	}
+		detail.Files = append(detail.Files, relPath)
+		if content, err := os.ReadFile(path); err == nil {
+			detail.FileContents[relPath] = string(content)
+		}
+		return nil
+	})
 	sort.Strings(detail.Files)
 	return detail
 }

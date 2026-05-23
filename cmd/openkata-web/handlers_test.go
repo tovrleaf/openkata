@@ -187,3 +187,38 @@ func TestAddTargetBlankToExternalLinks(t *testing.T) {
 		})
 	}
 }
+
+func TestIsExcludedFile(t *testing.T) {
+	tests := []struct {
+		path string
+		want bool
+	}{
+		{"tile.json", true},
+		{".tesslignore", true},
+		{"CHANGELOG.md", true},
+		{"references/ACKNOWLEDGMENTS.md", true},
+		{"evals/test.yaml", true},
+		{"evals/nested/deep.yaml", true},
+		{"SKILL.md", false},
+		{"assets/diagram.png", false},
+		{"references/other.md", false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.path, func(t *testing.T) {
+			got := isExcludedFile(tt.path)
+			if got != tt.want {
+				t.Errorf("isExcludedFile(%q) = %v, want %v", tt.path, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGitVersions(t *testing.T) {
+	// gitVersions shells out to git, so we test parsing logic indirectly.
+	// This test verifies it returns nil for a non-existent skill (no tags).
+	versions := gitVersions("nonexistent-skill-xyz-12345")
+	if versions != nil {
+		t.Errorf("gitVersions(nonexistent) = %v, want nil", versions)
+	}
+}
