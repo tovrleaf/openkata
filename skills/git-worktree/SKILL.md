@@ -25,6 +25,12 @@ linked to the same repository.
 - Working on a hotfix without disrupting feature work
 - Comparing behavior across branches side by side
 
+## When to Skip
+
+- Quick fix on the current branch — just commit in place
+- Already inside a worktree — do not nest, continue working
+- Single task with no parallel need — regular checkout suffices
+
 ## Steps
 
 1. **Check if already in a worktree** — Run:
@@ -58,6 +64,10 @@ linked to the same repository.
    and operate normally. Commits, pushes, and pulls work
    as expected. The worktree shares the object store with
    the main repo — no extra disk for git history.
+
+   Run the project's tests after entering to confirm a clean
+   baseline. If tests fail before you change anything, the
+   issue is pre-existing — not caused by your work.
 
 5. **List worktrees** — Run:
    ```bash
