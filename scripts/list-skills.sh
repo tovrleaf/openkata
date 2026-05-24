@@ -50,9 +50,9 @@ for dir in .agents/skills/*/; do
 
   changes=""
   if [[ -n "${tag}" ]]; then
-    changes="$(git diff "${tag}" -- "${skill_dir}" 2>/dev/null)"
+    changes="$(git diff "${tag}" -- "${skill_dir}" ':!'"${skill_dir}"'/CHANGELOG.md' ':!'"${skill_dir}"'/evals' ':!'"${skill_dir}"'/tile.json' ':!'"${skill_dir}"'/.tesslignore' 2>/dev/null)"
   else
-    changes="$(git diff HEAD -- "${skill_dir}" 2>/dev/null)"
+    changes="$(git diff HEAD -- "${skill_dir}" ':!'"${skill_dir}"'/CHANGELOG.md' ':!'"${skill_dir}"'/evals' ':!'"${skill_dir}"'/tile.json' ':!'"${skill_dir}"'/.tesslignore' 2>/dev/null)"
   fi
 
   if [[ -n "${changes}" ]]; then
@@ -65,7 +65,7 @@ for dir in .agents/skills/*/; do
   if [[ "${type}" == "dist" ]]; then
     # Eval indicator: ✓ = has evals and current, ✓* = stale, × = no evals
     if [[ -d "${skill_dir}/evals" ]]; then
-      skill_ts="$(git log -1 --format=%ct -- "${skill_dir}" ':!'"${skill_dir}"'/evals' 2>/dev/null || echo 0)"
+      skill_ts="$(git log -1 --format=%ct -- "${skill_dir}" ':!'"${skill_dir}"'/evals' ':!'"${skill_dir}"'/CHANGELOG.md' ':!'"${skill_dir}"'/tile.json' ':!'"${skill_dir}"'/.tesslignore' 2>/dev/null || echo 0)"
       eval_ts="$(git log -1 --format=%ct -- "${skill_dir}/evals" 2>/dev/null || echo 0)"
       if [[ -z "${eval_ts}" || "${eval_ts}" == "0" || "${skill_ts}" -gt "${eval_ts}" ]]; then
         eval_indicator="\033[33m✓*\033[0m"
