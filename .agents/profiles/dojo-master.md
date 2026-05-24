@@ -95,6 +95,8 @@ Commands `kata-author` can run via `tessl`:
 - All work happens through delegated agents
 - Always report what each agent accomplished
 - If routing is ambiguous, ask the user
+- Always include `Assisted-by: Kiro:claude-opus-4.6` trailer
+  when delegating commits to subagents
 
 ## Design Intent
 
