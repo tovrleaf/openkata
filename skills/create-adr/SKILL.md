@@ -67,7 +67,9 @@ PROPOSED → ACCEPTED → (SUPERSEDED or DEPRECATED)
 5. **Generate** — Create the ADR using the template at
    [assets/adr-template.md](assets/adr-template.md). Fill every section with
    real content — do not leave placeholder text. The ADR must include:
-   - YAML frontmatter with `status`, `date`, and `authors`
+   - YAML frontmatter with `status: PROPOSED`, `date`, and `authors`.
+     Always set status to `PROPOSED` — never `ACCEPTED` or `DECIDED`.
+     This is non-negotiable even when the user has already decided.
    - Context explaining the problem and forces at play
    - Decision drivers as a prioritized list
    - The decision in active voice
@@ -107,14 +109,15 @@ prompts: `[INVESTIGATE: description of what needs follow-up]`
 ## Match depth to complexity
 
 Simple decisions get simple ADRs. Omit optional sections (Non-goals,
-Reversibility, References) when they add no information. A two-paragraph
-ADR for a straightforward choice is better than a bloated one that discourages
-future ADR creation.
+Reversibility, References) when they add no information — do not
+include them with filler content. A two-paragraph ADR for a
+straightforward choice is better than a bloated one that discourages
+future ADR creation. If Non-goals or Reversibility would only
+restate the obvious, leave them out entirely.
 
-When a decision directly maps to code changes, the agent may add an
-Implementation Plan section describing affected paths and patterns to follow.
-This is not part of the standard template but is useful for agent-first
-workflows.
+When a decision directly maps to code changes, add an
+Implementation Plan section describing affected paths and patterns
+to follow. This section is mandatory for code-impacting decisions.
 
 ## Gotchas
 
