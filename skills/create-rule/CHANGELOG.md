@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.2.0 — 2026-05-24
+
+### Added
+
+- Metadata tags in SKILL.md frontmatter
+- Boundaries and Consistency sections in rule design
+  checklist
+
+### Fixed
+
+- Example scenario references `markdown-style/RULE.md`
+  instead of non-existent `markdown-consistency/RULE.md`
+
 ## 1.1.0 — 2026-05-05
 
 ### Added
