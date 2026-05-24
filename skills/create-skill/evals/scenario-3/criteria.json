@@ -1,0 +1,46 @@
+{
+  "context": "Tests whether the agent writes a skill body in imperative form, includes a complete copy-paste-ready example showing the full working artifact, and populates a Common Failures section with domain-specific (non-generic) failure modes.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "No hedging language",
+      "description": "The SKILL.md body does NOT contain any of the words 'prefer', 'consider', or 'try to' as instruction qualifiers",
+      "max_score": 18
+    },
+    {
+      "name": "Imperative verbs present",
+      "description": "The SKILL.md body contains at least 3 distinct imperative instruction openers from: 'Do not', 'Use', 'Run', 'Check', 'Report', 'Read', 'Verify', 'Reject', 'Confirm', 'Extract'",
+      "max_score": 14
+    },
+    {
+      "name": "Complete example present",
+      "description": "SKILL.md includes a complete example that shows the entire expected output or artifact (not just a code snippet or partial fragment) — e.g., a full review comment template or a full workflow trace",
+      "max_score": 18
+    },
+    {
+      "name": "Example is self-contained",
+      "description": "The example in SKILL.md can be understood and used without reading surrounding prose — it is not a fragment that depends on unstated context",
+      "max_score": 10
+    },
+    {
+      "name": "Common failures section exists",
+      "description": "SKILL.md contains a 'Common Failures' or 'Common Mistakes' section (or equivalent heading)",
+      "max_score": 8
+    },
+    {
+      "name": "Failures are domain-specific",
+      "description": "At least one listed failure mode is specific to code review (e.g., 'approving API contract breaks silently', 'flagging PII in test fixtures that never reach prod') — NOT a generic pitfall like 'missing error handling' or 'unclear variable names'",
+      "max_score": 14
+    },
+    {
+      "name": "Boundaries section present",
+      "description": "SKILL.md contains a '## Boundaries' section with at least one 'DOES' and one 'Does NOT' bullet",
+      "max_score": 10
+    },
+    {
+      "name": "Name is lowercase-hyphenated",
+      "description": "The 'name' field in frontmatter uses lowercase hyphenated format (e.g., 'code-review') — no spaces or uppercase",
+      "max_score": 8
+    }
+  ]
+}
