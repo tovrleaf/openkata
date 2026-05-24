@@ -69,7 +69,7 @@ Apply these conventions to all markdown files.
 - Use tables for tabular data that benefits from scanning — not for
   layout or prose
 - Align columns with pipes and hyphens for source readability
-- Keep cells concise — use reference links for long URLs in tables
+- Keep table cells under 60 characters — use reference links for long URLs
 - Prefer lists over tables when data doesn't have uniform structure
 
 ## Images
@@ -81,5 +81,5 @@ Apply these conventions to all markdown files.
 
 - Prefer markdown over inline HTML
 - No hard tabs — use spaces
-- One sentence per line is allowed when the file is primarily
-  diff-reviewed, but wrap at 72–80 characters by default
+- Always wrap at 72–80 characters. No exceptions for
+  sentence-per-line style.
