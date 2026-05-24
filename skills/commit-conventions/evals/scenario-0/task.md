@@ -1,23 +1,13 @@
-# Committing a Database Module Refactor
+# Committing Mixed Changes to a Web Application
 
-## Background
+## Problem/Feature Description
 
-Your team has been working on a Node.js backend service. A senior engineer recently
-refactored the database connection module from a callback-based design to async/await,
-collapsing three separate files into one and adding a connection-pool size cap. The
-changes have been made to the working directory but nothing has been committed yet.
+A backend engineer on a small startup team has been working on two separate improvements to their Node.js web application. While fixing an intermittent authentication issue caused by token validation happening before the database connection was ready, they also took the opportunity to add a loading spinner to the dashboard page so users get better visual feedback during slow data fetches. Both sets of changes are sitting in the working tree, untracked — auth middleware was touched and a frontend component was updated.
 
-The files affected are in `src/db/`: the new module is `src/db/connection.js`. Two
-old files, `src/db/connect.js` and `src/db/pool.js`, have been deleted and their
-logic merged into `connection.js`. A new environment variable `DB_POOL_MAX` is now
-read in `src/config/env.js`.
+The engineer is about to open a pull request and wants to get the changes committed cleanly. They care about keeping a legible git history and have asked you to handle the commit workflow on their behalf. There is no existing commitlint configuration in this project.
 
-There are no lint configuration files or `CONTRIBUTING.md` in this repository.
+## Output Specification
 
-## Your Task
+Set up a minimal git repository in your working directory, create representative files for the two changes described above, and commit the changes according to best practices. After completing all commits, save the output of `git log --oneline` to `commit-log.txt` and the output of `git log -p` (the full log with patches) to `commit-log-full.txt`.
 
-Initialize a git repository in the current directory, stage the relevant files from
-`src/`, and commit the refactoring work with an appropriate commit message.
-
-Once the commit is complete, save the output of `git log --format=fuller` to a file
-named `git-log.txt` in the current directory.
+Do not leave any large files in the workspace. The repository itself should be small and self-contained.

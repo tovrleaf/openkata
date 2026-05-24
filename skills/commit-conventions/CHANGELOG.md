@@ -7,6 +7,9 @@
 - Branch naming step (step 1) referencing `git-naming` rule
 - Guidance for handling "commit all" requests with multiple
   logical changes
+- Explicit requirement for commit body on breaking changes
+  with impact and migration path
+- Blank line separation rule for header/body/footer
 
 ### Changed
 
