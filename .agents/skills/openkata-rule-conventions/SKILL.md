@@ -63,3 +63,15 @@ After the generic `create-rule` workflow, also do:
 - Every rule gets a CHANGELOG.md
 - Changelogs document rule-facing changes only
 - Keep rules focused — one rule, one concern
+
+## Boundaries
+
+**DOES:**
+- Add changelog, symlink, and acknowledgments to rules
+- Determine placement (local vs distributable)
+- Enforce quality gate before commit
+
+**Does NOT:**
+- Create the rule itself (that's `create-rule`)
+- Run tessl commands (rules don't use tessl)
+- Publish or release rules

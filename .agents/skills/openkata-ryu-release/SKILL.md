@@ -139,6 +139,18 @@ dojo/v0.1.0
 
 List all tags for an artifact: `git tag -l "skills/create-adr/v*"`
 
+## Boundaries
+
+**DOES:**
+- Bump versions, update changelogs, commit, and tag artifacts
+- Generate namespaced tags from artifact content
+- Run evals and publish to registry (when asked)
+
+**Does NOT:**
+- Modify skill or rule content (only metadata and changelogs)
+- Push to remote (separate action requiring confirmation)
+- Create new skills or rules
+
 ## Gotchas
 
 - Always check for uncommitted changes in the artifact directory before

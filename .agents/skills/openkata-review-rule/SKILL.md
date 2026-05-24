@@ -56,3 +56,15 @@ tooling — rules are validated by reading and checking.
 - Don't add guidance to `create-rule` for one-off issues.
   Only update it when a pattern repeats across multiple
   rules.
+
+## Boundaries
+
+**DOES:**
+- Evaluate rules against the design checklist
+- Check enforceability, line count, and duplicates
+- Report findings and suggest improvements
+
+**Does NOT:**
+- Fix rules automatically without user confirmation
+- Create new rules
+- Modify `create-rule` without asking
