@@ -65,7 +65,9 @@ for dir in .agents/skills/*/; do
   if [[ "${type}" == "dist" ]]; then
     # Eval indicator: ✓ = has evals and current, ✓* = stale, × = no evals
     if [[ -d "${skill_dir}/evals" ]]; then
-      if [[ -n "${changes}" ]]; then
+      skill_ts="$(git log -1 --format=%ct -- "${skill_dir}" ':!'"${skill_dir}"'/evals' 2>/dev/null || echo 0)"
+      eval_ts="$(git log -1 --format=%ct -- "${skill_dir}/evals" 2>/dev/null || echo 0)"
+      if [[ -z "${eval_ts}" || "${eval_ts}" == "0" || "${skill_ts}" -gt "${eval_ts}" ]]; then
         eval_indicator="\033[33m✓*\033[0m"
       else
         eval_indicator="\033[32m✓\033[0m"
