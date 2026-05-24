@@ -62,26 +62,28 @@ worktrees corrupt repository state.
    operate normally. Run the project's tests after entering
    to confirm a clean baseline.
 
-3. **Merge results** — When work is complete:
+3. **List active worktrees** — After creating worktrees,
+   always run:
+   ```bash
+   git worktree list
+   ```
+   This confirms the worktrees are set up correctly and
+   shows the full set of active workspaces.
+
+4. **Merge results** — When work is complete:
    - Push the branch and create a PR, or
    - From the main checkout: `git merge <branch-name>`
 
-4. **Remove the worktree** — After merging:
+5. **Remove the worktree** — After merging, always run
+   both commands:
    ```bash
    git worktree remove .worktrees/<name>
    git branch -d <branch-name>
    ```
-   Or if the directory was deleted manually:
-   ```bash
-   git worktree prune
-   ```
-
-## Listing and Status
-
-```bash
-git worktree list              # Show all worktrees
-git worktree list --porcelain  # Machine-readable output
-```
+   Both are required — `worktree remove` detaches the
+   directory, `branch -d` deletes the branch. If the
+   directory was deleted manually, run `git worktree prune`
+   instead.
 
 ## Parallel Execution Pattern
 

@@ -1,0 +1,56 @@
+{
+  "context": "Tests whether the agent implements the parallel-execution worktree pattern correctly: one worktree per task, background process launch with & and wait, correct naming conventions, pre-flight guards, git worktree list verification, and cleanup of both directory and branch.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "One worktree per task",
+      "description": "Script creates exactly three separate worktrees — one for each of skill-auth, skill-payments, and skill-notifications — not a single shared workspace",
+      "max_score": 10
+    },
+    {
+      "name": "Background launch with &",
+      "description": "Each evaluation command is launched with a trailing `&` so all three run concurrently in the background",
+      "max_score": 12
+    },
+    {
+      "name": "Wait for all to complete",
+      "description": "Script calls `wait` after launching all background processes to block until every eval finishes before proceeding",
+      "max_score": 12
+    },
+    {
+      "name": "Worktrees in .worktrees/",
+      "description": "All three worktrees are created under `.worktrees/` at the project root, not in any other location",
+      "max_score": 8
+    },
+    {
+      "name": "eval/ branch prefix",
+      "description": "Branches created for the evaluation worktrees use the `eval/` type prefix (e.g., `eval/skill-auth`)",
+      "max_score": 8
+    },
+    {
+      "name": "In-worktree pre-flight guard",
+      "description": "Script compares `git rev-parse --git-dir` and `git rev-parse --git-common-dir` before creating any worktree",
+      "max_score": 10
+    },
+    {
+      "name": ".gitignore pre-flight check",
+      "description": "Script includes `git check-ignore -q .worktrees` before creating worktrees",
+      "max_score": 8
+    },
+    {
+      "name": "git worktree list after creation",
+      "description": "Script calls `git worktree list` after creating all three worktrees to confirm they are set up correctly",
+      "max_score": 8
+    },
+    {
+      "name": "Cleanup: worktree remove",
+      "description": "Script calls `git worktree remove` for each worktree as part of cleanup after the runs complete",
+      "max_score": 12
+    },
+    {
+      "name": "Cleanup: branch delete",
+      "description": "Script calls `git branch -d` for each eval branch as part of cleanup — both worktree remove and branch delete are present",
+      "max_score": 12
+    }
+  ]
+}
