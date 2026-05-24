@@ -1,0 +1,56 @@
+{
+  "context": "Tests whether the agent checks .agents/rules/ for existing rules before writing a new naming rule, avoids duplicating already-covered conventions, writes a focused RULE.md that covers the gap, and produces a validation report that references the existing rules it found.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Found existing rules",
+      "description": "validation-report.md explicitly names the existing rule found in .agents/rules/ (i.e., references 'typescript-interfaces' or its RULE.md)",
+      "max_score": 12
+    },
+    {
+      "name": "No interface naming duplication",
+      "description": "The new RULE.md does NOT re-state conventions about interface naming (no mention of `I` prefix, `IUser`-style, or interface vs. type choice) — these are already in the existing rule",
+      "max_score": 12
+    },
+    {
+      "name": "No placement duplication",
+      "description": "The new RULE.md does NOT re-state rules about placing interfaces in `src/types/` — this is already in the existing rule",
+      "max_score": 10
+    },
+    {
+      "name": "Gap coverage",
+      "description": "The new RULE.md addresses at least one naming concern not covered by the existing rule — such as file naming conventions (kebab-case vs. camelCase), function naming, or React component file naming",
+      "max_score": 12
+    },
+    {
+      "name": "Lowercase-hyphenated directory",
+      "description": "The new rule lives in a directory under .agents/rules/ with a lowercase hyphenated name (e.g., ts-file-naming, typescript-files, file-naming-conventions)",
+      "max_score": 8
+    },
+    {
+      "name": "Specific conventions",
+      "description": "Every convention in the new RULE.md names a concrete rule (e.g., 'Use kebab-case for all .ts files') — no vague statements like 'use consistent naming'",
+      "max_score": 12
+    },
+    {
+      "name": "Directive form",
+      "description": "Conventions use imperative directive form ('Use X', 'Name Y as Z') — not 'You should use X' or 'It is recommended'",
+      "max_score": 8
+    },
+    {
+      "name": "No rationale in RULE.md",
+      "description": "RULE.md does NOT include sentences explaining why conventions exist — only the conventions themselves",
+      "max_score": 8
+    },
+    {
+      "name": "Under 100 lines",
+      "description": "The new RULE.md has fewer than 100 lines total",
+      "max_score": 8
+    },
+    {
+      "name": "Grouped by concern",
+      "description": "The new RULE.md uses ## section headings to group related conventions (e.g., separate sections for file naming and function naming)",
+      "max_score": 10
+    }
+  ]
+}

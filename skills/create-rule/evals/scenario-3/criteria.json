@@ -1,0 +1,56 @@
+{
+  "context": "Tests whether the agent keeps RULE.md concise (under 100 lines, no rationale), moves extended examples or explanatory content to a references/ subfolder, uses directive form with one convention per bullet, and validates against the provided Django source files.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Under 100 lines",
+      "description": "RULE.md has fewer than 100 lines total (including blank lines, headings, and bullets)",
+      "max_score": 10
+    },
+    {
+      "name": "No rationale in RULE.md",
+      "description": "RULE.md does NOT contain sentences explaining why a convention exists (no phrases like 'because', 'this prevents', 'to avoid', 'the reason is', or motivational context)",
+      "max_score": 12
+    },
+    {
+      "name": "References directory exists",
+      "description": "A references/ directory exists inside the rule folder (e.g., .agents/rules/<rule-name>/references/) containing at least one file",
+      "max_score": 15
+    },
+    {
+      "name": "Extended content in references",
+      "description": "At least one file in references/ contains content that goes beyond the directives — such as examples, rationale, comparison of ORM methods, or links to Django documentation",
+      "max_score": 10
+    },
+    {
+      "name": "Directive form",
+      "description": "All conventions in RULE.md use imperative directive form ('Use X', 'Never Y', 'Always Z') — not 'You should', 'It is recommended', or 'Consider'",
+      "max_score": 10
+    },
+    {
+      "name": "One convention per bullet",
+      "description": "No bullet in RULE.md contains two distinct conventions joined by 'and', 'also', or a semicolon",
+      "max_score": 8
+    },
+    {
+      "name": "Specific ORM conventions",
+      "description": "RULE.md includes at least one specific, literal convention about ORM usage (e.g., 'Use select_related for ForeignKey traversal', 'Use prefetch_related for reverse relations', or similar concrete directive)",
+      "max_score": 12
+    },
+    {
+      "name": "Raw SQL addressed",
+      "description": "RULE.md contains a convention stating when raw SQL is or is not acceptable (e.g., 'Use raw SQL only for queries that cannot be expressed with the ORM' or 'Never use raw SQL when an ORM equivalent exists')",
+      "max_score": 10
+    },
+    {
+      "name": "Grouped by concern",
+      "description": "RULE.md uses ## section headings to separate distinct concerns (e.g., separate sections for ORM use and raw SQL, or for query patterns and performance)",
+      "max_score": 8
+    },
+    {
+      "name": "Validation references input files",
+      "description": "validation-report.md names at least one of the provided files (views.py or models.py) as a file that was examined",
+      "max_score": 5
+    }
+  ]
+}
