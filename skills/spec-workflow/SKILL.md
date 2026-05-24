@@ -10,6 +10,7 @@ description: >
   when the user says "let's spec this", "new feature", or
   "let's plan."
 metadata:
+  version: "1.0.0"
   tags: "category:planning, category:workflow"
 ---
 
