@@ -9,6 +9,7 @@ description: >
   "parallel branch", "work on two things at once", or "run
   these in parallel".
 metadata:
+  version: "1.0.0"
   tags: "category:workflow, tool:git"
 ---
 
@@ -21,14 +22,26 @@ parallel agent gets its own worktree.
 ## Steps
 
 **Pre-flight (mandatory before any worktree creation):**
-- Run `git rev-parse --git-dir` and
-  `git rev-parse --git-common-dir`. If they differ, you
-  are already inside a worktree — stop and warn the user.
-- Run `git check-ignore -q .worktrees`. If it fails
-  (non-zero exit), add `.worktrees/` to `.gitignore`
-  before proceeding.
 
-Do not skip these checks.
+1. Run these two commands and compare output:
+   ```bash
+   git rev-parse --git-dir
+   git rev-parse --git-common-dir
+   ```
+   If the outputs differ, you are inside a worktree.
+   **Stop immediately** and warn: "You are already inside
+   a worktree. Switch to the main checkout first."
+   Do not proceed.
+
+2. Run:
+   ```bash
+   git check-ignore -q .worktrees
+   ```
+   If exit code is non-zero, add `.worktrees/` to
+   `.gitignore` before proceeding.
+
+Both checks are mandatory. Never skip them — nested
+worktrees corrupt repository state.
 
 1. **Create the worktree** — Run:
    ```bash

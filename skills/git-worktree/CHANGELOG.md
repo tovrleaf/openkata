@@ -1,21 +1,14 @@
 # Changelog
 
-## [0.2.0] - 2026-05-24
-
-### Changed
-
-- Rewrite: frame worktrees as standard parallel execution
-  model for agents
-- Add Mental Model section clarifying branch vs worktree
-- Add Parallel Execution Pattern with batch example
-- Add Boundaries section
-- Strengthen When to Use with agent-centric scenarios
-
-## [0.1.0] - 2026-05-24
+## 1.0.0 — 2026-05-24
 
 ### Added
 
-- Initial skill: git worktree workflow
-- Steps for create, list, remove
-- Conventions for .worktrees/ directory
-- Gotchas: shared refs, stash, same-branch restriction
+- Initial release of git-worktree skill
+- Create, list, and remove git worktrees for parallel workspaces
+- Pre-flight checks to prevent nested worktrees and ensure
+  `.worktrees/` is gitignored
+- Branch naming conventions for worktree branches
+- Parallel execution pattern for batch operations
+- Gotchas section covering shared refs, stash, hooks, and
+  IDE state
