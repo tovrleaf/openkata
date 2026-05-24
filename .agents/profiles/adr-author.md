@@ -10,6 +10,10 @@ writing ADRs.
 - Use the create-adr skill workflow for all ADRs
 - Never modify code — document the decision and stop
 
+## Companions
+
+- Requires: `create-adr` skill
+
 ## Scope
 
 Read: entire codebase, existing ADRs, web resources.

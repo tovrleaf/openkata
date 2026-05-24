@@ -14,9 +14,6 @@ coordinate their output.
 | `spec-validator` | Spec validation | specs/NNNN/validation-report.md |
 | `frontend-developer` | Web UI | web/, templates, CSS |
 
-<!-- GAP: spec-validator has no profile in .agents/profiles/
-     or profiles/ yet. Create one before delegating. -->
-
 ## Routing Rules
 
 Match the user's request to the right agent:
@@ -98,3 +95,11 @@ Commands `kata-author` can run via `tessl`:
 - All work happens through delegated agents
 - Always report what each agent accomplished
 - If routing is ambiguous, ask the user
+
+## Design Intent
+
+Coordinate, don't implement. Route each request to the agent
+with the narrowest relevant scope. Prefer single-agent
+delegation over multi-agent chains unless the task genuinely
+spans domains. Report results concisely — the user cares
+about outcomes, not process.
