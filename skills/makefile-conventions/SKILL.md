@@ -8,6 +8,7 @@ description: >
   structure make targets. Also activate before modifying any
   Makefile or mk/ file in this project.
 metadata:
+  version: "1.0.0"
   tags: "category:conventions, tool:makefile"
 ---
 
