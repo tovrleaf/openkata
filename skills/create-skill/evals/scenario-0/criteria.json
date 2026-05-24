@@ -1,0 +1,56 @@
+{
+  "context": "Tests whether the agent produces a SKILL.md with correct frontmatter, a description that activates on natural user language (both actions and situations, no workflow leakage), and a Boundaries section that clearly scopes the skill.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "No version in frontmatter",
+      "description": "The SKILL.md frontmatter does NOT contain a 'version' field — only 'name' and 'description' are present",
+      "max_score": 12
+    },
+    {
+      "name": "Description includes actions",
+      "description": "The description field includes at least one phrase describing what a user actively asks to do (e.g., 'generate changelog', 'summarize commits', 'prepare release notes', or equivalent action-oriented language)",
+      "max_score": 10
+    },
+    {
+      "name": "Description includes situations",
+      "description": "The description field includes at least one phrase describing a situation the user is experiencing (e.g., 'wants to', 'is preparing', 'needs to', 'asks about', or equivalent situation-oriented language)",
+      "max_score": 10
+    },
+    {
+      "name": "No workflow in description",
+      "description": "The description field does NOT contain steps, numbered lists, or workflow implementation details (e.g., no 'parses commits', 'filters by prefix', 'groups into categories' style language in the description)",
+      "max_score": 10
+    },
+    {
+      "name": "Boundaries section present",
+      "description": "SKILL.md contains a section explicitly named 'Boundaries' (or equivalent heading) that states what the skill DOES",
+      "max_score": 10
+    },
+    {
+      "name": "Boundaries lists Does NOT",
+      "description": "The Boundaries section explicitly states at least one thing the skill Does NOT do",
+      "max_score": 8
+    },
+    {
+      "name": "Body does not restate description triggers",
+      "description": "The skill body does NOT contain a 'When to use' section or equivalent that duplicates the activation criteria already in the description",
+      "max_score": 10
+    },
+    {
+      "name": "Name is lowercase-hyphenated",
+      "description": "The 'name' field in frontmatter uses lowercase hyphenated format (e.g., 'generate-changelog' or similar) — no spaces, no uppercase",
+      "max_score": 8
+    },
+    {
+      "name": "Skill directory structure",
+      "description": "Output is placed inside a named skill directory (e.g., changelog-skill/ or similar) rather than loose files",
+      "max_score": 8
+    },
+    {
+      "name": "design-notes.md present",
+      "description": "A design-notes.md file exists in the working directory (outside the skill folder) containing at least the skill name and trigger phrase rationale",
+      "max_score": 14
+    }
+  ]
+}

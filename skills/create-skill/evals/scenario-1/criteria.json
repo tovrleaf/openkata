@@ -1,0 +1,56 @@
+{
+  "context": "Tests whether the agent produces a validation report with correctly structured prompts: at least two positive variants (direct and paraphrased), and at least one negative prompt that is a genuine near-miss sharing keywords or domain with the skill rather than an easy disconnect.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Validation report exists",
+      "description": "A validation-report.md file exists in the working directory",
+      "max_score": 4
+    },
+    {
+      "name": "Positive-obvious prompt present",
+      "description": "The validation report includes at least one prompt that directly uses the skill's core trigger words (e.g., 'scan', 'vulnerability', 'Docker image', 'CVE', or equivalent direct language)",
+      "max_score": 12
+    },
+    {
+      "name": "Positive-paraphrased prompt present",
+      "description": "The validation report includes a second positive prompt that uses different wording to express the same intent (e.g., 'check this image for security issues' instead of 'scan for vulnerabilities') — not just a rewording of the same phrase",
+      "max_score": 12
+    },
+    {
+      "name": "Negative prompt is near-miss",
+      "description": "The negative prompt shares keywords or domain with the skill (e.g., involves Docker, security, or scanning) but should not trigger it — NOT a trivially unrelated topic like 'write a fibonacci function'",
+      "max_score": 20
+    },
+    {
+      "name": "Negative prompt correctly excluded",
+      "description": "The validation report correctly identifies the negative prompt as one that should NOT trigger the skill and explains why",
+      "max_score": 12
+    },
+    {
+      "name": "Failure mode notes",
+      "description": "The validation report includes notes on at least one potential failure mode (trigger wording, workflow ambiguity, or missing resources)",
+      "max_score": 12
+    },
+    {
+      "name": "Skill triggers identified",
+      "description": "For each positive prompt, the report identifies which words or phrases cause activation",
+      "max_score": 12
+    },
+    {
+      "name": "SKILL.md produced",
+      "description": "A SKILL.md file exists inside the skill directory",
+      "max_score": 8
+    },
+    {
+      "name": "At least 3 prompts total",
+      "description": "The validation report contains at least 3 distinct prompts in total (two positive + one negative minimum)",
+      "max_score": 4
+    },
+    {
+      "name": "Body first-action identified",
+      "description": "For at least one positive prompt, the report identifies which part of the skill body would guide the agent's first action",
+      "max_score": 4
+    }
+  ]
+}
