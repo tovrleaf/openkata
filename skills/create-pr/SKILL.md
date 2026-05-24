@@ -7,6 +7,7 @@ description: >
   PR", "open PR", "push and PR", or work is ready for
   review.
 metadata:
+  version: "1.0.0"
   tags: "category:workflow, tool:git, tool:github"
 ---
 
