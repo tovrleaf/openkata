@@ -97,20 +97,25 @@ Before asking about requirements, complete these in order:
 
 Then collect requirements:
 
-4. **Ask targeted questions:**
+4. **Investigate relevant code** — Read files related to
+   the feature before asking questions. Check existing
+   patterns, dependencies, and constraints. Don't ask the
+   user what you can look up yourself.
+
+5. **Ask targeted questions:**
    - What does the user want to build?
    - What does success look like?
    - What is out of scope?
    - Are there open questions that block implementation?
 
-5. **Write spec.md** — Use the spec.md template from
+6. **Write spec.md** — Use the spec.md template from
    [spec-templates](references/spec-templates.md). Set
    status to `Draft` and depth to the chosen level.
 
-6. **Set active** — Write the directory name to
+7. **Set active** — Write the directory name to
    `specs/_current`.
 
-7. **Confirm** — Show the spec to the user. Do not proceed
+8. **Confirm** — Show the spec to the user. Do not proceed
    to the next phase without confirmation.
 
 ## Phase 2: Design (Deep only)
