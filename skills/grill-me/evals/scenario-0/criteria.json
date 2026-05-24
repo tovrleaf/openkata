@@ -1,0 +1,56 @@
+{
+  "context": "Tests whether the agent follows the grill-me skill when stress-testing a design spec: correctly structures challenge questions with recommendations, covers all decision-branch categories, produces the required summary format, and avoids modifying input files.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "No spec modification",
+      "description": "The file inputs/spec.md is not modified — the agent must not alter the original artifact without being asked",
+      "max_score": 12
+    },
+    {
+      "name": "Recommended answer per question",
+      "description": "Every challenge question posed includes the agent's own recommended answer or suggested resolution (not just the question alone)",
+      "max_score": 15
+    },
+    {
+      "name": "Questions posed individually",
+      "description": "Challenge questions are structured one at a time (numbered or clearly separated individually), not bundled into compound multi-part questions",
+      "max_score": 10
+    },
+    {
+      "name": "Unstated assumptions identified",
+      "description": "At least one unstated assumption from the spec is called out (e.g. deduplication behavior, ordering guarantees, or backpressure handling)",
+      "max_score": 10
+    },
+    {
+      "name": "Edge cases identified",
+      "description": "At least one edge case or scenario not handled in the spec is identified (e.g. what happens when all channels fail, in-flight events during restart, or rate limits on delivery)",
+      "max_score": 10
+    },
+    {
+      "name": "Missing alternatives identified",
+      "description": "At least one area where the spec made a choice without discussing alternatives is surfaced (e.g. fallback channel strategy, at-least-once vs exactly-once delivery guarantee)",
+      "max_score": 10
+    },
+    {
+      "name": "Decisions Made section",
+      "description": "The report contains a section titled 'Decisions Made' (or equivalent heading) listing settled decisions",
+      "max_score": 8
+    },
+    {
+      "name": "Decisions include reasons",
+      "description": "Each item in the 'Decisions Made' section includes a reason or rationale, not just the decision label",
+      "max_score": 8
+    },
+    {
+      "name": "Changes to Apply section",
+      "description": "The report contains a section titled 'Changes to Apply' (or equivalent heading) listing concrete updates to make to the spec",
+      "max_score": 9
+    },
+    {
+      "name": "Actionable change items",
+      "description": "Each item in 'Changes to Apply' is a concrete, actionable change to the artifact (not vague like 'improve the spec')",
+      "max_score": 8
+    }
+  ]
+}

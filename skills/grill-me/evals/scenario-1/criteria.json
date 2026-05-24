@@ -1,0 +1,51 @@
+{
+  "context": "Tests whether the agent uses codebase exploration to resolve answerable questions rather than asking the user, avoids modifying any input files, offers to update the ADR after the summary, and produces the correct summary structure.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Codebase findings referenced",
+      "description": "The report explicitly references information found in the codebase (e.g. the current session TTL of 86400s / 24 hours, the Redis store, or the in-memory blocklist) rather than treating these as unknown",
+      "max_score": 15
+    },
+    {
+      "name": "No code questions asked",
+      "description": "The agent does NOT ask the user about information that is directly visible in the provided source files (e.g. current session TTL, current revocation mechanism) — these should be read from code, not asked",
+      "max_score": 15
+    },
+    {
+      "name": "No input file modification",
+      "description": "The files inputs/adr.md, inputs/src/auth/session.js, and inputs/src/middleware/auth.js are not modified",
+      "max_score": 12
+    },
+    {
+      "name": "No code implementation",
+      "description": "The agent does NOT write any implementation code (e.g. a JWT library integration, token handler, or middleware rewrite)",
+      "max_score": 12
+    },
+    {
+      "name": "Offer to update ADR",
+      "description": "The challenge-report.md includes an explicit offer or question asking whether the ADR should be updated based on the findings",
+      "max_score": 12
+    },
+    {
+      "name": "Recommended answer per question",
+      "description": "Each challenge question includes the agent's recommended answer or resolution — not just the question",
+      "max_score": 10
+    },
+    {
+      "name": "Dependencies identified",
+      "description": "At least one dependency or risk not covered in the ADR is surfaced (e.g. client-side token storage, refresh token rotation policy, blocklist size under load)",
+      "max_score": 8
+    },
+    {
+      "name": "Decisions Made section",
+      "description": "The report contains a 'Decisions Made' section (or equivalent heading) listing decisions reached during the challenge",
+      "max_score": 8
+    },
+    {
+      "name": "Changes to Apply section",
+      "description": "The report contains a 'Changes to Apply' section (or equivalent heading) listing concrete updates to make to the ADR",
+      "max_score": 8
+    }
+  ]
+}

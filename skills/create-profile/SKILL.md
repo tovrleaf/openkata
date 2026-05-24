@@ -100,6 +100,36 @@ and schema changes."
 4. Validates — directory exists, no overlap with frontend
    profile
 
+## Example Output
+
+```markdown
+# Database Agent
+
+Manages database migrations and schema changes.
+
+## Constraints
+
+- Follow the git-naming rule for branches and commits
+- Never modify application code
+- Run migrations in a transaction when supported
+
+## Scope
+
+Modify only:
+- `migrations/`
+- `schema/`
+
+Do not touch: application code, API handlers, frontend.
+If a migration requires application changes, describe
+what's needed and stop.
+
+## Design Intent
+
+Prefer reversible migrations. Every up migration has a
+corresponding down. Avoid data-destructive operations
+without explicit confirmation.
+```
+
 ## Common Failures
 
 - **Scope too broad** — "handles backend" is half the repo.

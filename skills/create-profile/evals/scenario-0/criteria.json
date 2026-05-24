@@ -1,0 +1,56 @@
+{
+  "context": "Tests whether the agent correctly creates a sensei profile in the right location with the required structure, including all mandatory sections, a stop condition, and a concise scope statement. The profile should be placed in `profiles/` with a lowercase filename.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Correct directory",
+      "description": "Profile file is written inside a `profiles/` directory (e.g., `profiles/docs.md` or `profiles/documentation.md`)",
+      "max_score": 12
+    },
+    {
+      "name": "Lowercase filename",
+      "description": "Profile filename is lowercase (e.g., `docs.md`, not `Docs.md` or `Documentation.md`)",
+      "max_score": 8
+    },
+    {
+      "name": "# Name Agent heading",
+      "description": "Profile starts with a `# <Name> Agent` heading (e.g., `# Docs Agent` or `# Documentation Agent`)",
+      "max_score": 10
+    },
+    {
+      "name": "One-line role description",
+      "description": "A single line immediately below the heading describes the agent's domain and boundary",
+      "max_score": 8
+    },
+    {
+      "name": "Constraints section",
+      "description": "Profile contains a `## Constraints` section",
+      "max_score": 8
+    },
+    {
+      "name": "Scope section",
+      "description": "Profile contains a `## Scope` section",
+      "max_score": 8
+    },
+    {
+      "name": "Design Intent section",
+      "description": "Profile contains a `## Design Intent` section",
+      "max_score": 8
+    },
+    {
+      "name": "Stop condition present",
+      "description": "The Scope section explicitly states when the agent should stop and hand off (e.g., 'If X, stop and hand off' or 'When Y, escalate')",
+      "max_score": 14
+    },
+    {
+      "name": "Scope as boundary",
+      "description": "The Scope section lists specific directories/files that are in-bounds AND explicitly states what is out of bounds — it does NOT read as a task checklist",
+      "max_score": 12
+    },
+    {
+      "name": "Under 40 lines",
+      "description": "The profile markdown file has 40 or fewer lines total",
+      "max_score": 12
+    }
+  ]
+}

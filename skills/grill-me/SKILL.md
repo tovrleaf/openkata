@@ -43,6 +43,28 @@ every corner case is addressed.
    apply the decisions to the artifact. If yes, update it.
    If no, leave it unchanged.
 
+## Example Output
+
+After grilling a spec, the summary looks like:
+
+```markdown
+## Decisions Made
+
+1. **Auth strategy** — JWT with refresh tokens, not sessions.
+   Reason: stateless scaling requirement.
+2. **Rate limiting** — Per-user, not per-IP. Applied at API
+   gateway level.
+3. **Error format** — RFC 7807 Problem Details. No custom
+   envelope.
+
+## Changes to Apply
+
+- Add "Rate Limiting" section to spec with per-user strategy
+- Update Non-goals: remove "session management" (now in scope
+  as JWT refresh)
+- Add dependency: API gateway must support per-user rate limits
+```
+
 ## Boundaries
 
 - DOES read specs, ADRs, designs, plans, and codebase
