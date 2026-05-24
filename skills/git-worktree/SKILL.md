@@ -20,23 +20,17 @@ parallel agent gets its own worktree.
 
 ## Steps
 
-1. **Check if already in a worktree** — Run:
-   ```bash
-   git rev-parse --git-dir
-   git rev-parse --git-common-dir
-   ```
-   If they differ, you are already in a linked worktree.
-   Do not create another one inside it.
+**Pre-flight (mandatory before any worktree creation):**
+- Run `git rev-parse --git-dir` and
+  `git rev-parse --git-common-dir`. If they differ, you
+  are already inside a worktree — stop and warn the user.
+- Run `git check-ignore -q .worktrees`. If it fails
+  (non-zero exit), add `.worktrees/` to `.gitignore`
+  before proceeding.
 
-2. **Ensure .worktrees/ is ignored** — Check:
-   ```bash
-   git check-ignore -q .worktrees
-   ```
-   If not ignored, add `.worktrees/` to `.gitignore` and
-   commit before proceeding. Worktree contents must never
-   be tracked.
+Do not skip these checks.
 
-3. **Create the worktree** — Run:
+1. **Create the worktree** — Run:
    ```bash
    git worktree add .worktrees/<name> -b <branch-name>
    ```
@@ -51,15 +45,15 @@ parallel agent gets its own worktree.
    git worktree add .worktrees/<name> <existing-branch>
    ```
 
-4. **Work in the worktree** — `cd .worktrees/<name>` and
+2. **Work in the worktree** — `cd .worktrees/<name>` and
    operate normally. Run the project's tests after entering
    to confirm a clean baseline.
 
-5. **Merge results** — When work is complete:
+3. **Merge results** — When work is complete:
    - Push the branch and create a PR, or
    - From the main checkout: `git merge <branch-name>`
 
-6. **Remove the worktree** — After merging:
+4. **Remove the worktree** — After merging:
    ```bash
    git worktree remove .worktrees/<name>
    git branch -d <branch-name>
@@ -103,6 +97,10 @@ For batch operations across multiple tasks, see
   pre-commit hook runs in whichever worktree triggers it.
 - **IDE state** — Open each worktree as a separate
   project window to avoid conflicts.
+- **Skipping pre-flight** — Agents consistently skip
+  pre-flight checks when eager to create worktrees. The
+  guards exist because nested worktrees corrupt state and
+  unignored `.worktrees/` pollutes git status.
 
 ## Boundaries
 
