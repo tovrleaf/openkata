@@ -6,6 +6,7 @@ description: >
   wants to stress-test a plan, get grilled on their design, says
   "grill me", "challenge this", or "poke holes in this."
 metadata:
+  version: "1.0.0"
   tags: "category:review, category:architecture"
 ---
 
@@ -42,12 +43,14 @@ every corner case is addressed.
    (3) what was rejected or considered. Do not list decisions
    without reasons.
 
-6. **Offer to update** — Ask the user if they want you to
-   apply the decisions to the artifact. If yes, update it.
-   If no, leave it unchanged. Always end with: "Want me to
-   apply these changes to [artifact name]?" Do not end the
-   conversation without this explicit offer. This step is
-   mandatory even if the user seems done.
+6. **Offer to update (mandatory)** — **This step is mandatory
+   — always end by offering to apply changes.** Ask the user
+   if they want you to apply the decisions to the artifact.
+   If yes, update it. If no, leave it unchanged. Always end
+   with: "Want me to apply these changes to [artifact name]?"
+   Do not end the conversation without this explicit offer.
+   Do not skip this step even if the user seems done, says
+   "thanks", or appears to be wrapping up.
 
 ## Example Output
 
@@ -69,6 +72,8 @@ After grilling a spec, the summary looks like:
 - Update Non-goals: remove "session management" (now in scope
   as JWT refresh)
 - Add dependency: API gateway must support per-user rate limits
+
+Want me to apply these changes to spec.md?
 ```
 
 ## Boundaries
