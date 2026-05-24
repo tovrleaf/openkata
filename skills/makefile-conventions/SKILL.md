@@ -46,7 +46,8 @@ underlying implementation language.
 
 ## Complete Example
 
-A project with test and deploy concerns:
+Root Makefile pattern — includes domain modules and
+provides grouped help:
 
 ```makefile
 .DEFAULT_GOAL := help
@@ -62,59 +63,14 @@ help: ## Show this help
 	@echo "Testing:"
 	@echo "  make test       - Show test help"
 	@echo "  make test sh    - Run shellcheck"
-	@echo "  make test yaml  - Run yamllint"
-	@echo ""
-	@echo "Deployment:"
-	@echo "  make deploy production - Deploy to production"
 	@echo ""
 	@echo "Development:"
 	@echo "  make check      - Check prerequisites"
-	@echo "  make clean      - Remove build artifacts"
-
-.PHONY: check
-check: ## Check development prerequisites
-	@./scripts/check-prereqs.sh
-
-.PHONY: clean
-clean: ## Remove build artifacts
-	@rm -rf dist/ build/
 ```
 
-Domain module (`mk/test.mk`) delegates to a subdirectory:
-
-```makefile
-.PHONY: test
-
-test:
-	@$(MAKE) -C mk/test $(filter-out $@,$(MAKECMDGOALS))
-
-test-%:
-	@$(MAKE) -C mk/test $*
-
-%:
-	@:
-```
-
-Domain Makefile (`mk/test/Makefile`) holds the targets:
-
-```makefile
-.DEFAULT_GOAL := help
-
-.PHONY: help sh yaml
-
-help:
-	@echo "Testing"
-	@echo "======="
-	@echo ""
-	@echo "  make test sh   - Run shellcheck"
-	@echo "  make test yaml - Run yamllint"
-
-sh:
-	@./scripts/test-shell.sh
-
-yaml:
-	@yamllint .
-```
+For the full modular delegation pattern (domain `.mk`
+files, subdirectory Makefiles, catch-all targets), see
+[makefile-structure](references/makefile-structure.md).
 
 ## Conventions
 
