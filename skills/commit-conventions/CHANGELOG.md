@@ -10,6 +10,9 @@
 
 ### Changed
 
+- Strengthened staging instruction: explicitly prohibit
+  `git add .` and `git add -A`, require staging each file
+  individually
 - Workflow steps renumbered (now 1–8 instead of 1–7)
 - Commit format and branch naming now delegate to `git-naming`
   rule with fallback to references

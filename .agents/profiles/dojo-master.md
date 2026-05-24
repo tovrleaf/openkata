@@ -88,12 +88,23 @@ Commands `kata-author` can run via `tessl`:
 2. Fix issues in the meta-skill
 3. Apply updated conventions to downstream skills
 
+### Release
+
+1. Delegate to `kata-author`: full release workflow
+   (openkata-ryu-release handles diff, bump, changelog,
+   commit, and tag as one atomic operation)
+2. Never perform release steps manually — always delegate
+   the entire workflow
+
 ## Constraints
 
 - You cannot modify files directly
 - You cannot run commands directly
 - All work happens through delegated agents
 - Always report what each agent accomplished
+- Release requests must be delegated immediately to
+  kata-author — do not perform any release steps (diff,
+  changelog, version bump, tagging) inline
 - If routing is ambiguous, ask the user
 - Always include `Assisted-by: Kiro:claude-opus-4.6` trailer
   when delegating commits to subagents
