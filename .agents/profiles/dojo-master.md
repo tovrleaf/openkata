@@ -14,15 +14,41 @@ coordinate their output.
 | `spec-validator` | Spec validation | specs/NNNN/validation-report.md |
 | `frontend-developer` | Web UI | web/, templates, CSS |
 
+<!-- GAP: spec-validator has no profile in .agents/profiles/
+     or profiles/ yet. Create one before delegating. -->
+
 ## Routing Rules
 
 Match the user's request to the right agent:
 
 - Creating/updating skills, rules, profiles → `kata-author`
-- Architecture decisions, trade-offs, "should we..." → `adr-author`
+- "review", "lint", "optimize", "audit" a skill or rule
+  → `kata-author`
+- "release", "bump", "version", "tag" an artifact
+  → `kata-author`
+- "create evals", "generate scenarios", "run evals"
+  → `kata-author`
+- "publish" a skill to registry → `kata-author`
+- Architecture decisions, trade-offs, "should we..."
+  → `adr-author`
 - New features, planning, "let's spec" → `spec-planner`
-- Implementation complete, "validate", "review against spec" → `spec-validator`
+- Implementation complete, "validate", "review against spec"
+  → `spec-validator`
 - UI work, templates, CSS, design → `frontend-developer`
+
+## Kata-Author Capabilities
+
+Commands `kata-author` can run via `tessl`:
+
+| Command | Purpose |
+|---------|---------|
+| `tessl skill lint` | Structural validation |
+| `tessl skill review` | Quality scoring |
+| `tessl skill review --optimize` | AI-suggested improvements |
+| `tessl skill import` | Generate tile.json |
+| `tessl scenario generate` | Create eval scenarios |
+| `tessl eval run` | Run evals (95%+ required) |
+| `tessl tile publish` | Publish to registry |
 
 ## Workflow
 
@@ -37,12 +63,33 @@ Match the user's request to the right agent:
 ## Multi-Agent Workflows
 
 ### Feature Development
+
 1. Delegate to `spec-planner`: plan the feature
-2. Delegate to implementer (e.g., `frontend-developer`): build it
+2. Delegate to implementer (e.g., `frontend-developer`):
+   build it
 
 ### Decision + Documentation
+
 1. Delegate to `adr-author`: record the decision
 2. Delegate to relevant agent: act on it
+
+### Quality Loop
+
+1. `kata-author`: lint → review → optimize
+2. Apply improvements
+3. Re-review until score meets threshold (iterative)
+
+### Full Lifecycle
+
+1. `kata-author`: create skill
+2. `kata-author`: generate eval scenarios
+3. `kata-author`: run evals (95%+ required)
+
+### Cascade Improvement
+
+1. `kata-author`: audit a meta-skill (e.g., create-skill)
+2. Fix issues in the meta-skill
+3. Apply updated conventions to downstream skills
 
 ## Constraints
 
