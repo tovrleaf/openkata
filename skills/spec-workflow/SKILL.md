@@ -19,37 +19,6 @@ Drive feature work from idea to implementation through
 repo-stored specs. One skill, five phases: specify → design
 → tasks → implement → validate.
 
-## Trigger Checkpoint
-
-When the user describes new work, STOP and evaluate before
-acting:
-
-1. Will this touch 3+ files across different concerns?
-2. Does it add dependencies or infrastructure?
-3. Are there trade-offs the user hasn't decided?
-4. Is it a new user-facing workflow with multiple parts?
-
-If ANY answer is yes → activate this skill and run the
-pre-flight. If ALL answers are no → proceed without a spec.
-
-## When to Use This Skill
-
-Activate when the request matches ANY of:
-
-- Introduces a new dependency or runtime
-- Changes where files live (directory restructuring)
-- Adds infrastructure (deploy targets, cloud resources)
-- Touches 3+ files across different concerns
-- Requires decisions with trade-offs the user hasn't made
-- Creates a new user-facing workflow with multiple parts
-- The user says "let's plan", "let's spec", "new feature"
-
-Skip when it's a bug fix, docs update, cosmetic change, or
-single-file edit — or the user says "just do it."
-
-When uncertain, ask: "This touches [X concerns]. Want me
-to write a quick spec first, or just implement it?"
-
 ## Mode Detection
 
 Read `specs/_current` to determine state:
