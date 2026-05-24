@@ -1,0 +1,66 @@
+{
+  "context": "Tests whether the agent correctly handles the ADR supersession workflow: creating a new ADR with the right sequence number, updating the old ADR's status to SUPERSEDED, and linking the two records bidirectionally.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "New ADR created",
+      "description": "A new ADR Markdown file exists under inputs/docs/adr/",
+      "max_score": 6
+    },
+    {
+      "name": "Correct sequence number",
+      "description": "New ADR filename uses the next available sequence number (0002, since 0001 already exists), zero-padded to 4 digits",
+      "max_score": 10
+    },
+    {
+      "name": "New ADR slug",
+      "description": "New ADR filename has a lowercase, hyphenated slug summarizing the decision (e.g. 0002-use-graphql-for-client-apis.md)",
+      "max_score": 6
+    },
+    {
+      "name": "New ADR YAML frontmatter",
+      "description": "New ADR has YAML frontmatter containing status, date, and authors fields",
+      "max_score": 8
+    },
+    {
+      "name": "New ADR status PROPOSED",
+      "description": "New ADR's status field in YAML frontmatter is set to PROPOSED",
+      "max_score": 8
+    },
+    {
+      "name": "Old ADR status SUPERSEDED",
+      "description": "The existing ADR (0001-use-rest-api.md) has its status changed to SUPERSEDED",
+      "max_score": 12
+    },
+    {
+      "name": "Old ADR links to new",
+      "description": "The existing ADR (0001-use-rest-api.md) contains a reference or link pointing to the new ADR file",
+      "max_score": 10
+    },
+    {
+      "name": "Two or more alternatives",
+      "description": "New ADR's Alternatives Considered section contains at least two options with pros, cons, and rejection reasons",
+      "max_score": 10
+    },
+    {
+      "name": "Active voice decision",
+      "description": "New ADR's Decision section uses active voice (e.g. 'We will adopt...' not passive 'GraphQL was chosen')",
+      "max_score": 8
+    },
+    {
+      "name": "No placeholder text",
+      "description": "New ADR contains no unfilled placeholder text (no '[Driver 1]', 'YYYY-MM-DD', '[Alternative 1]', etc.)",
+      "max_score": 8
+    },
+    {
+      "name": "Consequences split",
+      "description": "New ADR has Consequences section split into Positive, Negative, and Neutral subsections",
+      "max_score": 10
+    },
+    {
+      "name": "change-summary.md present",
+      "description": "A change-summary.md file exists at the working directory root describing files created/modified and the new ADR sequence number",
+      "max_score": 4
+    }
+  ]
+}

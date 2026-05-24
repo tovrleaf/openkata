@@ -1,0 +1,66 @@
+{
+  "context": "Tests whether the agent correctly creates the first ADR in a project with no existing docs/adr/ directory, including correct file placement, naming, YAML frontmatter, and fully populated sections following the template structure.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "docs/adr/ created",
+      "description": "The agent creates the docs/adr/ directory (under inputs/) since it does not exist in the starting project",
+      "max_score": 8
+    },
+    {
+      "name": "File in docs/adr/",
+      "description": "The ADR file is placed under inputs/docs/adr/ (not at a different path)",
+      "max_score": 8
+    },
+    {
+      "name": "Filename format",
+      "description": "Filename follows NNNN-<slug>.md format: four zero-padded digits, lowercase hyphenated slug (e.g. 0001-use-postgresql-for-inventory-service.md)",
+      "max_score": 10
+    },
+    {
+      "name": "YAML status field",
+      "description": "YAML frontmatter contains a 'status' field set to PROPOSED",
+      "max_score": 8
+    },
+    {
+      "name": "YAML date field",
+      "description": "YAML frontmatter contains a 'date' field with a real date (not a placeholder like YYYY-MM-DD)",
+      "max_score": 8
+    },
+    {
+      "name": "YAML authors field",
+      "description": "YAML frontmatter contains an 'authors' field (list may be empty but field must be present)",
+      "max_score": 6
+    },
+    {
+      "name": "Active voice decision",
+      "description": "The Decision section states the choice in active voice (e.g. 'We will use...' not 'X was chosen')",
+      "max_score": 8
+    },
+    {
+      "name": "Two or more alternatives",
+      "description": "Alternatives Considered section contains at least two alternatives, each with pros, cons, and a rejection reason",
+      "max_score": 12
+    },
+    {
+      "name": "Three consequence categories",
+      "description": "Consequences section is split into Positive, Negative, and Neutral subsections (all three present)",
+      "max_score": 10
+    },
+    {
+      "name": "No placeholder text",
+      "description": "No placeholder text remains (e.g. '[Driver 1]', '[NNNN]', 'YYYY-MM-DD', '[Alternative 1]', bracketed template fields)",
+      "max_score": 10
+    },
+    {
+      "name": "Decision drivers list",
+      "description": "Decision Drivers section is present and contains a list of at least two concrete drivers",
+      "max_score": 8
+    },
+    {
+      "name": "decision-log.md present",
+      "description": "A decision-log.md file exists at the working directory root documenting the file path created and sequence number assigned",
+      "max_score": 4
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "context": "Tests whether the agent correctly handles worktree gotchas: named stashes with the 'worktree:' prefix, using git worktree prune for manually-deleted directories, understanding that the same branch cannot be checked out in two worktrees, and awareness of shared refs and hooks across worktrees.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Named stash with prefix",
+      "description": "Stash command uses `git stash push -m \"worktree: ...\"` (with the `worktree:` prefix in the message) rather than a plain `git stash` or a stash message without the prefix",
+      "max_score": 15
+    },
+    {
+      "name": "git worktree prune usage",
+      "description": "Script includes `git worktree prune` to handle the case where a worktree directory was deleted manually (not via `git worktree remove`)",
+      "max_score": 15
+    },
+    {
+      "name": "release/ branch prefix",
+      "description": "The release task worktree uses a `release/` branch prefix (e.g., `-b release/v2.1`)",
+      "max_score": 10
+    },
+    {
+      "name": "Worktrees in .worktrees/",
+      "description": "Both worktrees are created under `.worktrees/` (e.g., `.worktrees/release-v2`, `.worktrees/hotfix-login`)",
+      "max_score": 10
+    },
+    {
+      "name": "Worktree removal command",
+      "description": "Script uses `git worktree remove` to clean up at least one worktree (not only `rm -rf`)",
+      "max_score": 10
+    },
+    {
+      "name": "Branch deletion after removal",
+      "description": "Script deletes the worktree branches with `git branch -d` after the worktrees are removed",
+      "max_score": 10
+    },
+    {
+      "name": "Same-branch-twice gotcha",
+      "description": "GOTCHAS.md or the script mentions that git refuses to check out the same branch in two worktrees simultaneously (and/or describes a workaround such as using a different branch name or detaching HEAD)",
+      "max_score": 10
+    },
+    {
+      "name": "Shared stash gotcha",
+      "description": "GOTCHAS.md mentions that git stash is global across all worktrees (not isolated per worktree)",
+      "max_score": 10
+    },
+    {
+      "name": "Shared refs or hooks gotcha",
+      "description": "GOTCHAS.md mentions that either `.git/refs` (tags/remote updates) or `.git/hooks` (pre-commit hooks) are shared across all worktrees",
+      "max_score": 10
+    }
+  ]
+}

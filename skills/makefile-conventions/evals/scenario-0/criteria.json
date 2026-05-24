@@ -1,0 +1,61 @@
+{
+  "context": "Tests whether the agent creates a correctly structured modular Makefile system for a new project with multiple concern domains and subcommands, following naming, help, and delegation conventions.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": ".DEFAULT_GOAL set",
+      "description": "Root Makefile contains `.DEFAULT_GOAL := help` so bare `make` shows help",
+      "max_score": 10
+    },
+    {
+      "name": "Domain modules included",
+      "description": "Root Makefile includes domain modules from mk/ (e.g. `include mk/test.mk`, `include mk/lint.mk`, `include mk/build.mk`)",
+      "max_score": 8
+    },
+    {
+      "name": "mk/ modular files",
+      "description": "Separate .mk files exist under mk/ for each concern domain (test, lint, build)",
+      "max_score": 8
+    },
+    {
+      "name": "Domain subdirectory Makefiles",
+      "description": "Each multi-subcommand domain has its own Makefile inside a subdirectory (e.g. mk/test/Makefile, mk/lint/Makefile, mk/build/Makefile)",
+      "max_score": 10
+    },
+    {
+      "name": "filter-out delegation",
+      "description": "Domain .mk files use `$(MAKE) -C mk/<domain> $(filter-out $@,$(MAKECMDGOALS))` to pass subcommands through",
+      "max_score": 10
+    },
+    {
+      "name": "Catch-all rule",
+      "description": "Domain .mk files include a catch-all `%: @:` rule to prevent 'No rule to make target' errors for subcommand arguments",
+      "max_score": 8
+    },
+    {
+      "name": "PHONY declarations",
+      "description": "All non-file-producing targets are declared `.PHONY`",
+      "max_score": 8
+    },
+    {
+      "name": "Script delegation",
+      "description": "Recipe lines invoke scripts (e.g. `@./scripts/test-unit.sh`) rather than containing inline bash logic",
+      "max_score": 10
+    },
+    {
+      "name": "@ prefix on recipes",
+      "description": "All recipe lines use `@` prefix to suppress command echoing",
+      "max_score": 8
+    },
+    {
+      "name": "Lowercase hyphenated names",
+      "description": "All target names are lowercase; multi-word targets use hyphens (not underscores or camelCase)",
+      "max_score": 8
+    },
+    {
+      "name": "Domain help behavior",
+      "description": "Bare `make test` (and `make lint`, `make build`) shows subcommand help rather than running a default action — confirmed by make-test-help-output.txt and make-lint-help-output.txt",
+      "max_score": 12
+    }
+  ]
+}

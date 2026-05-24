@@ -1,0 +1,61 @@
+{
+  "context": "Tests whether the agent correctly creates a RULE.md for API response conventions by investigating existing code and tooling, writing specific and directive-form conventions, grouping them by concern, keeping the file concise, and documenting validation against real files.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Lowercase-hyphenated directory name",
+      "description": "The rule directory name is lowercase and hyphenated (e.g., api-response-shape, error-response, response-conventions) — not CamelCase, snake_case, or containing spaces",
+      "max_score": 8
+    },
+    {
+      "name": "# Heading present",
+      "description": "RULE.md starts with a # heading (ATX-style) containing the rule name",
+      "max_score": 5
+    },
+    {
+      "name": "Brief description after heading",
+      "description": "RULE.md contains a one-to-two sentence description immediately after the # heading, before any sections",
+      "max_score": 5
+    },
+    {
+      "name": "Sections group by concern",
+      "description": "RULE.md uses ## section headings to group related conventions (e.g., separate sections for error responses and success responses, or for structure and fields)",
+      "max_score": 10
+    },
+    {
+      "name": "Specific, enforceable conventions",
+      "description": "Every convention names a concrete field or shape (e.g., 'Use `{ error: string }` for 4xx/5xx responses') — none use vague language like 'use consistent shapes' or 'be uniform'",
+      "max_score": 15
+    },
+    {
+      "name": "Directive form",
+      "description": "Conventions use imperative directive form ('Use X', 'Always include Y', 'Never return Z') rather than explanatory or hedged form ('You should use X', 'It is recommended to', 'Consider using')",
+      "max_score": 10
+    },
+    {
+      "name": "No rationale in RULE.md",
+      "description": "RULE.md does NOT contain rationale, explanations of why, or background context — only conventions stated as directives",
+      "max_score": 10
+    },
+    {
+      "name": "One convention per bullet",
+      "description": "No bullet point contains two distinct conventions joined by 'and' or a semicolon (e.g., does NOT write 'Use `error` field AND include an HTTP status code' as one bullet)",
+      "max_score": 10
+    },
+    {
+      "name": "Under 100 lines",
+      "description": "RULE.md has fewer than 100 lines total (including blank lines and headings)",
+      "max_score": 7
+    },
+    {
+      "name": "No conflict with .eslintrc.json",
+      "description": "RULE.md does not mandate field names or patterns that would conflict with the camelcase ESLint rule (e.g., does not require snake_case fields like `error_message`)",
+      "max_score": 10
+    },
+    {
+      "name": "Validation references input files",
+      "description": "validation-report.md names at least one of: userHandler.ts, productHandler.ts, or .eslintrc.json as a file that was examined",
+      "max_score": 10
+    }
+  ]
+}

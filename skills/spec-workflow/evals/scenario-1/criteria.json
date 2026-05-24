@@ -1,0 +1,56 @@
+{
+  "context": "Tests whether the agent produces a correctly structured tasks.md file inside the spec directory, following the prescribed template format with all required fields for each task and a progress log section.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "tasks.md in spec dir",
+      "description": "A `tasks.md` file exists inside `specs/0001-password-reset/`",
+      "max_score": 5
+    },
+    {
+      "name": "Top-level title",
+      "description": "tasks.md starts with a `# Tasks: ...` heading (H1 with 'Tasks:' prefix)",
+      "max_score": 10
+    },
+    {
+      "name": "Tasks section heading",
+      "description": "tasks.md contains a `## Tasks` section heading",
+      "max_score": 5
+    },
+    {
+      "name": "Numbered task headings",
+      "description": "Each individual task uses a `### N. Task name` heading (H3 with a number prefix)",
+      "max_score": 10
+    },
+    {
+      "name": "Status: Pending on all tasks",
+      "description": "Every task has a `**Status**: Pending` field (all tasks start as Pending, none are pre-marked In Progress or Done)",
+      "max_score": 15
+    },
+    {
+      "name": "Goal field on each task",
+      "description": "Every task has a `**Goal**:` field describing what the task achieves",
+      "max_score": 10
+    },
+    {
+      "name": "Boundary field on each task",
+      "description": "Every task has a `**Boundary**:` field listing the files or modules the task touches",
+      "max_score": 10
+    },
+    {
+      "name": "Done when field on each task",
+      "description": "Every task has a `**Done when**:` field with observable completion criteria",
+      "max_score": 10
+    },
+    {
+      "name": "Single-concern tasks",
+      "description": "Tasks are scoped to a single concern (e.g., separate tasks for DB schema, token generation, email sending, reset form) rather than one monolithic task covering the entire feature",
+      "max_score": 10
+    },
+    {
+      "name": "Progress Log section",
+      "description": "tasks.md ends with a `## Progress Log` section",
+      "max_score": 15
+    }
+  ]
+}

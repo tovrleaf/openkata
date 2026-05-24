@@ -1,0 +1,76 @@
+{
+  "context": "Tests whether the agent implements the full PR creation workflow correctly in a shell script, including the specific git commands, decision points, and gh CLI usage specified in the skill.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "git status --short",
+      "description": "Uses `git status --short` (not plain `git status`) to check for uncommitted changes",
+      "max_score": 8
+    },
+    {
+      "name": "Show uncommitted list",
+      "description": "Displays the list of uncommitted files to the user when uncommitted changes are detected",
+      "max_score": 7
+    },
+    {
+      "name": "Prompt on uncommitted",
+      "description": "Asks the user what to do when uncommitted changes exist (commit and include, or proceed without them)",
+      "max_score": 8
+    },
+    {
+      "name": "No auto-proceed",
+      "description": "Does NOT automatically proceed when uncommitted changes are found — waits for user input",
+      "max_score": 7
+    },
+    {
+      "name": "git branch --show-current",
+      "description": "Uses `git branch --show-current` to determine the current branch name",
+      "max_score": 7
+    },
+    {
+      "name": "Main/master guard",
+      "description": "Stops with a warning message when the current branch is `main` or `master`",
+      "max_score": 8
+    },
+    {
+      "name": "git status -sb",
+      "description": "Uses `git status -sb` to detect whether the local branch is behind the remote",
+      "max_score": 7
+    },
+    {
+      "name": "Behind-remote prompt",
+      "description": "Warns the user and asks whether to pull first when the branch is behind the remote",
+      "max_score": 7
+    },
+    {
+      "name": "AGENTS.md check",
+      "description": "Checks for AGENTS.md (or a build/test config file) and runs any pre-push steps found there",
+      "max_score": 8
+    },
+    {
+      "name": "git push -u origin",
+      "description": "Pushes using `git push -u origin <branch>` with the -u flag to set upstream",
+      "max_score": 8
+    },
+    {
+      "name": "gh pr create --fill",
+      "description": "Creates the PR using `gh pr create --fill`",
+      "max_score": 8
+    },
+    {
+      "name": "gh fallback URL",
+      "description": "Provides the manual GitHub compare URL (https://github.com/{owner}/{repo}/compare/{branch}) when gh is not installed",
+      "max_score": 5
+    },
+    {
+      "name": "Browser offer",
+      "description": "After PR creation, offers to open the PR in the browser and runs `gh pr view --web` if accepted",
+      "max_score": 5
+    },
+    {
+      "name": "No force push",
+      "description": "Does NOT include a force push (git push --force or git push -f) without explicit conditional gating on user permission",
+      "max_score": 7
+    }
+  ]
+}

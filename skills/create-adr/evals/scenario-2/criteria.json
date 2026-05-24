@@ -1,0 +1,66 @@
+{
+  "context": "Tests whether the agent creates an ADR with correct sequence numbering based on existing records, uses investigation prompts for unknown information, includes References and Reversibility sections when warranted, and produces research notes proving codebase exploration occurred.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Correct sequence number",
+      "description": "New ADR filename uses sequence number 0002 (next after existing 0001), zero-padded to 4 digits",
+      "max_score": 10
+    },
+    {
+      "name": "Filename slug format",
+      "description": "ADR filename has a lowercase, hyphenated slug describing the state management decision (e.g. 0002-use-zustand-for-state-management.md)",
+      "max_score": 6
+    },
+    {
+      "name": "YAML frontmatter complete",
+      "description": "YAML frontmatter contains status, date, and authors fields",
+      "max_score": 8
+    },
+    {
+      "name": "Status is PROPOSED",
+      "description": "The status field in YAML frontmatter is PROPOSED",
+      "max_score": 6
+    },
+    {
+      "name": "Investigation prompts used",
+      "description": "At least one [INVESTIGATE: ...] prompt is present in the ADR for information that cannot be determined from the project files (e.g. team preference details, performance benchmarks)",
+      "max_score": 10
+    },
+    {
+      "name": "References section present",
+      "description": "ADR includes a References section with at least one link or cross-reference to related resources or the existing ADR",
+      "max_score": 8
+    },
+    {
+      "name": "Reversibility section present",
+      "description": "ADR includes a Reversibility section describing conditions that would trigger reconsideration or how to migrate away",
+      "max_score": 8
+    },
+    {
+      "name": "Two or more alternatives",
+      "description": "Alternatives Considered section contains at least two alternatives, each with pros, cons, and rejection reasons",
+      "max_score": 10
+    },
+    {
+      "name": "Active voice decision",
+      "description": "Decision section states the choice in active voice (e.g. 'We will adopt...' not 'X was decided')",
+      "max_score": 8
+    },
+    {
+      "name": "Consequences split",
+      "description": "Consequences section is split into Positive, Negative, and Neutral subsections",
+      "max_score": 8
+    },
+    {
+      "name": "No placeholder text",
+      "description": "ADR contains no unfilled template placeholders (no '[Driver 1]', 'YYYY-MM-DD', '[Alternative 1]', etc.)",
+      "max_score": 8
+    },
+    {
+      "name": "research-notes.md present",
+      "description": "A research-notes.md file exists at the working directory root describing files examined and patterns found in the codebase",
+      "max_score": 10
+    }
+  ]
+}
