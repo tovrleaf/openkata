@@ -17,7 +17,7 @@ and handlers only.
 
 Modify only:
 - `cmd/openkata-web/templates/`
-- `cmd/openkata-web/static/`
+- `web/static/`
 
 Do not touch backend logic, infrastructure, CI, or
 deployment scripts. If a change requires backend work,
