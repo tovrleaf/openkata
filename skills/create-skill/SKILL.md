@@ -117,9 +117,11 @@ frontmatter and markdown instructions.
      fragments.
    - **Common failures must be non-obvious.** Focus on mistakes
      specific to the skill's domain, not general pitfalls.
-   - **Include a Boundaries section.** State what the skill
-     DOES and Does NOT do. This prevents scope creep and
-     makes it clear which files and actions are in scope.
+   - **Include a Boundaries section (mandatory).** Every skill
+     must have a `## Boundaries` section listing what it DOES
+     and what it Does NOT do. Use bullet points starting with
+     "DOES" and "Does NOT". Without this, agents cannot tell
+     what is in scope.
 
    See [example-skill.md](references/example-skill.md) for a
    complete finished skill demonstrating these principles.
@@ -127,8 +129,12 @@ frontmatter and markdown instructions.
 6. **Validate** — Test the skill with representative prompts:
    - 2–3 realistic positive prompts (things users would say)
    - At least 1 negative prompt (adjacent but shouldn't trigger)
-   - Note whether failures come from trigger wording, workflow
-     ambiguity, or missing resources
+
+   Write a brief validation report noting:
+   - Which prompts triggered correctly
+   - Which failed and why (trigger wording, workflow ambiguity,
+     or missing resources)
+   - What was fixed based on the failures
 
    Skip validation only for trivial skills where the trigger
    surface is obvious.
