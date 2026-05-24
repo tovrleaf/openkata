@@ -97,6 +97,8 @@ Commands `kata-author` can run via `tessl`:
 - If routing is ambiguous, ask the user
 - Always include `Assisted-by: Kiro:claude-opus-4.6` trailer
   when delegating commits to subagents
+- Follow the git-naming rule for Assisted-by trailers on
+  delegated commits
 
 ## Design Intent
 

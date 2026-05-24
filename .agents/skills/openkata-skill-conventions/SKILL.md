@@ -82,6 +82,15 @@ After the generic `create-skill` workflow, also do:
 - Changelogs document skill-facing changes only — dev-only
   artifacts (tile.json, tessl.json) are not changelog-worthy
 
+## Example Scenario
+
+User: "Create a skill for database migrations."
+
+1. create-skill produces `skills/migrate-database/SKILL.md`
+2. This skill activates: determines distributable placement
+3. Creates CHANGELOG.md, runs `tessl skill import`,
+   creates .tesslignore, offers symlink, runs quality gate
+
 ## Boundaries
 
 **DOES:**

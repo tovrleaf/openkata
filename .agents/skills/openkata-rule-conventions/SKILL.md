@@ -76,6 +76,15 @@ After the generic `create-rule` skill workflow, also do:
 - Changelogs document rule-facing changes only
 - Keep rules focused — one rule, one concern
 
+## Example Scenario
+
+User: "Create a rule for SQL naming conventions."
+
+1. create-rule produces `rules/sql-naming/RULE.md`
+2. This skill activates: asks local or distributable?
+3. Creates CHANGELOG.md, symlinks into `.agents/rules/`,
+   adds ACKNOWLEDGMENTS.md referencing the SQL style guide
+
 ## Boundaries
 
 **DOES:**

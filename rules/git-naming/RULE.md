@@ -51,7 +51,9 @@ trade-off, or non-obvious behavior.
 
 Add to every AI-assisted commit:
 
-    Assisted-by: <agent>:<model>
+```text
+Assisted-by: <agent>:<model>
+```
 
 Agent is your name (Kiro, Claude Code, OpenCode). Model is
 the model you are running on.

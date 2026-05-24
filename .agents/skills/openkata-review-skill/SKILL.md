@@ -63,6 +63,16 @@ on both new and updated skills in `.agents/skills/` or `skills/`.
 - **Keep it lean.** Remove instructions that aren't pulling their
   weight. If something isn't improving outputs, cut it.
 
+## Example Scenario
+
+User: "Review the create-adr skill."
+
+1. Runs `tessl skill lint skills/create-adr` — passes
+2. Runs `tessl skill review skills/create-adr` — 99%
+3. Runs `tessl skill review --optimize` — no changes needed
+4. Runs checklist — all sections pass
+5. Reports: 99%, no blocking issues, one orphaned file warning
+
 ## Boundaries
 
 **DOES:**
