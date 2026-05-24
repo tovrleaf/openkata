@@ -52,7 +52,12 @@ for dir in .agents/skills/*/; do
   if [[ -n "${tag}" ]]; then
     changes="$(git diff "${tag}" -- "${skill_dir}" ':!'"${skill_dir}"'/CHANGELOG.md' ':!'"${skill_dir}"'/evals' ':!'"${skill_dir}"'/tile.json' ':!'"${skill_dir}"'/.tesslignore' 2>/dev/null)"
   else
-    changes="$(git diff HEAD -- "${skill_dir}" ':!'"${skill_dir}"'/CHANGELOG.md' ':!'"${skill_dir}"'/evals' ':!'"${skill_dir}"'/tile.json' ':!'"${skill_dir}"'/.tesslignore' 2>/dev/null)"
+    # Local: compare last content commit vs last CHANGELOG commit
+    content_ts="$(git log -1 --format=%ct -- "${skill_dir}" ':!'"${skill_dir}"'/CHANGELOG.md' ':!'"${skill_dir}"'/evals' ':!'"${skill_dir}"'/tile.json' ':!'"${skill_dir}"'/.tesslignore' 2>/dev/null || echo 0)"
+    changelog_ts="$(git log -1 --format=%ct -- "${skill_dir}/CHANGELOG.md" 2>/dev/null || echo 0)"
+    if [[ "${content_ts}" -gt "${changelog_ts}" ]]; then
+      changes="dirty"
+    fi
   fi
 
   if [[ -n "${changes}" ]]; then
