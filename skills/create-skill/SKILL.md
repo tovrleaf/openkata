@@ -11,7 +11,7 @@ description: >
   want to codify, is frustrated by inconsistent agent behavior, or
   wants to package expertise for a team.
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   tags: "category:scaffolding"
 ---
 

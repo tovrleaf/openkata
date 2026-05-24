@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.2.0 — 2026-05-24
+
+### Added
+
+- Imperative form writing rule replacing "explain the why"
+- Structured validation report format with trigger analysis
+- Skill design checklist: consistency, validation, and token
+  budget sections
+- Metadata tags in frontmatter
+
+### Changed
+
+- Boundaries section now mandatory (was recommended)
+- Conciseness rule tightened to single-sentence form
+
 ## 1.1.0 — 2026-05-05
 
 ### Added
