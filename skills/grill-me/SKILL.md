@@ -24,24 +24,30 @@ every corner case is addressed.
    decisions were made or left implicit: trade-offs, edge cases,
    missing alternatives, unstated assumptions, dependencies.
 
-3. **Interview one question at a time** — Walk down each branch
-   of the decision tree, resolving dependencies between
-   decisions one by one. For each question:
-   - Provide your recommended answer
-   - Wait for the user to confirm, correct, or expand
-   - If a question can be answered by exploring the codebase,
-     explore the codebase instead of asking
+3. **Interview one question at a time** — Ask exactly ONE
+   question per message. Never combine multiple questions.
+   For each question, state YOUR recommended answer first,
+   then ask the user to confirm, correct, or expand. Wait
+   for a response before the next question. If a question
+   can be answered by exploring the codebase, explore the
+   codebase instead of asking.
 
 4. **Continue until covered** — Keep going until all branches
    are resolved. Do not stop early. The goal is shared
    understanding, not speed.
 
-5. **Summarize** — When complete, briefly list the decisions
-   made and any changes the user should apply to the artifact.
+5. **Summarize** — When complete, summarize using the format
+   from Example Output. Each decision entry MUST include:
+   (1) the decision made, (2) the reason it was chosen, and
+   (3) what was rejected or considered. Do not list decisions
+   without reasons.
 
 6. **Offer to update** — Ask the user if they want you to
    apply the decisions to the artifact. If yes, update it.
-   If no, leave it unchanged.
+   If no, leave it unchanged. Always end with: "Want me to
+   apply these changes to [artifact name]?" Do not end the
+   conversation without this explicit offer. This step is
+   mandatory even if the user seems done.
 
 ## Example Output
 
