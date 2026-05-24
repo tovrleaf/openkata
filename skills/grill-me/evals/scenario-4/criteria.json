@@ -1,0 +1,51 @@
+{
+  "context": "Tests whether the agent follows the grill-me skill's mandatory closing step, specifically that the challenge report ends with an explicit offer to apply changes using the phrase 'Want me to apply these changes to [artifact name]?' (with the real filename substituted). Also verifies that the agent does not implement code changes, does not modify the input spec, and includes all required summary sections.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Closing offer present",
+      "description": "The challenge-report.md contains an explicit offer to apply the changes to the input spec — some form of 'Want me to apply these changes to...' or equivalent",
+      "max_score": 15
+    },
+    {
+      "name": "Artifact name in offer",
+      "description": "The closing offer references the actual artifact filename (e.g. 'feature-spec.md') rather than a generic placeholder like '[artifact name]' or 'the document'",
+      "max_score": 15
+    },
+    {
+      "name": "No code implementation",
+      "description": "The agent does NOT produce any implementation code files (e.g. migration scripts, API route handlers, database schema files) — only challenge-report.md is created",
+      "max_score": 15
+    },
+    {
+      "name": "No input modification",
+      "description": "The file inputs/feature-spec.md is not modified by the agent",
+      "max_score": 10
+    },
+    {
+      "name": "Recommended answer per question",
+      "description": "Every challenge question or issue raised in the report includes the agent's own recommended position or resolution — not just the question",
+      "max_score": 12
+    },
+    {
+      "name": "Decisions Made section",
+      "description": "The challenge-report.md includes a 'Decisions Made' section (or equivalent heading) listing decisions reached during the challenge",
+      "max_score": 8
+    },
+    {
+      "name": "Reasons in decisions",
+      "description": "Each decision entry in the 'Decisions Made' section includes a reason why that decision was chosen",
+      "max_score": 8
+    },
+    {
+      "name": "Changes to Apply section",
+      "description": "The challenge-report.md includes a 'Changes to Apply' section (or equivalent heading) with at least 2 concrete updates to the spec",
+      "max_score": 9
+    },
+    {
+      "name": "Open questions addressed",
+      "description": "At least 2 of the 4 open questions from the spec (workspace membership limit, workspace deletion behaviour, slug mutability, existing resource ownership interaction) are challenged with a recommended answer",
+      "max_score": 8
+    }
+  ]
+}

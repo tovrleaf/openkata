@@ -1,0 +1,56 @@
+{
+  "context": "Tests whether the agent follows the grill-me skill's summary format requirements, specifically that every entry in the Decisions Made section includes all three required components: (1) the decision made, (2) the reason it was chosen, and (3) what was rejected or considered. Also verifies that the agent challenges all major decision areas rather than stopping early, poses questions with recommended answers, and does not modify the input file.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Rejected alternatives in decisions",
+      "description": "At least 3 entries in the 'Decisions Made' section explicitly mention what was rejected or considered (e.g. 'AWS and Azure were rejected', 'Cloud Run was considered but GKE chosen', 'REST was rejected in favour of gRPC')",
+      "max_score": 18
+    },
+    {
+      "name": "Decisions Made section",
+      "description": "The challenge-report.md contains a clearly labelled 'Decisions Made' section (or equivalent heading) listing settled decisions",
+      "max_score": 10
+    },
+    {
+      "name": "Reasons in decisions",
+      "description": "Each entry in the 'Decisions Made' section includes a reason or rationale for why that choice was made",
+      "max_score": 10
+    },
+    {
+      "name": "Changes to Apply section",
+      "description": "The challenge-report.md contains a clearly labelled 'Changes to Apply' section (or equivalent heading) with actionable updates for the architecture document",
+      "max_score": 8
+    },
+    {
+      "name": "Actionable change items",
+      "description": "Each item in 'Changes to Apply' specifies a concrete, targeted update to the document (not vague like 'add more detail')",
+      "max_score": 8
+    },
+    {
+      "name": "At least 5 decision areas challenged",
+      "description": "The report addresses at least 5 distinct decision areas from the document (e.g. cloud provider, orchestration, database, messaging, caching, regions, service communication)",
+      "max_score": 10
+    },
+    {
+      "name": "Recommended answer per question",
+      "description": "Every challenge question or decision point posed by the agent includes the agent's own recommended position or answer — not just the question alone",
+      "max_score": 12
+    },
+    {
+      "name": "Open questions surfaced",
+      "description": "The report identifies at least one open question or unstated assumption from the document (e.g. multi-tenancy isolation model, SLA targets, disaster recovery) as a risk or gap to resolve",
+      "max_score": 10
+    },
+    {
+      "name": "No input modification",
+      "description": "The file inputs/deployment-design.md is not modified — the agent must not alter the original artifact",
+      "max_score": 8
+    },
+    {
+      "name": "No code implementation",
+      "description": "The agent does NOT produce implementation code files (e.g. Terraform, Kubernetes manifests, or application code) — only the challenge-report.md analysis document",
+      "max_score": 6
+    }
+  ]
+}

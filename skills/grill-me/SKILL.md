@@ -48,6 +48,10 @@ every corner case is addressed.
    if they want you to apply the decisions to the artifact.
    If yes, update it. If no, leave it unchanged. Always end
    with: "Want me to apply these changes to [artifact name]?"
+   where [artifact name] is the specific file being grilled
+   (e.g., "spec.md", "design.md", "0003-use-postgres.md").
+   This offer MUST appear as the final line of your output,
+   whether writing to a file or responding in conversation.
    Do not end the conversation without this explicit offer.
    Do not skip this step even if the user seems done, says
    "thanks", or appears to be wrapping up.
@@ -59,12 +63,18 @@ After grilling a spec, the summary looks like:
 ```markdown
 ## Decisions Made
 
-1. **Auth strategy** — JWT with refresh tokens, not sessions.
-   Reason: stateless scaling requirement.
-2. **Rate limiting** — Per-user, not per-IP. Applied at API
-   gateway level.
-3. **Error format** — RFC 7807 Problem Details. No custom
-   envelope.
+1. **Auth strategy** — JWT with refresh tokens. Reason:
+   stateless scaling requirement eliminates session affinity.
+   Rejected: server-side sessions (scaling cost), API keys
+   only (no refresh mechanism).
+2. **Rate limiting** — Per-user at API gateway. Reason:
+   prevents single-user abuse without penalizing shared IPs.
+   Rejected: per-IP (punishes NAT users), no limiting
+   (risk of runaway costs).
+3. **Error format** — RFC 7807 Problem Details. Reason:
+   standard format reduces client integration effort.
+   Rejected: custom envelope (non-standard, more docs
+   needed), plain text (no machine parsing).
 
 ## Changes to Apply
 
@@ -75,6 +85,16 @@ After grilling a spec, the summary looks like:
 
 Want me to apply these changes to spec.md?
 ```
+
+Every decision entry MUST follow this exact pattern:
+`**Topic** — Decision. Reason: why. Rejected: alternatives.`
+Do not omit the reason or the rejected alternatives.
+
+The closing offer ("Want me to apply these changes to
+[filename]?") MUST appear as the literal last line of the
+output — including inside any written file. If the task asks
+you to write a report file, the offer is the final line of
+that file, not a separate conversational message.
 
 ## Boundaries
 
