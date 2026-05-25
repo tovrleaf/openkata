@@ -18,16 +18,20 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-      - name: Re-push tags on merged commits to trigger publish
+      - name: Re-push artifact tags to trigger publish
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          # Find tags pointing at commits in this PR (between merge base and HEAD)
-          merge_base=$(git merge-base HEAD~1 HEAD)
-          tags=$(git tag --list 'skills/*/v*' 'rules/*/v*' 'profiles/*/v*' | while read tag; do
+          # Find artifact tags pointing at commits in this PR
+          pr_commits=$(git rev-list "${PR_BASE_SHA}..${PR_HEAD_SHA}")
+          tags=""
+          for tag in $(git tag --list 'skills/*/v*' 'rules/*/v*' 'profiles/*/v*'); do
             commit=$(git rev-list -1 "$tag")
-            if git merge-base --is-ancestor "$merge_base" "$commit" 2>/dev/null; then
-              echo "$tag"
+            if echo "$pr_commits" | grep -q "$commit"; then
+              tags="$tags $tag"
             fi
-          done)
+          done
 
           if [ -z "$tags" ]; then
             echo "No publishable tags found in this merge."
