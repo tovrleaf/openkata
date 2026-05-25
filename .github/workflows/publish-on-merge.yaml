@@ -1,0 +1,41 @@
+name: Trigger publish after merge
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  retrigger-tags:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Re-push tags on merged commits to trigger publish
+        run: |
+          # Find tags pointing at commits in this PR (between merge base and HEAD)
+          merge_base=$(git merge-base HEAD~1 HEAD)
+          tags=$(git tag --list 'skills/*/v*' 'rules/*/v*' 'profiles/*/v*' | while read tag; do
+            commit=$(git rev-list -1 "$tag")
+            if git merge-base --is-ancestor "$merge_base" "$commit" 2>/dev/null; then
+              echo "$tag"
+            fi
+          done)
+
+          if [ -z "$tags" ]; then
+            echo "No publishable tags found in this merge."
+            exit 0
+          fi
+
+          for tag in $tags; do
+            echo "Re-pushing tag: $tag"
+            git push origin ":refs/tags/${tag}" 2>/dev/null || true
+            git push origin "refs/tags/${tag}"
+          done
