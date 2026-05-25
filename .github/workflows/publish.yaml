@@ -6,6 +6,11 @@ on:
       - 'skills/*/v*'
       - 'rules/*/v*'
       - 'profiles/*/v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to publish (e.g., skills/create-skill/v1.2.0)'
+        required: true
 
 permissions:
   id-token: write
