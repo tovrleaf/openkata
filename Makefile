@@ -17,7 +17,8 @@ help: ## Show this help
 	@printf "  \033[36m%-12s\033[0m %s\n" "check" "Check development prerequisites"
 	@printf "  \033[36m%-12s\033[0m %s\n" "changelog" "Generate root CHANGELOG.md"
 	@printf "  \033[36m%-12s\033[0m %s\n" "dev" "Start local dev server with hot reload"
-	@printf "  \033[36m%-12s\033[0m %s\n" "chat" "Start Kiro chat with dojo-master agent"
+	@printf "  \033[36m%-12s\033[0m %s\n" "chat master" "Start Kiro chat with dojo-master agent"
+	@printf "  \033[36m%-12s\033[0m %s\n" "chat eval" "Start Kiro chat with kata-author for eval work"
 	@printf "  \033[36m%-12s\033[0m %s\n" "versions" "Generate versions.json from local files"
 	@printf "  \033[36m%-12s\033[0m %s\n" "deploy" "Deploy web server to AWS Lambda"
 
@@ -62,8 +63,12 @@ dev: ## Start local dev server with hot reload
 	@$(shell go env GOPATH)/bin/air
 
 .PHONY: chat
-chat: ## Start Kiro chat with dojo-master agent
-	@kiro-cli chat --model claude-opus-4.6 --agent dojo-master --trust-all-tools
+chat: ## Start Kiro chat (usage: make chat master|eval)
+	@case "$(filter-out $@,$(MAKECMDGOALS))" in \
+	  master) kiro-cli chat --model claude-opus-4.6 --agent dojo-master --trust-all-tools ;; \
+	  eval) kiro-cli chat --model claude-opus-4.6 --agent kata-author --trust-all-tools ;; \
+	  *) echo "Usage: make chat master|eval" ;; \
+	esac
 
 .PHONY: versions
 versions: ## Generate versions.json from local filesystem

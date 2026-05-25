@@ -27,6 +27,7 @@ Creates and maintains skills, rules, and profiles for the ryu.
 - `create-profile`
 - `openkata-review-skill`, `openkata-review-rule`
 - `openkata-ryu-release`
+- `openkata-eval-runner`
 
 ## Scope
 
