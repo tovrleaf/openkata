@@ -1,0 +1,66 @@
+{
+  "context": "Tests whether the agent checks for existing commit conventions before applying defaults, uses the BREAKING CHANGE footer notation for a breaking API removal, writes a meaningful body explaining the impact, uses an appropriate commit type, and avoids WIP markers. The inputs directory includes a .commitlintrc to verify the agent checks for it.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Detects .commitlintrc",
+      "description": "commit-message.txt or commit-log.txt shows a commit format consistent with the .commitlintrc config in inputs/ (uses Conventional Commits format, since the config enforces it), OR commit-log.txt documents that .commitlintrc was found and followed",
+      "max_score": 10
+    },
+    {
+      "name": "BREAKING CHANGE footer present",
+      "description": "commit-message.txt contains 'BREAKING CHANGE:' in the footer section (after a blank line separating it from the body)",
+      "max_score": 15
+    },
+    {
+      "name": "BREAKING CHANGE is meaningful",
+      "description": "The text after 'BREAKING CHANGE:' describes what changed and what clients must do — not just a placeholder or the word 'yes'",
+      "max_score": 10
+    },
+    {
+      "name": "Appropriate commit type",
+      "description": "The commit header uses 'feat', 'refactor', or 'fix' as the type — NOT 'chore' or 'docs' (removal of an endpoint is a functional change)",
+      "max_score": 8
+    },
+    {
+      "name": "Commit body present",
+      "description": "commit-message.txt contains a body (text between header and footer) explaining the removal of v1/charge and the migration path to v2/payment",
+      "max_score": 12
+    },
+    {
+      "name": "Blank line before body",
+      "description": "There is a blank line separating the commit header from the body in commit-message.txt",
+      "max_score": 6
+    },
+    {
+      "name": "Blank line before footer",
+      "description": "There is a blank line separating the body from the BREAKING CHANGE footer in commit-message.txt",
+      "max_score": 6
+    },
+    {
+      "name": "Imperative mood",
+      "description": "The commit header description uses imperative mood (e.g. 'remove', 'drop', 'delete') not past tense (e.g. 'removed', 'deleted')",
+      "max_score": 8
+    },
+    {
+      "name": "Lowercase header start",
+      "description": "The description part of the commit header starts with a lowercase letter",
+      "max_score": 6
+    },
+    {
+      "name": "Header <= 72 chars",
+      "description": "The commit header line is at most 72 characters long",
+      "max_score": 7
+    },
+    {
+      "name": "No WIP markers",
+      "description": "commit-message.txt does NOT contain 'WIP', 'wip', 'temp', 'Temp', 'TODO', or other placeholder markers",
+      "max_score": 6
+    },
+    {
+      "name": "commit-log.txt produced",
+      "description": "commit-log.txt exists and contains the output of git log -1 showing a single commit",
+      "max_score": 6
+    }
+  ]
+}

@@ -45,6 +45,7 @@ After the generic `create-skill` workflow, also do:
    all checks pass. Follow the `review-skill` workflow to
    lint, review, and optimize. The skill must:
    - Score 95%+ on `tessl skill review`
+   - Contain a ## Boundaries section (DOES / Does NOT)
    - Pass the skill design checklist
    - Survive 2–3 positive and 1 negative representative
      prompt
@@ -80,3 +81,24 @@ After the generic `create-skill` workflow, also do:
 - Every skill gets a CHANGELOG.md
 - Changelogs document skill-facing changes only — dev-only
   artifacts (tile.json, tessl.json) are not changelog-worthy
+
+## Example Scenario
+
+User: "Create a skill for database migrations."
+
+1. create-skill produces `skills/migrate-database/SKILL.md`
+2. This skill activates: determines distributable placement
+3. Creates CHANGELOG.md, runs `tessl skill import`,
+   creates .tesslignore, offers symlink, runs quality gate
+
+## Boundaries
+
+**DOES:**
+- Add changelog, tile.json, symlink, and acknowledgments to skills
+- Determine placement (local vs distributable)
+- Enforce quality gate before commit
+
+**Does NOT:**
+- Create the skill itself (that's `create-skill`)
+- Run tessl review/optimize (that's `openkata-review-skill`)
+- Publish or release skills

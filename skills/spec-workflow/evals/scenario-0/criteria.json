@@ -1,0 +1,56 @@
+{
+  "context": "Tests whether the agent correctly creates the spec directory structure, spec.md content using the prescribed template, and the _current pointer file when starting a brand-new spec from scratch with Standard depth.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "specs/ directory exists",
+      "description": "A top-level `specs/` directory is created",
+      "max_score": 5
+    },
+    {
+      "name": "4-digit zero-padded spec dir",
+      "description": "The spec directory is named with a 4-digit zero-padded number prefix, e.g. `specs/0001-notification-center/` or similar (NOT `specs/1-*` or `specs/notification-center/`)",
+      "max_score": 15
+    },
+    {
+      "name": "spec.md created",
+      "description": "A `spec.md` file exists inside the numbered spec directory",
+      "max_score": 10
+    },
+    {
+      "name": "status frontmatter field",
+      "description": "spec.md has a YAML frontmatter block containing a `status` field",
+      "max_score": 10
+    },
+    {
+      "name": "depth frontmatter field",
+      "description": "spec.md has a YAML frontmatter block containing a `depth` field",
+      "max_score": 10
+    },
+    {
+      "name": "status set to Draft",
+      "description": "The `status` value in spec.md frontmatter is exactly `Draft`",
+      "max_score": 10
+    },
+    {
+      "name": "Story section present",
+      "description": "spec.md contains a `## Story` section with content in the 'As a ..., I want ..., so that ...' pattern",
+      "max_score": 10
+    },
+    {
+      "name": "Requirements section present",
+      "description": "spec.md contains a `## Requirements` section with at least one acceptance criterion",
+      "max_score": 10
+    },
+    {
+      "name": "Out of Scope section present",
+      "description": "spec.md contains an `## Out of Scope` section",
+      "max_score": 10
+    },
+    {
+      "name": "_current pointer written",
+      "description": "A file `specs/_current` exists and contains the name of the newly created spec directory (e.g. `0001-notification-center`)",
+      "max_score": 10
+    }
+  ]
+}

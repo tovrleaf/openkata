@@ -37,9 +37,10 @@ on both new and updated skills in `.agents/skills/` or `skills/`.
 
 7. **Quality checklist** — If `skills/create-skill/` and
    `skills/create-skill/references/skill-design-checklist.md` both
-   exist, ask the user if they want to run the checklist against the
-   reviewed skill. If yes, evaluate the skill against each section
-   and report findings. If either path is missing, skip silently.
+   exist, run the checklist against the reviewed skill. Report
+   findings. A missing `## Boundaries` section is a blocking
+   failure — do not pass the review without it. If either path
+   is missing, skip silently.
 
 8. **Feed learnings back** — After every review, check whether the
    insights could improve `create-skill` or the skill design
@@ -61,6 +62,28 @@ on both new and updated skills in `.agents/skills/` or `skills/`.
   better to understanding why something matters.
 - **Keep it lean.** Remove instructions that aren't pulling their
   weight. If something isn't improving outputs, cut it.
+
+## Example Scenario
+
+User: "Review the create-adr skill."
+
+1. Runs `tessl skill lint skills/create-adr` — passes
+2. Runs `tessl skill review skills/create-adr` — 99%
+3. Runs `tessl skill review --optimize` — no changes needed
+4. Runs checklist — all sections pass
+5. Reports: 99%, no blocking issues, one orphaned file warning
+
+## Boundaries
+
+**DOES:**
+- Run tessl lint, review, and optimize on skills
+- Run the skill design checklist
+- Suggest improvements and feed learnings back
+
+**Does NOT:**
+- Create new skills
+- Publish or release skills
+- Modify `create-skill` without asking
 
 ## Gotchas
 

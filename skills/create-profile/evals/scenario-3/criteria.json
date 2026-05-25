@@ -1,0 +1,61 @@
+{
+  "context": "Tests whether the agent creates a DevOps profile with a precisely scoped boundary — narrow enough to name specific directories but not so narrow it is useless — using a short lowercase filename and staying within the 40-line limit.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Correct directory",
+      "description": "Profile file is written inside a `profiles/` directory",
+      "max_score": 7
+    },
+    {
+      "name": "Short lowercase filename",
+      "description": "Profile filename is a single lowercase word (e.g., `devops.md`, `infra.md`, `platform.md`) — not a multi-word hyphenated name like `devops-agent.md`",
+      "max_score": 10
+    },
+    {
+      "name": "# Name Agent heading",
+      "description": "Profile starts with a `# <Name> Agent` heading",
+      "max_score": 7
+    },
+    {
+      "name": "One-line role description",
+      "description": "A single line immediately below the heading describes the agent's domain and boundary",
+      "max_score": 7
+    },
+    {
+      "name": "Constraints section",
+      "description": "Profile contains a `## Constraints` section",
+      "max_score": 7
+    },
+    {
+      "name": "Scope section",
+      "description": "Profile contains a `## Scope` section",
+      "max_score": 7
+    },
+    {
+      "name": "Design Intent section",
+      "description": "Profile contains a `## Design Intent` section",
+      "max_score": 7
+    },
+    {
+      "name": "Scope names specific directories",
+      "description": "The Scope section names at least two specific directories or file patterns (e.g., `.github/`, `infra/`, `scripts/deploy/`) — does NOT use vague terms like 'all infrastructure' or 'everything DevOps'",
+      "max_score": 15
+    },
+    {
+      "name": "Scope excludes application code",
+      "description": "The Scope section explicitly states that `src/` or application code is out of bounds",
+      "max_score": 10
+    },
+    {
+      "name": "Stop condition present",
+      "description": "The Scope section states when the agent should stop and hand off (e.g., if infrastructure changes require application code changes, stop and escalate)",
+      "max_score": 12
+    },
+    {
+      "name": "Under 40 lines",
+      "description": "The profile markdown file has 40 or fewer lines total",
+      "max_score": 11
+    }
+  ]
+}

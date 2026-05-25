@@ -1,0 +1,61 @@
+{
+  "context": "Tests whether the agent uses UPPER_CASE variable names, quotes variable references in recipe lines, adds ## Description comments for the help system, uses @ prefix, delegates to scripts, and uses flat targets (not subdirectory Makefiles) for single-command concerns.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "UPPER_CASE variable names",
+      "description": "All makefile variable definitions use UPPER_CASE names (e.g. ENV, REGISTRY, VERSION — not env, registry, or version)",
+      "max_score": 10
+    },
+    {
+      "name": "Quoted variable references",
+      "description": "Recipe lines that pass variables to scripts use quoted references in the form `\"$(VAR)\"` (e.g. `\"$(ENV)\"`, `\"$(REGISTRY)\"`, `\"$(VERSION)\"`) — not bare `$(VAR)`",
+      "max_score": 12
+    },
+    {
+      "name": ".DEFAULT_GOAL set",
+      "description": "Root Makefile contains `.DEFAULT_GOAL := help` so bare `make` shows help",
+      "max_score": 8
+    },
+    {
+      "name": "Flat targets for single commands",
+      "description": "Neither `build` nor `deploy` has a `mk/build/Makefile` or `mk/deploy/Makefile` subdirectory — each is a flat target (no subdirectory Makefile needed for a single-command concern)",
+      "max_score": 10
+    },
+    {
+      "name": "Script delegation",
+      "description": "Recipe lines invoke the existing scripts (references to `scripts/docker-build.sh` and `scripts/deploy.sh`) rather than containing inline bash logic",
+      "max_score": 10
+    },
+    {
+      "name": "PHONY declarations",
+      "description": "The build, deploy, and help targets (and any other non-file-producing targets) are declared `.PHONY`",
+      "max_score": 8
+    },
+    {
+      "name": "@ prefix on recipes",
+      "description": "All recipe lines use `@` prefix to suppress command echoing",
+      "max_score": 8
+    },
+    {
+      "name": "Help grouped by concern",
+      "description": "make-help-output.txt shows commands grouped under labelled sections (e.g. separate headings or groupings for build and deploy operations)",
+      "max_score": 8
+    },
+    {
+      "name": "Lowercase hyphenated target names",
+      "description": "All target names are lowercase; any multi-word names use hyphens (not underscores or camelCase)",
+      "max_score": 8
+    },
+    {
+      "name": "Variable defaults defined",
+      "description": "Makefile defines default values for the configurable variables (ENV, VERSION, or REGISTRY) so targets work without requiring the user to set them",
+      "max_score": 10
+    },
+    {
+      "name": "## Description comments",
+      "description": "Targets that appear in make help have inline `## <description>` comments (e.g. `build: ## Build the container image`) used to power the help system",
+      "max_score": 8
+    }
+  ]
+}

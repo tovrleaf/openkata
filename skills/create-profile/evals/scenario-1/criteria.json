@@ -1,0 +1,61 @@
+{
+  "context": "Tests whether the agent investigates the existing repo before writing the profile, references existing rules instead of duplicating them, avoids scope overlap with the existing backend profile, and produces a correctly structured profile with a stop condition.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Correct directory",
+      "description": "Profile file is written inside a `profiles/` directory",
+      "max_score": 8
+    },
+    {
+      "name": "Lowercase one-word filename",
+      "description": "Profile filename is a single lowercase word (e.g., `frontend.md`, not `Frontend.md` or `frontend-agent.md`)",
+      "max_score": 8
+    },
+    {
+      "name": "# Name Agent heading",
+      "description": "Profile starts with a `# <Name> Agent` heading",
+      "max_score": 7
+    },
+    {
+      "name": "One-line role description",
+      "description": "A single line immediately below the heading describes the agent's domain and boundary",
+      "max_score": 7
+    },
+    {
+      "name": "Constraints section",
+      "description": "Profile contains a `## Constraints` section",
+      "max_score": 7
+    },
+    {
+      "name": "Scope section",
+      "description": "Profile contains a `## Scope` section",
+      "max_score": 7
+    },
+    {
+      "name": "Design Intent section",
+      "description": "Profile contains a `## Design Intent` section",
+      "max_score": 7
+    },
+    {
+      "name": "References rule, not copied",
+      "description": "The Constraints section references or links to `rules/commit-style.md` (or similar rule file found in the repo) rather than re-stating its content verbatim",
+      "max_score": 15
+    },
+    {
+      "name": "No overlap with backend scope",
+      "description": "The Scope section does NOT include `src/api/`, `src/services/`, `src/models/`, or `migrations/` — directories already owned by the backend profile",
+      "max_score": 15
+    },
+    {
+      "name": "Stop condition present",
+      "description": "The Scope section explicitly states when the agent should stop and hand off (e.g., 'If X requires API changes, stop and hand off')",
+      "max_score": 12
+    },
+    {
+      "name": "Under 40 lines",
+      "description": "The profile markdown file has 40 or fewer lines total",
+      "max_score": 7
+    }
+  ]
+}

@@ -6,6 +6,7 @@ description: >
   wants to stress-test a plan, get grilled on their design, says
   "grill me", "challenge this", or "poke holes in this."
 metadata:
+  version: "1.0.0"
   tags: "category:review, category:architecture"
 ---
 
@@ -24,24 +25,76 @@ every corner case is addressed.
    decisions were made or left implicit: trade-offs, edge cases,
    missing alternatives, unstated assumptions, dependencies.
 
-3. **Interview one question at a time** — Walk down each branch
-   of the decision tree, resolving dependencies between
-   decisions one by one. For each question:
-   - Provide your recommended answer
-   - Wait for the user to confirm, correct, or expand
-   - If a question can be answered by exploring the codebase,
-     explore the codebase instead of asking
+3. **Interview one question at a time** — Ask exactly ONE
+   question per message. Never combine multiple questions.
+   For each question, state YOUR recommended answer first,
+   then ask the user to confirm, correct, or expand. Wait
+   for a response before the next question. If a question
+   can be answered by exploring the codebase, explore the
+   codebase instead of asking.
 
 4. **Continue until covered** — Keep going until all branches
    are resolved. Do not stop early. The goal is shared
    understanding, not speed.
 
-5. **Summarize** — When complete, briefly list the decisions
-   made and any changes the user should apply to the artifact.
+5. **Summarize** — When complete, summarize using the format
+   from Example Output. Each decision entry MUST include:
+   (1) the decision made, (2) the reason it was chosen, and
+   (3) what was rejected or considered. Do not list decisions
+   without reasons.
 
-6. **Offer to update** — Ask the user if they want you to
-   apply the decisions to the artifact. If yes, update it.
-   If no, leave it unchanged.
+6. **Offer to update (mandatory)** — **This step is mandatory
+   — always end by offering to apply changes.** Ask the user
+   if they want you to apply the decisions to the artifact.
+   If yes, update it. If no, leave it unchanged. Always end
+   with: "Want me to apply these changes to [artifact name]?"
+   where [artifact name] is the specific file being grilled
+   (e.g., "spec.md", "design.md", "0003-use-postgres.md").
+   This offer MUST appear as the final line of your output,
+   whether writing to a file or responding in conversation.
+   Do not end the conversation without this explicit offer.
+   Do not skip this step even if the user seems done, says
+   "thanks", or appears to be wrapping up.
+
+## Example Output
+
+After grilling a spec, the summary looks like:
+
+```markdown
+## Decisions Made
+
+1. **Auth strategy** — JWT with refresh tokens. Reason:
+   stateless scaling requirement eliminates session affinity.
+   Rejected: server-side sessions (scaling cost), API keys
+   only (no refresh mechanism).
+2. **Rate limiting** — Per-user at API gateway. Reason:
+   prevents single-user abuse without penalizing shared IPs.
+   Rejected: per-IP (punishes NAT users), no limiting
+   (risk of runaway costs).
+3. **Error format** — RFC 7807 Problem Details. Reason:
+   standard format reduces client integration effort.
+   Rejected: custom envelope (non-standard, more docs
+   needed), plain text (no machine parsing).
+
+## Changes to Apply
+
+- Add "Rate Limiting" section to spec with per-user strategy
+- Update Non-goals: remove "session management" (now in scope
+  as JWT refresh)
+- Add dependency: API gateway must support per-user rate limits
+
+Want me to apply these changes to spec.md?
+```
+
+Every decision entry MUST follow this exact pattern:
+`**Topic** — Decision. Reason: why. Rejected: alternatives.`
+Do not omit the reason or the rejected alternatives.
+
+The closing offer ("Want me to apply these changes to
+[filename]?") MUST appear as the literal last line of the
+output — including inside any written file. If the task asks
+you to write a report file, the offer is the final line of
+that file, not a separate conversational message.
 
 ## Boundaries
 

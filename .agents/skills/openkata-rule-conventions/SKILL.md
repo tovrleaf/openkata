@@ -2,10 +2,12 @@
 name: openkata-rule-conventions
 description: >
   Applies OpenKata project conventions when creating or updating
-  rules in this repository. Adds changelog management, symlink
-  placement, and acknowledgments on top of the generic create-rule
-  workflow. Use alongside create-rule when working in the OpenKata
-  repo.
+  rules in this repository. Creates CHANGELOG.md, places symlinks
+  for distributable rules, and writes ACKNOWLEDGMENTS.md for
+  externally sourced rules — on top of the generic create-rule
+  workflow. Use when adding a rule to OpenKata, creating a new
+  kata rule, setting up a rule in this repo, or updating an
+  existing OpenKata rule alongside create-rule.
 ---
 
 # OpenKata Rule Conventions
@@ -16,7 +18,7 @@ OpenKata conventions.
 
 ## Additional Steps
 
-After the generic `create-rule` workflow, also do:
+After the generic `create-rule` skill workflow, also do:
 
 1. **Determine placement** — Ask whether this rule is:
    - **Local** → `.agents/rules/<name>/`
@@ -25,6 +27,16 @@ After the generic `create-rule` workflow, also do:
 2. **Create CHANGELOG.md** — Every rule gets a changelog
    starting at v1.0.0 with an initial `### Added` entry.
    Follow the markdown-style rule for formatting.
+
+   ```markdown
+   # Changelog
+
+   ## [1.0.0] - YYYY-MM-DD
+
+   ### Added
+
+   - Initial release of `<rule-name>` rule.
+   ```
 
 3. **Symlink if distributable** — For rules in `rules/`, ask
    the user if they want it symlinked into `.agents/rules/`:
@@ -63,3 +75,24 @@ After the generic `create-rule` workflow, also do:
 - Every rule gets a CHANGELOG.md
 - Changelogs document rule-facing changes only
 - Keep rules focused — one rule, one concern
+
+## Example Scenario
+
+User: "Create a rule for SQL naming conventions."
+
+1. create-rule produces `rules/sql-naming/RULE.md`
+2. This skill activates: asks local or distributable?
+3. Creates CHANGELOG.md, symlinks into `.agents/rules/`,
+   adds ACKNOWLEDGMENTS.md referencing the SQL style guide
+
+## Boundaries
+
+**DOES:**
+- Add CHANGELOG.md, symlinks, and ACKNOWLEDGMENTS.md to rules
+- Determine placement (local vs distributable)
+- Enforce quality gate before commit
+
+**Does NOT:**
+- Create the rule itself (that's `create-rule`)
+- Run tessl commands (rules don't use tessl)
+- Publish or release rules

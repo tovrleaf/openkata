@@ -1,0 +1,61 @@
+{
+  "context": "Tests whether the agent includes a mandatory Implementation Plan section when documenting a code-impacting architectural decision, explores the existing codebase before writing the ADR, and produces a complete, correctly structured ADR with active-voice decision, prioritized drivers, split consequences, and no placeholder text.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Implementation Plan present",
+      "description": "The ADR includes an ## Implementation Plan section (or equivalent heading) describing how the decision maps to code changes",
+      "max_score": 18
+    },
+    {
+      "name": "Affected paths listed",
+      "description": "The Implementation Plan section names at least one specific file path or directory from the codebase (e.g. src/middleware/auth.js or src/routes/) that will be affected",
+      "max_score": 10
+    },
+    {
+      "name": "Decision in active voice",
+      "description": "The Decision section uses active voice, beginning with 'We will' or an equivalent first-person plural construction",
+      "max_score": 10
+    },
+    {
+      "name": "Status PROPOSED",
+      "description": "The ADR has status: PROPOSED in its YAML frontmatter (not ACCEPTED, not DECIDED)",
+      "max_score": 8
+    },
+    {
+      "name": "Authors field present",
+      "description": "The ADR has an authors field in its YAML frontmatter",
+      "max_score": 6
+    },
+    {
+      "name": "Date field present",
+      "description": "The ADR has a date field in its YAML frontmatter",
+      "max_score": 6
+    },
+    {
+      "name": "Correct sequential filename",
+      "description": "The ADR filename begins with 0002 (zero-padded, next after the existing 0001 ADR), followed by a lowercase hyphenated slug",
+      "max_score": 10
+    },
+    {
+      "name": "At least two alternatives",
+      "description": "The Alternatives Considered section contains at least two distinct options",
+      "max_score": 8
+    },
+    {
+      "name": "Alternatives have pros, cons, and rejection reason",
+      "description": "Each alternative lists explicit pros, cons, and a reason it was rejected",
+      "max_score": 10
+    },
+    {
+      "name": "Consequences split into three subsections",
+      "description": "The Consequences section is divided into Positive, Negative, and Neutral subsections (all three must be present)",
+      "max_score": 8
+    },
+    {
+      "name": "No placeholder text",
+      "description": "The ADR does not contain any placeholder text such as '[Driver 1]', '[Alternative 1]', 'TBD', or similar unfilled template markers",
+      "max_score": 6
+    }
+  ]
+}

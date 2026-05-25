@@ -11,6 +11,7 @@ description: >
   want to codify, is frustrated by inconsistent agent behavior, or
   wants to package expertise for a team.
 metadata:
+  version: "1.2.0"
   tags: "category:scaffolding"
 ---
 
@@ -103,26 +104,24 @@ frontmatter and markdown instructions.
      frustrated by inconsistent agent behavior.`
    - **Body is procedural and imperative.** Tell the agent
      exactly how to proceed. Don't restate trigger criteria
-     from the description — if the body has a "When to use"
-     section, it's duplicating the description.
-   - **Use imperative form, not soft language.** Agents treat
-     "prefer", "consider", and "try to" as optional. Use "Do
-     not", "Use", "Run" instead. Pair each instruction with
-     a brief reason so the agent understands why it matters.
-   - **Be concise.** Remove explanations of concepts the model
-     already knows. Don't explain what `.PHONY` does or why
-     tabs matter in Makefiles — the model knows. Use terse
-     reminders instead of tutorials.
+     from the description — a "When to use" section in the
+     body duplicates the description.
+   - **Use imperative form.** Use "Do not", "Use", "Run"
+     rather than "prefer", "consider", or "try to". Pair each
+     instruction with a brief reason.
+   - **Be concise.** Remove explanations the model already
+     knows. Use terse reminders instead of tutorials.
    - **Include a complete example.** A full, copy-paste-ready
      example scores higher on actionability than scattered
      snippets. Show the whole working artifact, not just
      fragments.
-   - **Common failures must be non-obvious.** Don't list things
-     the model already knows as failure modes. Focus on
-     mistakes that come from the skill's specific domain.
-   - **Include a Boundaries section.** State what the skill
-     DOES and Does NOT do. This prevents scope creep and
-     makes it clear which files and actions are in scope.
+   - **Common failures must be non-obvious.** Focus on mistakes
+     specific to the skill's domain, not general pitfalls.
+   - **Include a Boundaries section (mandatory).** Every skill
+     must have a `## Boundaries` section listing what it DOES
+     and what it Does NOT do. Use bullet points starting with
+     "DOES" and "Does NOT". Without this, agents cannot tell
+     what is in scope.
 
    See [example-skill.md](references/example-skill.md) for a
    complete finished skill demonstrating these principles.
@@ -130,8 +129,12 @@ frontmatter and markdown instructions.
 6. **Validate** — Test the skill with representative prompts:
    - 2–3 realistic positive prompts (things users would say)
    - At least 1 negative prompt (adjacent but shouldn't trigger)
-   - Note whether failures come from trigger wording, workflow
-     ambiguity, or missing resources
+
+   Write a brief validation report noting:
+   - Which prompts triggered correctly
+   - Which failed and why (trigger wording, workflow ambiguity,
+     or missing resources)
+   - What was fixed based on the failures
 
    Skip validation only for trivial skills where the trigger
    surface is obvious.
@@ -143,6 +146,14 @@ frontmatter and markdown instructions.
 
 8. **Confirm** — Show the user the created skill and ask if
    adjustments are needed.
+
+## Boundaries
+
+- DOES create skill directories, SKILL.md, references/, scripts/
+- DOES validate with representative prompts
+- Does NOT publish, tag, or release skills
+- Does NOT modify existing skills (use review-skill for that)
+- Does NOT create rules or profiles (separate workflows)
 
 ## Example Scenario
 

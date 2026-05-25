@@ -1,0 +1,1 @@
+../../profiles/spec-validator.md

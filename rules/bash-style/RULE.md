@@ -62,7 +62,7 @@ set -euo pipefail
   }
   ```
 
-- Add a header comment for non-trivial functions.
+- Add a header comment for functions over 10 lines.
 - Put all functions near the top, after constants.
 - Scripts with functions must have a `main` function called
   at the bottom: `main "$@"`
@@ -91,7 +91,7 @@ set -euo pipefail
 
 ## Scope
 
-- Keep scripts under 100 lines. If longer, consider
-  rewriting in a structured language.
+- Keep scripts under 100 lines. If longer, split into
+  multiple scripts or rewrite in a structured language.
 - Shell is for small utilities and wrappers, not complex
   logic.

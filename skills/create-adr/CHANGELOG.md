@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0 — 2026-05-24
+
+### Added
+
+- Workflow step 8: offer to run grill-me skill on finalized
+  ADRs to find blind spots
+
 ## 1.1.0 — 2026-04-30
 
 ### Added

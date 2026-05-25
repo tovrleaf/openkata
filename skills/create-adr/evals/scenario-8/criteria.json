@@ -1,0 +1,56 @@
+{
+  "context": "Tests the ADR lifecycle supersession workflow: when a prior architectural decision is being overturned, the agent must create a new ADR that explicitly references the superseded one, and update the original ADR's status to SUPERSEDED with a link to the replacement. Also tests correct sequential numbering when prior ADRs exist.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Old ADR status SUPERSEDED",
+      "description": "The existing ADR for order storage (0003-use-mongodb-for-order-storage.md) has its status field changed to SUPERSEDED (not ACCEPTED)",
+      "max_score": 18
+    },
+    {
+      "name": "Old ADR links to new",
+      "description": "The updated existing ADR contains a reference or link to the new ADR filename (e.g. '0004-' appears somewhere in the file, or a 'Superseded by' note is added)",
+      "max_score": 14
+    },
+    {
+      "name": "New ADR references superseded ADR",
+      "description": "The new ADR references or links to the ADR it supersedes (e.g. mentions '0003' or the MongoDB ADR filename) in its body or frontmatter",
+      "max_score": 12
+    },
+    {
+      "name": "Correct next sequence number",
+      "description": "The new ADR filename begins with 0004 (the next sequential number after the three existing ADRs 0001, 0002, 0003)",
+      "max_score": 10
+    },
+    {
+      "name": "Status PROPOSED in new ADR",
+      "description": "The new ADR has status: PROPOSED in its YAML frontmatter (not ACCEPTED or DECIDED)",
+      "max_score": 10
+    },
+    {
+      "name": "Authors and date in new ADR",
+      "description": "The new ADR has both authors and date fields in its YAML frontmatter",
+      "max_score": 6
+    },
+    {
+      "name": "Decision in active voice",
+      "description": "The Decision section of the new ADR uses active voice, beginning with 'We will' or an equivalent first-person plural construction",
+      "max_score": 8
+    },
+    {
+      "name": "At least two alternatives",
+      "description": "The new ADR's Alternatives Considered section contains at least two distinct options with pros, cons, and rejection reasons",
+      "max_score": 8
+    },
+    {
+      "name": "Consequences split into three subsections",
+      "description": "The new ADR's Consequences section is divided into Positive, Negative, and Neutral subsections — all three present",
+      "max_score": 8
+    },
+    {
+      "name": "No placeholder text",
+      "description": "The new ADR does not contain unfilled template markers such as '[Driver 1]', '[Alternative 1]', 'TBD', or similar placeholder strings",
+      "max_score": 6
+    }
+  ]
+}

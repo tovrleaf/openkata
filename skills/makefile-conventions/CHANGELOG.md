@@ -3,7 +3,7 @@
 All notable changes to this skill will be documented in this
 file. Format follows [Keep a Changelog](https://keepachangelog.com/).
 
-## [1.0.0] - 2026-05-02
+## [1.0.0] — 2026-05-24
 
 ### Added
 

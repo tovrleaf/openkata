@@ -53,7 +53,8 @@ New components go in `components/`. New layouts go in
 
 ## Naming
 
-- BEM-style for components: `.card`, `.card__title`.
+- BEM for components: `.block`, `.block__element`,
+  `.block__element--modifier`.
 - Utility classes for decorative patterns: `.comment`,
   `.cursor`, `.badge`.
 - Page-specific classes for unique elements: `.hero`,
@@ -65,8 +66,8 @@ New components go in `components/`. New layouts go in
   `--font-mono`).
 - Use body font for prose, mono for headings and
   technical elements.
-- Vendor fonts to the project rather than relying on
-  external CDNs in production.
+- Never load fonts from external CDNs. Vendor all fonts
+  locally.
 
 ## Layout
 

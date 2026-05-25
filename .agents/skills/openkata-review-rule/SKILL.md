@@ -56,3 +56,25 @@ tooling — rules are validated by reading and checking.
 - Don't add guidance to `create-rule` for one-off issues.
   Only update it when a pattern repeats across multiple
   rules.
+
+## Example Scenario
+
+User: "Review the bash-style rule."
+
+1. Reads `rules/bash-style/RULE.md`
+2. Evaluates against checklist: Problem/Scope ✅,
+   Convention Quality ⚠️ (one subjective qualifier found)
+3. Reports: 97 lines (under limit), one enforceability
+   issue flagged, no duplicates
+
+## Boundaries
+
+**DOES:**
+- Evaluate rules against the design checklist
+- Check enforceability, line count, and duplicates
+- Report findings and suggest improvements
+
+**Does NOT:**
+- Fix rules automatically without user confirmation
+- Create new rules
+- Modify `create-rule` without asking

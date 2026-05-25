@@ -10,6 +10,7 @@ description: >
   persona, restrict what an agent can touch, or wants consistent
   behavior from a domain-specific agent.
 metadata:
+  version: "1.0.0"
   tags: "category:scaffolding"
 ---
 
@@ -99,6 +100,36 @@ and schema changes."
    and schema files, excluding application code
 4. Validates — directory exists, no overlap with frontend
    profile
+
+## Example Output
+
+```markdown
+# Database Agent
+
+Manages database migrations and schema changes.
+
+## Constraints
+
+- Follow the git-naming rule for branches and commits
+- Never modify application code
+- Run migrations in a transaction when supported
+
+## Scope
+
+Modify only:
+- `migrations/`
+- `schema/`
+
+Do not touch: application code, API handlers, frontend.
+If a migration requires application changes, describe
+what's needed and stop.
+
+## Design Intent
+
+Prefer reversible migrations. Every up migration has a
+corresponding down. Avoid data-destructive operations
+without explicit confirmation.
+```
 
 ## Common Failures
 

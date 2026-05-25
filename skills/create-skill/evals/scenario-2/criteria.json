@@ -1,0 +1,46 @@
+{
+  "context": "Tests whether the agent correctly applies progressive disclosure when creating a skill with substantial domain knowledge: keeping SKILL.md concise, offloading bulky reference material to references/, placing automation in scripts/, and avoiding duplicated guidance across files.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "SKILL.md line budget",
+      "description": "The SKILL.md file contains fewer than 500 lines",
+      "max_score": 18
+    },
+    {
+      "name": "References directory used",
+      "description": "At least one file exists inside a references/ (or equivalent) subdirectory of the skill folder",
+      "max_score": 18
+    },
+    {
+      "name": "No duplicated guidance",
+      "description": "Content that appears in a references/ file is NOT also restated in SKILL.md (e.g., the same configuration table or runbook steps do not appear in both places)",
+      "max_score": 14
+    },
+    {
+      "name": "Scripts directory OR noted absent",
+      "description": "Either a scripts/ subdirectory exists inside the skill folder, OR the packaging-notes.md explicitly states that no deterministic/fragile operations require scripts",
+      "max_score": 10
+    },
+    {
+      "name": "Body no When-to-use duplication",
+      "description": "The SKILL.md body does NOT contain a 'When to use' section or equivalent heading that restates trigger criteria already in the description frontmatter",
+      "max_score": 12
+    },
+    {
+      "name": "Frontmatter fields only name and description",
+      "description": "The SKILL.md frontmatter contains ONLY 'name' and 'description' fields — no 'version', 'tags', or other fields",
+      "max_score": 10
+    },
+    {
+      "name": "Boundaries section present",
+      "description": "SKILL.md contains a '## Boundaries' section (or equivalent heading) with at least one bullet starting with 'DOES' and at least one starting with 'Does NOT'",
+      "max_score": 10
+    },
+    {
+      "name": "Packaging notes rationale",
+      "description": "The packaging-notes.md file exists and contains an explanation of what was placed in references/ and why (not just a file listing)",
+      "max_score": 8
+    }
+  ]
+}

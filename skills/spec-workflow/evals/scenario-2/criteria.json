@@ -1,0 +1,61 @@
+{
+  "context": "Tests whether the agent correctly identifies a complex multi-system feature as requiring Deep depth, produces all three required planning artifacts (spec.md, design.md, tasks.md), and formats design.md with the correct template sections. Scenario-0 covers Standard spec.md creation and scenario-1 covers tasks.md — this scenario focuses on the Deep depth path and the design.md artifact.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "4-digit zero-padded dir",
+      "description": "The spec directory is named with a 4-digit zero-padded number prefix (e.g. `specs/0001-*/`) — NOT `specs/1-*` or `specs/real-time-*/`",
+      "max_score": 8
+    },
+    {
+      "name": "spec.md depth field is Deep",
+      "description": "spec.md frontmatter contains `depth: Deep` (exactly 'Deep', not 'Standard' or 'deep')",
+      "max_score": 12
+    },
+    {
+      "name": "design.md created",
+      "description": "A `design.md` file exists inside the numbered spec directory",
+      "max_score": 12
+    },
+    {
+      "name": "design.md Architecture section",
+      "description": "design.md contains a `## Architecture` section with content",
+      "max_score": 10
+    },
+    {
+      "name": "design.md Decisions section",
+      "description": "design.md contains a `## Decisions` section with content (trade-offs and rationale)",
+      "max_score": 10
+    },
+    {
+      "name": "design.md Dependencies section",
+      "description": "design.md contains a `## Dependencies` section with content",
+      "max_score": 10
+    },
+    {
+      "name": "tasks.md also created",
+      "description": "A `tasks.md` file exists inside the numbered spec directory alongside spec.md and design.md",
+      "max_score": 8
+    },
+    {
+      "name": "spec.md status Draft",
+      "description": "spec.md frontmatter `status` field is set to `Draft`",
+      "max_score": 8
+    },
+    {
+      "name": "spec.md Story section",
+      "description": "spec.md contains a `## Story` section with 'As a ..., I want ..., so that ...' content",
+      "max_score": 8
+    },
+    {
+      "name": "_current pointer written",
+      "description": "`specs/_current` exists and contains the name of the newly created spec directory",
+      "max_score": 7
+    },
+    {
+      "name": "No implementation code",
+      "description": "No source code files (.js, .ts, .py, etc.) are created outside of `specs/` — only planning artifacts",
+      "max_score": 7
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "context": "Tests whether the agent produces an ADR that includes a References section with actual links or citations gathered during research — the E.C.A.D.R. 'R' requirement. The task involves well-known messaging technologies that have publicly accessible documentation and comparison resources. Also tests the standard ADR structural requirements.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "References section present",
+      "description": "The ADR includes a References section (or equivalent heading)",
+      "max_score": 16
+    },
+    {
+      "name": "References contain at least one URL",
+      "description": "The References section contains at least one hyperlink or URL (e.g. https://kafka.apache.org, https://nats.io, or a similar authoritative resource URL)",
+      "max_score": 16
+    },
+    {
+      "name": "References are substantive",
+      "description": "The References section lists at least two distinct resources (links, related docs, or benchmark reports) — not a single generic placeholder entry",
+      "max_score": 8
+    },
+    {
+      "name": "Status PROPOSED",
+      "description": "The ADR has status: PROPOSED in its YAML frontmatter (not ACCEPTED or DECIDED)",
+      "max_score": 8
+    },
+    {
+      "name": "Authors and date in frontmatter",
+      "description": "The ADR has both authors and date fields in its YAML frontmatter",
+      "max_score": 6
+    },
+    {
+      "name": "Decision in active voice",
+      "description": "The Decision section begins with 'We will' or an equivalent first-person plural active construction",
+      "max_score": 8
+    },
+    {
+      "name": "Explicit problem statement",
+      "description": "The Context section clearly identifies the specific problem (e.g. synchronous write bottleneck, latency under load) — not just background information",
+      "max_score": 8
+    },
+    {
+      "name": "At least two alternatives with pros, cons, rejection",
+      "description": "The Alternatives Considered section lists at least two distinct messaging technologies, each with explicit pros, cons, and a reason for rejection",
+      "max_score": 10
+    },
+    {
+      "name": "Consequences split into three subsections",
+      "description": "The Consequences section is divided into Positive, Negative, and Neutral subsections — all three present with content",
+      "max_score": 8
+    },
+    {
+      "name": "Correct filename for first ADR",
+      "description": "The ADR filename begins with 0001 (four zero-padded digits) and uses a lowercase hyphenated slug",
+      "max_score": 6
+    },
+    {
+      "name": "No placeholder text",
+      "description": "The ADR does not contain unfilled template markers such as '[Driver 1]', '[Alternative 1]', 'TBD', or similar placeholder strings",
+      "max_score": 6
+    }
+  ]
+}

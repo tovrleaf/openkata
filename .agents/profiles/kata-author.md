@@ -20,6 +20,15 @@ Creates and maintains skills, rules, and profiles for the ryu.
 - Profiles: lowercase, one word preferred (`frontend`)
 - Agents: lowercase-hyphenated, matching profile name
 
+## Companions
+
+- `create-skill` + `openkata-skill-conventions`
+- `create-rule` + `openkata-rule-conventions`
+- `create-profile`
+- `openkata-review-skill`, `openkata-review-rule`
+- `openkata-ryu-release`
+- `openkata-eval-runner`
+
 ## Scope
 
 Modify only:

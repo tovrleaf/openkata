@@ -99,18 +99,15 @@ for maintainers of this repository only.
    create a git tag `<directory-path>/v<new-version>`. Skip tagging for
    local artifacts in `.agents/` — they are versioned but not distributed.
 
-10. **Run evals** — If the artifact is a distributable skill
-    (`skills/`) and has an `evals/` directory, ask: "Want me to
-    run evals before publishing?" If yes, run
-    `tessl eval run <directory-path>` and wait for results.
-    The "With context" average must be 95% or above to proceed
-    with publishing. If below, report which scenarios failed and
-    suggest fixes before continuing.
+10. **Run evals** — Delegate to the `openkata-eval-runner`
+    skill. It will regenerate scenarios, run evals, and iterate
+    fixes until 95%+ is achieved.
 
 11. **Publish to registry** — If the artifact is distributable
     (`skills/` or `rules/`) and has a `tile.json`, ask: "Want me
-    to publish this to the Tessl registry?" If yes, run
-    `tessl tile publish <directory-path>`.
+    to publish this to the Tessl registry? (Enables security
+    scanning.)" If yes, run `tessl tile publish <directory-path>`.
+    Skip this step for local artifacts (`.agents/`).
 
 12. **Confirm** — Show the user what was done: version bumped, changelog
     entry, commit hash, and tag name (if tagged). Ask if they want to
@@ -138,6 +135,18 @@ dojo/v0.1.0
 ```
 
 List all tags for an artifact: `git tag -l "skills/create-adr/v*"`
+
+## Boundaries
+
+**DOES:**
+- Bump versions, update changelogs, commit, and tag artifacts
+- Generate namespaced tags from artifact content
+- Run evals and publish to registry (when asked)
+
+**Does NOT:**
+- Modify skill or rule content (only metadata and changelogs)
+- Push to remote (separate action requiring confirmation)
+- Create new skills or rules
 
 ## Gotchas
 

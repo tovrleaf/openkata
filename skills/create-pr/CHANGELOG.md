@@ -1,11 +1,13 @@
 # Changelog
 
-## [0.1.0] - 2026-05-23
+## 1.0.0 — 2026-05-24
 
 ### Added
 
-- Initial skill: PR creation workflow with gh CLI
+- Initial release of create-pr skill
+- PR creation workflow using GitHub CLI (`gh`)
 - Uncommitted changes check with user prompt
-- Branch validation (not on main/master)
-- Remote state check (behind detection)
-- Browser open offer
+- Branch validation (prevents PR from main/master)
+- Remote state check with behind-remote detection
+- Pre-push verification step
+- Browser open offer after PR creation

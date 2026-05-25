@@ -10,6 +10,7 @@ description: >
   public API contracts, infrastructure topology), or deviations from existing
   standards. Also activate when the user explicitly asks to create an ADR.
 metadata:
+  version: "1.2.0"
   tags: "category:documentation, category:architecture"
 ---
 
@@ -21,25 +22,18 @@ metadata:
 PROPOSED → ACCEPTED → (SUPERSEDED or DEPRECATED)
 ```
 
-- New ADRs start as `PROPOSED`.
-- Don't delete old ADRs — they capture historical context.
-- Minor corrections (typos, missing details) can be edited in place.
-  For material changes to the decision itself, write a new ADR that
-  supersedes the old one. Update the old ADR's status to `SUPERSEDED`
-  and link to the new one.
-- Each ADR records exactly one decision. If you're capturing multiple
-  decisions, split them into separate ADRs.
-
-## When NOT to suggest an ADR
-
-- Trivial or easily reversible decisions (variable naming, minor refactors)
-- Bug fixes or implementation details that don't affect architecture
-- An existing ADR already covers the decision — update or supersede it instead
+- New ADRs always start as `PROPOSED` — including ADRs that
+  supersede an existing one. Never set a new ADR to `ACCEPTED`.
+- For material changes to a decision, write a new ADR that
+  supersedes the old one. The new ADR's status is `PROPOSED`.
+  Update the old ADR's status to `SUPERSEDED` and link to the
+  new one.
+- Minor corrections (typos, missing details) can be edited
+  in place.
 
 ## Workflow
 
-1. **Detect** — Recognize that the conversation involves an architectural
-   decision based on the criteria above.
+1. **Detect** — An architectural decision is in play.
 2. **Propose** — Ask the user: "This looks like an architectural decision.
    Would you like to record it as an ADR?" If this is the first ADR in the
    session, also ask: "Would you like me to walk through the details one
@@ -54,19 +48,15 @@ PROPOSED → ACCEPTED → (SUPERSEDED or DEPRECATED)
 4. **Gather context** — Collect what you couldn't find in the codebase.
    For each question, provide your recommended answer with justification
    based on what you found in step 3. Let the user confirm or correct.
-   Collect:
-   - What was decided (the core decision)
-   - The key decision drivers (constraints, requirements, forces that shaped
-     the choice)
-   - Why this option was chosen (rationale)
-   - What alternatives were considered, with pros, cons, and rejection reasons
-   - What consequences follow (positive, negative, and neutral)
-   - Any non-goals (what's explicitly out of scope)
-   - Links and references discovered during research
+   Collect: the core decision, key decision drivers, rationale,
+   alternatives with pros/cons/rejection reasons, consequences
+   (positive, negative, neutral), non-goals, and relevant links.
 5. **Generate** — Create the ADR using the template at
    [assets/adr-template.md](assets/adr-template.md). Fill every section with
    real content — do not leave placeholder text. The ADR must include:
-   - YAML frontmatter with `status`, `date`, and `authors`
+   - YAML frontmatter with `status: PROPOSED`, `date`, and `authors`.
+     Always set status to `PROPOSED` — never `ACCEPTED` or `DECIDED`.
+     This is non-negotiable even when the user has already decided.
    - Context explaining the problem and forces at play
    - Decision drivers as a prioritized list
    - The decision in active voice
@@ -105,30 +95,13 @@ prompts: `[INVESTIGATE: description of what needs follow-up]`
 
 ## Match depth to complexity
 
-Simple decisions get simple ADRs. Omit optional sections (Non-goals,
-Reversibility, References) when they add no information. A two-paragraph
-ADR for a straightforward choice is better than a bloated one that discourages
-future ADR creation.
+Omit optional sections (Non-goals, Reversibility, References)
+when they add no information. A two-paragraph ADR for a
+straightforward choice is better than a bloated one.
 
-When a decision directly maps to code changes, the agent may add an
-Implementation Plan section describing affected paths and patterns to follow.
-This is not part of the standard template but is useful for agent-first
-workflows.
-
-## Gotchas
-
-- Always check `docs/adr/` for existing ADRs before assigning a
-  number. Never reuse or skip numbers.
-- The `status` field in YAML frontmatter for a new ADR should
-  always be `PROPOSED` unless the user explicitly says it's
-  already accepted.
-- The `authors` field in YAML frontmatter is required.
-- If the decision supersedes an existing ADR, update the old
-  ADR's status to `SUPERSEDED` and add a note linking to the
-  new one.
-- Create the `docs/adr/` directory if it doesn't exist.
-- Never leave placeholder text like `[Driver 1]` — fill every
-  section with real content or omit the section.
+When a decision directly maps to code changes, add an
+Implementation Plan section describing affected paths and
+patterns to follow.
 
 ## Example Scenario
 

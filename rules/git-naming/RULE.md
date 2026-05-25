@@ -43,14 +43,17 @@ Header rules:
 Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`,
 `chore`, `perf`, `ci`, `build`
 
-Body is optional for self-evident changes. Required when the
-change involves a decision, trade-off, or non-obvious behavior.
+Body is optional when the diff is under 20 lines and touches
+one file. Required when the change involves a decision,
+trade-off, or non-obvious behavior.
 
 ## Assisted-by Trailer
 
 Add to every AI-assisted commit:
 
-    Assisted-by: <agent>:<model>
+```text
+Assisted-by: <agent>:<model>
+```
 
 Agent is your name (Kiro, Claude Code, OpenCode). Model is
 the model you are running on.

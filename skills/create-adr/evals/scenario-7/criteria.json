@@ -1,0 +1,66 @@
+{
+  "context": "Tests whether the agent produces an ADR that passes the E.C.A.D.R. quality self-check: explicit problem statement, comprehensive options analysis with at least two alternatives (each with pros, cons, and rejection reasons), active-voice decision, documented consequences split into positive/negative/neutral, and decision drivers written as a prioritized list. Also tests correct file placement for a first ADR.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Decision in active voice",
+      "description": "The Decision section begins with 'We will' or an equivalent first-person plural active construction (not passive voice, not 'The team decided')",
+      "max_score": 12
+    },
+    {
+      "name": "Decision drivers as a list",
+      "description": "The Decision Drivers section contains a bullet or numbered list of drivers (not a prose paragraph)",
+      "max_score": 8
+    },
+    {
+      "name": "Explicit problem statement in Context",
+      "description": "The Context section clearly identifies the specific problem being solved — not just background, but a statement of what is wrong or what gap exists",
+      "max_score": 8
+    },
+    {
+      "name": "At least two alternatives listed",
+      "description": "The Alternatives Considered section contains at least two distinct options",
+      "max_score": 10
+    },
+    {
+      "name": "Each alternative has explicit pros and cons",
+      "description": "Every alternative in the Alternatives Considered section lists at least one pro and at least one con",
+      "max_score": 10
+    },
+    {
+      "name": "Each alternative has rejection reason",
+      "description": "Every alternative includes an explicit reason why it was rejected (not chosen)",
+      "max_score": 10
+    },
+    {
+      "name": "Consequences split into three subsections",
+      "description": "The Consequences section is divided into Positive, Negative, and Neutral subsections — all three present with content",
+      "max_score": 10
+    },
+    {
+      "name": "Filename starts with 0001",
+      "description": "The ADR filename begins with 0001 (four zero-padded digits), reflecting this is the first ADR in the project",
+      "max_score": 8
+    },
+    {
+      "name": "Lowercase hyphenated slug",
+      "description": "The ADR filename uses a lowercase, hyphenated slug after the sequence number (e.g. 0001-use-zustand-for-state-management.md)",
+      "max_score": 6
+    },
+    {
+      "name": "Status PROPOSED in frontmatter",
+      "description": "The ADR has status: PROPOSED in its YAML frontmatter (not ACCEPTED or DECIDED)",
+      "max_score": 8
+    },
+    {
+      "name": "Authors field in frontmatter",
+      "description": "The ADR has an authors field in its YAML frontmatter",
+      "max_score": 4
+    },
+    {
+      "name": "No placeholder text",
+      "description": "The ADR does not contain unfilled template markers such as '[Driver 1]', '[Alternative 1]', 'TBD', or similar placeholder strings",
+      "max_score": 6
+    }
+  ]
+}

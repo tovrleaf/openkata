@@ -52,6 +52,9 @@ Conventional Commits and kebab-case branch names.
    - Body required when the reasoning matters — decisions,
      refactors, non-trivial fixes
    - Header-only is fine when the diff tells the full story
+   - Breaking changes always require a body explaining the
+     impact and migration path
+   - Separate header, body, and footer with blank lines
 
 7. **Commit.**
 
