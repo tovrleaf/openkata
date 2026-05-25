@@ -22,10 +22,12 @@ metadata:
 PROPOSED → ACCEPTED → (SUPERSEDED or DEPRECATED)
 ```
 
-- New ADRs start as `PROPOSED`.
+- New ADRs always start as `PROPOSED` — including ADRs that
+  supersede an existing one. Never set a new ADR to `ACCEPTED`.
 - For material changes to a decision, write a new ADR that
-  supersedes the old one. Update the old ADR's status to
-  `SUPERSEDED` and link to the new one.
+  supersedes the old one. The new ADR's status is `PROPOSED`.
+  Update the old ADR's status to `SUPERSEDED` and link to the
+  new one.
 - Minor corrections (typos, missing details) can be edited
   in place.
 
