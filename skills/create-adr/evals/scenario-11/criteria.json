@@ -1,0 +1,61 @@
+{
+  "context": "Tests whether the agent includes the optional Non-goals and Reversibility sections in an ADR when the decision context makes them appropriate. The task describes a narrowly scoped decision with explicit exclusions and a potentially reversible architectural change — both conditions the skill says should trigger these optional sections. Also verifies standard ADR structural requirements.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Non-goals section present",
+      "description": "The ADR includes a Non-goals section (or equivalent heading such as 'Out of Scope')",
+      "max_score": 15
+    },
+    {
+      "name": "Non-goals lists specific exclusions",
+      "description": "The Non-goals section lists at least one specific type of notification or communication channel that is explicitly excluded (e.g., marketing emails, SMS, push notifications, weekly digests, or the marketing team's flows)",
+      "max_score": 10
+    },
+    {
+      "name": "Reversibility section present",
+      "description": "The ADR includes a Reversibility section (or equivalent heading such as 'Rollback' or 'Reconsideration')",
+      "max_score": 15
+    },
+    {
+      "name": "Reversibility describes reconsideration conditions",
+      "description": "The Reversibility section names at least one specific condition that would trigger reconsideration or a rollback (e.g., delivery failure rates above a threshold, queue system instability, latency regression, SLA breach)",
+      "max_score": 10
+    },
+    {
+      "name": "Status PROPOSED",
+      "description": "The ADR has status: PROPOSED in its YAML frontmatter (not ACCEPTED or DECIDED)",
+      "max_score": 10
+    },
+    {
+      "name": "Authors field present",
+      "description": "The ADR has an authors field in its YAML frontmatter",
+      "max_score": 5
+    },
+    {
+      "name": "Decision in active voice",
+      "description": "The Decision section begins with 'We will' or an equivalent first-person plural active construction (not passive voice)",
+      "max_score": 10
+    },
+    {
+      "name": "At least two alternatives listed",
+      "description": "The Alternatives Considered section contains at least two distinct options",
+      "max_score": 5
+    },
+    {
+      "name": "Alternatives have pros, cons, rejection reasons",
+      "description": "Each alternative includes explicit pros, cons, and a reason it was not chosen",
+      "max_score": 10
+    },
+    {
+      "name": "Consequences split into three subsections",
+      "description": "The Consequences section is divided into Positive, Negative, and Neutral subsections — all three present with content",
+      "max_score": 5
+    },
+    {
+      "name": "No placeholder text",
+      "description": "The ADR does not contain unfilled template markers such as '[Driver 1]', '[Alternative 1]', 'TBD', or similar placeholder strings",
+      "max_score": 5
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "context": "Tests whether the agent explores the codebase before writing the ADR, reflecting specific findings (tech stack, existing packages, code patterns) in the ADR content. The task description is deliberately vague about the technology stack — specific details are only discoverable by reading the fixture files. Also verifies standard ADR structural requirements.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Codebase-derived tech stack mentioned",
+      "description": "The ADR mentions at least one specific package or technology discoverable only from the fixture files — such as 'pg', 'PostgreSQL', 'Express', 'prism-analytics', or a version number from package.json — not derived solely from the task description",
+      "max_score": 20
+    },
+    {
+      "name": "Architecture findings inform the ADR",
+      "description": "The ADR's Context or Decision Drivers section references specifics about the existing system architecture discovered during codebase exploration (e.g., the database technology in use, the query patterns, or the existing dependencies)",
+      "max_score": 10
+    },
+    {
+      "name": "Correct ADR filename (0001)",
+      "description": "The ADR filename begins with 0001 (four zero-padded digits), reflecting that no prior ADRs exist in the project",
+      "max_score": 10
+    },
+    {
+      "name": "Status PROPOSED",
+      "description": "The ADR has status: PROPOSED in its YAML frontmatter (not ACCEPTED or DECIDED)",
+      "max_score": 10
+    },
+    {
+      "name": "Authors field present",
+      "description": "The ADR has an authors field in its YAML frontmatter",
+      "max_score": 5
+    },
+    {
+      "name": "Date field present",
+      "description": "The ADR has a date field in its YAML frontmatter",
+      "max_score": 5
+    },
+    {
+      "name": "Decision in active voice",
+      "description": "The Decision section begins with 'We will' or an equivalent first-person plural active construction",
+      "max_score": 10
+    },
+    {
+      "name": "At least two alternatives with pros, cons, rejection",
+      "description": "The Alternatives Considered section lists at least two distinct caching options, each with explicit pros, cons, and a reason for rejection",
+      "max_score": 15
+    },
+    {
+      "name": "Consequences split into three subsections",
+      "description": "The Consequences section is divided into Positive, Negative, and Neutral subsections — all three present with content",
+      "max_score": 10
+    },
+    {
+      "name": "No placeholder text",
+      "description": "The ADR does not contain unfilled template markers such as '[Driver 1]', '[Alternative 1]', 'TBD', or similar placeholder strings",
+      "max_score": 5
+    }
+  ]
+}
