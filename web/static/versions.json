@@ -1,37 +1,52 @@
 {
   "skills": {
     "commit-conventions": {
-      "version": "1.2.0",
+      "version": "1.3.0",
       "description": "Enforces Conventional Commits format and branch naming conventions, validating commit message structure (type/scope/description header), suggesting branch name patterns (feature/*, fix/*, hotfix/*), and enforcing breaking change notation. Use when the user is about to commit, creating a branch, reviewing commit history, preparing a pull request, setting up commit linting, or asking about commit message format, branch naming, or Conventional Commits.",
       "tags": "category:conventions, category:version-control, tool:git"
     },
     "create-adr": {
-      "version": "1.1.0",
+      "version": "1.2.0",
       "description": "Detects architectural decisions in conversation and guides creation of Architecture Decision Records. Activate when the user is making, discussing, or debating: technology choices (languages, frameworks, databases, cloud services), structural patterns (monolith vs microservices, event-driven, CQRS, API design), cross-cutting conventions (error handling, logging, authentication, API versioning), hard-to-reverse decisions (data models, public API contracts, infrastructure topology), or deviations from existing standards. Also activate when the user explicitly asks to create an ADR.",
       "tags": "category:documentation, category:architecture"
     },
+    "create-pr": {
+      "version": "1.0.0",
+      "description": "Creates a pull request using GitHub CLI. Checks for uncommitted changes, verifies branch state, pushes, and opens the PR. Activate when the user says \"create PR\", \"open PR\", \"push and PR\", or work is ready for review.",
+      "tags": "category:workflow, tool:git, tool:github"
+    },
+    "create-profile": {
+      "version": "1.0.0",
+      "description": "Creates sensei profiles that define agent roles with scoped permissions and constraints. Investigates the repo for existing profiles and conventions, writes a focused profile markdown file, and validates scope boundaries. Use when the user wants to create an agent profile, define a specialized role, scope an agent to specific files or domains, set up a new team member persona, restrict what an agent can touch, or wants consistent behavior from a domain-specific agent.",
+      "tags": "category:scaffolding"
+    },
     "create-rule": {
-      "version": "1.1.0",
+      "version": "1.2.0",
       "description": "Creates rule files that define always-on constraints for agent sessions. Investigates the repo for existing conventions, writes a RULE.md with clear structure, and validates against real usage. Use when the user wants to create a rule, add a convention, enforce a standard, establish a project-wide constraint, define coding style, standardize formatting across generated files, notices inconsistent output across sessions, or is setting up a new project's conventions.",
       "tags": "category:scaffolding, category:conventions"
     },
     "create-skill": {
-      "version": "1.1.0",
+      "version": "1.2.0",
       "description": "Creates new agent skills following the Agent Skills specification. Investigates the repo for conventions, designs the skill around progressive disclosure, writes SKILL.md with effective trigger descriptions, and validates with representative prompts. Use when the user wants to create a skill, build a SKILL.md, turn a workflow into a reusable skill, teach the agent a new task, scaffold a new agent capability, has a repeated workflow they want to codify, is frustrated by inconsistent agent behavior, or wants to package expertise for a team.",
       "tags": "category:scaffolding"
     },
+    "git-worktree": {
+      "version": "1.0.0",
+      "description": "Creates, lists, and removes git worktrees to manage parallel workspaces. Activate when the user needs to work on multiple branches simultaneously, run parallel tasks (evals, builds, reviews) in isolation, or when an agent needs its own workspace. Also activate when the user says \"worktree\", \"parallel branch\", \"work on two things at once\", or \"run these in parallel\".",
+      "tags": "category:workflow, tool:git"
+    },
     "grill-me": {
-      "version": "0.0.0",
+      "version": "1.0.0",
       "description": "Challenge a plan, spec, ADR, or design by interviewing the user relentlessly until all corners are covered. Use when the user wants to stress-test a plan, get grilled on their design, says \"grill me\", \"challenge this\", or \"poke holes in this.\"",
       "tags": "category:review, category:architecture"
     },
     "makefile-conventions": {
-      "version": "0.0.0",
-      "description": "Structures Makefiles as a universal command interface using modular includes and self-documenting help. Use when the user wants to add a make target, create a Makefile, organize build commands, set up a make-based workflow, or asks how to structure make targets.",
+      "version": "1.0.0",
+      "description": "Structures Makefiles as a universal command interface using modular includes and self-documenting help. Use when the user wants to add a make target, create a Makefile, organize build commands, set up a make-based workflow, or asks how to structure make targets. Also activate before modifying any Makefile or mk/ file in this project.",
       "tags": "category:conventions, tool:makefile"
     },
     "spec-workflow": {
-      "version": "0.0.0",
+      "version": "1.0.0",
       "description": "Drives feature development through a phased workflow: specify requirements, design architecture, break into tasks, then implement autonomously with frequent commits. TRIGGER CHECK: Before starting any new task, ask yourself — does this touch 3+ files, add dependencies, change infrastructure, or require trade-off decisions? If yes, activate this skill. Also activate when the user says \"let's spec this\", \"new feature\", or \"let's plan.\"",
       "tags": "category:planning, category:workflow"
     }
@@ -47,6 +62,11 @@
       "description": "Token-based CSS design system conventions. Applied when writing or modifying CSS, templates, or page layouts.",
       "tags": "category:conventions, language:css"
     },
+    "git-naming": {
+      "version": "0.0.0",
+      "description": "Branch naming, commit message format, and trailer conventions for git operations.",
+      "tags": "category:conventions, tool:git"
+    },
     "markdown-style": {
       "version": "0.0.0",
       "description": "Consistent markdown formatting conventions applied to all generated files.",
@@ -54,7 +74,15 @@
     }
   },
   "profiles": {
-    "frontend": {
+    "frontend-developer": {
+      "version": "0.0.0",
+      "description": ""
+    },
+    "spec-planner": {
+      "version": "0.0.0",
+      "description": ""
+    },
+    "spec-validator": {
       "version": "0.0.0",
       "description": ""
     }
