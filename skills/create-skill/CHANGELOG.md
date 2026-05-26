@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.2.1 — 2026-05-26
+
+### Changed
+
+- Streamlined SKILL.md for lower token cost and 95%+ review
+  score
+- Condensed writing rules, example scenario, and common
+  failures sections
+- Simplified investigation and design steps
+
 ## 1.2.0 — 2026-05-24
 
 ### Added
