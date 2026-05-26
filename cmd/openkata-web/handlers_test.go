@@ -535,3 +535,48 @@ func TestRenderMarkdownFull(t *testing.T) {
 		})
 	}
 }
+
+func TestLoadSkillDetailLocalFileContents(t *testing.T) {
+	origDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chdir(origDir) })
+
+	testDir := setupTestSkillDir(t)
+	if err := os.Chdir(testDir); err != nil {
+		t.Fatal(err)
+	}
+
+	detail := loadSkillDetailLocal("test-skill", "1.2.0")
+	if detail == nil {
+		t.Fatal("loadSkillDetailLocal returned nil")
+	}
+
+	// SKILL.md should be in FileContents (not excluded)
+	if _, ok := detail.FileContents["SKILL.md"]; !ok {
+		t.Error("loadSkillDetailLocal() FileContents missing SKILL.md")
+	}
+
+	// Rendered version should also exist
+	if _, ok := detail.FileContents["__rendered__SKILL.md"]; !ok {
+		t.Error("loadSkillDetailLocal() FileContents missing __rendered__SKILL.md")
+	}
+
+	// SKILL.md should also be in Files list
+	found := false
+	for _, f := range detail.Files {
+		if f == "SKILL.md" {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Error("loadSkillDetailLocal() Files list missing SKILL.md")
+	}
+
+	// Docs (overview) should also be populated
+	if detail.Docs == "" {
+		t.Error("loadSkillDetailLocal() Docs is empty")
+	}
+}

@@ -15,6 +15,7 @@ help: ## Show this help
 	@echo ""
 	@echo "Development:"
 	@printf "  \033[36m%-12s\033[0m %s\n" "check" "Check development prerequisites"
+	@printf "  \033[36m%-12s\033[0m %s\n" "test" "Run all tests"
 	@printf "  \033[36m%-12s\033[0m %s\n" "changelog" "Generate root CHANGELOG.md"
 	@printf "  \033[36m%-12s\033[0m %s\n" "dev" "Start local dev server with hot reload"
 	@printf "  \033[36m%-12s\033[0m %s\n" "chat master" "Start Kiro chat with dojo-master agent"
@@ -44,6 +45,10 @@ agents: ## List all Kiro agent configs
 .PHONY: check
 check: ## Check development prerequisites
 	@./scripts/check-prereqs.sh
+
+.PHONY: test
+test: ## Run all tests
+	@go test ./...
 
 .PHONY: adrs
 adrs: ## List all architecture decision records

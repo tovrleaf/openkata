@@ -351,6 +351,12 @@ func loadSkillDetailVersion(ctx context.Context, name, version string) *template
 					} else {
 						*target = renderMarkdown(data)
 					}
+					if !isExcludedFile(relPath) {
+						detail.FileContents[relPath] = string(data)
+						if strings.HasSuffix(relPath, ".md") {
+							detail.FileContents["__rendered__"+relPath] = renderMarkdownFull(data)
+						}
+					}
 				}
 			}
 		}
