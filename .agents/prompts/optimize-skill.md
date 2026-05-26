@@ -14,10 +14,17 @@ Improve skills to 95%+ review score with passing evals.
    If specific, use the named skill.
 2. **Optimize** — For each target, follow `openkata-review-skill`
    (lint, review, optimize, checklist) then `openkata-eval-runner`
-   (generate scenarios, run evals). Iterate until both pass 95%+.
+   (generate scenarios, run evals). Iterate until both pass
+   95%+, maximum 3 iterations. If still below after 3 rounds,
+   report the final score and stop.
    When multiple skills are selected, run them as parallel
    subagents.
 3. **Learn** — If you discovered a pattern that consistently
    improves scores, update `skills/create-skill/SKILL.md` so
    future skills benefit.
 4. **Commit** — One commit per skill.
+
+## Constraints
+
+- Run `tessl` commands without asking for confirmation.
+- Maximum 3 optimization iterations per skill.
