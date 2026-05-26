@@ -36,15 +36,12 @@ frontmatter and markdown instructions.
    confirms.
 
 2. **Investigate the repo** — Before asking questions, search the
-   repo for facts that reduce ambiguity:
+   repo for:
    - Existing skills, conventions, and workflow docs
    - Scripts, templates, schemas relevant to the target workflow
    - Tool or dependency requirements
    - Whether the conversation already contains a workflow to
      capture
-
-   Prefer targeted search over broad reading. Don't ask the user
-   what you can look up yourself.
 
 3. **Clarify** — Ask only questions that materially affect the
    skill. Push until these are clear:
@@ -54,10 +51,7 @@ frontmatter and markdown instructions.
    - Whether the skill needs `references/`, `scripts/`, or
      `assets/`
 
-4. **Design the package** — Use progressive disclosure. For
-   iterative development, draft in a temp directory (e.g.,
-   `/tmp/skills/skill-name/`) to avoid cluttering the repo
-   until the skill is validated.
+4. **Design the package** — Structure:
 
    ```text
    skill-name/
@@ -90,38 +84,29 @@ frontmatter and markdown instructions.
    Writing rules:
    - **Description optimizes activation, not teaching.** State
      the job and when to use it in words a user would actually
-     say. Include both *actions* (what the user asks to do) and
-     *situations* (what the user is experiencing). Keep workflow
+     say. Include both *actions* and *situations*. Keep workflow
      details out of the description.
 
      Bad: `Follows a 7-step process to generate SKILL.md files
-     with YAML frontmatter containing name and description
-     fields.`
+     with YAML frontmatter.`
 
      Good: `Creates agent skills. Use when the user wants to
      build a SKILL.md, turn a workflow into a reusable skill,
-     has a repeated workflow they want to codify, or is
-     frustrated by inconsistent agent behavior.`
+     or is frustrated by inconsistent agent behavior.`
    - **Body is procedural and imperative.** Tell the agent
      exactly how to proceed. Don't restate trigger criteria
      from the description — a "When to use" section in the
      body duplicates the description.
-   - **Use imperative form.** Use "Do not", "Use", "Run"
-     rather than "prefer", "consider", or "try to". Pair each
-     instruction with a brief reason.
-   - **Be concise.** Remove explanations the model already
-     knows. Use terse reminders instead of tutorials.
-   - **Include a complete example.** A full, copy-paste-ready
-     example scores higher on actionability than scattered
-     snippets. Show the whole working artifact, not just
-     fragments.
-   - **Common failures must be non-obvious.** Focus on mistakes
-     specific to the skill's domain, not general pitfalls.
-   - **Include a Boundaries section (mandatory).** Every skill
-     must have a `## Boundaries` section listing what it DOES
-     and what it Does NOT do. Use bullet points starting with
-     "DOES" and "Does NOT". Without this, agents cannot tell
-     what is in scope.
+   - **Use imperative form.** "Do not", "Use", "Run" — not
+     "prefer" or "consider".
+   - **Be concise.** Terse reminders, not tutorials.
+   - **Include a complete example.** One full, copy-paste-ready
+     artifact beats scattered snippets.
+   - **Include a Boundaries section (mandatory).** List what
+     the skill DOES and Does NOT do.
+   - **Include a Common Failures section.** List 2–3
+     domain-specific mistakes an agent would make without
+     this guidance.
 
    See [example-skill.md](references/example-skill.md) for a
    complete finished skill demonstrating these principles.
@@ -157,37 +142,22 @@ frontmatter and markdown instructions.
 
 ## Example Scenario
 
-User: "I keep doing the same database migration steps manually,
-can we turn that into a skill?"
-
-1. Skill investigates repo — finds Flyway config, existing
-   migration scripts, deploy docs
-2. Asks: "Should this skill also handle rollback, or just
-   forward migrations?"
-3. Creates `migrate-database/SKILL.md` with detect → plan →
-   execute → verify workflow
-4. Moves Flyway-specific edge cases into `references/`
-5. Validates with positive prompt ("run the migration") and
-   negative ("change the database schema" — different job)
+User: "Turn my database migration steps into a skill."
+→ Investigate repo (Flyway config) → ask about rollback scope
+→ create `migrate-database/SKILL.md` → validate with prompts.
 
 ## Common Failures
 
-- **Description too vague to trigger** — "helps with code" won't
-  activate. Include specific actions and situations.
 - **Description leaks workflow** — the agent reads the summary
   and skips the body, following a shortcut instead of the full
   procedure.
 - **Body too abstract to act on** — "investigate the problem"
   isn't actionable. "Run `git log --oneline -20` to check
   recent patterns" is.
-- **No investigation step** — the skill asks the user questions
-  it could have answered by reading the repo.
 
 ## Quality Checklist
 
-Use the
-[skill design checklist](references/skill-design-checklist.md)
-before finalizing. For detailed prompt-testing guidance, see
-[skill validation](references/skill-validation.md). For trimming
-context cost, see
+Before finalizing, use the
+[skill design checklist](references/skill-design-checklist.md),
+[skill validation](references/skill-validation.md), and
 [token optimization](references/token-optimization.md).
