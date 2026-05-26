@@ -100,6 +100,13 @@
   left: calc(50% - var(--max-width) / 2 + var(--space-lg));
 }
 
+@media (max-width: 1108px) {
+  .nav-links {
+    position: static;
+    margin-left: var(--space-lg);
+  }
+}
+
 .nav-links a {
   color: var(--color-ink-muted);
   font-size: var(--font-size-sm);
