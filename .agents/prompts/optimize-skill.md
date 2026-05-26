@@ -28,3 +28,6 @@ Improve skills to 95%+ review score with passing evals.
 
 - Run `tessl` commands without asking for confirmation.
 - Maximum 3 optimization iterations per skill.
+- Do not add repo-internal boundaries (publishing, releasing,
+  tagging) to distributable skills. Those belong in
+  openkata-skill-conventions.
