@@ -752,3 +752,25 @@ section {
   color: var(--color-ink);
   border: 1px solid var(--color-border);
 }
+
+.logo-section {
+  text-align: center;
+  margin: var(--space-xl) 0;
+}
+
+.site-logo {
+  max-width: 300px;
+  height: auto;
+}
+
+.site-logo--dark {
+  display: none;
+}
+
+[data-theme="indigo"] .site-logo--light {
+  display: none;
+}
+
+[data-theme="indigo"] .site-logo--dark {
+  display: inline;
+}
