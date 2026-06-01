@@ -92,12 +92,19 @@
   text-decoration: none;
 }
 
+.nav-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 15px;
+  margin-top: -10px;
+  margin-bottom: -10px;
+}
+
 .nav-links {
   display: flex;
   gap: var(--space-lg);
   list-style: none;
-  position: absolute;
-  left: calc(50% - var(--max-width) / 2 + var(--space-lg));
+  margin-left: var(--space-lg);
 }
 
 .nav-links a {
@@ -744,4 +751,26 @@ section {
   background: var(--color-surface-raised);
   color: var(--color-ink);
   border: 1px solid var(--color-border);
+}
+
+.logo-section {
+  text-align: center;
+  margin: var(--space-xl) 0;
+}
+
+.site-logo {
+  max-width: 300px;
+  height: auto;
+}
+
+.site-logo--dark {
+  display: none;
+}
+
+[data-theme="indigo"] .site-logo--light {
+  display: none;
+}
+
+[data-theme="indigo"] .site-logo--dark {
+  display: inline;
 }

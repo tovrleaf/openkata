@@ -136,7 +136,6 @@ frontmatter and markdown instructions.
 
 - DOES create skill directories, SKILL.md, references/, scripts/
 - DOES validate with representative prompts
-- Does NOT publish, tag, or release skills
 - Does NOT modify existing skills (use review-skill for that)
 - Does NOT create rules or profiles (separate workflows)
 

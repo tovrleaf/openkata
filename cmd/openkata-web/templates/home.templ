@@ -3,6 +3,7 @@ package templates
 templ Home() {
 	@Layout("Home") {
 		<nav class="nav">
+			<img src="/static/img/icon.webp" alt="" class="nav-icon"/>
 			<a href="/" class="nav-brand">OPENKATA.dev</a>
 			<div class="nav-links">
 				<a href="/skills/" class="nav-link">Skills</a>
@@ -20,6 +21,11 @@ templ Home() {
 					<p class="comment">Codified practices for AI agents — teach your agents the way.</p>
 				</div>
 			</section>
+
+			<div class="logo-section">
+				<img src="/static/img/logo.webp" alt="OpenKata logo" class="site-logo site-logo--light"/>
+				<img src="/static/img/logo-dark.webp" alt="OpenKata logo" class="site-logo site-logo--dark"/>
+			</div>
 
 			<h2>About</h2>
 			<p>
