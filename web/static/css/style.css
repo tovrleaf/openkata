@@ -104,7 +104,15 @@
   display: flex;
   gap: var(--space-lg);
   list-style: none;
-  margin-left: var(--space-lg);
+  position: absolute;
+  left: max(calc(50% - var(--max-width) / 2), 250px);
+}
+
+@media (max-width: 1108px) {
+  .nav-links {
+    position: static;
+    margin-left: var(--space-lg);
+  }
 }
 
 .nav-links a {
