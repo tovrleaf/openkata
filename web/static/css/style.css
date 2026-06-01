@@ -92,19 +92,19 @@
   text-decoration: none;
 }
 
+.nav-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 15px;
+  margin-top: -10px;
+  margin-bottom: -10px;
+}
+
 .nav-links {
   display: flex;
   gap: var(--space-lg);
   list-style: none;
-  position: absolute;
-  left: calc(50% - var(--max-width) / 2 + var(--space-lg));
-}
-
-@media (max-width: 1108px) {
-  .nav-links {
-    position: static;
-    margin-left: var(--space-lg);
-  }
+  margin-left: var(--space-lg);
 }
 
 .nav-links a {
