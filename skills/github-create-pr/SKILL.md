@@ -1,11 +1,11 @@
 ---
 name: github-create-pr
 description: >
-  Creates a pull request using GitHub CLI. Checks for
-  uncommitted changes, verifies branch state, pushes,
-  and opens the PR. Activate when the user says "create
-  PR", "open PR", "push and PR", or work is ready for
-  review.
+  Creates a pull request using GitHub CLI by following
+  every numbered step in order. Do not skip steps. Do not
+  improvise — execute the workflow literally. Activate
+  when the user says "create PR", "open PR", "push and
+  PR", "submit for review", or work is ready for review.
 metadata:
   version: "1.0.0"
   tags: "category:workflow, tool:git, tool:github"
