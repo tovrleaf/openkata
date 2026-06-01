@@ -1,5 +1,5 @@
 ---
-name: create-pr
+name: github-create-pr
 description: >
   Creates a pull request using GitHub CLI. Checks for
   uncommitted changes, verifies branch state, pushes,
