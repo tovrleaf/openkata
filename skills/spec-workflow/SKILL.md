@@ -10,7 +10,7 @@ description: >
   when the user says "let's spec this", "new feature", or
   "let's plan."
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   tags: "category:planning, category:workflow"
 ---
 
@@ -135,6 +135,13 @@ For each task with Status: Pending:
 9. Move to next Pending task
 
 When all tasks are Done:
+- Ask the user: "All tasks complete. Would you like to
+  run validation (recommended for a fresh-perspective
+  review)?"
+- If yes → proceed to Phase 5 (Validate)
+- If no → continue below
+
+Mark complete:
 - Update `spec.md` status to `Done`
 - Clear `specs/_current`
 - Inform the user the feature is complete and ask whether

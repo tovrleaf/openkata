@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1 — 2026-06-02
+
+### Fixed
+
+- Prompt user for validation before clearing spec as done
+  (Phase 5 was silently skipped in practice)
+
 ## 1.0.0 — 2026-05-24
 
 ### Added
