@@ -24,15 +24,15 @@ templ Profiles(profiles []SkillEntry) {
 			if len(profiles) == 0 {
 				<p>No profiles available yet.</p>
 			} else {
-				<div class="skill-list">
+				<div class="artifact-list">
 					for _, p := range profiles {
-						<article class="skill-card">
+						<article class="artifact-card">
 							<h2>{ p.Name }</h2>
-							<p class="skill-description">{ p.Description }</p>
-							<div class="skill-meta">
-								<span class="skill-version">v{ p.Version }</span>
+							<p class="artifact-description">{ p.Description }</p>
+							<div class="artifact-meta">
+								<span class="artifact-version">v{ p.Version }</span>
 								if p.Downloads > 0 {
-									<span class="skill-downloads">{ fmt.Sprintf("%d", p.Downloads) } downloads</span>
+									<span class="artifact-downloads">{ fmt.Sprintf("%d", p.Downloads) } downloads</span>
 								}
 							</div>
 						</article>

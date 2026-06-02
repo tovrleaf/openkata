@@ -18,7 +18,7 @@ templ SkillDetailPage(skill SkillDetail) {
 			</div>
 		</nav>
 
-		<main data-skill-name={ skill.Name } data-skill-version={ skill.Version }>
+		<main data-artifact-name={ skill.Name } data-artifact-version={ skill.Version }>
 			<section class="detail-header">
 				<div class="detail-title-row">
 					<div class="hero--kanji">
@@ -52,11 +52,11 @@ templ SkillDetailPage(skill SkillDetail) {
 				</div>
 				<p class="detail-meta">
 					<span class="detail-downloads">{ fmt.Sprintf("%d", skill.Downloads) } ↓</span>
-					<span class="skill-sep">|</span>
+					<span class="artifact-sep">|</span>
 					<a class="detail-download" href={ templ.SafeURL(fmt.Sprintf("/skills/%s/archive", skill.Name)) }>.tar.gz</a>
 				</p>
 				if len(SplitTags(skill.Tags)) > 0 {
-					<div class="skill-tags">
+					<div class="artifact-tags">
 						for _, tag := range SplitTags(skill.Tags) {
 							<span class={ TagClass(tag) }>{ tag }</span>
 						}

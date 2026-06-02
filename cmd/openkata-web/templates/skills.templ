@@ -27,21 +27,21 @@ templ Skills(skills []SkillEntry) {
 			if len(skills) == 0 {
 				<p>No skills available yet.</p>
 			} else {
-				<div class="skill-list">
+				<div class="artifact-list">
 					for i, s := range skills {
-						<details class="skill-entry">
-							<summary class="skill-summary">
-								<div class="skill-summary-top">
-									<span class="skill-number">{ fmt.Sprintf("%02d", i+1) }</span>
-									<span class="skill-name">{ s.Name }</span>
-									<span class="skill-summary-right">
-										<span class="skill-downloads">{ fmt.Sprintf("%d", s.Downloads) } ↓</span>
-										<span class="skill-sep">|</span>
-										<span class="skill-version">v{ s.Version }</span>
-										<span class="skill-toggle-icon"></span>
+						<details class="artifact-entry">
+							<summary class="artifact-summary">
+								<div class="artifact-summary-top">
+									<span class="artifact-number">{ fmt.Sprintf("%02d", i+1) }</span>
+									<span class="artifact-name">{ s.Name }</span>
+									<span class="artifact-summary-right">
+										<span class="artifact-downloads">{ fmt.Sprintf("%d", s.Downloads) } ↓</span>
+										<span class="artifact-sep">|</span>
+										<span class="artifact-version">v{ s.Version }</span>
+										<span class="artifact-toggle-icon"></span>
 									</span>
 								</div>
-								<div class="skill-tags">
+								<div class="artifact-tags">
 									if len(SplitTags(s.Tags)) > 0 {
 										for _, tag := range SplitTags(s.Tags) {
 											<span class={ TagClass(tag) }>{ tag }</span>
@@ -50,11 +50,11 @@ templ Skills(skills []SkillEntry) {
 									<a class="btn-open" href={ templ.SafeURL(fmt.Sprintf("/skills/%s/", s.Name)) }>Open</a>
 								</div>
 							</summary>
-							<div class="skill-body">
+							<div class="artifact-body">
 																if len(FirstSentence(s.Description)) > 200 {
-									<p class="skill-description"><strong>{ FirstSentence(s.Description) }</strong></p>
+									<p class="artifact-description"><strong>{ FirstSentence(s.Description) }</strong></p>
 								} else {
-									<p class="skill-description"><strong>{ FirstSentence(s.Description) }</strong><br/>{ AfterFirstSentence(s.Description) }</p>
+									<p class="artifact-description"><strong>{ FirstSentence(s.Description) }</strong><br/>{ AfterFirstSentence(s.Description) }</p>
 								}
 							</div>
 						</details>

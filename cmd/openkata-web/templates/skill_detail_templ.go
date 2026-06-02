@@ -46,27 +46,27 @@ func SkillDetailPage(skill SkillDetail) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<nav class=\"nav\"><img src=\"/static/img/icon.webp\" alt=\"\" class=\"nav-icon\"> <a href=\"/\" class=\"nav-brand\">OPENKATA.dev</a><div class=\"nav-links\"><a href=\"/skills/\" class=\"nav-link\">Skills</a></div><div class=\"theme-switcher\"><button class=\"theme-switcher__btn\" onclick=\"cycleTheme()\" aria-label=\"Next theme\"></button></div></nav><main data-skill-name=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<nav class=\"nav\"><img src=\"/static/img/icon.webp\" alt=\"\" class=\"nav-icon\"> <a href=\"/\" class=\"nav-brand\">OPENKATA.dev</a><div class=\"nav-links\"><a href=\"/skills/\" class=\"nav-link\">Skills</a></div><div class=\"theme-switcher\"><button class=\"theme-switcher__btn\" onclick=\"cycleTheme()\" aria-label=\"Next theme\"></button></div></nav><main data-artifact-name=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(skill.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 21, Col: 36}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 21, Col: 39}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\" data-skill-version=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\" data-artifact-version=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(skill.Version)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 21, Col: 73}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 21, Col: 79}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -274,7 +274,7 @@ func SkillDetailPage(skill SkillDetail) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, " ↓</span> <span class=\"skill-sep\">|</span> <a class=\"detail-download\" href=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, " ↓</span> <span class=\"artifact-sep\">|</span> <a class=\"detail-download\" href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -292,7 +292,7 @@ func SkillDetailPage(skill SkillDetail) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if len(SplitTags(skill.Tags)) > 0 {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<div class=\"skill-tags\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<div class=\"artifact-tags\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

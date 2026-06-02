@@ -24,15 +24,15 @@ templ Rules(rules []SkillEntry) {
 			if len(rules) == 0 {
 				<p>No rules available yet.</p>
 			} else {
-				<div class="skill-list">
+				<div class="artifact-list">
 					for _, r := range rules {
-						<article class="skill-card">
+						<article class="artifact-card">
 							<h2>{ r.Name }</h2>
-							<p class="skill-description">{ r.Description }</p>
-							<div class="skill-meta">
-								<span class="skill-version">v{ r.Version }</span>
+							<p class="artifact-description">{ r.Description }</p>
+							<div class="artifact-meta">
+								<span class="artifact-version">v{ r.Version }</span>
 								if r.Downloads > 0 {
-									<span class="skill-downloads">{ fmt.Sprintf("%d", r.Downloads) } downloads</span>
+									<span class="artifact-downloads">{ fmt.Sprintf("%d", r.Downloads) } downloads</span>
 								}
 							</div>
 						</article>
