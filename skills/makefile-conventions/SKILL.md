@@ -70,7 +70,7 @@ help: ## Show this help
 ```
 
 For the full modular delegation pattern (domain `.mk`
-files, subdirectory Makefiles, catch-all targets), see
+files, subdirectory Makefiles, subcommand delegation), see
 [makefile-structure](references/makefile-structure.md).
 
 ## Conventions
@@ -81,6 +81,9 @@ files, subdirectory Makefiles, catch-all targets), see
 - Modular makefiles in `mk/` for each concern domain
 - Domains with subcommands get `mk/<domain>/Makefile`
 - `.DEFAULT_GOAL := help` so bare `make` shows help
+- Never use `%: @:` catch-all patterns. Use conditional
+  explicit subcommand declarations instead (see Subcommand
+  Delegation below).
 
 ### Naming
 
@@ -105,6 +108,34 @@ deploy:
 	@./scripts/deploy.sh "$(ENV)"
 ```
 
+### Subcommand delegation
+
+When a domain uses `$(MAKE) -C` for space-separated
+subcommands (`make chat master`), Make sees `master` as a
+separate goal and errors. Solve this with conditional
+explicit targets — not a catch-all:
+
+```makefile
+.PHONY: chat
+chat:
+	@$(MAKE) -C mk/chat $(filter-out $@,$(MAKECMDGOALS))
+
+# Only activate when 'chat' is on the command line
+ifneq ($(filter chat,$(MAKECMDGOALS)),)
+.PHONY: master eval
+master eval:
+	@:
+endif
+```
+
+This ensures:
+- `make chat master` — works (master is a known no-op)
+- `make chat typo` — errors (typo has no rule)
+- `make typo` — errors (conditional is inactive)
+
+Never use `%: @:` — it swallows all unknown targets
+silently, making typos invisible.
+
 ## Example Scenario
 
 User: "Add a make target for running database migrations"
@@ -122,3 +153,8 @@ User: "Add a make target for running database migrations"
   undiscoverable. Always update `make help`.
 - **Logic in Makefiles** — complex bash in a target is hard
   to debug. Delegate to scripts.
+- **Catch-all swallows errors** — `%: @:` silently succeeds
+  for ANY unknown target, including typos within domains
+  (`make skills typo`). Never use a blanket catch-all.
+  Instead, declare valid subcommands explicitly inside
+  conditional blocks.
