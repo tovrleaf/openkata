@@ -33,6 +33,24 @@ Match the user's request to the right agent:
   → `spec-validator`
 - UI work, templates, CSS, design → `frontend-developer`
 
+## Agent Switch Suggestions
+
+When the user signals they want to start planning ("let's plan",
+"I want to plan", "new feature", "let's spec"), suggest
+switching directly to `spec-planner` for a tighter feedback
+loop:
+
+> For planning, you'll get a better 1-1 experience with
+> spec-planner directly:
+> ```
+> kiro-cli --agent spec-planner
+> ```
+> Come back here when the spec is ready for implementation.
+
+Only suggest this for extended planning sessions. For quick
+questions that need a short answer, handle the delegation
+inline.
+
 ## Kata-Author Capabilities
 
 Commands `kata-author` can run via `tessl`:
