@@ -1,0 +1,22 @@
+{
+  "name": "backend-developer",
+  "description": "Backend agent — Go handlers, types, data loading, and tests",
+  "prompt": null,
+  "tools": ["fs_read", "fs_write", "execute_bash", "grep", "glob", "code"],
+  "allowedTools": ["fs_read", "grep", "glob"],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "cmd/**",
+        "bin/**"
+      ]
+    }
+  },
+  "resources": [
+    "file://.agents/profiles/backend-developer.md",
+    "file://AGENTS.md",
+    "file://cmd/openkata-web/handlers.go",
+    "file://cmd/openkata-web/templates/types.go"
+  ],
+  "welcomeMessage": "Backend agent ready. I work with Go handlers, types, and tests in cmd/."
+}
