@@ -761,6 +761,12 @@ func loadRulesList(ctx context.Context) []templates.SkillEntry {
 }
 
 func handleArchive(w http.ResponseWriter, r *http.Request, artifactType, name, version string) {
+	// Dev mode: serve from local filesystem
+	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") == "" {
+		handleArchiveLocal(w, r, artifactType, name, version)
+		return
+	}
+
 	if s3Client == nil {
 		http.Error(w, "service unavailable", http.StatusServiceUnavailable)
 		return
@@ -871,6 +877,117 @@ func handleArchive(w http.ResponseWriter, r *http.Request, artifactType, name, v
 
 	// Increment download counter
 	incrementDownload(ctx, artifactType+"/"+name)
+}
+
+func handleArchiveLocal(w http.ResponseWriter, r *http.Request, artifactType, name, version string) {
+	dir := artifactType + "/" + name
+
+	if _, err := os.Stat(dir); err != nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	if version == "" {
+		data := loadVersionsJSON(r.Context())
+		if data == nil {
+			http.NotFound(w, r)
+			return
+		}
+		var raw map[string]json.RawMessage
+		if err := json.Unmarshal(data, &raw); err != nil {
+			http.NotFound(w, r)
+			return
+		}
+		artifactData, ok := raw[artifactType]
+		if !ok {
+			http.NotFound(w, r)
+			return
+		}
+		var artifacts map[string]struct {
+			Version string `json:"version"`
+		}
+		if err := json.Unmarshal(artifactData, &artifacts); err != nil {
+			http.NotFound(w, r)
+			return
+		}
+		info, ok := artifacts[name]
+		if !ok || info.Version == "0.0.0" {
+			http.NotFound(w, r)
+			return
+		}
+		version = info.Version
+	}
+
+	type fileEntry struct {
+		path string
+		data []byte
+	}
+	var files []fileEntry
+
+	filepath.WalkDir(dir, func(path string, d os.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return nil
+		}
+		relPath, _ := filepath.Rel(dir, path)
+		relPath = filepath.ToSlash(relPath)
+		if relPath == "tile.json" || relPath == "references/ACKNOWLEDGMENTS.md" {
+			return nil
+		}
+		if strings.HasPrefix(relPath, "evals/") {
+			return nil
+		}
+		data, err := os.ReadFile(path)
+		if err != nil {
+			return nil
+		}
+		files = append(files, fileEntry{path: relPath, data: data})
+		return nil
+	})
+
+	if len(files) == 0 {
+		http.NotFound(w, r)
+		return
+	}
+
+	checksums := make(map[string]string)
+	for _, f := range files {
+		checksums[f.path] = "sha256:" + sha256Sum(f.data)
+	}
+	checksumJSON, _ := json.MarshalIndent(checksums, "    ", "  ")
+
+	manifest := fmt.Sprintf(`{
+  "name": %q,
+  "version": %q,
+  "source": "github.com/tovrleaf/openkata",
+  "installedAt": "",
+  "checksums": %s
+}
+`, name, version, string(checksumJSON))
+
+	filename := fmt.Sprintf("%s-%s.tar.gz", name, version)
+	w.Header().Set("Content-Type", "application/gzip")
+	w.Header().Set("Content-Disposition", "attachment; filename="+filename)
+
+	gw := gzip.NewWriter(w)
+	defer gw.Close()
+	tw := tar.NewWriter(gw)
+	defer tw.Close()
+
+	for _, f := range files {
+		tw.WriteHeader(&tar.Header{
+			Name: name + "/" + f.path,
+			Size: int64(len(f.data)),
+			Mode: 0644,
+		})
+		tw.Write(f.data)
+	}
+
+	tw.WriteHeader(&tar.Header{
+		Name: name + "/.manifest.json",
+		Size: int64(len(manifest)),
+		Mode: 0644,
+	})
+	tw.Write([]byte(manifest))
 }
 
 func resolveLatestVersion(ctx context.Context, artifactType, name string) string {
