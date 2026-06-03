@@ -74,14 +74,16 @@ roles and their scoped permissions.
 
 ### Code Architecture
 
-- New `ProfileDetail` struct in types.go
+- Refactor `SkillDetail`, `RuleDetail` into a single
+  `ArtifactDetail` concrete struct with an `Type` field
+  ("skills", "rules", "profiles")
+- Remove field-by-field copy in `loadRuleDetailVersion`
+- Shared loaders return `*ArtifactDetail` directly
+- Templates accept `ArtifactDetail` instead of
+  type-specific structs
 - Profile detail loader uses shared helpers where
-  possible, but handles single-file structure
-  (no subdirectory, no file tree)
-- `loadArtifactDetailLocal` may need adaptation since
-  profiles are flat files not directories — OR create
-  a simpler `loadProfileDetailLocal` that reads the
-  single `.md` file
+  possible, with simplified handling for single-file
+  structure (no file tree, no acknowledgments)
 
 ### Deployment Verification
 
@@ -95,10 +97,21 @@ roles and their scoped permissions.
 
 ### Testing
 
-- Table-driven handler tests (same pattern as rules)
+- Table-driven handler tests for profiles (same pattern
+  as rules)
 - Test routing: listing 200, detail 200, version 200,
   raw file 200, unknown profile 404
 - Test archive download works locally
+- Regression tests after ArtifactDetail refactor:
+  - Skills listing still returns 200
+  - Skill detail page still renders
+  - Skill archive download works
+  - Rules listing still returns 200
+  - Rule detail page still renders
+  - Rule archive download works
+  - MCP listing (if applicable) still works
+- All existing tests must pass unchanged or be
+  updated to use new type
 
 ## Out of Scope
 
