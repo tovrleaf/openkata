@@ -4,24 +4,24 @@ import (
 	"fmt"
 )
 
-templ SkillDetailPage(skill SkillDetail) {
-	@Layout(skill.Name) {
+templ RuleDetailPage(rule RuleDetail) {
+	@Layout(rule.Name) {
 		@Nav()
 
-		<main data-artifact-name={ skill.Name } data-artifact-version={ skill.Version } data-artifact-path="skills">
+		<main data-artifact-name={ rule.Name } data-artifact-version={ rule.Version } data-artifact-path="rules">
 			<section class="detail-header">
 				<div class="detail-title-row">
 					<div class="hero--kanji">
-						<span class="hero-kanji">技</span>
+						<span class="hero-kanji">則</span>
 						<div class="hero-text">
-							<span class="hero-label">Skill</span>
-							<h1>{ skill.Name }</h1>
+							<span class="hero-label">Rule</span>
+							<h1>{ rule.Name }</h1>
 						</div>
 					</div>
-					if len(skill.Versions) > 1 {
+					if len(rule.Versions) > 1 {
 						<select class="version-select">
-							for i, v := range skill.Versions {
-								if v == skill.Version {
+							for i, v := range rule.Versions {
+								if v == rule.Version {
 									if i == 0 {
 										<option value={ v } selected>v{ v } (Latest)</option>
 									} else {
@@ -37,36 +37,36 @@ templ SkillDetailPage(skill SkillDetail) {
 							}
 						</select>
 					} else {
-						<span class="detail-version">v{ skill.Version }</span>
+						<span class="detail-version">v{ rule.Version }</span>
 					}
 				</div>
 				<p class="detail-meta">
-					<span class="detail-downloads">{ fmt.Sprintf("%d", skill.Downloads) } ↓</span>
+					<span class="detail-downloads">{ fmt.Sprintf("%d", rule.Downloads) } ↓</span>
 					<span class="artifact-sep">|</span>
-					<a class="detail-download" href={ templ.SafeURL(fmt.Sprintf("/skills/%s/archive", skill.Name)) }>.tar.gz</a>
+					<a class="detail-download" href={ templ.SafeURL(fmt.Sprintf("/rules/%s/archive", rule.Name)) }>.tar.gz</a>
 				</p>
-				if len(SplitTags(skill.Tags)) > 0 {
+				if len(SplitTags(rule.Tags)) > 0 {
 					<div class="artifact-tags">
-						for _, tag := range SplitTags(skill.Tags) {
+						for _, tag := range SplitTags(rule.Tags) {
 							<span class={ TagClass(tag) }>{ tag }</span>
 						}
 					</div>
 				}
 			</section>
 
-			if skill.Acknowledgments != "" {
-				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"changelog", "Changelog"}, {"acknowledgments", "Acknowledgments"}}, "Skill sections")
+			if rule.Acknowledgments != "" {
+				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"changelog", "Changelog"}, {"acknowledgments", "Acknowledgments"}}, "Rule sections")
 			} else {
-				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"changelog", "Changelog"}}, "Skill sections")
+				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"changelog", "Changelog"}}, "Rule sections")
 			}
 
 			<section class="tab-panel active" id="panel-overview">
-				if skill.Description != "" {
-					<p class="detail-description">{ skill.Description }</p>
+				if rule.Description != "" {
+					<p class="detail-description">{ rule.Description }</p>
 				}
-				if skill.Docs != "" {
+				if rule.Docs != "" {
 					<div class="detail-docs">
-						@templ.Raw(skill.Docs)
+						@templ.Raw(rule.Docs)
 					</div>
 				} else {
 					<p class="comment">No documentation available.</p>
@@ -74,23 +74,22 @@ templ SkillDetailPage(skill SkillDetail) {
 			</section>
 
 			<section class="tab-panel" id="panel-files">
-				@FileViewer(skill.Files, skill.FileContents, "skills", skill.Name, skill.Version)
+				@FileViewer(rule.Files, rule.FileContents, "rules", rule.Name, rule.Version)
 			</section>
 
 			<section class="tab-panel" id="panel-changelog">
-				if skill.Changelog != "" {
-					@templ.Raw(skill.Changelog)
+				if rule.Changelog != "" {
+					@templ.Raw(rule.Changelog)
 				} else {
 					<p class="comment">No changelog available.</p>
 				}
 			</section>
 
-			if skill.Acknowledgments != "" {
+			if rule.Acknowledgments != "" {
 				<section class="tab-panel" id="panel-acknowledgments">
-					@templ.Raw(skill.Acknowledgments)
+					@templ.Raw(rule.Acknowledgments)
 				</section>
 			}
-
 		</main>
 
 		<footer class="footer">

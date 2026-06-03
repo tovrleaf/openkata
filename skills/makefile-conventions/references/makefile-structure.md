@@ -50,18 +50,22 @@ Each `.mk` file delegates to a subdirectory Makefile:
 test:
 	@$(MAKE) -C mk/test $(filter-out $@,$(MAKECMDGOALS))
 
-test-%:
-	@$(MAKE) -C mk/test $*
-
-%:
+# Valid subcommands for 'make test <sub>'
+ifneq ($(filter test,$(MAKECMDGOALS)),)
+.PHONY: sh yaml md html
+sh yaml md html:
 	@:
+endif
 ```
 
 The `filter-out` pattern passes subcommands through:
 `make test sh` calls `$(MAKE) -C mk/test sh`.
 
-The catch-all `%: @:` prevents "No rule to make target"
-errors for subcommand arguments.
+The conditional block declares valid subcommands as explicit
+no-op targets, active only when `test` is on the command
+line. This prevents "No rule to make target" for valid
+subcommands while still erroring on typos like
+`make test typo`.
 
 ## Domain Makefile (mk/test/Makefile)
 

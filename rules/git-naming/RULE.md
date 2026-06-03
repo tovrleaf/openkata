@@ -63,3 +63,13 @@ Discovery hints:
     | xargs grep -o '"model_name": "[^"]*"' | cut -d'"' -f4`
 - Claude Code: read `ANTHROPIC_MODEL` env var
 - Others: use the model name from your session context
+
+## Squash Merges
+
+When squash-merging a PR, use the PR title as the commit
+header and the PR description as the body. Do not use
+GitHub's "Commit messages" option — it concatenates
+individual commits into noise.
+
+The individual commits with spec references and trailers
+remain in the branch history for auditability.
