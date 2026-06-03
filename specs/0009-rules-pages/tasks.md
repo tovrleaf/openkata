@@ -75,7 +75,7 @@ Prerequisite: spec 0010 (CSS rename) must be complete.
 - **Verify**: `go build -o bin/openkata-web ./cmd/openkata-web/ && go test ./cmd/openkata-web/...`
 
 ### 6. Add rule detail handler and template
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Build `/rules/:name` and `/rules/:name/:version`
   detail pages with Overview, Files, Changelog,
   Acknowledgments tabs
@@ -114,6 +114,12 @@ Prerequisite: spec 0010 (CSS rename) must be complete.
 
 ## Progress Log
 
+- 2026-06-03: Task 6 done — created rule_detail.templ
+  mirroring skill detail (則 kanji, tabs, file viewer,
+  changelog, acknowledgments). Extended handleRules with
+  detail routing (/rules/:name, /rules/:name/:version,
+  raw file serving). Added loadRuleDetailVersion using
+  shared helpers. templ generate + build + tests pass.
 - 2026-06-03: Task 5 done — rewrote rules.templ to match
   skills listing style: kanji hero (則), numbered expandable
   entries, tags, version, downloads, "Open" button linking

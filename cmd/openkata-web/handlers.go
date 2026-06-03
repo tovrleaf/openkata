@@ -661,8 +661,9 @@ func handleRules(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// /rules/:name/archive or /rules/:name/archive/:version
 	parts := strings.Split(strings.TrimSuffix(path, "/"), "/")
+
+	// /rules/:name/archive or /rules/:name/archive/:version
 	if len(parts) >= 2 && parts[1] == "archive" {
 		version := ""
 		if len(parts) >= 3 {
@@ -672,7 +673,87 @@ func handleRules(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// /rules/:name/raw/:filepath... — latest version, redirect
+	if len(parts) >= 3 && parts[1] == "raw" {
+		name := parts[0]
+		rule := loadRuleDetailVersion(r.Context(), name, "")
+		if rule == nil {
+			http.NotFound(w, r)
+			return
+		}
+		filePath := strings.Join(parts[2:], "/")
+		http.Redirect(w, r, "/rules/"+name+"/"+rule.Version+"/raw/"+filePath, http.StatusFound)
+		return
+	}
+
+	// /rules/:name/:version/raw/:filepath...
+	if len(parts) >= 4 && parts[2] == "raw" {
+		name := parts[0]
+		version := parts[1]
+		filePath := strings.Join(parts[3:], "/")
+		rule := loadRuleDetailVersion(r.Context(), name, version)
+		if rule == nil {
+			http.NotFound(w, r)
+			return
+		}
+		content, ok := rule.FileContents[filePath]
+		if !ok {
+			http.NotFound(w, r)
+			return
+		}
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.Write([]byte(content))
+		return
+	}
+
+	// /rules/:name/:version — detail for specific version
+	if len(parts) == 2 {
+		rule := loadRuleDetailVersion(r.Context(), parts[0], parts[1])
+		if rule == nil {
+			http.NotFound(w, r)
+			return
+		}
+		templates.RuleDetailPage(*rule).Render(r.Context(), w)
+		return
+	}
+
+	// /rules/:name — show latest version
+	if len(parts) == 1 {
+		rule := loadRuleDetailVersion(r.Context(), parts[0], "")
+		if rule == nil {
+			http.NotFound(w, r)
+			return
+		}
+		templates.RuleDetailPage(*rule).Render(r.Context(), w)
+		return
+	}
+
 	http.NotFound(w, r)
+}
+
+func loadRuleDetailVersion(ctx context.Context, name, version string) *templates.RuleDetail {
+	var sd *templates.SkillDetail
+	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") == "" {
+		sd = loadArtifactDetailLocal("rules", name, version, "RULE.md")
+	} else {
+		sd = loadArtifactDetailS3(ctx, "rules", name, version, "RULE.md")
+	}
+	if sd == nil {
+		return nil
+	}
+	return &templates.RuleDetail{
+		Name:            sd.Name,
+		Version:         sd.Version,
+		Description:     sd.Description,
+		Tags:            sd.Tags,
+		Versions:        sd.Versions,
+		Downloads:       sd.Downloads,
+		Docs:            sd.Docs,
+		Changelog:       sd.Changelog,
+		Acknowledgments: sd.Acknowledgments,
+		Files:           sd.Files,
+		FileContents:    sd.FileContents,
+	}
 }
 
 func loadRulesList(ctx context.Context) []templates.SkillEntry {
