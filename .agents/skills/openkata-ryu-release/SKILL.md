@@ -99,17 +99,22 @@ for maintainers of this repository only.
    create a git tag `<directory-path>/v<new-version>`. Skip tagging for
    local artifacts in `.agents/` — they are versioned but not distributed.
 
-10. **Run evals** — Delegate to the `openkata-eval-runner`
+10. **Regenerate versions.json** — Run `make versions` to update
+    `web/static/versions.json` with the new version. Stage and
+    amend the release commit to include the updated file:
+    `git add web/static/versions.json && git commit --amend --no-edit`
+
+11. **Run evals** — Delegate to the `openkata-eval-runner`
     skill. It will regenerate scenarios, run evals, and iterate
     fixes until 95%+ is achieved.
 
-11. **Publish to registry** — If the artifact is distributable
+12. **Publish to registry** — If the artifact is distributable
     (`skills/` or `rules/`) and has a `tile.json`, ask: "Want me
     to publish this to the Tessl registry? (Enables security
     scanning.)" If yes, run `tessl tile publish <directory-path>`.
     Skip this step for local artifacts (`.agents/`).
 
-12. **Confirm** — Show the user what was done: version bumped, changelog
+13. **Confirm** — Show the user what was done: version bumped, changelog
     entry, commit hash, and tag name (if tagged). Ask if they want to
     push.
 

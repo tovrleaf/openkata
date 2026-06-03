@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.1] - 2026-06-03
+
+### Added
+
+- Regenerate versions.json after tagging to ensure local visibility
+
 ## 1.0.0 — 2026-05-15
 
 ### Added
