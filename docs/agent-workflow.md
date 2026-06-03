@@ -74,3 +74,40 @@ flowchart TD
 | adr-author | Architecture decisions | docs/adr/ |
 | kata-author | Skills, rules, profiles | skills/, rules/, .agents/ |
 | dojo-master | Coordination | nothing (delegates only) |
+
+## Skill & Rule Usage
+
+### Distributable Skills (skills/)
+
+| Skill | Used by | When |
+|-------|---------|------|
+| spec-workflow | spec-planner | Feature planning lifecycle |
+| commit-conventions | all agents | Every commit |
+| create-skill | kata-author | Creating new skills |
+| create-rule | kata-author | Creating new rules |
+| create-profile | kata-author | Creating new agent profiles |
+| create-adr | adr-author | Recording architecture decisions |
+| github-create-pr | any agent (on push) | Opening pull requests |
+| git-worktree | any agent | Parallel branch work |
+| makefile-conventions | backend-developer | Makefile changes |
+| grill-me | spec-validator | Challenging implementations against spec |
+
+### Local Skills (.agents/skills/)
+
+| Skill | Used by | When |
+|-------|---------|------|
+| openkata-skill-conventions | kata-author | Alongside create-skill for project-specific conventions |
+| openkata-rule-conventions | kata-author | Alongside create-rule for project-specific conventions |
+| openkata-review-skill | kata-author | Reviewing/auditing skills |
+| openkata-review-rule | kata-author | Reviewing/auditing rules |
+| openkata-ryu-release | kata-author | Release workflow (diff, bump, changelog, commit, tag) |
+| openkata-eval-runner | kata-author | Running eval scenarios |
+
+### Rules (rules/)
+
+| Rule | Used by | When |
+|------|---------|------|
+| git-naming | all agents | Branch names, commit messages, Assisted-by trailers |
+| markdown-style | kata-author, adr-author, spec-planner | Any markdown file |
+| bash-style | any agent writing scripts | Shell scripts |
+| design-system | frontend-developer | All template/CSS work |
