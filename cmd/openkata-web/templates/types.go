@@ -26,3 +26,17 @@ type SkillDetail struct {
 	Files           []string
 	FileContents    map[string]string
 }
+
+type RuleDetail struct {
+	Name            string
+	Version         string
+	Description     string
+	Tags            string
+	Versions        []string
+	Downloads       int
+	Docs            string
+	Changelog       string
+	Acknowledgments string
+	Files           []string
+	FileContents    map[string]string
+}

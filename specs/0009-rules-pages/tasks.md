@@ -46,7 +46,7 @@ Prerequisite: spec 0010 (CSS rename) must be complete.
 - **Verify**: `go build -o bin/openkata-web ./cmd/openkata-web/`
 
 ### 4. Extract shared handler helpers
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Refactor handlers into shared helpers:
   `loadArtifactList`, shared detail loader (interface),
   parameterized `gitVersions`, `buildFileTree` with
@@ -114,6 +114,11 @@ Prerequisite: spec 0010 (CSS rename) must be complete.
 
 ## Progress Log
 
+- 2026-06-03: Task 4 done — extracted shared helpers:
+  loadArtifactList, loadDownloadCounts, loadArtifactDetailLocal,
+  loadArtifactDetailS3. Parameterized gitVersions with
+  artifactType. Added RuleDetail type. All three list loaders
+  delegate to loadArtifactList. Build + tests pass.
 - 2026-06-03: Task 3 done — extracted TabBar and FileViewer
   shared components into tabs.templ and file_viewer.templ,
   added TabDef type to types.go, refactored skill_detail.templ

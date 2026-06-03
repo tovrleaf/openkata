@@ -38,14 +38,14 @@ func isExcludedFile(path string) bool {
 	return false
 }
 
-// gitVersions returns released versions for a skill by reading git tags.
-func gitVersions(name string) []string {
-	pattern := "skills/" + name + "/v*"
+// gitVersions returns released versions for an artifact by reading git tags.
+func gitVersions(artifactType, name string) []string {
+	pattern := artifactType + "/" + name + "/v*"
 	out, err := exec.Command("git", "tag", "-l", pattern).Output()
 	if err != nil {
 		return nil
 	}
-	prefix := "skills/" + name + "/v"
+	prefix := artifactType + "/" + name + "/v"
 	var versions []string
 	for _, line := range strings.Split(strings.TrimSpace(string(out)), "\n") {
 		line = strings.TrimSpace(line)
@@ -179,73 +179,94 @@ func loadVersionsJSON(ctx context.Context) []byte {
 }
 
 func loadSkillsList(ctx context.Context) []templates.SkillEntry {
+	return loadArtifactList(ctx, "skills")
+}
+
+func loadDownloadCounts(ctx context.Context) map[string]int {
+	counts := make(map[string]int)
+	if dbClient == nil {
+		return counts
+	}
+	scanResp, err := dbClient.Scan(ctx, &dynamodb.ScanInput{
+		TableName: &table,
+	})
+	if err != nil {
+		return counts
+	}
+	for _, item := range scanResp.Items {
+		artAttr, ok := item["artifact"].(*types.AttributeValueMemberS)
+		if !ok {
+			continue
+		}
+		dlAttr, ok := item["downloads"].(*types.AttributeValueMemberN)
+		if !ok {
+			continue
+		}
+		n, _ := strconv.Atoi(dlAttr.Value)
+		counts[artAttr.Value] = n
+	}
+	return counts
+}
+
+func loadArtifactList(ctx context.Context, artifactType string) []templates.SkillEntry {
 	data := loadVersionsJSON(ctx)
 	if data == nil {
 		return nil
 	}
 
-	var versions struct {
-		Skills map[string]struct {
-			Version     string `json:"version"`
-			Description string `json:"description"`
-			Tags        string `json:"tags"`
-		} `json:"skills"`
-	}
-	if err := json.Unmarshal(data, &versions); err != nil {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
 		return nil
 	}
 
-	// Read download counts
-	counts := make(map[string]int)
-	if dbClient != nil {
-		scanResp, err := dbClient.Scan(ctx, &dynamodb.ScanInput{
-			TableName: &table,
-		})
-		if err == nil {
-			for _, item := range scanResp.Items {
-				artAttr, ok := item["artifact"].(*types.AttributeValueMemberS)
-				if !ok {
-					continue
-				}
-				dlAttr, ok := item["downloads"].(*types.AttributeValueMemberN)
-				if !ok {
-					continue
-				}
-				n, _ := strconv.Atoi(dlAttr.Value)
-				counts[artAttr.Value] = n
-			}
-		}
+	artifactData, ok := raw[artifactType]
+	if !ok {
+		return nil
 	}
 
-	var skills []templates.SkillEntry
-	for name, info := range versions.Skills {
+	var artifacts map[string]struct {
+		Version     string `json:"version"`
+		Description string `json:"description"`
+		Tags        string `json:"tags"`
+	}
+	if err := json.Unmarshal(artifactData, &artifacts); err != nil {
+		return nil
+	}
+
+	counts := loadDownloadCounts(ctx)
+
+	var entries []templates.SkillEntry
+	for name, info := range artifacts {
 		if info.Version == "0.0.0" {
 			continue
 		}
-		skills = append(skills, templates.SkillEntry{
+		entries = append(entries, templates.SkillEntry{
 			Name:        name,
 			Version:     info.Version,
 			Description: info.Description,
 			Tags:        info.Tags,
-			Downloads:   counts["skills/"+name],
+			Downloads:   counts[artifactType+"/"+name],
 		})
 	}
-	sort.Slice(skills, func(i, j int) bool { return skills[i].Name < skills[j].Name })
-	return skills
+	sort.Slice(entries, func(i, j int) bool { return entries[i].Name < entries[j].Name })
+	return entries
 }
 
 func loadSkillDetailVersion(ctx context.Context, name, version string) *templates.SkillDetail {
 	// Dev mode: read from local filesystem
 	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") == "" {
-		return loadSkillDetailLocal(name, version)
+		return loadArtifactDetailLocal("skills", name, version, "SKILL.md")
 	}
+	return loadArtifactDetailS3(ctx, "skills", name, version, "SKILL.md")
+}
 
+func loadArtifactDetailS3(ctx context.Context, artifactType, name, version, docFile string) *templates.SkillDetail {
 	if s3Client == nil {
 		return nil
 	}
 
 	if version == "" {
-		version = resolveLatestVersion(ctx, "skills", name)
+		version = resolveLatestVersion(ctx, artifactType, name)
 		if version == "" {
 			return nil
 		}
@@ -262,24 +283,32 @@ func loadSkillDetailVersion(ctx context.Context, name, version string) *template
 	}
 	defer resp.Body.Close()
 
-	var versions struct {
-		Skills map[string]struct {
-			Version     string `json:"version"`
-			Description string `json:"description"`
-			Tags        string `json:"tags"`
-		} `json:"skills"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&versions); err != nil {
+	var raw map[string]json.RawMessage
+	if err := json.NewDecoder(resp.Body).Decode(&raw); err != nil {
 		return nil
 	}
 
-	info, ok := versions.Skills[name]
+	artifactData, ok := raw[artifactType]
 	if !ok {
 		return nil
 	}
 
-	// List files in the skill prefix
-	prefix := "skills/" + name + "/" + version + "/"
+	var artifacts map[string]struct {
+		Version     string `json:"version"`
+		Description string `json:"description"`
+		Tags        string `json:"tags"`
+	}
+	if err := json.Unmarshal(artifactData, &artifacts); err != nil {
+		return nil
+	}
+
+	info, ok := artifacts[name]
+	if !ok {
+		return nil
+	}
+
+	// List files in the artifact prefix
+	prefix := artifactType + "/" + name + "/" + version + "/"
 	listResp, err := s3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
 		Bucket: &bucket,
 		Prefix: &prefix,
@@ -298,26 +327,8 @@ func loadSkillDetailVersion(ctx context.Context, name, version string) *template
 	}
 
 	// Get download count
-	if dbClient != nil {
-		scanResp, err := dbClient.Scan(ctx, &dynamodb.ScanInput{
-			TableName: &table,
-		})
-		if err == nil {
-			for _, item := range scanResp.Items {
-				artAttr, ok := item["artifact"].(*types.AttributeValueMemberS)
-				if !ok {
-					continue
-				}
-				if artAttr.Value == "skills/"+name {
-					dlAttr, ok := item["downloads"].(*types.AttributeValueMemberN)
-					if ok {
-						n, _ := strconv.Atoi(dlAttr.Value)
-						detail.Downloads = n
-					}
-				}
-			}
-		}
-	}
+	counts := loadDownloadCounts(ctx)
+	detail.Downloads = counts[artifactType+"/"+name]
 
 	// Fetch key files and build file list
 	for _, obj := range listResp.Contents {
@@ -329,7 +340,7 @@ func loadSkillDetailVersion(ctx context.Context, name, version string) *template
 		// Fetch content for special files regardless of exclusion
 		var target *string
 		switch relPath {
-		case "SKILL.md":
+		case docFile:
 			target = &detail.Docs
 		case "CHANGELOG.md":
 			target = &detail.Changelog
@@ -387,9 +398,9 @@ func loadSkillDetailVersion(ctx context.Context, name, version string) *template
 	return detail
 }
 
-func loadSkillDetailLocal(name, version string) *templates.SkillDetail {
-	dir := "skills/" + name
-	mdPath := dir + "/SKILL.md"
+func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templates.SkillDetail {
+	dir := artifactType + "/" + name
+	mdPath := dir + "/" + docFile
 	data, err := os.ReadFile(mdPath)
 	if err != nil {
 		return nil
@@ -399,23 +410,26 @@ func loadSkillDetailLocal(name, version string) *templates.SkillDetail {
 	var latestVersion, description, tags string
 	vjData, err := os.ReadFile("web/static/versions.json")
 	if err == nil {
-		var vj struct {
-			Skills map[string]struct {
-				Version     string `json:"version"`
-				Description string `json:"description"`
-				Tags        string `json:"tags"`
-			} `json:"skills"`
-		}
-		if json.Unmarshal(vjData, &vj) == nil {
-			if info, ok := vj.Skills[name]; ok {
-				latestVersion = info.Version
-				description = info.Description
-				tags = info.Tags
+		var raw map[string]json.RawMessage
+		if json.Unmarshal(vjData, &raw) == nil {
+			if artifactData, ok := raw[artifactType]; ok {
+				var artifacts map[string]struct {
+					Version     string `json:"version"`
+					Description string `json:"description"`
+					Tags        string `json:"tags"`
+				}
+				if json.Unmarshal(artifactData, &artifacts) == nil {
+					if info, ok := artifacts[name]; ok {
+						latestVersion = info.Version
+						description = info.Description
+						tags = info.Tags
+					}
+				}
 			}
 		}
 	}
 
-	allVersions := gitVersions(name)
+	allVersions := gitVersions(artifactType, name)
 
 	// If no version specified, use latest
 	if version == "" {
@@ -662,55 +676,7 @@ func handleRules(w http.ResponseWriter, r *http.Request) {
 }
 
 func loadRulesList(ctx context.Context) []templates.SkillEntry {
-	data := loadVersionsJSON(ctx)
-	if data == nil {
-		return nil
-	}
-
-	var versions struct {
-		Rules map[string]struct {
-			Version     string `json:"version"`
-			Description string `json:"description"`
-			Tags        string `json:"tags"`
-		} `json:"rules"`
-	}
-	if err := json.Unmarshal(data, &versions); err != nil {
-		return nil
-	}
-
-	counts := make(map[string]int)
-	if dbClient != nil {
-		scanResp, err := dbClient.Scan(ctx, &dynamodb.ScanInput{
-			TableName: &table,
-		})
-		if err == nil {
-			for _, item := range scanResp.Items {
-				artAttr, ok := item["artifact"].(*types.AttributeValueMemberS)
-				if !ok {
-					continue
-				}
-				dlAttr, ok := item["downloads"].(*types.AttributeValueMemberN)
-				if !ok {
-					continue
-				}
-				n, _ := strconv.Atoi(dlAttr.Value)
-				counts[artAttr.Value] = n
-			}
-		}
-	}
-
-	var rules []templates.SkillEntry
-	for name, info := range versions.Rules {
-		rules = append(rules, templates.SkillEntry{
-			Name:        name,
-			Version:     info.Version,
-			Description: info.Description,
-			Tags:        info.Tags,
-			Downloads:   counts["rules/"+name],
-		})
-	}
-	sort.Slice(rules, func(i, j int) bool { return rules[i].Name < rules[j].Name })
-	return rules
+	return loadArtifactList(ctx, "rules")
 }
 
 func handleArchive(w http.ResponseWriter, r *http.Request, artifactType, name, version string) {
@@ -902,53 +868,5 @@ func handleProfiles(w http.ResponseWriter, r *http.Request) {
 }
 
 func loadProfilesList(ctx context.Context) []templates.SkillEntry {
-	data := loadVersionsJSON(ctx)
-	if data == nil {
-		return nil
-	}
-
-	var versions struct {
-		Profiles map[string]struct {
-			Version     string `json:"version"`
-			Description string `json:"description"`
-			Tags        string `json:"tags"`
-		} `json:"profiles"`
-	}
-	if err := json.Unmarshal(data, &versions); err != nil {
-		return nil
-	}
-
-	counts := make(map[string]int)
-	if dbClient != nil {
-		scanResp, err := dbClient.Scan(ctx, &dynamodb.ScanInput{
-			TableName: &table,
-		})
-		if err == nil {
-			for _, item := range scanResp.Items {
-				artAttr, ok := item["artifact"].(*types.AttributeValueMemberS)
-				if !ok {
-					continue
-				}
-				dlAttr, ok := item["downloads"].(*types.AttributeValueMemberN)
-				if !ok {
-					continue
-				}
-				n, _ := strconv.Atoi(dlAttr.Value)
-				counts[artAttr.Value] = n
-			}
-		}
-	}
-
-	var profiles []templates.SkillEntry
-	for name, info := range versions.Profiles {
-		profiles = append(profiles, templates.SkillEntry{
-			Name:        name,
-			Version:     info.Version,
-			Description: info.Description,
-			Tags:        info.Tags,
-			Downloads:   counts["profiles/"+name],
-		})
-	}
-	sort.Slice(profiles, func(i, j int) bool { return profiles[i].Name < profiles[j].Name })
-	return profiles
+	return loadArtifactList(ctx, "profiles")
 }

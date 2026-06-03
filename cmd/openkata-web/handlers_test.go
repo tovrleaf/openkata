@@ -221,9 +221,9 @@ func TestIsExcludedFile(t *testing.T) {
 func TestGitVersions(t *testing.T) {
 	// gitVersions shells out to git, so we test parsing logic indirectly.
 	// This test verifies it returns nil for a non-existent skill (no tags).
-	versions := gitVersions("nonexistent-skill-xyz-12345")
+	versions := gitVersions("skills", "nonexistent-skill-xyz-12345")
 	if versions != nil {
-		t.Errorf("gitVersions(nonexistent) = %v, want nil", versions)
+		t.Errorf("gitVersions(skills, nonexistent) = %v, want nil", versions)
 	}
 }
 
@@ -548,19 +548,19 @@ func TestLoadSkillDetailLocalFileContents(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	detail := loadSkillDetailLocal("test-skill", "1.2.0")
+	detail := loadArtifactDetailLocal("skills", "test-skill", "1.2.0", "SKILL.md")
 	if detail == nil {
-		t.Fatal("loadSkillDetailLocal returned nil")
+		t.Fatal("loadArtifactDetailLocal returned nil")
 	}
 
 	// SKILL.md should be in FileContents (not excluded)
 	if _, ok := detail.FileContents["SKILL.md"]; !ok {
-		t.Error("loadSkillDetailLocal() FileContents missing SKILL.md")
+		t.Error("loadArtifactDetailLocal() FileContents missing SKILL.md")
 	}
 
 	// Rendered version should also exist
 	if _, ok := detail.FileContents["__rendered__SKILL.md"]; !ok {
-		t.Error("loadSkillDetailLocal() FileContents missing __rendered__SKILL.md")
+		t.Error("loadArtifactDetailLocal() FileContents missing __rendered__SKILL.md")
 	}
 
 	// SKILL.md should also be in Files list
@@ -572,11 +572,11 @@ func TestLoadSkillDetailLocalFileContents(t *testing.T) {
 		}
 	}
 	if !found {
-		t.Error("loadSkillDetailLocal() Files list missing SKILL.md")
+		t.Error("loadArtifactDetailLocal() Files list missing SKILL.md")
 	}
 
 	// Docs (overview) should also be populated
 	if detail.Docs == "" {
-		t.Error("loadSkillDetailLocal() Docs is empty")
+		t.Error("loadArtifactDetailLocal() Docs is empty")
 	}
 }
