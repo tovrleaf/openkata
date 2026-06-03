@@ -1,0 +1,13 @@
+package templates
+
+templ TabBar(tabs []TabDef, ariaLabel string) {
+	<nav class="tabs" aria-label={ ariaLabel }>
+		for i, t := range tabs {
+			if i == 0 {
+				<button class="tab active" data-tab={ t.ID }>{ t.Label }</button>
+			} else {
+				<button class="tab" data-tab={ t.ID }>{ t.Label }</button>
+			}
+		}
+	</nav>
+}

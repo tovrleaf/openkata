@@ -1,0 +1,50 @@
+package templates
+
+import (
+	"fmt"
+	"strings"
+)
+
+templ FileViewer(files []string, fileContents map[string]string, artifactType, name, version string) {
+	if len(files) > 0 {
+		<div class="file-tree" id="file-tree">
+			@templ.Raw(buildFileTree(files, name, version))
+		</div>
+		<div class="file-blocks">
+			for _, f := range files {
+				<details class="file-block" id={ "file-" + fileID(f) }>
+					<summary class="file-block-header">
+						<span class="file-block-name">{ f }</span>
+						<span class="file-block-modes">
+							if strings.HasSuffix(f, ".md") {
+								if _, ok := fileContents["__rendered__"+f]; ok {
+									<button class="file-mode-btn" data-view="preview" data-file={ f }>Preview</button>
+									<span class="file-mode-sep">|</span>
+									<button class="file-mode-btn" data-view="code" data-file={ f }>Code</button>
+									<span class="file-mode-sep">|</span>
+								}
+							}
+							<a class="file-mode-btn" href={ templ.SafeURL(fmt.Sprintf("/%s/%s/%s/raw/%s", artifactType, name, version, f)) } target="_blank" rel="noopener" onclick="event.stopPropagation()">Raw</a>
+						</span>
+					</summary>
+					<div class="file-block-content">
+						<div class="file-block-body" data-file={ f }>
+							if strings.HasSuffix(f, ".md") {
+								if rendered, ok := fileContents["__rendered__"+f]; ok {
+									<div class="file-preview" data-file={ f }>@templ.Raw(rendered)</div>
+									<pre class="file-code" data-file={ f } style="display:none"><code>{ fileContents[f] }</code></pre>
+								} else {
+									<pre class="file-code" data-file={ f }><code>{ fileContents[f] }</code></pre>
+								}
+							} else {
+								<pre class="file-code" data-file={ f }><code>{ fileContents[f] }</code></pre>
+							}
+						</div>
+					</div>
+				</details>
+			}
+		</div>
+	} else {
+		<p class="comment">No files available.</p>
+	}
+}

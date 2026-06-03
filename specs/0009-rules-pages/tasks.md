@@ -32,7 +32,7 @@ Prerequisite: spec 0010 (CSS rename) must be complete.
 - **Verify**: Manual test of skill detail page interactions
 
 ### 3. Extract shared template components
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Create reusable templ components for detail
   pages: tab bar, file tree, file blocks
 - **Boundary**: `cmd/openkata-web/templates/tabs.templ`
@@ -114,6 +114,11 @@ Prerequisite: spec 0010 (CSS rename) must be complete.
 
 ## Progress Log
 
+- 2026-06-03: Task 3 done — extracted TabBar and FileViewer
+  shared components into tabs.templ and file_viewer.templ,
+  added TabDef type to types.go, refactored skill_detail.templ
+  to compose from shared components, templ generate + build
+  + tests pass.
 - 2026-06-03: Task 2 done — extracted inline JS from
   skill_detail.templ to web/static/js/detail.js,
   parameterized via data-artifact-path attribute,

@@ -1,5 +1,10 @@
 package templates
 
+type TabDef struct {
+	ID    string
+	Label string
+}
+
 type SkillEntry struct {
 	Name        string
 	Version     string

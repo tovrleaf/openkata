@@ -2,7 +2,6 @@ package templates
 
 import (
 	"fmt"
-	"strings"
 )
 
 templ SkillDetailPage(skill SkillDetail) {
@@ -55,14 +54,11 @@ templ SkillDetailPage(skill SkillDetail) {
 				}
 			</section>
 
-			<nav class="tabs" aria-label="Skill sections">
-				<button class="tab active" data-tab="overview">Overview</button>
-				<button class="tab" data-tab="files">Files</button>
-				<button class="tab" data-tab="changelog">Changelog</button>
-				if skill.Acknowledgments != "" {
-					<button class="tab" data-tab="acknowledgments">Acknowledgments</button>
-				}
-			</nav>
+			if skill.Acknowledgments != "" {
+				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"changelog", "Changelog"}, {"acknowledgments", "Acknowledgments"}}, "Skill sections")
+			} else {
+				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"changelog", "Changelog"}}, "Skill sections")
+			}
 
 			<section class="tab-panel active" id="panel-overview">
 				if skill.Description != "" {
@@ -78,47 +74,7 @@ templ SkillDetailPage(skill SkillDetail) {
 			</section>
 
 			<section class="tab-panel" id="panel-files">
-				if len(skill.Files) > 0 {
-					<div class="file-tree" id="file-tree">
-						@templ.Raw(buildFileTree(skill.Files, skill.Name, skill.Version))
-					</div>
-					<div class="file-blocks">
-						for _, f := range skill.Files {
-							<details class="file-block" id={ "file-" + fileID(f) }>
-								<summary class="file-block-header">
-									<span class="file-block-name">{ f }</span>
-									<span class="file-block-modes">
-										if strings.HasSuffix(f, ".md") {
-											if _, ok := skill.FileContents["__rendered__"+f]; ok {
-												<button class="file-mode-btn" data-view="preview" data-file={ f }>Preview</button>
-												<span class="file-mode-sep">|</span>
-												<button class="file-mode-btn" data-view="code" data-file={ f }>Code</button>
-												<span class="file-mode-sep">|</span>
-											}
-										}
-										<a class="file-mode-btn" href={ templ.SafeURL(fmt.Sprintf("/skills/%s/%s/raw/%s", skill.Name, skill.Version, f)) } target="_blank" rel="noopener" onclick="event.stopPropagation()">Raw</a>
-									</span>
-								</summary>
-								<div class="file-block-content">
-									<div class="file-block-body" data-file={ f }>
-										if strings.HasSuffix(f, ".md") {
-											if rendered, ok := skill.FileContents["__rendered__"+f]; ok {
-												<div class="file-preview" data-file={ f }>@templ.Raw(rendered)</div>
-												<pre class="file-code" data-file={ f } style="display:none"><code>{ skill.FileContents[f] }</code></pre>
-											} else {
-												<pre class="file-code" data-file={ f }><code>{ skill.FileContents[f] }</code></pre>
-											}
-										} else {
-											<pre class="file-code" data-file={ f }><code>{ skill.FileContents[f] }</code></pre>
-										}
-									</div>
-								</div>
-							</details>
-						}
-					</div>
-				} else {
-					<p class="comment">No files available.</p>
-				}
+				@FileViewer(skill.Files, skill.FileContents, "skills", skill.Name, skill.Version)
 			</section>
 
 			<section class="tab-panel" id="panel-changelog">
