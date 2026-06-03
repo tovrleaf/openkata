@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.2] - 2026-06-03
+
+### Added
+
+- Explicit step to resolve open questions before confirming spec
+
 ## 1.0.1 — 2026-06-02
 
 ### Fixed

@@ -10,7 +10,7 @@ description: >
   when the user says "let's spec this", "new feature", or
   "let's plan."
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
   tags: "category:planning, category:workflow"
 ---
 
@@ -85,7 +85,14 @@ Then collect requirements:
 7. **Set active** — Write the directory name to
    `specs/_current`.
 
-8. **Confirm** — Show the spec to the user. Do not proceed
+8. **Resolve open questions** — If the spec has an
+   Open Questions section with unresolved items, walk
+   through each one with the user and get a decision.
+   Update the spec to reflect the answers (move decisions
+   into Requirements or remove the question). Do not
+   proceed with open questions remaining.
+
+9. **Confirm** — Show the spec to the user. Do not proceed
    to the next phase without confirmation.
 
 ## Phase 2: Design (Deep only)
