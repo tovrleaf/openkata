@@ -91,7 +91,7 @@ Prerequisite: spec 0010 (CSS rename) must be complete.
 - **Verify**: `go build -o bin/openkata-web ./cmd/openkata-web/ && go test ./cmd/openkata-web/...`
 
 ### 7. Add handler tests for rules
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Table-driven tests for rules listing and
   detail routing (200, 404 cases, raw file serving)
 - **Boundary**: `cmd/openkata-web/handlers_test.go`
@@ -114,6 +114,11 @@ Prerequisite: spec 0010 (CSS rename) must be complete.
 
 ## Progress Log
 
+- 2026-06-03: Task 7 done — added table-driven handler
+  tests for rules: routing (listing, detail, version,
+  raw file, 404 cases), raw Content-Type, latest redirect,
+  and loadArtifactDetailLocal file contents. All pass
+  with -race.
 - 2026-06-03: Task 6 done — created rule_detail.templ
   mirroring skill detail (則 kanji, tabs, file viewer,
   changelog, acknowledgments). Extended handleRules with

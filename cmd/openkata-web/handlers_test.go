@@ -580,3 +580,163 @@ func TestLoadSkillDetailLocalFileContents(t *testing.T) {
 		t.Error("loadArtifactDetailLocal() Docs is empty")
 	}
 }
+
+func setupTestRuleDir(t *testing.T) string {
+	t.Helper()
+	dir := t.TempDir()
+
+	// Create rule directory with RULE.md
+	ruleDir := filepath.Join(dir, "rules", "test-rule")
+	if err := os.MkdirAll(ruleDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(ruleDir, "RULE.md"), []byte("---\nname: test-rule\n---\n# Test Rule\n\nAlways do the thing."), 0644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(ruleDir, "example.sh"), []byte("#!/bin/bash\necho rule"), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	// Create versions.json
+	versionsDir := filepath.Join(dir, "web", "static")
+	if err := os.MkdirAll(versionsDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	versionsJSON := `{
+  "skills": {},
+  "rules": {
+    "test-rule": {
+      "version": "1.0.0",
+      "description": "A test rule for testing",
+      "tags": "category:testing"
+    }
+  }
+}`
+	if err := os.WriteFile(filepath.Join(versionsDir, "versions.json"), []byte(versionsJSON), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	return dir
+}
+
+func TestHandleRulesRouting(t *testing.T) {
+	origDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chdir(origDir) })
+
+	testDir := setupTestRuleDir(t)
+	if err := os.Chdir(testDir); err != nil {
+		t.Fatal(err)
+	}
+
+	tests := []struct {
+		name     string
+		path     string
+		wantCode int
+		wantBody string
+	}{
+		{name: "listing", path: "/rules/", wantCode: 200},
+		{name: "detail latest", path: "/rules/test-rule", wantCode: 200},
+		{name: "detail specific version", path: "/rules/test-rule/1.0.0", wantCode: 200},
+		{name: "raw file", path: "/rules/test-rule/1.0.0/raw/example.sh", wantCode: 200, wantBody: "#!/bin/bash"},
+		{name: "raw file not found", path: "/rules/test-rule/1.0.0/raw/nope.txt", wantCode: 404},
+		{name: "unknown rule", path: "/rules/no-such-rule", wantCode: 404},
+		{name: "unknown version", path: "/rules/test-rule/9.9.9", wantCode: 404},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest("GET", tt.path, nil)
+			rec := httptest.NewRecorder()
+			handleRules(rec, req)
+
+			if rec.Code != tt.wantCode {
+				t.Errorf("handleRules(%s) status = %d, want %d", tt.path, rec.Code, tt.wantCode)
+			}
+			if tt.wantBody != "" {
+				body := rec.Body.String()
+				if !strings.Contains(body, tt.wantBody) {
+					t.Errorf("handleRules(%s) body missing %q", tt.path, tt.wantBody)
+				}
+			}
+		})
+	}
+}
+
+func TestHandleRulesRawContentType(t *testing.T) {
+	origDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chdir(origDir) })
+
+	testDir := setupTestRuleDir(t)
+	if err := os.Chdir(testDir); err != nil {
+		t.Fatal(err)
+	}
+
+	req := httptest.NewRequest("GET", "/rules/test-rule/1.0.0/raw/example.sh", nil)
+	rec := httptest.NewRecorder()
+	handleRules(rec, req)
+
+	ct := rec.Header().Get("Content-Type")
+	if ct != "text/plain; charset=utf-8" {
+		t.Errorf("handleRules raw Content-Type = %q, want %q", ct, "text/plain; charset=utf-8")
+	}
+}
+
+func TestHandleRulesRawLatestRedirect(t *testing.T) {
+	origDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chdir(origDir) })
+
+	testDir := setupTestRuleDir(t)
+	if err := os.Chdir(testDir); err != nil {
+		t.Fatal(err)
+	}
+
+	req := httptest.NewRequest("GET", "/rules/test-rule/raw/example.sh", nil)
+	rec := httptest.NewRecorder()
+	handleRules(rec, req)
+
+	if rec.Code != http.StatusFound {
+		t.Errorf("handleRules(/rules/test-rule/raw/example.sh) status = %d, want %d", rec.Code, http.StatusFound)
+	}
+	loc := rec.Header().Get("Location")
+	want := "/rules/test-rule/1.0.0/raw/example.sh"
+	if loc != want {
+		t.Errorf("handleRules(/rules/test-rule/raw/example.sh) Location = %q, want %q", loc, want)
+	}
+}
+
+func TestLoadRuleDetailLocalFileContents(t *testing.T) {
+	origDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chdir(origDir) })
+
+	testDir := setupTestRuleDir(t)
+	if err := os.Chdir(testDir); err != nil {
+		t.Fatal(err)
+	}
+
+	detail := loadArtifactDetailLocal("rules", "test-rule", "1.0.0", "RULE.md")
+	if detail == nil {
+		t.Fatal("loadArtifactDetailLocal returned nil")
+	}
+
+	if _, ok := detail.FileContents["RULE.md"]; !ok {
+		t.Error("FileContents missing RULE.md")
+	}
+	if _, ok := detail.FileContents["__rendered__RULE.md"]; !ok {
+		t.Error("FileContents missing __rendered__RULE.md")
+	}
+	if detail.Docs == "" {
+		t.Error("Docs is empty")
+	}
+}
