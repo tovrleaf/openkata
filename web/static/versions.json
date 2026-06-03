@@ -10,11 +10,6 @@
       "description": "Detects architectural decisions in conversation and guides creation of Architecture Decision Records. Activate when the user is making, discussing, or debating: technology choices (languages, frameworks, databases, cloud services), structural patterns (monolith vs microservices, event-driven, CQRS, API design), cross-cutting conventions (error handling, logging, authentication, API versioning), hard-to-reverse decisions (data models, public API contracts, infrastructure topology), or deviations from existing standards. Also activate when the user explicitly asks to create an ADR.",
       "tags": "category:documentation, category:architecture"
     },
-    "create-pr": {
-      "version": "1.0.0",
-      "description": "Creates a pull request using GitHub CLI. Checks for uncommitted changes, verifies branch state, pushes, and opens the PR. Activate when the user says \"create PR\", \"open PR\", \"push and PR\", or work is ready for review.",
-      "tags": "category:workflow, tool:git, tool:github"
-    },
     "create-profile": {
       "version": "1.0.0",
       "description": "Creates sensei profiles that define agent roles with scoped permissions and constraints. Investigates the repo for existing profiles and conventions, writes a focused profile markdown file, and validates scope boundaries. Use when the user wants to create an agent profile, define a specialized role, scope an agent to specific files or domains, set up a new team member persona, restrict what an agent can touch, or wants consistent behavior from a domain-specific agent.",
@@ -26,7 +21,7 @@
       "tags": "category:scaffolding, category:conventions"
     },
     "create-skill": {
-      "version": "1.2.0",
+      "version": "1.2.1",
       "description": "Creates new agent skills following the Agent Skills specification. Investigates the repo for conventions, designs the skill around progressive disclosure, writes SKILL.md with effective trigger descriptions, and validates with representative prompts. Use when the user wants to create a skill, build a SKILL.md, turn a workflow into a reusable skill, teach the agent a new task, scaffold a new agent capability, has a repeated workflow they want to codify, is frustrated by inconsistent agent behavior, or wants to package expertise for a team.",
       "tags": "category:scaffolding"
     },
@@ -34,6 +29,11 @@
       "version": "1.0.0",
       "description": "Creates, lists, and removes git worktrees to manage parallel workspaces. Activate when the user needs to work on multiple branches simultaneously, run parallel tasks (evals, builds, reviews) in isolation, or when an agent needs its own workspace. Also activate when the user says \"worktree\", \"parallel branch\", \"work on two things at once\", or \"run these in parallel\".",
       "tags": "category:workflow, tool:git"
+    },
+    "github-create-pr": {
+      "version": "0.0.0",
+      "description": "Creates a pull request using GitHub CLI by following every numbered step in order. Do not skip steps. Do not improvise — execute the workflow literally. Activate when the user says \"create PR\", \"open PR\", \"push and PR\", \"submit for review\", or work is ready for review.",
+      "tags": "category:workflow, tool:git, tool:github"
     },
     "grill-me": {
       "version": "1.0.0",
@@ -53,31 +53,27 @@
   },
   "rules": {
     "bash-style": {
-      "version": "0.0.0",
+      "version": "1.0.0",
       "description": "Bash scripting conventions based on the Google Shell Style Guide. Applied to all .sh files and bash scripts.",
       "tags": "category:conventions, language:bash"
     },
     "design-system": {
-      "version": "0.0.0",
+      "version": "1.0.0",
       "description": "Token-based CSS design system conventions. Applied when writing or modifying CSS, templates, or page layouts.",
       "tags": "category:conventions, language:css"
     },
     "git-naming": {
-      "version": "0.0.0",
+      "version": "1.0.0",
       "description": "Branch naming, commit message format, and trailer conventions for git operations.",
       "tags": "category:conventions, tool:git"
     },
     "markdown-style": {
-      "version": "0.0.0",
+      "version": "1.0.0",
       "description": "Consistent markdown formatting conventions applied to all generated files.",
       "tags": "category:conventions, language:markdown"
     }
   },
   "profiles": {
-    "frontend-developer": {
-      "version": "0.0.0",
-      "description": ""
-    },
     "spec-planner": {
       "version": "0.0.0",
       "description": ""
