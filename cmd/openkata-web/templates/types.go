@@ -40,3 +40,14 @@ type RuleDetail struct {
 	Files           []string
 	FileContents    map[string]string
 }
+
+// ArtifactDetail is implemented by both SkillDetail and RuleDetail.
+type ArtifactDetail interface {
+	ArtifactName() string
+	ArtifactVersion() string
+}
+
+func (s SkillDetail) ArtifactName() string { return s.Name }
+func (s SkillDetail) ArtifactVersion() string { return s.Version }
+func (r RuleDetail) ArtifactName() string  { return r.Name }
+func (r RuleDetail) ArtifactVersion() string { return r.Version }

@@ -73,8 +73,8 @@ type treeNode struct {
 }
 
 // buildFileTree generates HTML for a file tree with connectors.
-func buildFileTree(files []string, skillName, version string) string {
-	_ = skillName
+func buildFileTree(files []string, artifactType, version string) string {
+	_ = artifactType
 	_ = version
 	root := &treeNode{isDir: true}
 	for _, f := range files {
