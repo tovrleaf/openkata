@@ -3,7 +3,7 @@
 ## Tasks
 
 ### 1. Rename CSS classes in style.css
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Rename all `.skill-*` class definitions to
   `.artifact-*` in the stylesheet
 - **Boundary**: `web/static/css/style.css`
@@ -14,7 +14,7 @@
   returns 0
 
 ### 2. Update template references
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Update all `.templ` files to use `.artifact-*`
   class names
 - **Boundary**: `cmd/openkata-web/templates/skills.templ`,
@@ -25,7 +25,7 @@
 - **Verify**: `templ generate ./cmd/openkata-web/templates/ && go build -o bin/openkata-web ./cmd/openkata-web/`
 
 ### 3. Visual verification
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Confirm skills listing and detail pages render
   identically after rename
 - **Boundary**: None (verification only)
