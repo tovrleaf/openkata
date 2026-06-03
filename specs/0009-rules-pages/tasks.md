@@ -102,7 +102,7 @@ Prerequisite: spec 0010 (CSS rename) must be complete.
 - **Verify**: `go test -race ./cmd/openkata-web/...`
 
 ### 8. Tag rules and verify end-to-end
-- **Status**: Pending
+- **Status**: Deferred
 - **Goal**: Tag all rules with v1.0.0, regenerate
   versions.json, verify pages work locally
 - **Boundary**: git tags, `web/static/versions.json`
@@ -114,6 +114,7 @@ Prerequisite: spec 0010 (CSS rename) must be complete.
 
 ## Progress Log
 
+- 2026-06-03: Tasks 1–7 complete. Validation passed with fixes applied. Task 8 (tagging) deferred to release.
 - 2026-06-03: Task 7 done — added table-driven handler
   tests for rules: routing (listing, detail, version,
   raw file, 404 cases), raw Content-Type, latest redirect,
