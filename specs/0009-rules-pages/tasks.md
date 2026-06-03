@@ -5,7 +5,7 @@ Prerequisite: spec 0010 (CSS rename) must be complete.
 ## Tasks
 
 ### 1. Extract shared Nav component
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Replace duplicated nav markup with a shared
   `Nav()` templ component
 - **Boundary**: `cmd/openkata-web/templates/nav.templ`
@@ -113,3 +113,8 @@ Prerequisite: spec 0010 (CSS rename) must be complete.
 - **Verify**: `make versions` + visual check
 
 ## Progress Log
+
+- 2026-06-03: Task 1 done — created `nav.templ` with
+  shared `Nav()` component (Skills + Rules links),
+  replaced inline nav in all 6 templates, templ generate
+  + build + tests pass.

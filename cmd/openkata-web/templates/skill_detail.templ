@@ -7,16 +7,7 @@ import (
 
 templ SkillDetailPage(skill SkillDetail) {
 	@Layout(skill.Name) {
-		<nav class="nav">
-			<img src="/static/img/icon.webp" alt="" class="nav-icon"/>
-			<a href="/" class="nav-brand">OPENKATA.dev</a>
-			<div class="nav-links">
-				<a href="/skills/" class="nav-link">Skills</a>
-			</div>
-			<div class="theme-switcher">
-				<button class="theme-switcher__btn" onclick="cycleTheme()" aria-label="Next theme"></button>
-			</div>
-		</nav>
+		@Nav()
 
 		<main data-artifact-name={ skill.Name } data-artifact-version={ skill.Version }>
 			<section class="detail-header">
