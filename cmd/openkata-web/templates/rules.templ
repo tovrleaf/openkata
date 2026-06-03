@@ -7,26 +7,48 @@ templ Rules(rules []SkillEntry) {
 		@Nav()
 
 		<main>
-			<section class="hero">
-				<h1>Rules</h1>
-				<p class="comment">Always-on constraints applied to every agent session.</p>
+			<section class="hero hero--kanji">
+				<span class="hero-kanji">則</span>
+				<div class="hero-text">
+					<h1 class="cursor">Rules</h1>
+					<p class="comment">Always-on constraints applied to every agent session.</p>
+				</div>
 			</section>
 
 			if len(rules) == 0 {
 				<p>No rules available yet.</p>
 			} else {
 				<div class="artifact-list">
-					for _, r := range rules {
-						<article class="artifact-card">
-							<h2>{ r.Name }</h2>
-							<p class="artifact-description">{ r.Description }</p>
-							<div class="artifact-meta">
-								<span class="artifact-version">v{ r.Version }</span>
-								if r.Downloads > 0 {
-									<span class="artifact-downloads">{ fmt.Sprintf("%d", r.Downloads) } downloads</span>
+					for i, r := range rules {
+						<details class="artifact-entry">
+							<summary class="artifact-summary">
+								<div class="artifact-summary-top">
+									<span class="artifact-number">{ fmt.Sprintf("%02d", i+1) }</span>
+									<span class="artifact-name">{ r.Name }</span>
+									<span class="artifact-summary-right">
+										<span class="artifact-downloads">{ fmt.Sprintf("%d", r.Downloads) } ↓</span>
+										<span class="artifact-sep">|</span>
+										<span class="artifact-version">v{ r.Version }</span>
+										<span class="artifact-toggle-icon"></span>
+									</span>
+								</div>
+								<div class="artifact-tags">
+									if len(SplitTags(r.Tags)) > 0 {
+										for _, tag := range SplitTags(r.Tags) {
+											<span class={ TagClass(tag) }>{ tag }</span>
+										}
+									}
+									<a class="btn-open" href={ templ.SafeURL(fmt.Sprintf("/rules/%s/", r.Name)) }>Open</a>
+								</div>
+							</summary>
+							<div class="artifact-body">
+								if len(FirstSentence(r.Description)) > 200 {
+									<p class="artifact-description"><strong>{ FirstSentence(r.Description) }</strong></p>
+								} else {
+									<p class="artifact-description"><strong>{ FirstSentence(r.Description) }</strong><br/>{ AfterFirstSentence(r.Description) }</p>
 								}
 							</div>
-						</article>
+						</details>
 					}
 				</div>
 			}

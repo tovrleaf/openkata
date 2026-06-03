@@ -61,7 +61,7 @@ Prerequisite: spec 0010 (CSS rename) must be complete.
 - **Verify**: `go test ./cmd/openkata-web/...`
 
 ### 5. Add rules listing handler and template
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Rewrite `/rules/` listing to match skills
   listing style (numbered, expandable, tags, "Open"
   button, 則 kanji hero)
@@ -114,6 +114,11 @@ Prerequisite: spec 0010 (CSS rename) must be complete.
 
 ## Progress Log
 
+- 2026-06-03: Task 5 done — rewrote rules.templ to match
+  skills listing style: kanji hero (則), numbered expandable
+  entries, tags, version, downloads, "Open" button linking
+  to /rules/:name/. Handler already uses shared helper.
+  templ generate + build + tests pass.
 - 2026-06-03: Task 4 done — extracted shared helpers:
   loadArtifactList, loadDownloadCounts, loadArtifactDetailLocal,
   loadArtifactDetailS3. Parameterized gitVersions with
