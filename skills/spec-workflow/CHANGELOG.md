@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.1.0] - 2026-06-03
+
+### Added
+
+- Execution Flow summary for quick-glance overview
+- Best Practices section with positive guidance
+- Concrete example spec in references/example-spec.md
+
+### Changed
+
+- Split phase details into individual reference files for
+  reduced token cost (phase-specify, phase-design,
+  phase-tasks, phase-implement, phase-validate)
+- SKILL.md reduced from ~160 to ~95 lines
+
 ## [1.0.2] - 2026-06-03
 
 ### Added
