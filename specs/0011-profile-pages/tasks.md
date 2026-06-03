@@ -5,13 +5,19 @@
 ### 1. Restructure profiles into directories
 - **Status**: Pending
 - **Goal**: Move flat profile files into directory
-  structure matching skills/rules pattern
-- **Boundary**: `profiles/` directory, `cmd/generate-versions/main.go`
+  structure: `profiles/{name}/{name}.md`. Add
+  CHANGELOG.md to each. Update symlinks in
+  `.agents/profiles/` to point to new paths. Update
+  `generate-versions` to scan the new structure.
+- **Boundary**: `profiles/` directory,
+  `.agents/profiles/` symlinks,
+  `cmd/generate-versions/main.go`
 - **Depends**: None
 - **Done when**: Each profile is at
-  `profiles/{name}/PROFILE.md`, `generate-versions`
-  handles the new structure, `make versions` works
-- **Verify**: `make versions` produces correct output
+  `profiles/{name}/{name}.md` with a CHANGELOG.md,
+  symlinks updated, `make versions` works
+- **Verify**: `make versions` produces correct output,
+  symlinks resolve correctly
 
 ### 2. Refactor to single ArtifactDetail struct
 - **Status**: Pending

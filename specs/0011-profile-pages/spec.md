@@ -84,16 +84,16 @@ roles and their scoped permissions.
 - Profile detail loader uses shared helpers where
   possible, with simplified handling for single-file
   structure (no file tree, no acknowledgments)
+- Profile filename stays as `{name}.md` (not PROFILE.md)
+  for drag-and-drop usability after download
 
 ### Deployment Verification
 
 - Confirm publish workflow handles profiles correctly
 - Profiles must be uploaded to S3 and visible in
   production after tagging
-- If the single-file structure doesn't fit the
-  publish workflow's `git archive` + directory approach,
-  fix the workflow OR restructure profiles into
-  directories
+- Profile directory structure: `profiles/{name}/{name}.md`
+  (matches git archive expectations)
 
 ### Testing
 
@@ -120,11 +120,4 @@ roles and their scoped permissions.
 - Pagination
 - File tree (profiles are single files)
 
-## Open Questions
 
-- Profiles are currently single files (`profiles/name.md`)
-  but publish workflow expects directory structure for
-  `git archive`. Do we restructure profiles into
-  `profiles/name/PROFILE.md` directories, or adapt the
-  publish workflow? (Recommend: restructure to match
-  skills/rules pattern for consistency.)
