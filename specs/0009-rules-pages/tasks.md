@@ -17,7 +17,7 @@ Prerequisite: spec 0010 (CSS rename) must be complete.
 - **Verify**: `go build -o bin/openkata-web ./cmd/openkata-web/`
 
 ### 2. Extract detail page JS to external file
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Move inline JS from `skill_detail.templ` to
   `web/static/js/detail.js`, parameterized via `data-`
   attributes (no hardcoded `/skills/` paths)
@@ -114,6 +114,10 @@ Prerequisite: spec 0010 (CSS rename) must be complete.
 
 ## Progress Log
 
+- 2026-06-03: Task 2 done — extracted inline JS from
+  skill_detail.templ to web/static/js/detail.js,
+  parameterized via data-artifact-path attribute,
+  added script tag to layout.templ, build + tests pass.
 - 2026-06-03: Task 1 done — created `nav.templ` with
   shared `Nav()` component (Skills + Rules links),
   replaced inline nav in all 6 templates, templ generate
