@@ -3,7 +3,7 @@
 ## Tasks
 
 ### 1. Restructure profiles into directories
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Move flat profile files into directory
   structure: `profiles/{name}/{name}.md`. Add
   CHANGELOG.md to each. Update symlinks in
@@ -20,7 +20,7 @@
   symlinks resolve correctly
 
 ### 2. Refactor to single ArtifactDetail struct
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Replace SkillDetail, RuleDetail with a single
   ArtifactDetail struct. Update all templates and handlers.
 - **Boundary**: `cmd/openkata-web/templates/types.go`,
@@ -37,7 +37,7 @@
 - **Verify**: `go test -race ./cmd/openkata-web/...`
 
 ### 3. Add Profiles link to Nav
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Add "Profiles" link to the shared Nav component
 - **Boundary**: `cmd/openkata-web/templates/nav.templ`
 - **Depends**: 1
@@ -46,7 +46,7 @@
 - **Verify**: `templ generate && go build -o bin/openkata-web ./cmd/openkata-web/`
 
 ### 4. Update profiles listing page
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Rewrite listing to match skills/rules style
   (師 kanji, numbered expandable entries, tags, Open)
 - **Boundary**: `cmd/openkata-web/templates/profiles.templ`
@@ -56,7 +56,7 @@
 - **Verify**: `templ generate && go build -o bin/openkata-web ./cmd/openkata-web/`
 
 ### 5. Add profile detail loader
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Implement `loadProfileDetailVersion` using
   shared helpers for single-file structure
 - **Boundary**: `cmd/openkata-web/templates/types.go`,
@@ -67,7 +67,7 @@
 - **Verify**: `go build -o bin/openkata-web ./cmd/openkata-web/ && go test ./cmd/openkata-web/...`
 
 ### 6. Add profile detail page handler and template
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Build `/profiles/:name` detail page with
   Overview and Changelog tabs
 - **Boundary**: `cmd/openkata-web/templates/profile_detail.templ` (new),
@@ -79,7 +79,7 @@
 - **Verify**: `templ generate && go build -o bin/openkata-web ./cmd/openkata-web/ && go test ./cmd/openkata-web/...`
 
 ### 7. Verify archive download works
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Confirm `/profiles/{name}/archive` serves
   a valid .tar.gz locally
 - **Boundary**: verification only
@@ -89,7 +89,7 @@
 - **Verify**: `curl -o /tmp/test.tar.gz localhost:8080/profiles/spec-planner/archive && tar -tzf /tmp/test.tar.gz`
 
 ### 8. Add handler tests for profiles
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Table-driven tests for profile routes
 - **Boundary**: `cmd/openkata-web/handlers_test.go`
 - **Depends**: 6
@@ -98,7 +98,7 @@
 - **Verify**: `go test -race ./cmd/openkata-web/...`
 
 ### 9. Verify deployment pipeline
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Confirm publish workflow handles profile
   directories correctly (git archive extracts files,
   S3 upload works)
@@ -110,3 +110,7 @@
 - **Verify**: Check GitHub Actions + S3 contents
 
 ## Progress Log
+
+- 2026-06-05: Tasks 1-6, 8 implemented
+- 2026-06-06: Profiles released (spec-planner v1.0.0, spec-validator v1.0.0)
+- 2026-06-06: Tasks 7, 9 verified — spec complete
