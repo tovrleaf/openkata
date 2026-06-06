@@ -75,11 +75,11 @@
   },
   "profiles": {
     "spec-planner": {
-      "version": "0.0.0",
+      "version": "1.0.0",
       "description": ""
     },
     "spec-validator": {
-      "version": "0.0.0",
+      "version": "1.0.0",
       "description": ""
     }
   }
