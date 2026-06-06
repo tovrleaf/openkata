@@ -68,11 +68,11 @@ func runLocal() {
 	// Scan profiles
 	entries, _ := os.ReadDir("profiles")
 	for _, e := range entries {
-		if e.IsDir() || !strings.HasSuffix(e.Name(), ".md") {
+		if !e.IsDir() {
 			continue
 		}
-		name := strings.TrimSuffix(e.Name(), ".md")
-		data, err := os.ReadFile(filepath.Join("profiles", e.Name()))
+		name := e.Name()
+		data, err := os.ReadFile(filepath.Join("profiles", name, name+".md"))
 		if err != nil {
 			continue
 		}

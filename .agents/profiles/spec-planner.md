@@ -1,1 +1,1 @@
-../../profiles/spec-planner.md
+../../profiles/spec-planner/spec-planner.md

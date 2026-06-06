@@ -1,1 +1,1 @@
-../../profiles/spec-validator.md
+../../profiles/spec-validator/spec-validator.md
