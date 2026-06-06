@@ -252,7 +252,7 @@ func loadArtifactList(ctx context.Context, artifactType string) []templates.Skil
 	return entries
 }
 
-func loadSkillDetailVersion(ctx context.Context, name, version string) *templates.SkillDetail {
+func loadSkillDetailVersion(ctx context.Context, name, version string) *templates.ArtifactDetail {
 	// Dev mode: read from local filesystem
 	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") == "" {
 		return loadArtifactDetailLocal("skills", name, version, "SKILL.md")
@@ -260,7 +260,7 @@ func loadSkillDetailVersion(ctx context.Context, name, version string) *template
 	return loadArtifactDetailS3(ctx, "skills", name, version, "SKILL.md")
 }
 
-func loadArtifactDetailS3(ctx context.Context, artifactType, name, version, docFile string) *templates.SkillDetail {
+func loadArtifactDetailS3(ctx context.Context, artifactType, name, version, docFile string) *templates.ArtifactDetail {
 	if s3Client == nil {
 		return nil
 	}
@@ -317,7 +317,7 @@ func loadArtifactDetailS3(ctx context.Context, artifactType, name, version, docF
 		return nil
 	}
 
-	detail := &templates.SkillDetail{
+	detail := &templates.ArtifactDetail{
 		Name:         name,
 		Version:      version,
 		Description:  info.Description,
@@ -398,7 +398,7 @@ func loadArtifactDetailS3(ctx context.Context, artifactType, name, version, docF
 	return detail
 }
 
-func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templates.SkillDetail {
+func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templates.ArtifactDetail {
 	dir := artifactType + "/" + name
 	mdPath := dir + "/" + docFile
 	data, err := os.ReadFile(mdPath)
@@ -452,7 +452,7 @@ func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templ
 		}
 	}
 
-	detail := &templates.SkillDetail{
+	detail := &templates.ArtifactDetail{
 		Name:         name,
 		Version:      version,
 		Description:  description,
@@ -731,29 +731,11 @@ func handleRules(w http.ResponseWriter, r *http.Request) {
 	http.NotFound(w, r)
 }
 
-func loadRuleDetailVersion(ctx context.Context, name, version string) *templates.RuleDetail {
-	var sd *templates.SkillDetail
+func loadRuleDetailVersion(ctx context.Context, name, version string) *templates.ArtifactDetail {
 	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") == "" {
-		sd = loadArtifactDetailLocal("rules", name, version, "RULE.md")
-	} else {
-		sd = loadArtifactDetailS3(ctx, "rules", name, version, "RULE.md")
+		return loadArtifactDetailLocal("rules", name, version, "RULE.md")
 	}
-	if sd == nil {
-		return nil
-	}
-	return &templates.RuleDetail{
-		Name:            sd.Name,
-		Version:         sd.Version,
-		Description:     sd.Description,
-		Tags:            sd.Tags,
-		Versions:        sd.Versions,
-		Downloads:       sd.Downloads,
-		Docs:            sd.Docs,
-		Changelog:       sd.Changelog,
-		Acknowledgments: sd.Acknowledgments,
-		Files:           sd.Files,
-		FileContents:    sd.FileContents,
-	}
+	return loadArtifactDetailS3(ctx, "rules", name, version, "RULE.md")
 }
 
 func loadRulesList(ctx context.Context) []templates.SkillEntry {
@@ -1002,20 +984,26 @@ func resolveLatestVersion(ctx context.Context, artifactType, name string) string
 	defer resp.Body.Close()
 
 	var v struct {
-		Skills map[string]struct{ Version string } `json:"skills"`
-		Rules  map[string]struct{ Version string } `json:"rules"`
+		Skills   map[string]struct{ Version string } `json:"skills"`
+		Rules    map[string]struct{ Version string } `json:"rules"`
+		Profiles map[string]struct{ Version string } `json:"profiles"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&v); err != nil {
 		return ""
 	}
 
-	if artifactType == "skills" {
+	switch artifactType {
+	case "skills":
 		if s, ok := v.Skills[name]; ok {
 			return s.Version
 		}
-	} else {
+	case "rules":
 		if r, ok := v.Rules[name]; ok {
 			return r.Version
+		}
+	case "profiles":
+		if p, ok := v.Profiles[name]; ok {
+			return p.Version
 		}
 	}
 	return ""
@@ -1053,6 +1041,8 @@ func handleProfiles(w http.ResponseWriter, r *http.Request) {
 	}
 
 	parts := strings.Split(strings.TrimSuffix(path, "/"), "/")
+
+	// /profiles/:name/archive or /profiles/:name/archive/:version
 	if len(parts) >= 2 && parts[1] == "archive" {
 		version := ""
 		if len(parts) >= 3 {
@@ -1062,9 +1052,69 @@ func handleProfiles(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// /profiles/:name/raw — redirect to latest version
+	if len(parts) == 2 && parts[1] == "raw" {
+		name := parts[0]
+		profile := loadProfileDetailVersion(r.Context(), name, "")
+		if profile == nil {
+			http.NotFound(w, r)
+			return
+		}
+		http.Redirect(w, r, "/profiles/"+name+"/"+profile.Version+"/raw", http.StatusFound)
+		return
+	}
+
+	// /profiles/:name/:version/raw — serve raw markdown
+	if len(parts) == 3 && parts[2] == "raw" {
+		name := parts[0]
+		version := parts[1]
+		profile := loadProfileDetailVersion(r.Context(), name, version)
+		if profile == nil {
+			http.NotFound(w, r)
+			return
+		}
+		content, ok := profile.FileContents[name+".md"]
+		if !ok {
+			http.NotFound(w, r)
+			return
+		}
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.Write([]byte(content))
+		return
+	}
+
+	// /profiles/:name/:version — detail for specific version
+	if len(parts) == 2 {
+		profile := loadProfileDetailVersion(r.Context(), parts[0], parts[1])
+		if profile == nil {
+			http.NotFound(w, r)
+			return
+		}
+		templates.ProfileDetailPage(*profile).Render(r.Context(), w)
+		return
+	}
+
+	// /profiles/:name — show latest version
+	if len(parts) == 1 {
+		profile := loadProfileDetailVersion(r.Context(), parts[0], "")
+		if profile == nil {
+			http.NotFound(w, r)
+			return
+		}
+		templates.ProfileDetailPage(*profile).Render(r.Context(), w)
+		return
+	}
+
 	http.NotFound(w, r)
 }
 
 func loadProfilesList(ctx context.Context) []templates.SkillEntry {
 	return loadArtifactList(ctx, "profiles")
+}
+
+func loadProfileDetailVersion(ctx context.Context, name, version string) *templates.ArtifactDetail {
+	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") == "" {
+		return loadArtifactDetailLocal("profiles", name, version, name+".md")
+	}
+	return loadArtifactDetailS3(ctx, "profiles", name, version, name+".md")
 }

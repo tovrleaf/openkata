@@ -1,0 +1,85 @@
+package templates
+
+import (
+	"fmt"
+)
+
+templ ProfileDetailPage(profile ArtifactDetail) {
+	@Layout(profile.Name) {
+		@Nav()
+
+		<main data-artifact-name={ profile.Name } data-artifact-version={ profile.Version } data-artifact-path="profiles">
+			<section class="detail-header">
+				<div class="detail-title-row">
+					<div class="hero--kanji">
+						<span class="hero-kanji">師</span>
+						<div class="hero-text">
+							<span class="hero-label">Profile</span>
+							<h1>{ profile.Name }</h1>
+						</div>
+					</div>
+					if len(profile.Versions) > 1 {
+						<select class="version-select">
+							for i, v := range profile.Versions {
+								if v == profile.Version {
+									if i == 0 {
+										<option value={ v } selected>v{ v } (Latest)</option>
+									} else {
+										<option value={ v } selected>v{ v }</option>
+									}
+								} else {
+									if i == 0 {
+										<option value={ v }>v{ v } (Latest)</option>
+									} else {
+										<option value={ v }>v{ v }</option>
+									}
+								}
+							}
+						</select>
+					} else {
+						<span class="detail-version">v{ profile.Version }</span>
+					}
+				</div>
+				<p class="detail-meta">
+					<span class="detail-downloads">{ fmt.Sprintf("%d", profile.Downloads) } ↓</span>
+					<span class="artifact-sep">|</span>
+					<a class="detail-download" href={ templ.SafeURL(fmt.Sprintf("/profiles/%s/archive", profile.Name)) }>.tar.gz</a>
+				</p>
+				if len(SplitTags(profile.Tags)) > 0 {
+					<div class="artifact-tags">
+						for _, tag := range SplitTags(profile.Tags) {
+							<span class={ TagClass(tag) }>{ tag }</span>
+						}
+					</div>
+				}
+			</section>
+
+			@TabBar([]TabDef{{"overview", "Overview"}, {"changelog", "Changelog"}}, "Profile sections")
+
+			<section class="tab-panel active" id="panel-overview">
+				if profile.Description != "" {
+					<p class="detail-description">{ profile.Description }</p>
+				}
+				if profile.Docs != "" {
+					<div class="detail-docs">
+						@templ.Raw(profile.Docs)
+					</div>
+				} else {
+					<p class="comment">No documentation available.</p>
+				}
+			</section>
+
+			<section class="tab-panel" id="panel-changelog">
+				if profile.Changelog != "" {
+					@templ.Raw(profile.Changelog)
+				} else {
+					<p class="comment">No changelog available.</p>
+				}
+			</section>
+		</main>
+
+		<footer class="footer">
+			© 2026 OPENKATA.dev // License: <a href="https://github.com/tovrleaf/openkata/blob/main/LICENSE" target="_blank" rel="noopener">MIT</a>
+		</footer>
+	}
+}
