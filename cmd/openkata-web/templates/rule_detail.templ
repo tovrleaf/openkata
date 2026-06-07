@@ -54,7 +54,11 @@ templ RuleDetailPage(rule ArtifactDetail) {
 				}
 			</section>
 
-			if rule.Acknowledgments != "" {
+			if rule.Rationale != "" && rule.Acknowledgments != "" {
+				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"rationale", "Rationale"}, {"changelog", "Changelog"}, {"acknowledgments", "Acknowledgments"}}, "Rule sections")
+			} else if rule.Rationale != "" {
+				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"rationale", "Rationale"}, {"changelog", "Changelog"}}, "Rule sections")
+			} else if rule.Acknowledgments != "" {
 				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"changelog", "Changelog"}, {"acknowledgments", "Acknowledgments"}}, "Rule sections")
 			} else {
 				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"changelog", "Changelog"}}, "Rule sections")
@@ -76,6 +80,12 @@ templ RuleDetailPage(rule ArtifactDetail) {
 			<section class="tab-panel" id="panel-files">
 				@FileViewer(rule.Files, rule.FileContents, "rules", rule.Name, rule.Version)
 			</section>
+
+			if rule.Rationale != "" {
+				<section class="tab-panel" id="panel-rationale">
+					@templ.Raw(rule.Rationale)
+				</section>
+			}
 
 			<section class="tab-panel" id="panel-changelog">
 				if rule.Changelog != "" {

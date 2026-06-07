@@ -54,7 +54,11 @@ templ SkillDetailPage(skill ArtifactDetail) {
 				}
 			</section>
 
-			if skill.Acknowledgments != "" {
+			if skill.Rationale != "" && skill.Acknowledgments != "" {
+				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"rationale", "Rationale"}, {"changelog", "Changelog"}, {"acknowledgments", "Acknowledgments"}}, "Skill sections")
+			} else if skill.Rationale != "" {
+				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"rationale", "Rationale"}, {"changelog", "Changelog"}}, "Skill sections")
+			} else if skill.Acknowledgments != "" {
 				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"changelog", "Changelog"}, {"acknowledgments", "Acknowledgments"}}, "Skill sections")
 			} else {
 				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"changelog", "Changelog"}}, "Skill sections")
@@ -76,6 +80,12 @@ templ SkillDetailPage(skill ArtifactDetail) {
 			<section class="tab-panel" id="panel-files">
 				@FileViewer(skill.Files, skill.FileContents, "skills", skill.Name, skill.Version)
 			</section>
+
+			if skill.Rationale != "" {
+				<section class="tab-panel" id="panel-rationale">
+					@templ.Raw(skill.Rationale)
+				</section>
+			}
 
 			<section class="tab-panel" id="panel-changelog">
 				if skill.Changelog != "" {

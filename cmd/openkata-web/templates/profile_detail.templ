@@ -54,7 +54,11 @@ templ ProfileDetailPage(profile ArtifactDetail) {
 				}
 			</section>
 
-			@TabBar([]TabDef{{"overview", "Overview"}, {"changelog", "Changelog"}}, "Profile sections")
+			if profile.Rationale != "" {
+				@TabBar([]TabDef{{"overview", "Overview"}, {"rationale", "Rationale"}, {"changelog", "Changelog"}}, "Profile sections")
+			} else {
+				@TabBar([]TabDef{{"overview", "Overview"}, {"changelog", "Changelog"}}, "Profile sections")
+			}
 
 			<section class="tab-panel active" id="panel-overview">
 				if profile.Description != "" {
@@ -68,6 +72,12 @@ templ ProfileDetailPage(profile ArtifactDetail) {
 					<p class="comment">No documentation available.</p>
 				}
 			</section>
+
+			if profile.Rationale != "" {
+				<section class="tab-panel" id="panel-rationale">
+					@templ.Raw(profile.Rationale)
+				</section>
+			}
 
 			<section class="tab-panel" id="panel-changelog">
 				if profile.Changelog != "" {

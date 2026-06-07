@@ -203,6 +203,7 @@ func TestIsExcludedFile(t *testing.T) {
 		{"references/ACKNOWLEDGMENTS.md", true},
 		{"evals/test.yaml", true},
 		{"evals/nested/deep.yaml", true},
+		{"RATIONALE.md", true},
 		{"SKILL.md", false},
 		{"assets/diagram.png", false},
 		{"references/other.md", false},
@@ -821,5 +822,52 @@ func TestHandleProfilesRouting(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestLoadArtifactDetailLocalRationale(t *testing.T) {
+	origDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chdir(origDir) })
+
+	dir := t.TempDir()
+	skillDir := filepath.Join(dir, "skills", "test-skill")
+	if err := os.MkdirAll(skillDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(skillDir, "SKILL.md"), []byte("# Test\n\nBody."), 0644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(skillDir, "RATIONALE.md"), []byte("# Rationale\n\nWhy we did it."), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	versionsDir := filepath.Join(dir, "web", "static")
+	if err := os.MkdirAll(versionsDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	versionsJSON := `{"skills":{"test-skill":{"version":"1.0.0","description":"Test","tags":""}},"rules":{},"profiles":{}}`
+	if err := os.WriteFile(filepath.Join(versionsDir, "versions.json"), []byte(versionsJSON), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := os.Chdir(dir); err != nil {
+		t.Fatal(err)
+	}
+
+	detail := loadArtifactDetailLocal("skills", "test-skill", "1.0.0", "SKILL.md")
+	if detail == nil {
+		t.Fatal("loadArtifactDetailLocal returned nil")
+	}
+	if detail.Rationale == "" {
+		t.Error("loadArtifactDetailLocal() Rationale is empty, want rendered content")
+	}
+	// RATIONALE.md should NOT be in the Files list (excluded from Files tab)
+	for _, f := range detail.Files {
+		if f == "RATIONALE.md" {
+			t.Error("loadArtifactDetailLocal() Files contains RATIONALE.md, should be excluded")
+		}
 	}
 }

@@ -82,6 +82,19 @@ After the generic `create-skill` workflow, also do:
 - Changelogs document skill-facing changes only — dev-only
   artifacts (tile.json, tessl.json) are not changelog-worthy
 
+## RATIONALE.md
+
+Every distributable skill and rule should include a
+`RATIONALE.md` at its root. This file explains design
+decisions, trade-offs, and why the skill is structured
+the way it is.
+
+- Visible on the website as a "Rationale" tab
+- Distributed in archives (users see it)
+- Excluded from the Files tab (like CHANGELOG.md)
+- Each heading answers one "why" question
+- Keep entries concise — a paragraph per decision
+
 ## Example Scenario
 
 User: "Create a skill for database migrations."

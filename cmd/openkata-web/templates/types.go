@@ -22,6 +22,7 @@ type ArtifactDetail struct {
 	Versions        []string
 	Downloads       int
 	Docs            string
+	Rationale       string
 	Changelog       string
 	Acknowledgments string
 	Files           []string

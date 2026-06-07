@@ -29,7 +29,7 @@ import (
 // isExcludedFile returns true if the file should be excluded from the Files tab.
 func isExcludedFile(path string) bool {
 	switch path {
-	case "tile.json", ".tesslignore", "CHANGELOG.md", "references/ACKNOWLEDGMENTS.md":
+	case "tile.json", ".tesslignore", "CHANGELOG.md", "RATIONALE.md", "references/ACKNOWLEDGMENTS.md":
 		return true
 	}
 	if strings.HasPrefix(path, "evals/") {
@@ -342,6 +342,8 @@ func loadArtifactDetailS3(ctx context.Context, artifactType, name, version, docF
 		switch relPath {
 		case docFile:
 			target = &detail.Docs
+		case "RATIONALE.md":
+			target = &detail.Rationale
 		case "CHANGELOG.md":
 			target = &detail.Changelog
 		case "references/ACKNOWLEDGMENTS.md":
@@ -470,6 +472,11 @@ func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templ
 	// Acknowledgments
 	if ack, err := os.ReadFile(dir + "/references/ACKNOWLEDGMENTS.md"); err == nil {
 		detail.Acknowledgments = renderMarkdown(ack)
+	}
+
+	// Rationale
+	if rat, err := os.ReadFile(dir + "/RATIONALE.md"); err == nil {
+		detail.Rationale = renderMarkdown(rat)
 	}
 
 	// Walk directory for file list and contents
