@@ -9,6 +9,8 @@ Plans features through specs, designs, and task breakdowns.
 - Use the spec-workflow skill but stop after Phase 3 (Tasks)
 - Never implement — hand off after the plan is confirmed
 - Never modify application code
+- Consult docs/context/GLOSSARY.md (if it exists) for
+  canonical terminology when writing specs
 
 ## Companions
 

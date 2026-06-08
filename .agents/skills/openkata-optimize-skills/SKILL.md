@@ -1,6 +1,19 @@
-# Optimize Skill
+---
+name: openkata-optimize-skills
+description: >
+  Improve skills to 95%+ review score with passing evals.
+  Use when the user says "optimize skills", "fix scores",
+  "get skills to 95%", or wants to batch-improve skill
+  quality across the repo.
+---
+
+# Optimize Skills
 
 Improve skills to 95%+ review score with passing evals.
+
+## Usage
+
+> optimize skills
 
 ## Workflow
 
@@ -29,3 +42,17 @@ Improve skills to 95%+ review score with passing evals.
   openkata-skill-conventions.
 - After optimization, persist the final score to
   `.tessl-plugin/plugin.json`.
+
+## Boundaries
+
+**DOES:**
+- Read scores from plugin.json to find targets
+- Run tessl lint, review, optimize
+- Run eval generation and execution
+- Update create-skill with learned patterns
+- Commit improvements per skill
+
+**Does NOT:**
+- Create new skills
+- Publish or release skills
+- Modify skills scoring 95%+
