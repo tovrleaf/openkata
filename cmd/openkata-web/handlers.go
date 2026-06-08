@@ -131,6 +131,7 @@ func handleSkills(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 			return
 		}
+		setPrevNext(r.Context(), skill)
 		templates.SkillDetailPage(*skill).Render(r.Context(), w)
 		return
 	}
@@ -142,6 +143,7 @@ func handleSkills(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 			return
 		}
+		setPrevNext(r.Context(), skill)
 		templates.SkillDetailPage(*skill).Render(r.Context(), w)
 		return
 	}
@@ -252,6 +254,24 @@ func loadArtifactList(ctx context.Context, artifactType string) []templates.Skil
 	return entries
 }
 
+func setPrevNext(ctx context.Context, detail *templates.ArtifactDetail) {
+	if detail == nil {
+		return
+	}
+	list := loadArtifactList(ctx, detail.Type)
+	for i, entry := range list {
+		if entry.Name == detail.Name {
+			if i > 0 {
+				detail.Prev = list[i-1].Name
+			}
+			if i < len(list)-1 {
+				detail.Next = list[i+1].Name
+			}
+			return
+		}
+	}
+}
+
 func loadSkillDetailVersion(ctx context.Context, name, version string) *templates.ArtifactDetail {
 	// Dev mode: read from local filesystem
 	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") == "" {
@@ -318,6 +338,7 @@ func loadArtifactDetailS3(ctx context.Context, artifactType, name, version, docF
 	}
 
 	detail := &templates.ArtifactDetail{
+		Type:         artifactType,
 		Name:         name,
 		Version:      version,
 		Description:  info.Description,
@@ -455,6 +476,7 @@ func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templ
 	}
 
 	detail := &templates.ArtifactDetail{
+		Type:         artifactType,
 		Name:         name,
 		Version:      version,
 		Description:  description,
@@ -720,6 +742,7 @@ func handleRules(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 			return
 		}
+		setPrevNext(r.Context(), rule)
 		templates.RuleDetailPage(*rule).Render(r.Context(), w)
 		return
 	}
@@ -731,6 +754,7 @@ func handleRules(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 			return
 		}
+		setPrevNext(r.Context(), rule)
 		templates.RuleDetailPage(*rule).Render(r.Context(), w)
 		return
 	}
@@ -1097,6 +1121,7 @@ func handleProfiles(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 			return
 		}
+		setPrevNext(r.Context(), profile)
 		templates.ProfileDetailPage(*profile).Render(r.Context(), w)
 		return
 	}
@@ -1108,6 +1133,7 @@ func handleProfiles(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 			return
 		}
+		setPrevNext(r.Context(), profile)
 		templates.ProfileDetailPage(*profile).Render(r.Context(), w)
 		return
 	}

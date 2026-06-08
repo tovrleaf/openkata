@@ -27,4 +27,6 @@ type ArtifactDetail struct {
 	Acknowledgments string
 	Files           []string
 	FileContents    map[string]string
+	Prev            string // name of previous artifact (empty if first)
+	Next            string // name of next artifact (empty if last)
 }

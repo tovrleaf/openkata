@@ -12,13 +12,13 @@ templ ProfileDetailPage(profile ArtifactDetail) {
 			<section class="detail-header">
 				<div class="detail-title-row">
 					<div class="hero--kanji">
-						<span class="hero-kanji">師</span>
+						<a href="/profiles/" class="hero-kanji">師</a>
 						<div class="hero-text">
 							<span class="hero-label">Profile</span>
 							<h1>{ profile.Name }</h1>
 						</div>
 					</div>
-					if len(profile.Versions) > 1 {
+					<div class="detail-title-right">
 						<select class="version-select">
 							for i, v := range profile.Versions {
 								if v == profile.Version {
@@ -36,9 +36,19 @@ templ ProfileDetailPage(profile ArtifactDetail) {
 								}
 							}
 						</select>
-					} else {
-						<span class="detail-version">v{ profile.Version }</span>
-					}
+						<nav class="artifact-nav" aria-label="Profile navigation">
+							if profile.Prev != "" {
+								<a href={ templ.SafeURL(fmt.Sprintf("/profiles/%s/", profile.Prev)) } class="artifact-nav-link" title={ profile.Prev }>←</a>
+							} else {
+								<span class="artifact-nav-link artifact-nav-link--disabled">←</span>
+							}
+							if profile.Next != "" {
+								<a href={ templ.SafeURL(fmt.Sprintf("/profiles/%s/", profile.Next)) } class="artifact-nav-link" title={ profile.Next }>→</a>
+							} else {
+								<span class="artifact-nav-link artifact-nav-link--disabled">→</span>
+							}
+						</nav>
+					</div>
 				</div>
 				<p class="detail-meta">
 					<span class="detail-downloads">{ fmt.Sprintf("%d", profile.Downloads) } ↓</span>
