@@ -1,0 +1,10 @@
+{
+  "name": "local/github-create-pr",
+  "description": "Creates a pull request using GitHub CLI by following every numbered step in order. Do not skip steps. Do not improvise \u2014 execute the workflow literally. Activate when the user says \"create PR\", \"open PR\", \"push and PR\", \"submit for review\", or work is ready for review.",
+  "private": true,
+  "skills": [
+    "."
+  ],
+  "version": "0.1.0",
+  "score": 96
+}

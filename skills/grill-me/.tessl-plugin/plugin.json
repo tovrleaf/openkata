@@ -1,0 +1,10 @@
+{
+  "name": "local/grill-me",
+  "description": "Challenge a plan, spec, ADR, or design by interviewing the user relentlessly until all corners are covered. Use when the user wants to stress-test a plan, get grilled on their design, says \"grill me\", \"challenge this\", or \"poke holes in this.\"",
+  "private": true,
+  "skills": [
+    "."
+  ],
+  "version": "0.1.0",
+  "score": 100
+}

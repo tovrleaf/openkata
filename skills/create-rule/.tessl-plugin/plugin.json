@@ -1,0 +1,10 @@
+{
+  "name": "local/create-rule",
+  "description": "Creates rule files that define always-on constraints for agent sessions. Investigates the repo for existing conventions, writes a RULE.md with clear structure, and validates against real usage. Use when the user wants to create a rule, add a convention, enforce a standard, establish a project-wide constraint, define coding style, standardize formatting across generated files, notices inconsistent output across sessions, or is setting up a new project's conventions.",
+  "private": true,
+  "skills": [
+    "."
+  ],
+  "version": "0.1.0",
+  "score": 94
+}
