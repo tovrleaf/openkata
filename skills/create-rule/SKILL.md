@@ -86,9 +86,33 @@ consistency."
 3. Reads 2–3 existing markdown files to extract implicit
    patterns
 4. Creates `markdown-style/RULE.md` with specific,
-   enforceable conventions grouped by concern — see
-   [example-rule.md](references/example-rule.md) for the
-   finished output
+   enforceable conventions grouped by concern:
+
+   ```markdown
+   # Markdown Style
+
+   Enforces consistent markdown formatting across all generated files.
+
+   ## Lists
+
+   - Use `-` for unordered list items, never `*` or `+`.
+   - Indent nested lists with 2 spaces.
+
+   ## Headings
+
+   - Use ATX headings (`#`), never setext (`===` or `---`).
+   - One blank line before and after every heading.
+
+   ## Code Blocks
+
+   - Use fenced code blocks (` ``` `) with an explicit language tag.
+   - Never use indented code blocks.
+
+   ## Line Length
+
+   - Wrap prose at 80 characters.
+   - Do not wrap code blocks or tables.
+   ```
 5. Validates against existing files — no conflicts
 
 ## Common Failures
@@ -106,10 +130,21 @@ consistency."
 A good rule is enforceable by reading it literally. If an agent
 has to interpret intent, the rule is too vague.
 
-## Quality References
+## Quality Checklist
 
-Before finalizing, check the rule against:
+Before finalizing, verify:
 
-- [Rule design checklist](references/rule-design-checklist.md)
-- [Rule validation](references/rule-validation.md)
-- [Rule token optimization](references/rule-token-optimization.md)
+**Design**
+- [ ] Every convention is specific enough to apply mechanically
+- [ ] No convention requires inferring intent
+- [ ] Sections are grouped by concern, not by discovery order
+
+**Validation**
+- [ ] Checked 2–3 existing repo files — no conflicts found
+- [ ] Checked `.editorconfig`, linter configs, and formatters
+- [ ] Checked `.agents/rules/` for overlapping rules
+
+**Token efficiency**
+- [ ] No sentence that restates another
+- [ ] No explanations — only conventions
+- [ ] Rule is as short as it can be while remaining complete
