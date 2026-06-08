@@ -1,6 +1,11 @@
 # Rationale
 
-## Why stop after Phase 3
+spec-planner is a planning-only agent that uses the
+spec-workflow skill's first three phases to produce
+specs and task breakdowns, then hands off to an
+implementer.
+
+## Why the planner stops after Phase 3
 
 Planning and implementation require different modes
 of thinking. Combining them in one agent dilutes
@@ -8,7 +13,7 @@ both. Stopping at tasks forces a clean handoff and
 prevents the planner from making implementation
 assumptions.
 
-## Why read everything, write only specs/
+## Why the planner reads everything but writes only to specs/
 
 Good plans require full codebase context — patterns,
 conventions, existing implementations. But a planner

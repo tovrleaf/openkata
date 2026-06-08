@@ -1,5 +1,9 @@
 # Rationale
 
+spec-workflow drives feature development through five
+phases: specify requirements, design architecture,
+break into tasks, implement with commits, and validate.
+
 ## Why phases are split into reference files
 
 The main SKILL.md stays under 130 lines by deferring
@@ -16,7 +20,7 @@ every spec directory. One file read determines the active
 spec. Without it, the agent would need to walk all spec
 dirs looking for pending tasks — expensive in large repos.
 
-## Why phases have gates
+## Why phase transitions require user confirmation
 
 Each phase transition requires user confirmation. Without
 gates, the agent builds the wrong thing (confirmed by
@@ -24,7 +28,7 @@ real-world testing). The cost of one "does this look
 right?" question is far less than rebuilding after a
 misunderstood requirement.
 
-## Why tasks must be one commit
+## Why each task must be exactly one commit
 
 Multi-commit tasks create ambiguous resume points. When
 a session dies mid-task, the progress log and git history

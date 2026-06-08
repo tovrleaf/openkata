@@ -1,5 +1,9 @@
 # Rationale
 
+create-adr detects architectural decisions in
+conversation and guides creation of Architecture
+Decision Records with a structured lifecycle.
+
 ## Why ADRs always start as PROPOSED
 
 Even when the user has clearly decided, starting as
@@ -7,21 +11,21 @@ PROPOSED preserves the review workflow. Team members
 can challenge the decision before it becomes canon.
 Skipping to ACCEPTED removes that safety net.
 
-## Why investigate before asking
+## Why the skill investigates the codebase before asking
 
 Reading existing ADRs, the tech stack, and code
 patterns before questioning the user reduces interview
 fatigue. Most context already exists in the repo —
 asking for it wastes the user's time.
 
-## Why the E.C.A.D.R. quality check
+## Why the E.C.A.D.R. quality check exists
 
 A final self-check gate catches incomplete ADRs before
 they're committed. Without it, rushed sessions produce
 ADRs missing context or alternatives — defeating their
 purpose as future-reader documentation.
 
-## Why allow tiny ADRs
+## Why tiny single-paragraph ADRs are allowed
 
 "Match depth to complexity" prevents overhead aversion.
 If every ADR requires five sections, teams stop writing
