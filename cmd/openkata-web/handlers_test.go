@@ -423,9 +423,7 @@ func TestFilterChangelogByVersion(t *testing.T) {
 - Initial release
 `,
 			version: "1.2.0",
-			want: `# Changelog
-
-## [1.2.0] - 2025-05-15
+			want: `## [1.2.0] - 2025-05-15
 
 - Bug fix
 
@@ -447,9 +445,7 @@ func TestFilterChangelogByVersion(t *testing.T) {
 - Bug fix
 `,
 			version: "1.3.0",
-			want: `# Changelog
-
-## [1.3.0] - 2025-06-01
+			want: `## [1.3.0] - 2025-06-01
 
 - New feature
 
@@ -473,8 +469,7 @@ func TestFilterChangelogByVersion(t *testing.T) {
 - Breaking change
 `,
 			version: "1.0.0",
-			want: `# Changelog
-`,
+			want:    "",
 		},
 	}
 

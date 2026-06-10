@@ -17,6 +17,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
@@ -32,10 +33,73 @@ func isExcludedFile(path string) bool {
 	case "tile.json", ".tesslignore", "CHANGELOG.md", "RATIONALE.md", "references/ACKNOWLEDGMENTS.md":
 		return true
 	}
-	if strings.HasPrefix(path, "evals/") {
+	if strings.HasPrefix(path, "evals/") || strings.HasPrefix(path, ".tessl-plugin/") {
 		return true
 	}
 	return false
+}
+
+// isExcludedFromArchive returns true if the file should not be included in archive downloads.
+func isExcludedFromArchive(path string) bool {
+	switch path {
+	case "tile.json", ".tesslignore", "references/ACKNOWLEDGMENTS.md":
+		return true
+	}
+	if strings.HasPrefix(path, "evals/") || strings.HasPrefix(path, ".tessl-plugin/") {
+		return true
+	}
+	return false
+}
+
+var (
+	artifactLinks     map[string]string // name -> URL path
+	artifactLinksOnce sync.Once
+)
+
+// fileArtifactMap maps known file paths to the artifact that owns them.
+var fileArtifactMap = map[string]string{
+	"docs/context/GLOSSARY.md": "/skills/grill-with-docs/",
+	"docs/context/CODEBASE.md": "/skills/grill-with-docs/",
+	"docs/adr/":                "/skills/create-adr/",
+	"specs/":                   "/skills/spec-workflow/",
+	"spec.md":                  "/skills/spec-workflow/",
+	"tasks.md":                 "/skills/spec-workflow/",
+	"Makefile":                 "/skills/makefile-conventions/",
+	"mk/":                      "/skills/makefile-conventions/",
+	"validation-report.md":     "/profiles/spec-validator/",
+}
+
+func buildArtifactLinks() map[string]string {
+	links := make(map[string]string)
+	data, err := os.ReadFile("web/static/versions.json")
+	if err != nil {
+		return links
+	}
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return links
+	}
+	for _, artifactType := range []string{"skills", "rules", "profiles"} {
+		artifactData, ok := raw[artifactType]
+		if !ok {
+			continue
+		}
+		var artifacts map[string]struct{ Version string }
+		if err := json.Unmarshal(artifactData, &artifacts); err != nil {
+			continue
+		}
+		for name := range artifacts {
+			links[name] = "/" + artifactType + "/" + name + "/"
+		}
+	}
+	return links
+}
+
+func getArtifactLinks() map[string]string {
+	artifactLinksOnce.Do(func() {
+		artifactLinks = buildArtifactLinks()
+	})
+	return artifactLinks
 }
 
 // gitVersions returns released versions for an artifact by reading git tags.
@@ -381,14 +445,14 @@ func loadArtifactDetailS3(ctx context.Context, artifactType, name, version, docF
 				getResp.Body.Close()
 				if err == nil {
 					if relPath == "CHANGELOG.md" {
-						*target = renderMarkdown(filterChangelogByVersion(data, version))
+						*target = renderMarkdown(filterChangelogByVersion(data, version), name)
 					} else {
-						*target = renderMarkdown(data)
+						*target = renderMarkdown(data, name)
 					}
 					if !isExcludedFile(relPath) {
 						detail.FileContents[relPath] = string(data)
 						if strings.HasSuffix(relPath, ".md") {
-							detail.FileContents["__rendered__"+relPath] = renderMarkdownFull(data)
+							detail.FileContents["__rendered__"+relPath] = renderMarkdownFull(data, name)
 						}
 					}
 				}
@@ -409,7 +473,7 @@ func loadArtifactDetailS3(ctx context.Context, artifactType, name, version, docF
 					if err == nil {
 						detail.FileContents[relPath] = string(data)
 						if strings.HasSuffix(relPath, ".md") {
-							detail.FileContents["__rendered__"+relPath] = renderMarkdownFull(data)
+							detail.FileContents["__rendered__"+relPath] = renderMarkdownFull(data, name)
 						}
 					}
 				}
@@ -482,23 +546,23 @@ func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templ
 		Description:  description,
 		Tags:         tags,
 		Versions:     allVersions,
-		Docs:         renderMarkdown(data),
+		Docs:         renderMarkdown(data, name),
 		FileContents: make(map[string]string),
 	}
 
 	// Changelog
 	if cl, err := os.ReadFile(dir + "/CHANGELOG.md"); err == nil {
-		detail.Changelog = renderMarkdown(filterChangelogByVersion(cl, version))
+		detail.Changelog = renderMarkdown(filterChangelogByVersion(cl, version), name)
 	}
 
 	// Acknowledgments
 	if ack, err := os.ReadFile(dir + "/references/ACKNOWLEDGMENTS.md"); err == nil {
-		detail.Acknowledgments = renderMarkdown(ack)
+		detail.Acknowledgments = renderMarkdown(ack, name)
 	}
 
 	// Rationale
 	if rat, err := os.ReadFile(dir + "/RATIONALE.md"); err == nil {
-		detail.Rationale = renderMarkdown(rat)
+		detail.Rationale = renderMarkdown(rat, name)
 	}
 
 	// Walk directory for file list and contents
@@ -515,7 +579,7 @@ func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templ
 		if content, err := os.ReadFile(path); err == nil {
 			detail.FileContents[relPath] = string(content)
 			if strings.HasSuffix(relPath, ".md") {
-				detail.FileContents["__rendered__"+relPath] = renderMarkdownFull(content)
+				detail.FileContents["__rendered__"+relPath] = renderMarkdownFull(content, name)
 			}
 		}
 		return nil
@@ -529,7 +593,6 @@ func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templ
 func filterChangelogByVersion(raw []byte, version string) []byte {
 	lines := strings.Split(string(raw), "\n")
 	var result []string
-	var header []string
 	inSection := false
 	keep := true
 
@@ -537,19 +600,16 @@ func filterChangelogByVersion(raw []byte, version string) []byte {
 		if strings.HasPrefix(line, "## ") {
 			inSection = true
 			v := extractVersionFromHeading(line)
-			keep = v != "" && compareVersions(v, version) <= 0
+			keep = v != "" && v != "Unreleased" && compareVersions(v, version) <= 0
 			if keep {
 				result = append(result, line)
 			}
-		} else if !inSection {
-			// Lines before first ## (e.g., title, preamble)
-			header = append(header, line)
-		} else if keep {
+		} else if inSection && keep {
 			result = append(result, line)
 		}
 	}
 
-	return []byte(strings.Join(append(header, result...), "\n"))
+	return []byte(strings.Join(result, "\n"))
 }
 
 // extractVersionFromHeading extracts a version from a changelog heading like "## [1.2.3] - 2025-05-19".
@@ -621,7 +681,7 @@ func stripFirstH1(html string) string {
 	return html[:start] + html[cut:]
 }
 
-func renderMarkdown(src []byte) string {
+func renderMarkdown(src []byte, self ...string) string {
 	src = stripFrontmatter(src)
 
 	md := goldmark.New(
@@ -635,11 +695,16 @@ func renderMarkdown(src []byte) string {
 		return ""
 	}
 
+	selfName := ""
+	if len(self) > 0 {
+		selfName = self[0]
+	}
 	output := addTargetBlankToExternalLinks(buf.String())
+	output = linkArtifactReferences(output, selfName)
 	return stripFirstH1(output)
 }
 
-func renderMarkdownFull(src []byte) string {
+func renderMarkdownFull(src []byte, self ...string) string {
 	src = stripFrontmatter(src)
 	md := goldmark.New(
 		goldmark.WithRendererOptions(
@@ -650,7 +715,12 @@ func renderMarkdownFull(src []byte) string {
 	if err := md.Convert(src, &buf); err != nil {
 		return ""
 	}
-	return addTargetBlankToExternalLinks(buf.String())
+	selfName := ""
+	if len(self) > 0 {
+		selfName = self[0]
+	}
+	output := addTargetBlankToExternalLinks(buf.String())
+	return linkArtifactReferences(output, selfName)
 }
 
 func addTargetBlankToExternalLinks(s string) string {
@@ -678,6 +748,183 @@ func addTargetBlankToExternalLinks(s string) string {
 		s = s[end+1:]
 	}
 	return result.String()
+}
+
+// linkArtifactReferences replaces known artifact names and file paths
+// with links to their detail pages. Skips content inside <code>, <pre>, and <a> tags.
+func linkArtifactReferences(html, self string) string {
+	links := getArtifactLinks()
+	if len(links) == 0 {
+		return html
+	}
+
+	// Build sorted list of names (longest first to avoid partial matches)
+	names := make([]string, 0, len(links)+len(fileArtifactMap))
+	for name := range links {
+		names = append(names, name)
+	}
+	for path := range fileArtifactMap {
+		names = append(names, path)
+	}
+	sort.Slice(names, func(i, j int) bool {
+		return len(names[i]) > len(names[j])
+	})
+
+	// Remove self from names to avoid self-linking
+	if self != "" {
+		filtered := names[:0]
+		for _, n := range names {
+			if n != self {
+				filtered = append(filtered, n)
+			}
+		}
+		names = filtered
+	}
+
+	selfURL := ""
+	if self != "" {
+		if u, ok := links[self]; ok {
+			selfURL = u
+		}
+	}
+
+	// Process HTML, skipping tags we shouldn't modify
+	var result strings.Builder
+	for len(html) > 0 {
+		// Check if we're at a tag we should skip entirely
+		if strings.HasPrefix(html, "<pre") || strings.HasPrefix(html, "<a ") ||
+			strings.HasPrefix(html, "<h1") || strings.HasPrefix(html, "<h2") ||
+			strings.HasPrefix(html, "<h3") || strings.HasPrefix(html, "<h4") ||
+			strings.HasPrefix(html, "<h5") || strings.HasPrefix(html, "<h6") {
+			var closeTag string
+			switch {
+			case strings.HasPrefix(html, "<pre"):
+				closeTag = "</pre>"
+			case strings.HasPrefix(html, "<a "):
+				closeTag = "</a>"
+			case strings.HasPrefix(html, "<h1"):
+				closeTag = "</h1>"
+			case strings.HasPrefix(html, "<h2"):
+				closeTag = "</h2>"
+			case strings.HasPrefix(html, "<h3"):
+				closeTag = "</h3>"
+			case strings.HasPrefix(html, "<h4"):
+				closeTag = "</h4>"
+			case strings.HasPrefix(html, "<h5"):
+				closeTag = "</h5>"
+			case strings.HasPrefix(html, "<h6"):
+				closeTag = "</h6>"
+			}
+			end := strings.Index(html, closeTag)
+			if end == -1 {
+				result.WriteString(html)
+				break
+			}
+			end += len(closeTag)
+			result.WriteString(html[:end])
+			html = html[end:]
+			continue
+		}
+		if strings.HasPrefix(html, "<code") {
+			closeTag := "</code>"
+			end := strings.Index(html, closeTag)
+			if end == -1 {
+				result.WriteString(html)
+				break
+			}
+			// Extract content between <code...> and </code>
+			tagEnd := strings.Index(html, ">")
+			if tagEnd == -1 || tagEnd >= end {
+				end += len(closeTag)
+				result.WriteString(html[:end])
+				html = html[end:]
+				continue
+			}
+			openTag := html[:tagEnd+1]
+			content := html[tagEnd+1 : end]
+			// Check if content exactly matches an artifact name (skip self)
+			links := getArtifactLinks()
+			if content == self {
+				result.WriteString(html[:end+len(closeTag)])
+				html = html[end+len(closeTag):]
+				continue
+			}
+			if url, ok := links[content]; ok && url != selfURL {
+				result.WriteString(`<a href="` + url + `" class="artifact-link">` + openTag + content + closeTag + `</a>`)
+			} else if url, ok := fileArtifactMap[content]; ok && url != selfURL {
+				result.WriteString(`<a href="` + url + `" class="artifact-link">` + openTag + content + closeTag + `</a>`)
+			} else {
+				result.WriteString(html[:end+len(closeTag)])
+			}
+			html = html[end+len(closeTag):]
+			continue
+		}
+
+		// Check if we're inside any HTML tag (e.g., <p>, <li>)
+		if html[0] == '<' {
+			end := strings.Index(html, ">")
+			if end == -1 {
+				result.WriteString(html)
+				break
+			}
+			result.WriteString(html[:end+1])
+			html = html[end+1:]
+			continue
+		}
+
+		// Find the next tag
+		nextTag := strings.Index(html, "<")
+		if nextTag == -1 {
+			nextTag = len(html)
+		}
+		// Process text segment
+		segment := html[:nextTag]
+		segment = linkSegment(segment, names, links, selfURL)
+		result.WriteString(segment)
+		html = html[nextTag:]
+	}
+	return result.String()
+}
+
+func linkSegment(segment string, names []string, links map[string]string, selfURL string) string {
+	var replacements []string
+	placeholder := "\x00LINK"
+
+	for _, name := range names {
+		idx := strings.Index(segment, name)
+		if idx == -1 {
+			continue
+		}
+		// Check word boundaries
+		before := idx > 0 && isWordChar(segment[idx-1])
+		after := idx+len(name) < len(segment) && isWordChar(segment[idx+len(name)])
+		if before || after {
+			continue
+		}
+
+		url, ok := links[name]
+		if !ok {
+			url = fileArtifactMap[name]
+		}
+		if url == selfURL {
+			continue
+		}
+		link := `<a href="` + url + `" class="artifact-link">` + name + `</a>`
+		replacements = append(replacements, link)
+		marker := placeholder + fmt.Sprintf("%d", len(replacements)-1) + "\x00"
+		segment = segment[:idx] + marker + segment[idx+len(name):]
+	}
+
+	// Restore placeholders
+	for i, link := range replacements {
+		marker := placeholder + fmt.Sprintf("%d", i) + "\x00"
+		segment = strings.Replace(segment, marker, link, 1)
+	}
+	return segment
+}
+
+func isWordChar(b byte) bool {
+	return (b >= 'a' && b <= 'z') || (b >= 'A' && b <= 'Z') || (b >= '0' && b <= '9') || b == '_'
 }
 
 func handleRules(w http.ResponseWriter, r *http.Request) {
@@ -820,7 +1067,7 @@ func handleArchive(w http.ResponseWriter, r *http.Request, artifactType, name, v
 		if relPath == "" || strings.HasSuffix(relPath, "/") {
 			continue
 		}
-		if relPath == "tile.json" || relPath == "references/ACKNOWLEDGMENTS.md" {
+		if isExcludedFromArchive(relPath) {
 			continue
 		}
 
@@ -943,10 +1190,7 @@ func handleArchiveLocal(w http.ResponseWriter, r *http.Request, artifactType, na
 		}
 		relPath, _ := filepath.Rel(dir, path)
 		relPath = filepath.ToSlash(relPath)
-		if relPath == "tile.json" || relPath == "references/ACKNOWLEDGMENTS.md" {
-			return nil
-		}
-		if strings.HasPrefix(relPath, "evals/") {
+		if isExcludedFromArchive(relPath) {
 			return nil
 		}
 		data, err := os.ReadFile(path)

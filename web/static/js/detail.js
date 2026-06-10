@@ -54,7 +54,7 @@
 			var link = e.target.closest('a');
 			if (!link) return;
 			var href = link.getAttribute('href');
-			if (!href || href.startsWith('http') || href.startsWith('#')) return;
+			if (!href || href.startsWith('http') || href.startsWith('#') || href.startsWith('/')) return;
 			e.preventDefault();
 			highlightFile(href);
 		});
