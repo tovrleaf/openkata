@@ -27,7 +27,9 @@ purpose as future-reader documentation.
 
 ## Why tiny single-paragraph ADRs are allowed
 
-"Match depth to complexity" prevents overhead aversion.
-If every ADR requires five sections, teams stop writing
-them. A single-paragraph ADR that records what and why
-is better than no ADR at all.
+If every ADR requires five sections (Context, Drivers,
+Options, Decision, Consequences), the process feels
+heavy and people stop writing them entirely. Allowing
+a single paragraph that records what was decided and
+why removes that friction. A three-sentence ADR is
+infinitely more useful than no ADR at all.
