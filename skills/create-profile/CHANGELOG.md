@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Initial skill for creating sensei profiles
+- Initial skill for creating agent profiles
 - Workflow: gather, investigate, clarify, write, validate,
   confirm
 - Profile structure: Constraints, Scope, Design Intent

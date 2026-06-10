@@ -10,4 +10,4 @@ The project files are in the current directory.
 
 ## Output Specification
 
-Create a sensei agent profile for the frontend role. Save it as a markdown file in the appropriate profiles location for this project. Name it after the agent role using a short, lowercase name.
+Create an agent profile for the frontend role. Save it as a markdown file in the appropriate profiles location for this project. Name it after the agent role using a short, lowercase name.

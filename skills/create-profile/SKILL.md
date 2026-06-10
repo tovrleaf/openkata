@@ -18,7 +18,7 @@ metadata:
 
 Create agent profiles — role definitions that scope an agent to
 a specific domain with explicit constraints and permissions.
-Profiles live in `profiles/` as standalone markdown files.
+Profiles are standalone markdown files that define agent roles.
 
 ## Workflow
 
@@ -97,7 +97,7 @@ and schema changes."
 1. Investigates repo — finds `migrations/`, Flyway config,
    existing `frontend` profile for reference
 2. Asks: "Should it also handle seed data, or just schema?"
-3. Creates `profiles/database.md` scoping to `migrations/`
+3. Creates `database.md` profile scoping to `migrations/`
    and schema files, excluding application code
 4. Validates — directory exists, no overlap with frontend
    profile

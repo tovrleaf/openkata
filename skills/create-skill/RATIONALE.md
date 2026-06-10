@@ -18,12 +18,6 @@ the workflow instead of describing triggers causes
 mis-activation. The body teaches; the description
 matches.
 
-## Why version is banned from frontmatter
-
-The Agent Skills spec doesn't include version in
-frontmatter. It belongs in metadata. Putting it in
-the wrong place triggers spec validation warnings and
-confuses tooling about the source of truth.
 
 ## Why skills are validated with negative prompts
 
