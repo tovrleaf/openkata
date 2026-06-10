@@ -426,6 +426,18 @@ func listPrefixes(ctx context.Context, prefix string) ([]string, error) {
 	return names, nil
 }
 
+// isExcludedFromArchive returns true if the file should not be included in installs.
+func isExcludedFromArchive(path string) bool {
+	switch path {
+	case "tile.json", ".tesslignore", "references/ACKNOWLEDGMENTS.md":
+		return true
+	}
+	if strings.HasPrefix(path, "evals/") || strings.HasPrefix(path, ".tessl-plugin/") {
+		return true
+	}
+	return false
+}
+
 func readAllFiles(ctx context.Context, prefix string) (map[string]string, error) {
 	resp, err := s3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
 		Bucket: &bucket,
@@ -442,7 +454,7 @@ func readAllFiles(ctx context.Context, prefix string) (map[string]string, error)
 		if relPath == "" || strings.HasSuffix(relPath, "/") {
 			continue
 		}
-		if relPath == "tile.json" || relPath == "references/ACKNOWLEDGMENTS.md" {
+		if isExcludedFromArchive(relPath) {
 			continue
 		}
 
