@@ -1,0 +1,56 @@
+{
+  "context": "Tests whether the agent applies the three-gate ADR test correctly, creates CODEBASE.md in the correct format with contexts and relationships, and cross-references user claims against the actual code to surface contradictions.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "ADR three-gate test applied",
+      "description": "adr-decisions.md evaluates decisions against all three criteria: hard-to-reverse, surprising-without-context, and result-of-a-real-trade-off",
+      "max_score": 12
+    },
+    {
+      "name": "ADR delegation noted",
+      "description": "adr-decisions.md states that any qualifying decision would be delegated to the create-adr skill, NOT created directly",
+      "max_score": 10
+    },
+    {
+      "name": "Redis decision evaluated",
+      "description": "adr-decisions.md evaluates the Redis Streams choice as an ADR candidate (it involves genuine alternatives and lock-in — should qualify)",
+      "max_score": 10
+    },
+    {
+      "name": "CODEBASE.md created",
+      "description": "docs/context/CODEBASE.md exists and was created as an output of the session",
+      "max_score": 10
+    },
+    {
+      "name": "Contexts section present",
+      "description": "CODEBASE.md contains a ## Contexts section listing each bounded context with its directory path and a one-line purpose",
+      "max_score": 10
+    },
+    {
+      "name": "Relationships section present",
+      "description": "CODEBASE.md contains a ## Relationships section showing direction and mechanism (events, shared types, or API calls) between contexts",
+      "max_score": 10
+    },
+    {
+      "name": "Code contradiction surfaced",
+      "description": "session-log.md shows the agent pointing out that the current code is synchronous (NotificationService is called directly from order flow) while the plan claims the system is already event-driven — or similar code-vs-plan contradiction",
+      "max_score": 12
+    },
+    {
+      "name": "One question per turn",
+      "description": "Each turn in session-log.md contains exactly one question — no multi-question batching",
+      "max_score": 8
+    },
+    {
+      "name": "Recommendation stated first",
+      "description": "Each question in the session log includes the agent's own recommended answer before the user's response",
+      "max_score": 8
+    },
+    {
+      "name": "Session covers all open questions",
+      "description": "session-log.md addresses all three open questions from the plan: retry logic ownership, notification preferences ownership, and SMS/push context split",
+      "max_score": 10
+    }
+  ]
+}

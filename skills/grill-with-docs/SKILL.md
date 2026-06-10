@@ -33,9 +33,11 @@ decisions one by one.
    - Code patterns related to the plan's domain
 
 3. **Interview one question at a time** — Ask exactly ONE
-   question per message. For each question, state YOUR
-   recommended answer first. Wait for a response before
-   continuing. If a question can be answered by exploring
+   question per message. Never combine multiple questions
+   in a single response, even if they seem related. For
+   each question, state YOUR recommended answer first.
+   Wait for the user's response before asking the next
+   question. If a question can be answered by exploring
    the codebase, explore instead of asking.
 
 4. **Challenge against the glossary** — When the user uses
@@ -69,7 +71,10 @@ decisions one by one.
 
 10. **Offer ADRs sparingly** — Only when all three criteria
     in [adr-criteria.md](references/adr-criteria.md) are
-    met. When warranted, delegate to the `create-adr` skill.
+    met. When warranted, explicitly state "Delegating to
+    create-adr" and activate the `create-adr` skill to
+    handle format, numbering, and file placement. Do not
+    write ADR files directly.
 
 11. **Continue until covered** — Keep going until all
     branches are resolved. Do not stop early.
@@ -102,3 +107,10 @@ decisions one by one.
 - **Accepting vague terms** — "the service handles it"
   is not precise. Push until the term has a one-sentence
   definition and an _Avoid_ list.
+- **Bundling multiple questions** — NEVER ask two questions
+  in one message. If you have a follow-up, wait for the
+  answer first. One message = one question. Always.
+- **Writing ADRs directly** — When an ADR is warranted,
+  you MUST say "Delegating to create-adr" and hand off.
+  Do not write the ADR file yourself. The create-adr skill
+  owns the format, numbering, and lifecycle.

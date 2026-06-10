@@ -1,0 +1,51 @@
+{
+  "context": "Tests whether the agent conducts a grilling session by asking one question at a time (with a recommendation), updates GLOSSARY.md immediately as terms are resolved (not batched), and challenges terminology that conflicts with the existing glossary.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "One question per turn",
+      "description": "Each entry in session-log.md shows exactly one question asked per turn — no multiple questions bundled together in a single message",
+      "max_score": 12
+    },
+    {
+      "name": "Recommendation first",
+      "description": "Each question in session-log.md is accompanied by the agent's own recommended answer stated before the user responds",
+      "max_score": 12
+    },
+    {
+      "name": "Glossary conflict challenged",
+      "description": "The log shows the agent explicitly calling out that 'Transaction' or 'Payment' conflicts with or is absent from the existing GLOSSARY.md, citing the glossary definition",
+      "max_score": 12
+    },
+    {
+      "name": "GLOSSARY.md updated",
+      "description": "docs/context/GLOSSARY.md exists and contains at least one new term entry beyond the three that existed at the start (Order, Customer, Checkout)",
+      "max_score": 12
+    },
+    {
+      "name": "Inline updates (not batched)",
+      "description": "The session-log.md shows terms being documented as they are resolved — the log entries and glossary updates are interleaved (not all glossary updates appear only at the end)",
+      "max_score": 12
+    },
+    {
+      "name": "Avoid list present",
+      "description": "Each new term added to GLOSSARY.md includes an _Avoid_ list of synonyms",
+      "max_score": 10
+    },
+    {
+      "name": "One-sentence definitions",
+      "description": "Each term definition in GLOSSARY.md is one or two sentences — not a paragraph or a bullet list",
+      "max_score": 10
+    },
+    {
+      "name": "Domain-specific terms only",
+      "description": "GLOSSARY.md does not contain general programming concepts (e.g. API, token, webhook) — only domain-specific terms",
+      "max_score": 10
+    },
+    {
+      "name": "Covers all major branches",
+      "description": "The session-log.md addresses all three open questions from the plan (card storage, failed notification, and transaction ownership)",
+      "max_score": 10
+    }
+  ]
+}
