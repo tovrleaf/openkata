@@ -24,6 +24,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/tovrleaf/openkata/cmd/openkata-web/templates"
 	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/renderer/html"
 )
 
@@ -66,7 +67,13 @@ var fileArtifactMap = map[string]string{
 	"tasks.md":                 "/skills/spec-workflow/",
 	"Makefile":                 "/skills/makefile-conventions/",
 	"mk/":                      "/skills/makefile-conventions/",
+	"profiles/":               "/profiles/",
 	"validation-report.md":     "/profiles/spec-validator/",
+}
+
+// tabLinkMap maps file paths to same-page tab anchors.
+var tabLinkMap = map[string]string{
+	"references/ACKNOWLEDGMENTS.md": "#acknowledgments",
 }
 
 func buildArtifactLinks() map[string]string {
@@ -685,6 +692,7 @@ func renderMarkdown(src []byte, self ...string) string {
 	src = stripFrontmatter(src)
 
 	md := goldmark.New(
+		goldmark.WithExtensions(extension.Table),
 		goldmark.WithRendererOptions(
 			html.WithUnsafe(),
 		),
@@ -707,6 +715,7 @@ func renderMarkdown(src []byte, self ...string) string {
 func renderMarkdownFull(src []byte, self ...string) string {
 	src = stripFrontmatter(src)
 	md := goldmark.New(
+		goldmark.WithExtensions(extension.Table),
 		goldmark.WithRendererOptions(
 			html.WithUnsafe(),
 		),
@@ -759,11 +768,14 @@ func linkArtifactReferences(html, self string) string {
 	}
 
 	// Build sorted list of names (longest first to avoid partial matches)
-	names := make([]string, 0, len(links)+len(fileArtifactMap))
+	names := make([]string, 0, len(links)+len(fileArtifactMap)+len(tabLinkMap))
 	for name := range links {
 		names = append(names, name)
 	}
 	for path := range fileArtifactMap {
+		names = append(names, path)
+	}
+	for path := range tabLinkMap {
 		names = append(names, path)
 	}
 	sort.Slice(names, func(i, j int) bool {
@@ -849,6 +861,11 @@ func linkArtifactReferences(html, self string) string {
 				html = html[end+len(closeTag):]
 				continue
 			}
+			if url, ok := tabLinkMap[content]; ok {
+				result.WriteString(`<a href="` + url + `" class="artifact-link">` + openTag + content + closeTag + `</a>`)
+				html = html[end+len(closeTag):]
+				continue
+			}
 			if url, ok := links[content]; ok && url != selfURL {
 				result.WriteString(`<a href="` + url + `" class="artifact-link">` + openTag + content + closeTag + `</a>`)
 			} else if url, ok := fileArtifactMap[content]; ok && url != selfURL {
@@ -903,6 +920,9 @@ func linkSegment(segment string, names []string, links map[string]string, selfUR
 		}
 
 		url, ok := links[name]
+		if !ok {
+			url, ok = tabLinkMap[name]
+		}
 		if !ok {
 			url = fileArtifactMap[name]
 		}

@@ -27,7 +27,9 @@
 		if (activeBtn) activeBtn.classList.add('active');
 		var panel = document.getElementById('panel-' + name);
 		if (panel) panel.classList.add('active');
-		history.replaceState(null, '', '#' + name);
+		if (!switchTab._initializing) {
+			history.pushState(null, '', '#' + name);
+		}
 	}
 
 	var hash = location.hash.replace('#', '');
@@ -36,7 +38,9 @@
 		var tabName = parts[0];
 		var fileId = parts[1] || '';
 		if (document.querySelector('.tabs .tab[data-tab="'+tabName+'"]')) {
+			switchTab._initializing = true;
 			switchTab(tabName);
+			switchTab._initializing = false;
 		}
 		if (fileId) {
 			var target = document.getElementById('file-' + fileId);
@@ -47,10 +51,22 @@
 		}
 	}
 
-	// Overview link interception — relative links switch to Files tab
-	var overview = document.getElementById('panel-overview');
-	if (overview) {
-		overview.addEventListener('click', function(e) {
+	window.addEventListener('popstate', function() {
+		var hash = location.hash.replace('#', '');
+		if (hash) {
+			var parts = hash.split(':');
+			var tabName = parts[0];
+			if (document.querySelector('.tabs .tab[data-tab="'+tabName+'"]')) {
+				switchTab._initializing = true;
+				switchTab(tabName);
+				switchTab._initializing = false;
+			}
+		}
+	});
+
+	// Relative link interception — resolve to Files tab
+	document.querySelectorAll('.tab-panel').forEach(function(panel) {
+		panel.addEventListener('click', function(e) {
 			var link = e.target.closest('a');
 			if (!link) return;
 			var href = link.getAttribute('href');
@@ -58,12 +74,16 @@
 			e.preventDefault();
 			highlightFile(href);
 		});
-	}
+	});
 
 	function highlightFile(path) {
 		path = path.replace(/^\.\//, '');
 		var id = 'file-' + path.replace(/\//g, '-').replace(/\./g, '-');
 		var target = document.getElementById(id);
+		if (!target) {
+			id = 'file-references-' + path.replace(/\//g, '-').replace(/\./g, '-');
+			target = document.getElementById(id);
+		}
 		if (target) {
 			switchTab('files');
 			target.open = true;
