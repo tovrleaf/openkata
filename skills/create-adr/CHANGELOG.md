@@ -1,13 +1,20 @@
 # Changelog
 
-## 1.2.0 — 2026-05-24
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [1.2.0] - 2026-05-24
 
 ### Added
 
 - Workflow step 8: offer to run grill-me skill on finalized
   ADRs to find blind spots
 
-## 1.1.0 — 2026-04-30
+## [1.1.0] - 2026-04-30
 
 ### Added
 
@@ -26,14 +33,14 @@
 - "When to suggest" section (duplicated the description)
 - Inline References section (moved to ACKNOWLEDGMENTS.md)
 
-## 1.0.2 — 2026-04-26
+## [1.0.2] - 2026-04-26
 
 ### Fixed
 
 - Applied markdown-consistency rule: added language specifier to
   code block, blank lines around headings in changelog
 
-## 1.0.1 — 2026-04-25
+## [1.0.1] - 2026-04-25
 
 ### Changed
 
@@ -44,7 +51,7 @@
 
 - CHANGELOG.md formatting (added missing category header)
 
-## 1.0.0 — 2026-04-12
+## [1.0.0] - 2026-04-12
 
 ### Added
 
