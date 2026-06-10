@@ -1,5 +1,5 @@
 {
-  "name": "local/git-worktree",
+  "name": "openkata/git-worktree",
   "description": "Creates, lists, and removes git worktrees to manage parallel workspaces. Activate when the user needs to work on multiple branches simultaneously, run parallel tasks (evals, builds, reviews) in isolation, or when an agent needs its own workspace. Also activate when the user says \"worktree\", \"parallel branch\", \"work on two things at once\", or \"run these in parallel\".",
   "private": true,
   "skills": [
