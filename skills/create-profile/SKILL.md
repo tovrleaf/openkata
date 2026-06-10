@@ -1,7 +1,7 @@
 ---
 name: create-profile
 description: >
-  Creates sensei profiles that define agent roles with scoped
+  Creates agent profiles that define roles with scoped
   permissions and constraints. Investigates the repo for existing
   profiles and conventions, writes a focused profile markdown
   file, and validates scope boundaries. Use when the user wants
@@ -16,7 +16,7 @@ metadata:
 
 # Create Profile
 
-Create sensei profiles — role definitions that scope an agent to
+Create agent profiles — role definitions that scope an agent to
 a specific domain with explicit constraints and permissions.
 Profiles live in `profiles/` as standalone markdown files.
 
@@ -30,7 +30,8 @@ Profiles live in `profiles/` as standalone markdown files.
 
 2. **Investigate the repo** — Before asking questions, search
    for facts that reduce ambiguity:
-   - Existing profiles in `profiles/`
+   - Existing profiles (find where they live in this repo;
+     ask the user if ambiguous)
    - Project structure to understand domain boundaries
    - Existing rules that the profile should reference
    - File patterns that define the scope
@@ -54,7 +55,7 @@ Profiles live in `profiles/` as standalone markdown files.
    ## Constraints
 
    - Hard rules this agent must follow
-   - Rules it must reference (link to dojo kun)
+   - Which rules or conventions the profile must follow
 
    ## Scope
 
@@ -77,7 +78,7 @@ Profiles live in `profiles/` as standalone markdown files.
      stop and hand off to a human or another profile.
    - **Keep it under 40 lines.** A profile is a lens, not a
      manual.
-   - **Reference rules, don't repeat them.** If a dojo kun
+   - **Reference rules, don't repeat them.** If a rule
      covers it, point to it.
 
 5. **Validate** — Check the profile against the repo:
@@ -146,7 +147,7 @@ without explicit confirmation.
 ## Boundaries
 
 **Does:**
-- Create profile markdown files in `profiles/`
+- Create profile markdown files in the project's profile directory
 - Investigate repo structure to define scope
 - Reference existing rules
 

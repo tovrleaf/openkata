@@ -1,3 +1,11 @@
+---
+description: >
+  Reviews implementations against spec requirements with no
+  builder bias. Reads only the spec and the code, never the
+  task plan.
+tags: category:review
+---
+
 # Spec Validator Agent
 
 Reviews implementations against spec requirements with

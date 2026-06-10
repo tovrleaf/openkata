@@ -1,3 +1,11 @@
+---
+description: >
+  Plans features through specs, designs, and task breakdowns.
+  Stops after Phase 3 of spec-workflow and hands off to an
+  implementer.
+tags: category:planning
+---
+
 # Spec Planner Agent
 
 Plans features through specs, designs, and task breakdowns.
