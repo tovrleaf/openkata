@@ -10,7 +10,7 @@ description: >
   public API contracts, infrastructure topology), or deviations from existing
   standards. Also activate when the user explicitly asks to create an ADR.
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
   tags: "category:documentation, category:architecture"
 ---
 
