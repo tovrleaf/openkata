@@ -52,6 +52,24 @@ func isExcludedFromArchive(path string) bool {
 	return false
 }
 
+// artifactRedirects maps old artifact names to their current names.
+// Used for permanent redirects after renames.
+var artifactRedirects = map[string]map[string]string{
+	"skills": {
+		"create-pr": "github-create-pr",
+	},
+}
+
+func handleRedirect(w http.ResponseWriter, r *http.Request, artifactType, name string) bool {
+	if redirects, ok := artifactRedirects[artifactType]; ok {
+		if newName, ok := redirects[name]; ok {
+			http.Redirect(w, r, "/"+artifactType+"/"+newName+"/", http.StatusMovedPermanently)
+			return true
+		}
+	}
+	return false
+}
+
 var (
 	artifactLinks     map[string]string // name -> URL path
 	artifactLinksOnce sync.Once
@@ -151,6 +169,10 @@ func handleSkills(w http.ResponseWriter, r *http.Request) {
 	}
 
 	parts := strings.Split(strings.TrimSuffix(path, "/"), "/")
+
+	if len(parts) >= 1 && handleRedirect(w, r, "skills", parts[0]) {
+		return
+	}
 
 	// /skills/:name/archive or /skills/:name/archive/:version
 	if len(parts) >= 2 && parts[1] == "archive" {
@@ -959,6 +981,10 @@ func handleRules(w http.ResponseWriter, r *http.Request) {
 
 	parts := strings.Split(strings.TrimSuffix(path, "/"), "/")
 
+	if len(parts) >= 1 && handleRedirect(w, r, "rules", parts[0]) {
+		return
+	}
+
 	// /rules/:name/archive or /rules/:name/archive/:version
 	if len(parts) >= 2 && parts[1] == "archive" {
 		version := ""
@@ -1336,6 +1362,10 @@ func handleProfiles(w http.ResponseWriter, r *http.Request) {
 	}
 
 	parts := strings.Split(strings.TrimSuffix(path, "/"), "/")
+
+	if len(parts) >= 1 && handleRedirect(w, r, "profiles", parts[0]) {
+		return
+	}
 
 	// /profiles/:name/archive or /profiles/:name/archive/:version
 	if len(parts) >= 2 && parts[1] == "archive" {

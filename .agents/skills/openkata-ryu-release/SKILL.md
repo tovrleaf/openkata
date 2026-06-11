@@ -83,6 +83,45 @@ When in doubt, ask the user.
   earlier commit)
 - CHANGELOG entry must not be empty
 
+## Renaming an Artifact
+
+Renaming starts versioning from v1.0.0 under the new name.
+Old git tags are preserved — old S3 artifacts are deleted.
+
+1. Rename the directory:
+   ```bash
+   git mv <type>/<old-name> <type>/<new-name>
+   ```
+
+2. Update frontmatter `name:` field.
+
+3. Reset CHANGELOG.md to a fresh v1.0.0 entry. Mention
+   the old name:
+   ```
+   ## [1.0.0] - YYYY-MM-DD
+
+   ### Changed
+
+   - Renamed from <old-name>
+   ```
+
+4. Commit, tag, push:
+   ```bash
+   git commit -m 'refactor(<type>): rename <old-name> to <new-name>'
+   git tag <type>/<new-name>/v1.0.0
+   ```
+
+5. Publish new name, delete old S3 prefix:
+   ```bash
+   gh workflow run publish.yaml -f tag=<type>/<new-name>/v1.0.0
+   aws s3 rm s3://openkata-artifacts/<type>/<old-name>/ --recursive
+   ```
+
+6. Add redirect in `artifactRedirects` map in handlers.go:
+   ```go
+   "<old-name>": "<new-name>",
+   ```
+
 ## Common Failures
 
 - NEVER determine current version from CHANGELOG.md —
