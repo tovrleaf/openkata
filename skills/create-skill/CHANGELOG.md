@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-06-11
+
+### Added
+
+- Portability check in validation step for distributable
+  skills
+- Common Failures guidance: use NEVER/MUST language for
+  weak enforcement
+
+### Changed
+
+- Frontmatter rules now generic (project decides metadata
+  structure)
+- Acknowledgments step documents compact one-liner format
+
+### Removed
+
+- Version-banned-from-frontmatter rationale (moved to
+  project conventions)
+
 ## [1.2.1] - 2026-05-26
 
 ### Changed
