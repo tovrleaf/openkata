@@ -2,6 +2,11 @@
 
 For each task with Status: Pending:
 
+0. **Freeze the spec** — Update `spec.md` status from
+   `Draft` to `Implementing`. From this point, the spec
+   is frozen — do not modify requirements or scope. If
+   new requirements surface during implementation, note
+   them in the progress log for a follow-up spec.
 1. Update task status to `In Progress`
 2. Read the progress log for notes from earlier tasks
 3. Read the task's goal, boundary, and done-when criteria
