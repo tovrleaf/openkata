@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-06-11
+
 ### Changed
 
 - Replaced catch-all `%: @:` pattern with conditional
@@ -16,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Warning against placing `%: @:` catch-all in root Makefile
   (Common Failures, Structure conventions, and reference doc)
+- RATIONALE.md explaining design decisions
 
 ## [1.0.0] — 2026-05-24
 
