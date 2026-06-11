@@ -10,7 +10,7 @@ description: >
   persona, restrict what an agent can touch, or wants consistent
   behavior from a domain-specific agent.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   tags: "category:scaffolding"
 ---
 
