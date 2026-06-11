@@ -8,7 +8,7 @@ description: >
   grilled on their design, says "grill me", "challenge this", or
   "poke holes in this."
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   tags: "category:review, category:architecture"
 ---
 
