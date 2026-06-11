@@ -58,8 +58,10 @@ make deploy-mcp      # MCP server (TODO)
    - Provider: `token.actions.githubusercontent.com`
    - Organization: `tovrleaf`
    - Repository: `openkata`
-   - Branch: `main`
    - Role name: `openkata-ci`
+   - Trust policy subjects (StringLike condition):
+     - `repo:tovrleaf/openkata:ref:refs/heads/main`
+     - `repo:tovrleaf/openkata:ref:refs/tags/*`
 
 3. Attach inline policy to the role:
    - Paste contents of [iam-ci-policy.json](iam-ci-policy.json)
