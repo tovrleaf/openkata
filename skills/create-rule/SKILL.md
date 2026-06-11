@@ -10,7 +10,7 @@ description: >
   notices inconsistent output across sessions, or is setting up a
   new project's conventions.
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
   tags: "category:scaffolding, category:conventions"
 ---
 
