@@ -8,7 +8,7 @@ description: >
   user says "worktree", "parallel branch", "work on two things
   at once", or "run these in parallel".
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   tags: "category:workflow, tool:git"
 ---
 
