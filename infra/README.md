@@ -13,6 +13,7 @@ AWS infrastructure for Open Kata (website + MCP server).
 |------|---------|----------|
 | [iam-admin-policy.json](iam-admin-policy.json) | Create/destroy infra, deploy | Your IAM user |
 | [iam-ci-policy.json](iam-ci-policy.json) | Deploy code, publish skills to S3 | `openkata-ci` role |
+| [iam-ci-trust-policy.json](iam-ci-trust-policy.json) | OIDC trust for GitHub Actions | `openkata-ci` role (trust relationships) |
 | [iam-mcp-role-policy.json](iam-mcp-role-policy.json) | S3 read, DynamoDB access | `openkata-mcp-role` (Lambda execution) |
 | [iam-web-role-mcp-policy.json](iam-web-role-mcp-policy.json) | S3 read, DynamoDB access | `openkata-web-role` (Lambda execution) |
 
@@ -54,14 +55,9 @@ make deploy-mcp      # MCP server (TODO)
    - Audience: `sts.amazonaws.com`
 
 2. IAM → Roles → Create role
-   - Trusted entity: Web identity
-   - Provider: `token.actions.githubusercontent.com`
-   - Organization: `tovrleaf`
-   - Repository: `openkata`
+   - Trusted entity: Custom trust policy
+   - Paste contents of [iam-ci-trust-policy.json](iam-ci-trust-policy.json)
    - Role name: `openkata-ci`
-   - Trust policy subjects (StringLike condition):
-     - `repo:tovrleaf/openkata:ref:refs/heads/main`
-     - `repo:tovrleaf/openkata:ref:refs/tags/*`
 
 3. Attach inline policy to the role:
    - Paste contents of [iam-ci-policy.json](iam-ci-policy.json)
