@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-06-11
+
+### Added
+
+- Boundaries section (DOES / Does NOT pattern)
+- Proactive rebase offer when branch is behind remote
+
+### Changed
+
+- Switched to `--force-with-lease` push for safety after rebase
+
 ## [1.0.0] - 2026-05-24
 
 ### Added
