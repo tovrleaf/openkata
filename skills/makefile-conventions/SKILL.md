@@ -111,26 +111,26 @@ deploy:
 ### Subcommand delegation
 
 When a domain uses `$(MAKE) -C` for space-separated
-subcommands (`make chat master`), Make sees `master` as a
+subcommands (`make db migrate`), Make sees `migrate` as a
 separate goal and errors. Solve this with conditional
 explicit targets — not a catch-all:
 
 ```makefile
-.PHONY: chat
-chat:
-	@$(MAKE) -C mk/chat $(filter-out $@,$(MAKECMDGOALS))
+.PHONY: db
+db:
+	@$(MAKE) -C mk/db $(filter-out $@,$(MAKECMDGOALS))
 
-# Only activate when 'chat' is on the command line
-ifneq ($(filter chat,$(MAKECMDGOALS)),)
-.PHONY: master eval
-master eval:
+# Only activate when 'db' is on the command line
+ifneq ($(filter db,$(MAKECMDGOALS)),)
+.PHONY: migrate rollback
+migrate rollback:
 	@:
 endif
 ```
 
 This ensures:
-- `make chat master` — works (master is a known no-op)
-- `make chat typo` — errors (typo has no rule)
+- `make db migrate` — works (migrate is a known no-op)
+- `make db typo` — errors (typo has no rule)
 - `make typo` — errors (conditional is inactive)
 
 Never use `%: @:` — it swallows all unknown targets

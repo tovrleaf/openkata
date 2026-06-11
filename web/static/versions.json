@@ -37,8 +37,13 @@
     },
     "grill-me": {
       "version": "1.0.0",
-      "description": "Challenge a plan, spec, ADR, or design by interviewing the user relentlessly until all corners are covered. Use when the user wants to stress-test a plan, get grilled on their design, says \"grill me\", \"challenge this\", or \"poke holes in this.\"",
+      "description": "Challenge a plan, spec, ADR, or design by interviewing the user relentlessly until all corners are covered. Identifies edge cases, questions assumptions, probes failure modes, and surfaces missing requirements. Use when the user wants to stress-test a plan, get grilled on their design, says \"grill me\", \"challenge this\", or \"poke holes in this.\"",
       "tags": "category:review, category:architecture"
+    },
+    "grill-with-docs": {
+      "version": "0.0.0",
+      "description": "Domain-driven grilling session that challenges a plan against the project's language, sharpens terminology, and writes documentation inline as decisions crystallise. Use when the user wants to stress-test a plan against domain language, says \"grill with docs\", \"sharpen terms\", \"challenge against domain\", or wants a grilling session that produces glossary updates and ADRs as it goes.",
+      "tags": "category:review, category:architecture, category:documentation"
     },
     "makefile-conventions": {
       "version": "1.0.0",
@@ -75,12 +80,14 @@
   },
   "profiles": {
     "spec-planner": {
-      "version": "0.0.0",
-      "description": ""
+      "version": "1.0.0",
+      "description": "Plans features through specs, designs, and task breakdowns. Stops after Phase 3 of spec-workflow and hands off to an implementer.",
+      "tags": "category:planning"
     },
     "spec-validator": {
-      "version": "0.0.0",
-      "description": ""
+      "version": "1.0.0",
+      "description": "Reviews implementations against spec requirements with no builder bias. Reads only the spec and the code, never the task plan.",
+      "tags": "category:review"
     }
   }
 }

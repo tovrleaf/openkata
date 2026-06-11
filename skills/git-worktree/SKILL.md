@@ -3,11 +3,10 @@ name: git-worktree
 description: >
   Creates, lists, and removes git worktrees to manage parallel
   workspaces. Activate when the user needs to work on multiple
-  branches simultaneously, run parallel tasks (evals, builds,
-  reviews) in isolation, or when an agent needs its own
-  workspace. Also activate when the user says "worktree",
-  "parallel branch", "work on two things at once", or "run
-  these in parallel".
+  branches simultaneously, run parallel tasks in isolation, or
+  when an agent needs its own workspace. Also activate when the
+  user says "worktree", "parallel branch", "work on two things
+  at once", or "run these in parallel".
 metadata:
   version: "1.0.0"
   tags: "category:workflow, tool:git"
@@ -47,11 +46,11 @@ worktrees corrupt repository state.
    ```bash
    git worktree add .worktrees/<name> -b <branch-name>
    ```
-   Convention: name the directory after the task, name the
-   branch by type (`eval/`, `release/`, `feature/`):
+   Convention: name the directory after the task, prefix the
+   branch by type:
    ```bash
-   git worktree add .worktrees/eval-create-skill -b eval/create-skill
-   git worktree add .worktrees/release-commit-conventions -b release/commit-conventions
+   git worktree add .worktrees/fix-auth-bug -b fix/auth-bug
+   git worktree add .worktrees/redesign-nav -b feature/redesign-nav
    ```
    If the branch already exists:
    ```bash
@@ -94,8 +93,8 @@ For batch operations across multiple tasks, see
 
 - Store worktrees in `.worktrees/` at the project root
 - Name directories after the task (not the branch)
-- Branch naming: `eval/<skill>`, `release/<skill>`,
-  `feature/<name>`
+- Branch naming: use a type prefix matching your project's
+  convention (e.g., `feature/`, `fix/`, `release/`, `experiment/`)
 - Add `.worktrees/` to `.gitignore` (one-time setup)
 - Remove worktrees after merging — they are temporary
 

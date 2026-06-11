@@ -2,16 +2,12 @@
 
 Improve skills to 95%+ review score with passing evals.
 
-## Usage
-
-> optimize skills
-
 ## Workflow
 
 1. **Select targets** — Ask the user: "All skills below 95%,
-   or a specific skill?" If all, run `tessl skill review` on
-   each distributable skill and list those scoring below 95%.
-   If specific, use the named skill.
+   or a specific skill?" If all, read the `score` field from
+   each `skills/*/.tessl-plugin/plugin.json` and list those
+   below 95%. If specific, use the named skill.
 2. **Optimize** — For each target, follow `openkata-review-skill`
    (lint, review, optimize, checklist) then `openkata-eval-runner`
    (generate scenarios, run evals). Iterate until both pass
@@ -31,3 +27,5 @@ Improve skills to 95%+ review score with passing evals.
 - Do not add repo-internal boundaries (publishing, releasing,
   tagging) to distributable skills. Those belong in
   openkata-skill-conventions.
+- After optimization, persist the final score to
+  `.tessl-plugin/plugin.json`.

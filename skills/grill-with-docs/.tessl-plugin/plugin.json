@@ -1,0 +1,10 @@
+{
+  "name": "openkata/grill-with-docs",
+  "description": "Domain-driven grilling session that challenges a plan against the project's language, sharpens terminology, and writes documentation inline as decisions crystallise. Use when the user wants to stress-test a plan against domain language, says \"grill with docs\", \"sharpen terms\", \"challenge against domain\", or wants a grilling session that produces glossary updates and ADRs as it goes.",
+  "private": true,
+  "skills": [
+    "."
+  ],
+  "version": "0.1.0",
+  "score": 100
+}

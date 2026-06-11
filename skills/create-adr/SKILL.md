@@ -44,6 +44,7 @@ PROPOSED → ACCEPTED → (SUPERSEDED or DEPRECATED)
    - Check the tech stack (package.json, go.mod, requirements.txt, etc.)
    - Find code patterns related to the decision area
    - Identify affected files and existing conventions
+
    Don't ask the user what you can look up yourself.
 4. **Gather context** — Collect what you couldn't find in the codebase.
    For each question, provide your recommended answer with justification
@@ -74,10 +75,11 @@ PROPOSED → ACCEPTED → (SUPERSEDED or DEPRECATED)
    - Example: `docs/adr/0003-use-postgresql-for-persistence.md`
 7. **Confirm** — Show the user the generated ADR and ask if any adjustments
    are needed before finalizing.
-8. **Find blind spots** — When the ADR is finalized or the user says they're
-   done, check if the `grill-me` skill exists. If it does, ask: "Want me to
-   run grill-me on this ADR to find blind spots?" If yes, activate it. If
-   the skill doesn't exist, skip silently.
+8. **Find blind spots** — When the ADR is finalized, check if
+   `grill-with-docs` exists. If it does, ask: "Want me to
+   grill this ADR against your domain language?" If yes,
+   activate it. If `grill-with-docs` doesn't exist, try
+   `grill-me` instead. If neither exists, skip silently.
 
 ## Quality self-check (E.C.A.D.R.)
 

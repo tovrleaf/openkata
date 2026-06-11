@@ -10,4 +10,4 @@ Create a profile for this DevOps role. Explore the project structure to understa
 
 ## Output Specification
 
-Create a sensei agent profile for the DevOps role. Save it as a markdown file in the appropriate profiles location for this project. Choose an appropriately short, lowercase name for the file.
+Create an agent profile for the DevOps role. Save it as a markdown file in the appropriate profiles location for this project. Choose an appropriately short, lowercase name for the file.

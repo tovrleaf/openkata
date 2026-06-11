@@ -35,14 +35,20 @@ on both new and updated skills in `.agents/skills/` or `skills/`.
 6. **Report** — Summarize what changed, the before/after review score,
    and any remaining warnings.
 
-7. **Quality checklist** — If `skills/create-skill/` and
+7. **Persist score** — After review, update the skill's
+   `.tessl-plugin/plugin.json` with the final score:
+   read the JSON, set the `"score"` field to the numeric
+   percentage, and write it back. This keeps scores
+   queryable without re-running tessl.
+
+8. **Quality checklist** — If `skills/create-skill/` and
    `skills/create-skill/references/skill-design-checklist.md` both
    exist, run the checklist against the reviewed skill. Report
    findings. A missing `## Boundaries` section is a blocking
    failure — do not pass the review without it. If either path
    is missing, skip silently.
 
-8. **Feed learnings back** — After every review, check whether the
+9. **Feed learnings back** — After every review, check whether the
    insights could improve `create-skill` or the skill design
    checklist. If a pattern keeps surfacing (e.g., a common mistake,
    a better convention), ask the user if they want to update the

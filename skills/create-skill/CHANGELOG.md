@@ -1,6 +1,13 @@
 # Changelog
 
-## 1.2.1 — 2026-05-26
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [1.2.1] - 2026-05-26
 
 ### Changed
 
@@ -10,7 +17,7 @@
   failures sections
 - Simplified investigation and design steps
 
-## 1.2.0 — 2026-05-24
+## [1.2.0] - 2026-05-24
 
 ### Added
 
@@ -25,7 +32,7 @@
 - Boundaries section now mandatory (was recommended)
 - Conciseness rule tightened to single-sentence form
 
-## 1.1.0 — 2026-05-05
+## [1.1.0] - 2026-05-05
 
 ### Added
 
@@ -41,7 +48,7 @@
   concepts the model already knows
 - Removed version field from frontmatter (ADR 0005)
 
-## 1.0.0 — 2026-04-28
+## [1.0.0] - 2026-04-28
 
 ### Added
 

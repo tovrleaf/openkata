@@ -81,10 +81,28 @@ for dir in .agents/skills/*/; do
       eval_indicator="\033[31m×\033[0m"
     fi
 
+    # Score from plugin.json
+    score_indicator=""
+    score_file="${skill_dir}/.tessl-plugin/plugin.json"
+    if [[ -f "${score_file}" ]]; then
+      score_val="$(grep -o '"score": [0-9]*' "${score_file}" | grep -o '[0-9]*' || true)"
+      if [[ -n "${score_val}" ]]; then
+        if [[ "${score_val}" -ge 95 ]]; then
+          score_indicator="\033[32m${score_val}%\033[0m"
+        else
+          score_indicator="\033[33m${score_val}%\033[0m"
+        fi
+      else
+        score_indicator="\033[2m-\033[0m"
+      fi
+    else
+      score_indicator="\033[2m-\033[0m"
+    fi
+
     # Registry indicator (only with TESSL_CHECK=1)
     if [[ "${TESSL_CHECK:-}" == "1" ]]; then
-      tile_name="$(grep -o '"name": "[^"]*"' "${skill_dir}/tile.json" 2>/dev/null \
-        | cut -d'"' -f4 || true)"
+      tile_name="$(grep -o '"name": "[^"]*"' "${skill_dir}/.tessl-plugin/plugin.json" 2>/dev/null \
+        | head -1 | cut -d'"' -f4 || true)"
       if [[ -n "${tile_name}" ]]; then
         reg_ver="$(tessl tile info "${tile_name}" 2>/dev/null \
           | sed 's/\x1b\[[0-9;]*m//g' \
@@ -107,9 +125,9 @@ for dir in .agents/skills/*/; do
 
   # Format: name  local_version  registry_version  evals
   if [[ "${TESSL_CHECK:-}" == "1" && "${type}" == "dist" ]]; then
-    line="$(printf "  \033[36m%-25s\033[0m %-14s %-10b %b\n" "${name}" "${version}" "${registry_indicator}" "${eval_indicator}")"
+    line="$(printf "  \033[36m%-25s\033[0m %-14s %b  %-10b %b\n" "${name}" "${version}" "${score_indicator}" "${registry_indicator}" "${eval_indicator}")"
   elif [[ "${type}" == "dist" ]]; then
-    line="$(printf "  \033[36m%-25s\033[0m %-14s %b\n" "${name}" "${version}" "${eval_indicator}")"
+    line="$(printf "  \033[36m%-25s\033[0m %-14s %b  %b\n" "${name}" "${version}" "${score_indicator}" "${eval_indicator}")"
   else
     line="$(printf "  \033[36m%-25s\033[0m %s\n" "${name}" "${version}")"
   fi
@@ -123,10 +141,10 @@ done
 
 printf "Distributable:\n"
 if [[ "${TESSL_CHECK:-}" == "1" ]]; then
-  printf "  \033[2m%-25s %-14s %-10s %s\033[0m\n" "" "local" "registry" "evals"
+  printf "  \033[2m%-25s %-14s %-6s %-10s %s\033[0m\n" "" "local" "score" "registry" "evals"
 else
-  printf "  \033[2m%-25s %-14s %s\033[0m\n" "" "local" "evals"
+  printf "  \033[2m%-25s %-14s %-6s %s\033[0m\n" "" "local" "score" "evals"
 fi
-printf "${dist_output}"
-printf "\nLocal:\n"
-printf "${local_output}"
+printf '%b' "${dist_output}"
+printf '\nLocal:\n'
+printf '%b' "${local_output}"

@@ -78,8 +78,8 @@ frontmatter and markdown instructions.
    ```
 
    Frontmatter rules:
-   - Only use `name` and `description` in frontmatter.
-     `version` is not part of the spec and triggers warnings.
+   - Required: `name` and `description` in frontmatter.
+     Other fields depend on your project's conventions.
 
    Writing rules:
    - **Description optimizes activation, not teaching.** State
@@ -124,6 +124,12 @@ frontmatter and markdown instructions.
    Skip validation only for trivial skills where the trigger
    surface is obvious.
 
+   **Portability check** — For distributable skills, verify:
+   - No hardcoded project-specific paths (use discovery)
+   - No project-specific terminology (internal jargon)
+   - No references to specific rules/tools only in your repo
+   - Instructions work in any repo with any directory layout
+
 7. **Acknowledge sources** — If the skill draws on external
    practices, create `references/ACKNOWLEDGMENTS.md` listing
    each source with a link, license, what was adapted, and the
@@ -136,7 +142,7 @@ frontmatter and markdown instructions.
 
 - DOES create skill directories, SKILL.md, references/, scripts/
 - DOES validate with representative prompts
-- Does NOT modify existing skills (use review-skill for that)
+- Does NOT modify existing skills
 - Does NOT create rules or profiles (separate workflows)
 
 ## Example Scenario
@@ -153,6 +159,10 @@ User: "Turn my database migration steps into a skill."
 - **Body too abstract to act on** — "investigate the problem"
   isn't actionable. "Run `git log --oneline -20` to check
   recent patterns" is.
+- **Weak enforcement in instructions** — If evals show the
+  agent ignoring a step, add it to a Common Failures section
+  with NEVER/MUST language. Explicit failure modes with strong
+  directives are more effective than polite workflow steps.
 
 ## Quality Checklist
 

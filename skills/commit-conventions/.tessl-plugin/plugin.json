@@ -1,0 +1,10 @@
+{
+  "name": "openkata/commit-conventions",
+  "description": "Enforces Conventional Commits format and branch naming conventions, validating commit message structure (type/scope/description header), suggesting branch name patterns (feature/*, fix/*, hotfix/*), and enforcing breaking change notation. Use when the user is about to commit, creating a branch, reviewing commit history, preparing a pull request, setting up commit linting, or asking about commit message format, branch naming, or Conventional Commits.",
+  "private": true,
+  "skills": [
+    "."
+  ],
+  "version": "0.1.0",
+  "score": 100
+}

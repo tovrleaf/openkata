@@ -1,0 +1,10 @@
+{
+  "name": "openkata/makefile-conventions",
+  "description": "Structures Makefiles as a universal command interface using modular includes and self-documenting help. Use when the user wants to add a make target, create a Makefile, organize build commands, set up a make-based workflow, or asks how to structure make targets. Also activate before modifying any Makefile or mk/ file in this project.",
+  "private": true,
+  "skills": [
+    "."
+  ],
+  "version": "0.1.0",
+  "score": 100
+}

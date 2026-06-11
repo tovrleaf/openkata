@@ -2,9 +2,11 @@
 name: grill-me
 description: >
   Challenge a plan, spec, ADR, or design by interviewing the user
-  relentlessly until all corners are covered. Use when the user
-  wants to stress-test a plan, get grilled on their design, says
-  "grill me", "challenge this", or "poke holes in this."
+  relentlessly until all corners are covered. Identifies edge cases,
+  questions assumptions, probes failure modes, and surfaces missing
+  requirements. Use when the user wants to stress-test a plan, get
+  grilled on their design, says "grill me", "challenge this", or
+  "poke holes in this."
 metadata:
   version: "1.0.0"
   tags: "category:review, category:architecture"
@@ -43,18 +45,12 @@ every corner case is addressed.
    (3) what was rejected or considered. Do not list decisions
    without reasons.
 
-6. **Offer to update (mandatory)** — **This step is mandatory
-   — always end by offering to apply changes.** Ask the user
-   if they want you to apply the decisions to the artifact.
-   If yes, update it. If no, leave it unchanged. Always end
-   with: "Want me to apply these changes to [artifact name]?"
+6. **Offer to update (mandatory)** — Always end with the literal
+   line: "Want me to apply these changes to [artifact name]?"
    where [artifact name] is the specific file being grilled
    (e.g., "spec.md", "design.md", "0003-use-postgres.md").
-   This offer MUST appear as the final line of your output,
-   whether writing to a file or responding in conversation.
-   Do not end the conversation without this explicit offer.
-   Do not skip this step even if the user seems done, says
-   "thanks", or appears to be wrapping up.
+   This MUST be the final line of your output. Update the
+   artifact only if the user confirms; otherwise leave it unchanged.
 
 ## Example Output
 
@@ -89,12 +85,6 @@ Want me to apply these changes to spec.md?
 Every decision entry MUST follow this exact pattern:
 `**Topic** — Decision. Reason: why. Rejected: alternatives.`
 Do not omit the reason or the rejected alternatives.
-
-The closing offer ("Want me to apply these changes to
-[filename]?") MUST appear as the literal last line of the
-output — including inside any written file. If the task asks
-you to write a report file, the offer is the final line of
-that file, not a separate conversational message.
 
 ## Boundaries
 

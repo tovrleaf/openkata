@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-templ SkillDetailPage(skill SkillDetail) {
+templ SkillDetailPage(skill ArtifactDetail) {
 	@Layout(skill.Name) {
 		@Nav()
 
@@ -12,13 +12,13 @@ templ SkillDetailPage(skill SkillDetail) {
 			<section class="detail-header">
 				<div class="detail-title-row">
 					<div class="hero--kanji">
-						<span class="hero-kanji">技</span>
+						<a href="/skills/" class="hero-kanji">技</a>
 						<div class="hero-text">
 							<span class="hero-label">Skill</span>
 							<h1>{ skill.Name }</h1>
 						</div>
 					</div>
-					if len(skill.Versions) > 1 {
+					<div class="detail-title-right">
 						<select class="version-select">
 							for i, v := range skill.Versions {
 								if v == skill.Version {
@@ -36,9 +36,19 @@ templ SkillDetailPage(skill SkillDetail) {
 								}
 							}
 						</select>
-					} else {
-						<span class="detail-version">v{ skill.Version }</span>
-					}
+						<nav class="artifact-nav" aria-label="Skill navigation">
+							if skill.Prev != "" {
+								<a href={ templ.SafeURL(fmt.Sprintf("/skills/%s/", skill.Prev)) } class="artifact-nav-link" title={ skill.Prev }>←</a>
+							} else {
+								<span class="artifact-nav-link artifact-nav-link--disabled">←</span>
+							}
+							if skill.Next != "" {
+								<a href={ templ.SafeURL(fmt.Sprintf("/skills/%s/", skill.Next)) } class="artifact-nav-link" title={ skill.Next }>→</a>
+							} else {
+								<span class="artifact-nav-link artifact-nav-link--disabled">→</span>
+							}
+						</nav>
+					</div>
 				</div>
 				<p class="detail-meta">
 					<span class="detail-downloads">{ fmt.Sprintf("%d", skill.Downloads) } ↓</span>
@@ -54,7 +64,11 @@ templ SkillDetailPage(skill SkillDetail) {
 				}
 			</section>
 
-			if skill.Acknowledgments != "" {
+			if skill.Rationale != "" && skill.Acknowledgments != "" {
+				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"rationale", "Rationale"}, {"changelog", "Changelog"}, {"acknowledgments", "Acknowledgments"}}, "Skill sections")
+			} else if skill.Rationale != "" {
+				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"rationale", "Rationale"}, {"changelog", "Changelog"}}, "Skill sections")
+			} else if skill.Acknowledgments != "" {
 				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"changelog", "Changelog"}, {"acknowledgments", "Acknowledgments"}}, "Skill sections")
 			} else {
 				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"changelog", "Changelog"}}, "Skill sections")
@@ -76,6 +90,12 @@ templ SkillDetailPage(skill SkillDetail) {
 			<section class="tab-panel" id="panel-files">
 				@FileViewer(skill.Files, skill.FileContents, "skills", skill.Name, skill.Version)
 			</section>
+
+			if skill.Rationale != "" {
+				<section class="tab-panel" id="panel-rationale">
+					@templ.Raw(skill.Rationale)
+				</section>
+			}
 
 			<section class="tab-panel" id="panel-changelog">
 				if skill.Changelog != "" {

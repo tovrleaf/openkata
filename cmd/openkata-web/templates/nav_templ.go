@@ -29,7 +29,7 @@ func Nav() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<nav class=\"nav\"><img src=\"/static/img/icon.webp\" alt=\"\" class=\"nav-icon\"> <a href=\"/\" class=\"nav-brand\">OPENKATA.dev</a><div class=\"nav-links\"><a href=\"/skills/\" class=\"nav-link\">Skills</a> <a href=\"/rules/\" class=\"nav-link\">Rules</a></div><div class=\"theme-switcher\"><button class=\"theme-switcher__btn\" onclick=\"cycleTheme()\" aria-label=\"Next theme\"></button></div></nav>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<nav class=\"nav\"><img src=\"/static/img/icon.webp\" alt=\"\" class=\"nav-icon\"> <a href=\"/\" class=\"nav-brand\">OPENKATA.dev</a><div class=\"nav-links\"><a href=\"/skills/\" class=\"nav-link\">Skills</a> <a href=\"/rules/\" class=\"nav-link\">Rules</a> <a href=\"/profiles/\" class=\"nav-link\">Profiles</a></div><div class=\"theme-switcher\"><button class=\"theme-switcher__btn\" onclick=\"cycleTheme()\" aria-label=\"Next theme\"></button></div></nav>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -342,6 +342,13 @@ th {
   margin-bottom: var(--space-sm);
 }
 
+.detail-title-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-xs);
+}
+
 .detail-title {
   display: flex;
   align-items: baseline;
@@ -781,4 +788,23 @@ section {
 
 [data-theme="indigo"] .site-logo--dark {
   display: inline;
+}
+
+/* Artifact prev/next navigation */
+
+.artifact-nav {
+  display: flex;
+  gap: var(--space-xs);
+  align-items: center;
+}
+
+.artifact-nav-link {
+  font-size: var(--font-size-lg);
+  text-decoration: none;
+  color: var(--color-accent);
+}
+
+.artifact-nav-link--disabled {
+  opacity: 0.3;
+  cursor: default;
 }

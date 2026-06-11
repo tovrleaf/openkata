@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-templ RuleDetailPage(rule RuleDetail) {
+templ RuleDetailPage(rule ArtifactDetail) {
 	@Layout(rule.Name) {
 		@Nav()
 
@@ -12,13 +12,13 @@ templ RuleDetailPage(rule RuleDetail) {
 			<section class="detail-header">
 				<div class="detail-title-row">
 					<div class="hero--kanji">
-						<span class="hero-kanji">則</span>
+						<a href="/rules/" class="hero-kanji">則</a>
 						<div class="hero-text">
 							<span class="hero-label">Rule</span>
 							<h1>{ rule.Name }</h1>
 						</div>
 					</div>
-					if len(rule.Versions) > 1 {
+					<div class="detail-title-right">
 						<select class="version-select">
 							for i, v := range rule.Versions {
 								if v == rule.Version {
@@ -36,9 +36,19 @@ templ RuleDetailPage(rule RuleDetail) {
 								}
 							}
 						</select>
-					} else {
-						<span class="detail-version">v{ rule.Version }</span>
-					}
+						<nav class="artifact-nav" aria-label="Rule navigation">
+							if rule.Prev != "" {
+								<a href={ templ.SafeURL(fmt.Sprintf("/rules/%s/", rule.Prev)) } class="artifact-nav-link" title={ rule.Prev }>←</a>
+							} else {
+								<span class="artifact-nav-link artifact-nav-link--disabled">←</span>
+							}
+							if rule.Next != "" {
+								<a href={ templ.SafeURL(fmt.Sprintf("/rules/%s/", rule.Next)) } class="artifact-nav-link" title={ rule.Next }>→</a>
+							} else {
+								<span class="artifact-nav-link artifact-nav-link--disabled">→</span>
+							}
+						</nav>
+					</div>
 				</div>
 				<p class="detail-meta">
 					<span class="detail-downloads">{ fmt.Sprintf("%d", rule.Downloads) } ↓</span>
@@ -54,7 +64,11 @@ templ RuleDetailPage(rule RuleDetail) {
 				}
 			</section>
 
-			if rule.Acknowledgments != "" {
+			if rule.Rationale != "" && rule.Acknowledgments != "" {
+				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"rationale", "Rationale"}, {"changelog", "Changelog"}, {"acknowledgments", "Acknowledgments"}}, "Rule sections")
+			} else if rule.Rationale != "" {
+				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"rationale", "Rationale"}, {"changelog", "Changelog"}}, "Rule sections")
+			} else if rule.Acknowledgments != "" {
 				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"changelog", "Changelog"}, {"acknowledgments", "Acknowledgments"}}, "Rule sections")
 			} else {
 				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"changelog", "Changelog"}}, "Rule sections")
@@ -76,6 +90,12 @@ templ RuleDetailPage(rule RuleDetail) {
 			<section class="tab-panel" id="panel-files">
 				@FileViewer(rule.Files, rule.FileContents, "rules", rule.Name, rule.Version)
 			</section>
+
+			if rule.Rationale != "" {
+				<section class="tab-panel" id="panel-rationale">
+					@templ.Raw(rule.Rationale)
+				</section>
+			}
 
 			<section class="tab-panel" id="panel-changelog">
 				if rule.Changelog != "" {

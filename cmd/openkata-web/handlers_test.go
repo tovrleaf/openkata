@@ -203,6 +203,7 @@ func TestIsExcludedFile(t *testing.T) {
 		{"references/ACKNOWLEDGMENTS.md", true},
 		{"evals/test.yaml", true},
 		{"evals/nested/deep.yaml", true},
+		{"RATIONALE.md", true},
 		{"SKILL.md", false},
 		{"assets/diagram.png", false},
 		{"references/other.md", false},
@@ -422,9 +423,7 @@ func TestFilterChangelogByVersion(t *testing.T) {
 - Initial release
 `,
 			version: "1.2.0",
-			want: `# Changelog
-
-## [1.2.0] - 2025-05-15
+			want: `## [1.2.0] - 2025-05-15
 
 - Bug fix
 
@@ -446,9 +445,7 @@ func TestFilterChangelogByVersion(t *testing.T) {
 - Bug fix
 `,
 			version: "1.3.0",
-			want: `# Changelog
-
-## [1.3.0] - 2025-06-01
+			want: `## [1.3.0] - 2025-06-01
 
 - New feature
 
@@ -472,8 +469,7 @@ func TestFilterChangelogByVersion(t *testing.T) {
 - Breaking change
 `,
 			version: "1.0.0",
-			want: `# Changelog
-`,
+			want:    "",
 		},
 	}
 
@@ -738,5 +734,135 @@ func TestLoadRuleDetailLocalFileContents(t *testing.T) {
 	}
 	if detail.Docs == "" {
 		t.Error("Docs is empty")
+	}
+}
+
+func setupTestProfileDir(t *testing.T) string {
+	t.Helper()
+	dir := t.TempDir()
+
+	profileDir := filepath.Join(dir, "profiles", "test-profile")
+	if err := os.MkdirAll(profileDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(profileDir, "test-profile.md"), []byte("---\ndescription: A test profile\ntags: category:test\n---\n# Test Profile\n\nDoes testing."), 0644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(profileDir, "CHANGELOG.md"), []byte("# Changelog\n\n## [1.0.0] - 2025-06-01\n\n- Initial release\n"), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	versionsDir := filepath.Join(dir, "web", "static")
+	if err := os.MkdirAll(versionsDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	versionsJSON := `{
+  "skills": {},
+  "rules": {},
+  "profiles": {
+    "test-profile": {
+      "version": "1.0.0",
+      "description": "A test profile",
+      "tags": "category:test"
+    }
+  }
+}`
+	if err := os.WriteFile(filepath.Join(versionsDir, "versions.json"), []byte(versionsJSON), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	return dir
+}
+
+func TestHandleProfilesRouting(t *testing.T) {
+	origDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chdir(origDir) })
+
+	testDir := setupTestProfileDir(t)
+	if err := os.Chdir(testDir); err != nil {
+		t.Fatal(err)
+	}
+
+	tests := []struct {
+		name     string
+		path     string
+		wantCode int
+		wantBody string
+	}{
+		{name: "listing", path: "/profiles/", wantCode: 200},
+		{name: "detail latest", path: "/profiles/test-profile", wantCode: 200},
+		{name: "detail specific version", path: "/profiles/test-profile/1.0.0", wantCode: 200},
+		{name: "raw file", path: "/profiles/test-profile/1.0.0/raw", wantCode: 200, wantBody: "# Test Profile"},
+		{name: "unknown profile", path: "/profiles/no-such-profile", wantCode: 404},
+		{name: "unknown version", path: "/profiles/test-profile/9.9.9", wantCode: 404},
+		{name: "archive", path: "/profiles/test-profile/archive", wantCode: 200},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest("GET", tt.path, nil)
+			rec := httptest.NewRecorder()
+			handleProfiles(rec, req)
+
+			if rec.Code != tt.wantCode {
+				t.Errorf("handleProfiles(%s) status = %d, want %d", tt.path, rec.Code, tt.wantCode)
+			}
+			if tt.wantBody != "" {
+				body := rec.Body.String()
+				if !strings.Contains(body, tt.wantBody) {
+					t.Errorf("handleProfiles(%s) body missing %q", tt.path, tt.wantBody)
+				}
+			}
+		})
+	}
+}
+
+func TestLoadArtifactDetailLocalRationale(t *testing.T) {
+	origDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chdir(origDir) })
+
+	dir := t.TempDir()
+	skillDir := filepath.Join(dir, "skills", "test-skill")
+	if err := os.MkdirAll(skillDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(skillDir, "SKILL.md"), []byte("# Test\n\nBody."), 0644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(skillDir, "RATIONALE.md"), []byte("# Rationale\n\nWhy we did it."), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	versionsDir := filepath.Join(dir, "web", "static")
+	if err := os.MkdirAll(versionsDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	versionsJSON := `{"skills":{"test-skill":{"version":"1.0.0","description":"Test","tags":""}},"rules":{},"profiles":{}}`
+	if err := os.WriteFile(filepath.Join(versionsDir, "versions.json"), []byte(versionsJSON), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := os.Chdir(dir); err != nil {
+		t.Fatal(err)
+	}
+
+	detail := loadArtifactDetailLocal("skills", "test-skill", "1.0.0", "SKILL.md")
+	if detail == nil {
+		t.Fatal("loadArtifactDetailLocal returned nil")
+	}
+	if detail.Rationale == "" {
+		t.Error("loadArtifactDetailLocal() Rationale is empty, want rendered content")
+	}
+	// RATIONALE.md should NOT be in the Files list (excluded from Files tab)
+	for _, f := range detail.Files {
+		if f == "RATIONALE.md" {
+			t.Error("loadArtifactDetailLocal() Files contains RATIONALE.md, should be excluded")
+		}
 	}
 }
