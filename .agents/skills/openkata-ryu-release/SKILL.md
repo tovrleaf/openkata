@@ -1,173 +1,96 @@
 ---
 name: openkata-ryu-release
 description: >
-  Release a new version of an OpenKata artifact (skill or rule). Detects
-  changes since the last release, recommends a semver bump, updates
-  frontmatter and changelog, commits, and creates a git tag. Use when the
-  maintainer says "release", "bump", "version", or "tag" followed by an
-  artifact name.
+  Releases distributable artifacts (skills, rules, profiles)
+  with proper versioning, changelog, and git tags.
 ---
 
-# Ryu Release
+# openkata-ryu-release
 
-Internal skill for releasing new versions of OpenKata artifacts. Supports
-skills (SKILL.md) and rules (RULE.md). This skill is not distributed — it's
-for maintainers of this repository only.
+Release a distributable artifact following Semantic
+Versioning. The git tag is the single source of truth
+for the current published version.
 
-## Workflow
+## Trigger
 
-1. **Identify the artifact** — Determine which artifact to release from
-   the user's request (e.g., "release create-adr"). Resolve the directory
-   path by checking both `skills/` and `rules/` for distributable artifacts,
-   and `.agents/skills/` and `.agents/rules/` for local ones.
+Activate when the user says "release", "bump", "version",
+"tag", or "publish" an artifact.
 
-2. **Find the last release** — Look for the most recent git tag matching
-   `<directory-path>/v*` (e.g., `skills/create-adr/v1.0.0`). If no tag
-   exists, this is the first release.
+## Determine Current Version
 
-3. **Diff since last release** — Run `git diff <last-tag> -- <directory-path>`
-   to see what changed. If no previous tag, diff against the initial commit.
-   Read the actual changes to understand what was modified.
-
-4. **Recommend a bump level** — Based on the diff, recommend one of:
-   - **major** — Breaking changes: removed sections, renamed fields,
-     changed behavior that would break existing users' workflows
-   - **minor** — New features: added sections, new workflow steps,
-     new optional fields
-   - **patch** — Fixes: typo corrections, wording improvements,
-     clarifications that don't change behavior
-
-   Present the recommendation with justification. Let the user confirm
-   or override.
-
-5. **Update changelog** — Prepend a new entry to the artifact's
-   CHANGELOG.md using [Keep a Changelog](https://keepachangelog.com/)
-   categories (Added, Changed, Deprecated, Removed, Fixed, Security):
-   - The new version number and today's date
-   - Changes grouped by category, omitting empty categories
-
-   If CHANGELOG.md doesn't exist, create it.
-
-   Also update `metadata.version` in the SKILL.md frontmatter to
-   match the new version.
-
-6. **Generate tags** — Read the artifact's SKILL.md (or RULE.md)
-   content — title, description, workflow steps, and section
-   headings — and generate 2–5 namespaced tags describing what
-   the artifact does.
-
-   Tags use `namespace:value` format:
-   - `category:` — what the skill does (e.g., `category:documentation`,
-     `category:testing`, `category:workflow`)
-   - `language:` — programming language if applicable (e.g.,
-     `language:go`, `language:bash`)
-   - `tool:` — external tool the skill directly invokes or
-     operates on (e.g., `tool:git`, `tool:makefile`). Do not
-     add a tool tag just because the domain is related — only
-     if the skill actually calls or configures the tool.
-
-   Tags must be:
-   - Lowercase, hyphenated values (e.g., `category:code-review`)
-   - Derived from the skill's domain, actions, and outputs
-   - 2–5 tags per artifact
-   - Not redundant — avoid tagging the same concept in multiple
-     namespaces (e.g., don't use both `category:git` and
-     `tool:git`)
-
-   Write them into the frontmatter as `metadata.tags`:
-
-   ```yaml
-   ---
-   name: create-adr
-   description: Creates Architecture Decision Records
-   metadata:
-     tags: "category:documentation, category:architecture, tool:git"
-   ---
-   ```
-
-   Present the proposed tags to the user for review. Accept
-   edits before continuing.
-
-7. **Regenerate root changelog** — Run `make changelog` to update
-   the aggregate CHANGELOG.md at the repo root.
-
-8. **Commit** — Stage the changed files (including root CHANGELOG.md)
-   and commit with message:
-   `release(<artifact-name>): v<new-version>`
-
-9. **Tag** — For distributable artifacts (`skills/`, `rules/`) only:
-   create a git tag `<directory-path>/v<new-version>`. Skip tagging for
-   local artifacts in `.agents/` — they are versioned but not distributed.
-
-10. **Regenerate versions.json** — Run `make versions` to update
-    `web/static/versions.json` with the new version. Stage and
-    amend the release commit to include the updated file:
-    `git add web/static/versions.json && git commit --amend --no-edit`
-
-11. **Run evals** — Delegate to the `openkata-eval-runner`
-    skill. It will regenerate scenarios, run evals, and iterate
-    fixes until 95%+ is achieved.
-
-12. **Publish to registry** — If the artifact is distributable
-    (`skills/` or `rules/`) and has a `tile.json`, ask: "Want me
-    to publish this to the Tessl registry? (Enables security
-    scanning.)" If yes, run `tessl tile publish <directory-path>`.
-    Skip this step for local artifacts (`.agents/`).
-
-13. **Confirm** — Show the user what was done: version bumped, changelog
-    entry, commit hash, and tag name (if tagged). Ask if they want to
-    push.
-
-## Bump Examples
-
-| Change | Bump | Why |
-|--------|------|-----|
-| Fixed typo in Context section guidance | patch | No behavior change |
-| Added optional Non-goals section to template | minor | New feature, non-breaking |
-| Reworded existing guidance for clarity | patch | Clarification only |
-| Changed status values from lowercase to uppercase | major | Breaks existing ADRs using old format |
-| Added new workflow step (explore codebase) | minor | New capability |
-| Removed Alternatives Considered section | major | Breaking removal |
-
-## Tag Format
-
-Tags mirror directory paths per ADR 0005:
-
-```text
-skills/create-adr/v1.0.0
-rules/markdown-consistency/v1.0.0
-dojo/v0.1.0
+```bash
+git tag -l '<type>/<name>/v*' | sort -V | tail -1
 ```
 
-List all tags for an artifact: `git tag -l "skills/create-adr/v*"`
+NEVER read the version from CHANGELOG.md or SKILL.md to
+determine the current version. Those files may be ahead
+of (or behind) the actual tagged release.
 
-## Boundaries
+## Determine Next Version
 
-**DOES:**
-- Bump versions, update changelogs, commit, and tag artifacts
-- Generate namespaced tags from artifact content
-- Run evals and publish to registry (when asked)
+Follow [Semantic Versioning](https://semver.org/):
 
-**Does NOT:**
-- Modify skill or rule content (only metadata and changelogs)
-- Push to remote (separate action requiring confirmation)
-- Create new skills or rules
+- **PATCH** (x.y.Z): documentation additions, typo fixes,
+  non-functional changes (added RATIONALE.md, reformatted
+  ACKNOWLEDGMENTS.md, fixed examples)
+- **MINOR** (x.Y.0): new features, new steps, new
+  references, behavioral changes that don't break
+  existing usage
+- **MAJOR** (X.0.0): breaking changes to the skill's
+  interface (renamed triggers, removed steps, changed
+  output format that downstream consumers rely on)
 
-## Gotchas
+When in doubt, ask the user.
 
-- Always check for uncommitted changes in the artifact directory before
-  starting. Refuse to release with a dirty working tree.
-- Never skip the changelog — it's the only human-readable release history.
-- If the user disagrees with the recommended bump level, use theirs.
-- Local artifacts (`.agents/skills/`, `.agents/rules/`) get version bumps
-  and changelogs but no git tags — tags are reserved for distributable
-  artifacts (ADR 0005).
-- Changelogs document user-facing changes only. Dev-only data
-  does not belong in changelogs. This includes: tile.json,
-  tessl.json, .tesslignore, metadata tags, frontmatter fields
-  used for packaging (version, metadata), and workspace naming.
-  If a change doesn't affect how the skill behaves for the user,
-  it's not changelog-worthy.
-- Skill versions (in CHANGELOG.md) and tile versions (in
-  tile.json) are independent. Do not sync them — they track
-  different things.
+## Release Steps
+
+1. Confirm the artifact has uncommitted changes vs its
+   latest tag:
+   ```bash
+   git diff <latest-tag>..HEAD -- <type>/<name>/
+   ```
+   If no diff, abort — nothing to release.
+
+2. Update `CHANGELOG.md` — add a version section after
+   `[Unreleased]` with today's date and what changed.
+
+3. Bump version in the frontmatter of the main doc
+   (`SKILL.md`, `RULE.md`, or `<name>.md`).
+
+4. Commit:
+   ```text
+   release(<type>): <name> vX.Y.Z
+
+   Assisted-by: Kiro:claude-opus-4.6
+   ```
+
+5. Tag:
+   ```bash
+   git tag <type>/<name>/vX.Y.Z
+   ```
+
+6. Push (only with user confirmation):
+   ```bash
+   git push origin main
+   git push origin <type>/<name>/vX.Y.Z
+   ```
+
+## Validation
+
+- Tag version must match SKILL.md frontmatter version
+- Tag version must match latest CHANGELOG.md section
+- Tag must point to the release commit (not an
+  earlier commit)
+- CHANGELOG entry must not be empty
+
+## Common Failures
+
+- NEVER determine current version from CHANGELOG.md —
+  it may contain unreleased or untagged entries
+- NEVER skip the diff check — releasing unchanged
+  artifacts creates noise
+- NEVER use `git tag` on a commit other than HEAD
+- MUST push the tag separately from the commit if the
+  IAM trust policy doesn't allow tag-triggered workflows
+  (use `gh workflow run publish.yaml -f tag=...` as
+  workaround)
