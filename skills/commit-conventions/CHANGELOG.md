@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-06-11
+
+### Added
+
+- Boundaries section (DOES/Does NOT pattern)
+- Checkpoint Cleanup workflow for restructuring WIP commits
+- Generated files reminder to commit workflow (step 6)
+
 ## [1.3.1] - 2026-06-11
 
 ### Added
