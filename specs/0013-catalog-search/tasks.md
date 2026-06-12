@@ -3,7 +3,7 @@
 ## Tasks
 
 ### 1. Serve versions.json as static asset
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Add `versions.json` to the embedded static
   files so it's available at `/static/versions.json`
 - **Boundary**: `web/static/embed.go`
@@ -13,7 +13,7 @@
 - **Verify**: `go build -o bin/openkata-web ./cmd/openkata-web/`
 
 ### 2. Add search icon to nav
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Inline SVG search icon in the nav bar,
   right-aligned next to the theme switcher, using
   `fill: currentColor` for theme colors
@@ -25,7 +25,7 @@
 - **Verify**: `templ generate && go build -o bin/openkata-web ./cmd/openkata-web/`
 
 ### 3. Build search overlay
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Clicking the search icon opens a full-screen
   overlay with backdrop, auto-focused input, close
   button. Closes on Escape, backdrop click, or close
@@ -39,7 +39,7 @@
 - **Verify**: Manual browser test
 
 ### 4. Implement search logic and overlay results
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Lazy-fetch `versions.json` on first overlay
   open, filter with AND'd tokens (colon = exact tag,
   else substring on name/description/tags), score
@@ -55,7 +55,7 @@
 - **Verify**: Manual browser test
 
 ### 5. Add /catalog/ page (server shell)
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Add route handler and templ template for
   `/catalog/` — renders an HTML shell with search input
   and empty results container
@@ -68,7 +68,7 @@
 - **Verify**: `templ generate && go build -o bin/openkata-web ./cmd/openkata-web/`
 
 ### 6. Implement catalog page JS
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: On `/catalog/`, eagerly fetch `versions.json`,
   read `?q=` param, populate results with same search
   logic as overlay. Live filtering from the page's
@@ -83,7 +83,7 @@
 - **Verify**: Manual browser test
 
 ### 7. Make tags clickable links
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Convert tag `<span>` elements to `<a>` links
   on listing and detail pages. Same visual style, add
   hover effect. Navigate to `/catalog/?q=tag-value`.
@@ -101,7 +101,7 @@
 - **Verify**: `templ generate && go build -o bin/openkata-web ./cmd/openkata-web/`
 
 ### 8. Add tests
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Test `/catalog/` handler serves the page,
   test `versions.json` is served from static. Verify
   tag links render as `<a>` elements with correct href.
@@ -112,3 +112,5 @@
 - **Verify**: `go test -race ./cmd/openkata-web/...`
 
 ## Progress Log
+
+- 2026-06-12: All 8 tasks implemented — embed, icon, overlay, search logic, catalog page, catalog JS, tag links, tests
