@@ -18,7 +18,6 @@
     var btn = document.querySelector('.theme-switcher__btn');
     if (btn) {
       var next = getNextTheme();
-      btn.style.background = next.color;
       btn.setAttribute('aria-label', next.id + ' theme');
     }
   }
