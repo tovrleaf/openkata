@@ -58,7 +58,7 @@ templ SkillDetailPage(skill ArtifactDetail) {
 				if len(SplitTags(skill.Tags)) > 0 {
 					<div class="artifact-tags">
 						for _, tag := range SplitTags(skill.Tags) {
-							<span class={ TagClass(tag) }>{ tag }</span>
+							<a href={ templ.SafeURL(fmt.Sprintf("/catalog/?q=%s", tag)) } class={ TagClass(tag) }>{ tag }</a>
 						}
 					</div>
 				}

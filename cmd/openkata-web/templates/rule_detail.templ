@@ -58,7 +58,7 @@ templ RuleDetailPage(rule ArtifactDetail) {
 				if len(SplitTags(rule.Tags)) > 0 {
 					<div class="artifact-tags">
 						for _, tag := range SplitTags(rule.Tags) {
-							<span class={ TagClass(tag) }>{ tag }</span>
+							<a href={ templ.SafeURL(fmt.Sprintf("/catalog/?q=%s", tag)) } class={ TagClass(tag) }>{ tag }</a>
 						}
 					</div>
 				}

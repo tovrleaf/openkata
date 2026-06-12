@@ -35,7 +35,7 @@ templ Profiles(profiles []SkillEntry) {
 								<div class="artifact-tags">
 									if len(SplitTags(p.Tags)) > 0 {
 										for _, tag := range SplitTags(p.Tags) {
-											<span class={ TagClass(tag) }>{ tag }</span>
+											<a href={ templ.SafeURL(fmt.Sprintf("/catalog/?q=%s", tag)) } class={ TagClass(tag) }>{ tag }</a>
 										}
 									}
 									<a class="btn-open" href={ templ.SafeURL(fmt.Sprintf("/profiles/%s/", p.Name)) }>Open</a>

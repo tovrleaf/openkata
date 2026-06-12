@@ -53,6 +53,7 @@ func main() {
 
 	// Routes
 	mux.HandleFunc("/", handleHome)
+	mux.HandleFunc("/catalog/", handleCatalog)
 	mux.HandleFunc("/skills/", handleSkills)
 	mux.HandleFunc("/rules/", handleRules)
 	mux.HandleFunc("/profiles/", handleProfiles)
