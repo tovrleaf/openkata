@@ -270,4 +270,22 @@
     }
     catalogResults.innerHTML = html;
   }
+  // --- Mobile nav menu ---
+  var menuBtn = document.getElementById('nav-menu-btn');
+  var menuPanel = document.getElementById('nav-menu-panel');
+
+  if (menuBtn && menuPanel) {
+    menuBtn.addEventListener('click', function() {
+      var open = !menuPanel.hidden;
+      menuPanel.hidden = open;
+      menuBtn.setAttribute('aria-expanded', String(!open));
+    });
+
+    menuPanel.querySelectorAll('.nav-menu-link').forEach(function(link) {
+      link.addEventListener('click', function() {
+        menuPanel.hidden = true;
+        menuBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
 })();
