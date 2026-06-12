@@ -249,9 +249,9 @@
     } else {
       for (var i = 0; i < results.length; i++) {
         var item = results[i];
-        html += '<a href="' + item.path + '" class="catalog-item">';
+        html += '<div class="catalog-item">';
         html += '<div class="catalog-item__header">';
-        html += '<span class="catalog-item__name">' + highlightText(item.name, tokens) + '</span>';
+        html += '<a href="' + item.path + '" class="catalog-item__name">' + highlightText(item.name, tokens) + '</a>';
         html += '<span class="catalog-item__type">' + item.type + '</span>';
         html += '</div>';
         if (item.description) {
@@ -261,11 +261,11 @@
           var tagList = item.tags.split(',').map(function(t) { return t.trim(); }).filter(function(t) { return t; });
           html += '<div class="catalog-item__tags">';
           for (var j = 0; j < tagList.length; j++) {
-            html += '<span class="badge badge-green">' + highlightTag(tagList[j], tokens) + '</span>';
+            html += '<a href="/catalog/?q=' + encodeURIComponent(tagList[j]) + '" class="badge badge-green">' + highlightTag(tagList[j], tokens) + '</a>';
           }
           html += '</div>';
         }
-        html += '</a>';
+        html += '</div>';
       }
     }
     catalogResults.innerHTML = html;
