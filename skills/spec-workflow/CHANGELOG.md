@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-06-12
+
+### Changed
+
+- Branch creation is now mandatory and happens before writing
+  spec files (no longer a question)
+
 ## [1.2.0] - 2026-06-11
 
 ### Added

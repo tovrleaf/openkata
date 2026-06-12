@@ -13,24 +13,31 @@ Before asking about requirements, complete these in order:
 2. **Create the directory** — Next sequential 4-digit number:
    `specs/NNNN-slug/`. Check existing directories.
 
-3. **Ask about branching** — "Would you like me to create a
-   feature branch? Suggested name:
-   `feature/NNNN-slug`"
-   Do not create the branch without confirmation. If the
-   branch already exists, switch to it instead of creating.
-
 Then collect requirements:
 
-4. **Investigate relevant code** — Read files related to
+3. **Investigate relevant code** — Read files related to
    the feature before asking questions. Check existing
    patterns, dependencies, and constraints. Don't ask the
    user what you can look up yourself.
 
-5. **Ask targeted questions:**
+4. **Ask targeted questions:**
    - What does the user want to build?
    - What does success look like?
    - What is out of scope?
    - Are there open questions that block implementation?
+
+Before writing any files:
+
+5. **Create feature branch** — Always create and switch to
+   `feature/NNNN-slug` from `main` before writing spec
+   files to disk. If the branch already exists, switch to
+   it. This ensures all spec and implementation work lives
+   on a dedicated branch from the start.
+   ```bash
+   git checkout main
+   git pull origin main
+   git checkout -b feature/NNNN-slug
+   ```
 
 6. **Write spec.md** — Use the spec.md template from
    [spec-templates](spec-templates.md). Set
