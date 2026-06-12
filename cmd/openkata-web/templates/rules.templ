@@ -35,7 +35,7 @@ templ Rules(rules []SkillEntry) {
 								<div class="artifact-tags">
 									if len(SplitTags(r.Tags)) > 0 {
 										for _, tag := range SplitTags(r.Tags) {
-											<span class={ TagClass(tag) }>{ tag }</span>
+											<a href={ templ.SafeURL(fmt.Sprintf("/catalog/?q=%s", tag)) } class={ TagClass(tag) }>{ tag }</a>
 										}
 									}
 									<a class="btn-open" href={ templ.SafeURL(fmt.Sprintf("/rules/%s/", r.Name)) }>Open</a>

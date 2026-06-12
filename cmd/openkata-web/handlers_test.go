@@ -866,3 +866,93 @@ func TestLoadArtifactDetailLocalRationale(t *testing.T) {
 		}
 	}
 }
+
+func TestHandleCatalog(t *testing.T) {
+	origDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chdir(origDir) })
+
+	testDir := setupTestSkillDir(t)
+	if err := os.Chdir(testDir); err != nil {
+		t.Fatal(err)
+	}
+
+	req := httptest.NewRequest("GET", "/catalog/", nil)
+	rec := httptest.NewRecorder()
+	handleCatalog(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Errorf("handleCatalog(/catalog/) status = %d, want %d", rec.Code, http.StatusOK)
+	}
+
+	body := rec.Body.String()
+	wantStrings := []string{
+		"catalog-page",
+		"catalog-input",
+		"catalog-results",
+	}
+	for _, want := range wantStrings {
+		if !strings.Contains(body, want) {
+			t.Errorf("handleCatalog(/catalog/) body missing %q", want)
+		}
+	}
+}
+
+func TestSkillsListingTagLinks(t *testing.T) {
+	origDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chdir(origDir) })
+
+	testDir := setupTestSkillDir(t)
+	if err := os.Chdir(testDir); err != nil {
+		t.Fatal(err)
+	}
+
+	req := httptest.NewRequest("GET", "/skills/", nil)
+	rec := httptest.NewRecorder()
+	handleSkills(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Errorf("handleSkills(/skills/) status = %d, want %d", rec.Code, http.StatusOK)
+	}
+
+	body := rec.Body.String()
+	// Tags should be links to catalog
+	if !strings.Contains(body, `/catalog/?q=category:test`) {
+		preview := body
+		if len(preview) > 500 {
+			preview = preview[:500]
+		}
+		t.Errorf("handleSkills(/skills/) body missing tag link to catalog, got: %s", preview)
+	}
+}
+
+func TestSkillDetailTagLinks(t *testing.T) {
+	origDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chdir(origDir) })
+
+	testDir := setupTestSkillDir(t)
+	if err := os.Chdir(testDir); err != nil {
+		t.Fatal(err)
+	}
+
+	req := httptest.NewRequest("GET", "/skills/test-skill/", nil)
+	rec := httptest.NewRecorder()
+	handleSkills(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Errorf("handleSkills(/skills/test-skill/) status = %d, want %d", rec.Code, http.StatusOK)
+	}
+
+	body := rec.Body.String()
+	if !strings.Contains(body, `/catalog/?q=category:test`) {
+		t.Errorf("handleSkills(/skills/test-skill/) body missing tag link to catalog")
+	}
+}

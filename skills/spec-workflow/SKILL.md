@@ -10,7 +10,7 @@ description: >
   when the user says "let's spec this", "new feature", or
   "let's plan."
 metadata:
-  version: "1.1.1"
+  version: "1.2.0"
   tags: "category:planning, category:workflow"
 ---
 
@@ -75,17 +75,10 @@ complete output example.
 - 4-digit zero-padded numbering (0001, 0002, ...)
 - Commits reference the spec and task number
 - Commits are frequent — after each task, not at the end
+- Spec statuses: Draft → Implementing → Done. Once
+  Implementing, the spec is frozen.
 - The agent works autonomously within a task but does not
   skip phase transitions without user confirmation
-
-## Boundaries
-
-- DOES create and update files in `specs/`
-- DOES create feature branches when asked
-- DOES commit during implementation phase
-- Does NOT modify files outside the current task's boundary
-- Does NOT skip phase gates without user confirmation
-- Does NOT delete or overwrite existing specs
 
 ## Common Failures
 
@@ -96,6 +89,17 @@ complete output example.
   one commit. If a task needs multiple commits, split it.
 - **No progress log** — without log entries, the next session
   can't tell what happened. Always log after each task.
+
+## Boundaries
+
+- DOES create and update files in `specs/`
+- DOES create feature branches when asked
+- DOES commit during implementation phase
+- DOES investigate code before asking questions
+- Does NOT modify files outside the current task's boundary
+- Does NOT skip phase gates without user confirmation
+- Does NOT delete or overwrite existing specs
+- Does NOT push without explicit user permission
 
 ## Best Practices
 

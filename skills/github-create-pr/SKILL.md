@@ -7,7 +7,7 @@ description: >
   when the user says "create PR", "open PR", "push and
   PR", "submit for review", or work is ready for review.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   tags: "category:workflow, tool:git, tool:github"
 ---
 
@@ -29,7 +29,10 @@ Open a pull request for the current branch using `gh`.
 
 3. **Check remote state** — Run `git status -sb` to
    detect if the branch is behind the remote. If behind,
-   warn and ask whether to pull first.
+   ask: "Branch is behind remote. Rebase onto origin/main
+   before pushing?" If yes, run
+   `git fetch origin && git rebase origin/main`. If rebase
+   conflicts, stop and let the user resolve.
 
 4. **Check for existing PR** — Run:
    ```bash
@@ -44,8 +47,10 @@ Open a pull request for the current branch using `gh`.
 
 6. **Push the branch** — Run:
    ```bash
-   git push -u origin $(git branch --show-current)
+   git push --force-with-lease -u origin $(git branch --show-current)
    ```
+   Uses `--force-with-lease` for safety after rebase.
+   Falls back to plain push if no upstream exists yet.
    If push fails, report the error and suggest fixes
    (force push not allowed without explicit permission).
 
@@ -91,3 +96,13 @@ Open a pull request for the current branch using `gh`.
 - Do not push to main/master directly.
 - If the branch has a single commit, use its message as
   the PR title. If multiple commits, summarize.
+
+## Boundaries
+
+- DOES check for uncommitted changes
+- DOES push the current branch
+- DOES create a GitHub pull request
+- DOES run pre-push verification steps
+- Does NOT modify code or commit
+- Does NOT force push without explicit permission
+- Does NOT push to main/master directly

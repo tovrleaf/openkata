@@ -9,7 +9,7 @@ description: >
   pull request, setting up commit linting, or asking about commit
   message format, branch naming, or Conventional Commits.
 metadata:
-  version: "1.3.1"
+  version: "1.4.0"
   tags: "category:conventions, category:version-control, tool:git"
 ---
 
@@ -42,7 +42,12 @@ Conventional Commits and kebab-case branch names.
    `git add -A`. Stage each file individually to avoid
    committing unrelated changes.
 
-6. **Write the commit message** — Follow the `git-naming` rule
+6. **Include generated files** — If the project uses code
+   generation (e.g., `templ generate`), ensure generated
+   output files are staged alongside their source files.
+   Run the generator before staging if unsure.
+
+7. **Write the commit message** — Follow the `git-naming` rule
    for format. If no rule is installed, see
    [commit-format.md](references/commit-format.md).
 
@@ -56,9 +61,9 @@ Conventional Commits and kebab-case branch names.
      impact and migration path
    - Separate header, body, and footer with blank lines
 
-7. **Commit.**
+8. **Commit.**
 
-8. **Validate** — Run `git log -1` to confirm the format. If
+9. **Validate** — Run `git log -1` to confirm the format. If
    incorrect, run `git commit --amend` to fix.
 
 ## Branch Workflow
@@ -71,6 +76,19 @@ Conventional Commits and kebab-case branch names.
    [branch-naming.md](references/branch-naming.md).
 
 3. **Create from main, delete after merge.**
+
+## Checkpoint Cleanup
+
+Before pushing, check for WIP or checkpoint commits:
+
+1. Run `git log --oneline origin/main..HEAD`
+2. If any commits are checkpoints (prefixed "checkpoint",
+   "wip", "temp"):
+   - `git reset --soft origin/main` to unstage all changes
+   - Review with `git diff --cached`
+   - Re-stage selectively and create logical, atomic commits
+   - Do NOT squash everything into one commit
+3. If history is clean, skip this step
 
 ## Example Scenario
 
@@ -100,3 +118,13 @@ User: "commit these changes"
 - No "WIP" or "temp" commits — use `git commit --amend` or
   `git rebase -i` to clean up before opening a pull request
 - Use `git mv` for file renames to preserve history
+
+## Boundaries
+
+- DOES stage and commit changes
+- DOES validate commit message format
+- DOES restructure checkpoint commits
+- DOES suggest branch names
+- Does NOT push to remote
+- Does NOT modify source code
+- Does NOT create pull/merge requests

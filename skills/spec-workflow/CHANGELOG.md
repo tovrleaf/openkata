@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-06-11
+
+### Added
+
+- Boundaries section with explicit does/does-not list
+- Rejected Approaches section in spec template
+- Key Files field in task template for pattern reference
+- Spec freezes at implementation start (status: Implementing)
+
 ## [1.1.1] - 2026-06-11
 
 ### Added

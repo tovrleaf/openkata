@@ -58,7 +58,7 @@ templ ProfileDetailPage(profile ArtifactDetail) {
 				if len(SplitTags(profile.Tags)) > 0 {
 					<div class="artifact-tags">
 						for _, tag := range SplitTags(profile.Tags) {
-							<span class={ TagClass(tag) }>{ tag }</span>
+							<a href={ templ.SafeURL(fmt.Sprintf("/catalog/?q=%s", tag)) } class={ TagClass(tag) }>{ tag }</a>
 						}
 					</div>
 				}
