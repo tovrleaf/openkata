@@ -25,15 +25,19 @@ Run in order:
 # 1. Web server (Lambda + Function URL)
 ./infra/create-web-stack.sh
 
-# 2. MCP server (Lambda + S3 + DynamoDB + Function URL)
+# 2. MCP server (Lambda + S3 + DynamoDB tables + Function URL)
+#    Creates: openkata-downloads (counters), openkata-download-events (event log)
 ./infra/create-mcp-stack.sh
 
-# 3. Add MCP permissions to web Lambda role
+# 3. Route /mcp to MCP Lambda via CloudFront
+./infra/add-mcp-to-cloudfront.sh
+
+# 4. Add MCP permissions to web Lambda role
 #    Console: IAM → Roles → openkata-web-role → Add inline policy
 #    Paste contents of iam-web-role-mcp-policy.json
 #    Name: openkata-web-mcp-access
 
-# 4. Update CI role
+# 5. Update CI role
 #    Console: IAM → Roles → openkata-ci → Update inline policy
 #    Replace with contents of iam-ci-policy.json
 ```

@@ -1,0 +1,51 @@
+{
+  "context": "Tests whether the agent produces correctly structured eval scenarios for a straightforward skill",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "scenario-count",
+      "description": "Produces between 3 and 5 scenario directories",
+      "max_score": 12
+    },
+    {
+      "name": "directory-naming",
+      "description": "All scenario directories use descriptive kebab-case names",
+      "max_score": 8
+    },
+    {
+      "name": "scenario-json-present",
+      "description": "Every scenario directory contains a valid scenario.json with a description field",
+      "max_score": 10
+    },
+    {
+      "name": "criteria-json-structure",
+      "description": "Every criteria.json has context, type set to weighted_checklist, and a checklist array",
+      "max_score": 12
+    },
+    {
+      "name": "weights-sum-to-100",
+      "description": "Every criteria.json has checklist weights that sum to exactly 100",
+      "max_score": 15
+    },
+    {
+      "name": "task-md-two-sections",
+      "description": "Every task.md contains Problem/Feature Description and Output Specification sections",
+      "max_score": 10
+    },
+    {
+      "name": "task-no-skill-reference",
+      "description": "No task.md references the skill being tested by name or hints at expected behaviors",
+      "max_score": 12
+    },
+    {
+      "name": "scenario-diversity",
+      "description": "Scenarios cover at least one happy-path case and one edge case or failure scenario",
+      "max_score": 12
+    },
+    {
+      "name": "criteria-binary-verifiable",
+      "description": "All checklist descriptions are specific enough for binary pass/fail scoring",
+      "max_score": 9
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "context": "Tests whether the agent correctly distributes weights across many criteria without any weights falling below 4 or exceeding 15, while still summing to exactly 100",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "weights-sum-to-100",
+      "description": "Every criteria.json has checklist weights that sum to exactly 100",
+      "max_score": 15
+    },
+    {
+      "name": "no-trivial-weights",
+      "description": "No individual criterion has a weight below 4",
+      "max_score": 12
+    },
+    {
+      "name": "no-excessive-weights",
+      "description": "No individual criterion has a weight above 15",
+      "max_score": 10
+    },
+    {
+      "name": "criteria-cover-all-domains",
+      "description": "Criteria collectively address structure, entry format, versioning, and quality (all four concern groups)",
+      "max_score": 14
+    },
+    {
+      "name": "criteria-binary-verifiable",
+      "description": "All checklist descriptions describe observable binary pass/fail conditions",
+      "max_score": 12
+    },
+    {
+      "name": "sensible-grouping",
+      "description": "Related conventions are grouped into composite criteria rather than listing all 12 as individual items with fractional weights",
+      "max_score": 10
+    },
+    {
+      "name": "scenario-count",
+      "description": "Produces between 3 and 5 scenario directories",
+      "max_score": 8
+    },
+    {
+      "name": "task-no-skill-reference",
+      "description": "No task.md references the format-changelog skill by name",
+      "max_score": 11
+    },
+    {
+      "name": "valid-json",
+      "description": "All JSON files parse without errors",
+      "max_score": 8
+    }
+  ]
+}

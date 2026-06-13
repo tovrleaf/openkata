@@ -1,10 +1,10 @@
 {
   "name": "openkata/spec-workflow",
-  "description": "Drives feature development through a phased workflow: specify requirements, design architecture, break into tasks, then implement autonomously with frequent commits. TRIGGER CHECK: Before starting any new task, ask yourself \u2014 does this touch 3+ files, add dependencies, change infrastructure, or require trade-off decisions? If yes, activate this skill. Also activate when the user says \"let's spec this\", \"new feature\", or \"let's plan.\"",
+  "description": "Drives feature development through a phased workflow: specify requirements, design architecture, break into tasks, then implement autonomously with frequent commits. TRIGGER CHECK: Before starting any new task, ask yourself — does this touch 3+ files, add dependencies, change infrastructure, or require trade-off decisions? If yes, activate this skill. Also activate when the user says \"let's spec this\", \"new feature\", or \"let's plan.\"",
   "private": true,
   "skills": [
     "."
   ],
-  "version": "0.1.0",
+  "version": "0.2.1",
   "score": 96
 }

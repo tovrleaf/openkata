@@ -23,6 +23,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/tovrleaf/openkata/cmd/openkata-web/templates"
+	"github.com/tovrleaf/openkata/internal/analytics"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/renderer/html"
@@ -1187,6 +1188,15 @@ func handleArchive(w http.ResponseWriter, r *http.Request, artifactType, name, v
 
 	// Increment download counter
 	incrementDownload(ctx, artifactType+"/"+name)
+
+	// Record analytics event
+	analytics.RecordDownload(ctx, dbClient, analytics.Event{
+		Artifact: artifactType + "/" + name,
+		Version:  version,
+		Source:   "web",
+		Client:   analytics.ParseClient(r.Header.Get("User-Agent")),
+		Country:  r.Header.Get("CloudFront-Viewer-Country"),
+	})
 }
 
 func handleArchiveLocal(w http.ResponseWriter, r *http.Request, artifactType, name, version string) {

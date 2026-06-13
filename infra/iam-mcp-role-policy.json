@@ -16,9 +16,13 @@
       "Action": [
         "dynamodb:GetItem",
         "dynamodb:UpdateItem",
-        "dynamodb:Scan"
+        "dynamodb:Scan",
+        "dynamodb:PutItem"
       ],
-      "Resource": "arn:aws:dynamodb:eu-north-1:*:table/openkata-downloads"
+      "Resource": [
+        "arn:aws:dynamodb:eu-north-1:*:table/openkata-downloads",
+        "arn:aws:dynamodb:eu-north-1:*:table/openkata-download-events"
+      ]
     }
   ]
 }

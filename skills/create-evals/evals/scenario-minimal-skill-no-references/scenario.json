@@ -1,0 +1,4 @@
+{
+  "description": "Generate eval scenarios for a minimal skill with no references, scripts, or assets — only a short SKILL.md",
+  "include": ["./inputs"]
+}

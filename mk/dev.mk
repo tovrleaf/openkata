@@ -18,7 +18,3 @@ dev:
 .PHONY: versions
 versions:
 	@go run ./cmd/generate-versions/ --local
-
-.PHONY: deploy
-deploy:
-	@./scripts/deploy-web.sh

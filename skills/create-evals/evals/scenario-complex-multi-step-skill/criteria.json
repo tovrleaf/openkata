@@ -1,0 +1,51 @@
+{
+  "context": "Tests whether the agent handles a complex skill with many workflow steps, references, and scripts by producing diverse scenarios that cover different workflow phases",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "covers-multiple-workflow-phases",
+      "description": "Scenarios collectively test at least 3 different phases of the 7-step workflow (not all testing the same phase)",
+      "max_score": 15
+    },
+    {
+      "name": "weights-sum-to-100",
+      "description": "Every criteria.json has checklist weights that sum to exactly 100",
+      "max_score": 15
+    },
+    {
+      "name": "complexity-variation",
+      "description": "At least one simple scenario and one challenging scenario with multiple interacting concerns",
+      "max_score": 12
+    },
+    {
+      "name": "input-fixtures-realistic",
+      "description": "Input fixtures resemble real project artifacts (Dockerfiles, CI configs, deploy scripts) rather than toy examples",
+      "max_score": 10
+    },
+    {
+      "name": "scenario-count",
+      "description": "Produces between 3 and 5 scenario directories",
+      "max_score": 8
+    },
+    {
+      "name": "criteria-specificity",
+      "description": "All checklist criteria describe observable, binary-verifiable behaviors without subjective language",
+      "max_score": 12
+    },
+    {
+      "name": "task-self-contained",
+      "description": "Each task.md is understandable without reading the skill definition — provides enough context inline",
+      "max_score": 10
+    },
+    {
+      "name": "task-no-skill-reference",
+      "description": "No task.md mentions the deploy-service skill by name or hints at which behaviors are being tested",
+      "max_score": 10
+    },
+    {
+      "name": "scenario-json-include-field",
+      "description": "Scenario directories with input fixtures have include field in scenario.json; those without do not",
+      "max_score": 8
+    }
+  ]
+}

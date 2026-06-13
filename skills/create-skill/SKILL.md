@@ -11,7 +11,7 @@ description: >
   want to codify, is frustrated by inconsistent agent behavior, or
   wants to package expertise for a team.
 metadata:
-  version: "1.3.0"
+  version: "1.3.1"
   tags: "category:scaffolding"
 ---
 
@@ -80,6 +80,11 @@ frontmatter and markdown instructions.
    Frontmatter rules:
    - Required: `name` and `description` in frontmatter.
      Other fields depend on your project's conventions.
+   - Version in frontmatter is always `"1.0.0"` for new
+     skills. Never use `0.x.y` — first release is 1.0.0.
+   - CHANGELOG.md starts with `## [Unreleased]` containing
+     the initial entries. Do not assign a version heading
+     until the skill is actually released (git tagged).
 
    Writing rules:
    - **Description optimizes activation, not teaching.** State

@@ -1,0 +1,51 @@
+{
+  "context": "Tests whether the agent correctly handles a minimal skill with no supplementary materials, avoiding fabrication of non-existent references",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "no-fabricated-references",
+      "description": "No task.md or scenario references files that don't exist in the skill's directory",
+      "max_score": 15
+    },
+    {
+      "name": "weights-sum-to-100",
+      "description": "Every criteria.json has checklist weights that sum to exactly 100",
+      "max_score": 15
+    },
+    {
+      "name": "scenario-count",
+      "description": "Produces between 3 and 5 scenario directories",
+      "max_score": 10
+    },
+    {
+      "name": "criteria-cover-skill-behaviors",
+      "description": "Criteria test behaviors actually described in the skill (not invented behaviors)",
+      "max_score": 14
+    },
+    {
+      "name": "task-no-skill-reference",
+      "description": "No task.md references the rename-files skill by name",
+      "max_score": 12
+    },
+    {
+      "name": "appropriate-complexity",
+      "description": "Scenarios match the skill's simplicity — no scenarios demanding complex multi-file orchestration beyond what the skill does",
+      "max_score": 10
+    },
+    {
+      "name": "valid-json-files",
+      "description": "All scenario.json and criteria.json files are valid JSON",
+      "max_score": 8
+    },
+    {
+      "name": "task-two-sections",
+      "description": "Every task.md contains both Problem/Feature Description and Output Specification headings",
+      "max_score": 8
+    },
+    {
+      "name": "directory-naming",
+      "description": "All scenario directories use descriptive kebab-case names (not generic names like scenario-1)",
+      "max_score": 8
+    }
+  ]
+}
