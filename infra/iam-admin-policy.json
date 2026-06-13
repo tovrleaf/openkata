@@ -61,9 +61,26 @@
       "Effect": "Allow",
       "Action": [
         "dynamodb:CreateTable",
-        "dynamodb:DescribeTable"
+        "dynamodb:DescribeTable",
+        "dynamodb:Scan",
+        "dynamodb:Query",
+        "dynamodb:GetItem"
       ],
-      "Resource": "arn:aws:dynamodb:eu-north-1:*:table/openkata-downloads"
+      "Resource": [
+        "arn:aws:dynamodb:eu-north-1:*:table/openkata-downloads",
+        "arn:aws:dynamodb:eu-north-1:*:table/openkata-download-events"
+      ]
+    },
+    {
+      "Sid": "CloudWatchLogs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:FilterLogEvents",
+        "logs:GetLogEvents",
+        "logs:DescribeLogGroups",
+        "logs:DescribeLogStreams"
+      ],
+      "Resource": "arn:aws:logs:eu-north-1:*:log-group:/aws/lambda/openkata-*:*"
     },
     {
       "Sid": "Route53",
@@ -102,7 +119,8 @@
         "cloudfront:PublishFunction",
         "cloudfront:DescribeFunction",
         "cloudfront:DeleteFunction",
-        "cloudfront:TagResource"
+        "cloudfront:TagResource",
+        "cloudfront:ListDistributions"
       ],
       "Resource": "*"
     },
