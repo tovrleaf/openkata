@@ -1186,8 +1186,9 @@ section {
 
   .detail-header {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: auto 1fr auto;
     gap: var(--space-xs) var(--space-md);
+    align-items: center;
   }
 
   .detail-title-row {
@@ -1196,22 +1197,34 @@ section {
 
   .hero--kanji {
     grid-column: 1 / -1;
+    margin-bottom: var(--space-sm);
   }
 
   .detail-title-right {
     grid-row: 3;
-    grid-column: 2;
-    flex-direction: row;
-    align-items: center;
+    grid-column: 1 / -1;
+    display: contents;
+  }
+
+  .artifact-nav {
+    grid-row: 3;
+    grid-column: 1;
     align-self: center;
-    gap: var(--space-md);
+    margin-top: -8px;
+  }
+
+  .version-select {
+    grid-row: 3;
+    grid-column: 3;
+    align-self: center;
   }
 
   .detail-meta {
     grid-row: 3;
-    grid-column: 1;
+    grid-column: 2;
     margin-left: 0;
     align-self: center;
+    text-align: center;
   }
 
   .artifact-tags {
