@@ -1,9 +1,10 @@
 {
-  "name": "local/create-evals",
-  "description": "Generate evaluation scenarios that test whether an agent using a skill produces correct output. Use when the user says \"create evals\", \"generate eval scenarios\", \"write evals\", \"test this skill\", or before publishing a skill.",
+  "name": "openkata/create-evals",
+  "description": "Generate evaluation scenarios that test whether an agent using a skill produces correct output. Use when the user says create evals, generate eval scenarios, write evals, or before publishing a skill.",
   "private": true,
   "skills": [
     "."
   ],
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "score": 97
 }
