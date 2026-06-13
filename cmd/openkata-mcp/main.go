@@ -19,6 +19,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
+	"github.com/tovrleaf/openkata/internal/analytics"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
@@ -336,6 +337,15 @@ func installArtifact(ctx context.Context, req mcp.CallToolRequest, artifactType,
 
 	// Increment download counter
 	incrementCount(ctx, artifactType+"/"+name)
+
+	// Record analytics event
+	analytics.RecordDownload(ctx, dbClient, analytics.Event{
+		Artifact: artifactType + "/" + name,
+		Version:  version,
+		Source:   "mcp",
+		Client:   "unknown",
+		Country:  "",
+	})
 
 	// Build response
 	response := map[string]interface{}{

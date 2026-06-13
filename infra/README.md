@@ -25,7 +25,8 @@ Run in order:
 # 1. Web server (Lambda + Function URL)
 ./infra/create-web-stack.sh
 
-# 2. MCP server (Lambda + S3 + DynamoDB + Function URL)
+# 2. MCP server (Lambda + S3 + DynamoDB tables + Function URL)
+#    Creates: openkata-downloads (counters), openkata-download-events (event log)
 ./infra/create-mcp-stack.sh
 
 # 3. Add MCP permissions to web Lambda role

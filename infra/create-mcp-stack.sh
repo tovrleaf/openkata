@@ -41,6 +41,23 @@ else
     --no-cli-pager
 fi
 
+echo "=== Step 2b: Create download events table ==="
+if aws dynamodb describe-table --table-name "openkata-download-events" --region "${REGION}" 2>/dev/null >/dev/null; then
+  echo "Table already exists, skipping."
+else
+  aws dynamodb create-table \
+    --table-name "openkata-download-events" \
+    --attribute-definitions \
+      AttributeName=artifact,AttributeType=S \
+      AttributeName=timestamp,AttributeType=S \
+    --key-schema \
+      AttributeName=artifact,KeyType=HASH \
+      AttributeName=timestamp,KeyType=RANGE \
+    --billing-mode PAY_PER_REQUEST \
+    --region "${REGION}" \
+    --no-cli-pager
+fi
+
 echo "=== Step 3: Create IAM role ==="
 if aws iam get-role --role-name "${ROLE_NAME}" 2>/dev/null >/dev/null; then
   echo "Role already exists, updating policy."

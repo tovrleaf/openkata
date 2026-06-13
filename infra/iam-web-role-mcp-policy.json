@@ -13,8 +13,11 @@
     {
       "Sid": "DynamoDBAccess",
       "Effect": "Allow",
-      "Action": ["dynamodb:GetItem", "dynamodb:UpdateItem", "dynamodb:Scan"],
-      "Resource": "arn:aws:dynamodb:eu-north-1:152406482128:table/openkata-downloads"
+      "Action": ["dynamodb:GetItem", "dynamodb:UpdateItem", "dynamodb:Scan", "dynamodb:PutItem"],
+      "Resource": [
+        "arn:aws:dynamodb:eu-north-1:152406482128:table/openkata-downloads",
+        "arn:aws:dynamodb:eu-north-1:152406482128:table/openkata-download-events"
+      ]
     }
   ]
 }
