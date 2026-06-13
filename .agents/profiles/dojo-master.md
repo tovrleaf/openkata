@@ -61,7 +61,7 @@ Commands `kata-author` can run via `tessl`:
 | `tessl skill review` | Quality scoring |
 | `tessl skill review --optimize` | AI-suggested improvements |
 | `tessl skill import` | Generate tile.json |
-| `tessl scenario generate` | Create eval scenarios |
+| `create-evals` skill | Generate eval scenarios |
 | `tessl eval run` | Run evals (95%+ required) |
 | `tessl tile publish` | Publish to registry |
 

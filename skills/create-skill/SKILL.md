@@ -80,6 +80,11 @@ frontmatter and markdown instructions.
    Frontmatter rules:
    - Required: `name` and `description` in frontmatter.
      Other fields depend on your project's conventions.
+   - Version in frontmatter is always `"1.0.0"` for new
+     skills. Never use `0.x.y` — first release is 1.0.0.
+   - CHANGELOG.md starts with `## [Unreleased]` containing
+     the initial entries. Do not assign a version heading
+     until the skill is actually released (git tagged).
 
    Writing rules:
    - **Description optimizes activation, not teaching.** State

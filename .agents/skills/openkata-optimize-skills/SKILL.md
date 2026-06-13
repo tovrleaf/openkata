@@ -48,7 +48,7 @@ Improve skills to 95%+ review score with passing evals.
 **DOES:**
 - Read scores from plugin.json to find targets
 - Run tessl lint, review, optimize
-- Run eval generation and execution
+- Generate eval scenarios and run evaluation
 - Update create-skill with learned patterns
 - Commit improvements per skill
 
