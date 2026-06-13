@@ -1,0 +1,4 @@
+{
+  "description": "Generate eval scenarios for a simple skill with clear workflow steps and obvious test cases",
+  "include": ["./inputs"]
+}

@@ -1,0 +1,4 @@
+{
+  "description": "Generate eval scenarios for a complex multi-step skill with references directory and script dependencies",
+  "include": ["./inputs"]
+}

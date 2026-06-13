@@ -1,0 +1,3 @@
+{
+  "description": "Generate eval scenarios for a skill with many fine-grained conventions, testing whether the agent balances weight distribution correctly across many criteria"
+}

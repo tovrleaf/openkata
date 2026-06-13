@@ -1,9 +1,12 @@
 ---
 name: create-evals
 description: >
-  Generate evaluation scenarios that test whether an agent using
-  a skill produces correct output. Use when the user says "create
-  evals", "generate eval scenarios", "write evals", "test this
+  Generate diverse evaluation scenarios that test whether an agent using
+  a skill produces correct output, including happy-path cases, edge cases,
+  and failure scenarios across varying complexity levels. Produces structured
+  scenario directories containing task prompts, weighted scoring checklists,
+  and optional input fixtures for each scenario. Use when the user says
+  "create evals", "generate eval scenarios", "write evals", "test this
   skill", or before publishing a skill.
 metadata:
   version: "1.0.0"
