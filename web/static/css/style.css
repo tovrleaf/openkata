@@ -1326,7 +1326,7 @@ section {
     align-items: center;
   }
 
-  .btn-open {
+  .artifact-tags .btn-open {
     position: absolute;
     top: var(--space-md);
     right: 0;

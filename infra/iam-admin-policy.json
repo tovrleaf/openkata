@@ -64,7 +64,8 @@
         "dynamodb:DescribeTable",
         "dynamodb:Scan",
         "dynamodb:Query",
-        "dynamodb:GetItem"
+        "dynamodb:GetItem",
+        "dynamodb:PutItem"
       ],
       "Resource": [
         "arn:aws:dynamodb:eu-north-1:*:table/openkata-downloads",
@@ -78,9 +79,19 @@
         "logs:FilterLogEvents",
         "logs:GetLogEvents",
         "logs:DescribeLogGroups",
-        "logs:DescribeLogStreams"
+        "logs:DescribeLogStreams",
+        "logs:StartQuery",
+        "logs:GetQueryResults"
       ],
       "Resource": "arn:aws:logs:eu-north-1:*:log-group:/aws/lambda/openkata-*:*"
+    },
+    {
+      "Sid": "CloudWatchMetrics",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:GetMetricStatistics"
+      ],
+      "Resource": "*"
     },
     {
       "Sid": "Route53",

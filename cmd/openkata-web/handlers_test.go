@@ -956,3 +956,92 @@ func TestSkillDetailTagLinks(t *testing.T) {
 		t.Errorf("handleSkills(/skills/test-skill/) body missing tag link to catalog")
 	}
 }
+
+func TestHandleStats(t *testing.T) {
+	t.Run("empty state when no data files", func(t *testing.T) {
+		origDir, _ := os.Getwd()
+		tmpDir := t.TempDir()
+		os.Chdir(tmpDir)
+		defer os.Chdir(origDir)
+
+		req := httptest.NewRequest("GET", "/stats/", nil)
+		rec := httptest.NewRecorder()
+		handleStats(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Errorf("handleStats() status = %d, want %d", rec.Code, http.StatusOK)
+		}
+		if !strings.Contains(rec.Body.String(), "make stats-fetch") {
+			t.Error("handleStats() empty state should mention 'make stats-fetch'")
+		}
+	})
+
+	t.Run("renders tables with data", func(t *testing.T) {
+		origDir, _ := os.Getwd()
+		tmpDir := t.TempDir()
+		os.Chdir(tmpDir)
+		defer os.Chdir(origDir)
+
+		os.MkdirAll(".local/stats", 0o755)
+		os.WriteFile(".local/stats/download-events.json", []byte(`[
+			{"artifact":"skills/create-adr","version":"1.0.0","source":"web","client":"browser","country":"FI","timestamp":"2026-06-10T00:00:00Z"},
+			{"artifact":"skills/create-adr","version":"1.1.0","source":"mcp","client":"Kiro","country":"US","timestamp":"2026-06-11T00:00:00Z"},
+			{"artifact":"rules/bash-style","version":"1.0.0","source":"web","client":"curl","country":"FI","timestamp":"2026-06-12T00:00:00Z"}
+		]`), 0o644)
+
+		req := httptest.NewRequest("GET", "/stats/", nil)
+		rec := httptest.NewRecorder()
+		handleStats(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Errorf("handleStats() status = %d, want %d", rec.Code, http.StatusOK)
+		}
+		body := rec.Body.String()
+		for _, want := range []string{"skills/create-adr", "rules/bash-style", "browser", "Kiro", "FI", "US", "skills", "rules"} {
+			if !strings.Contains(body, want) {
+				t.Errorf("handleStats() body missing %q", want)
+			}
+		}
+	})
+}
+
+func TestHandleStatsDetail(t *testing.T) {
+	origDir, _ := os.Getwd()
+	tmpDir := t.TempDir()
+	os.Chdir(tmpDir)
+	defer os.Chdir(origDir)
+
+	os.MkdirAll(".local/stats", 0o755)
+	os.WriteFile(".local/stats/download-events.json", []byte(`[
+		{"artifact":"skills/create-adr","version":"1.0.0","source":"web","client":"browser","country":"FI","timestamp":"2026-06-10T00:00:00Z"},
+		{"artifact":"skills/create-adr","version":"1.1.0","source":"web","client":"Kiro","country":"US","timestamp":"2026-06-11T00:00:00Z"},
+		{"artifact":"rules/bash-style","version":"1.0.0","source":"web","client":"curl","country":"FI","timestamp":"2026-06-12T00:00:00Z"}
+	]`), 0o644)
+
+	t.Run("filters by artifact", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/stats/detail?artifact=skills/create-adr", nil)
+		rec := httptest.NewRecorder()
+		handleStatsDetail(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Errorf("handleStatsDetail() status = %d, want %d", rec.Code, http.StatusOK)
+		}
+		body := rec.Body.String()
+		if !strings.Contains(body, "create-adr") {
+			t.Error("handleStatsDetail() should contain artifact name")
+		}
+		if strings.Contains(body, "bash-style") {
+			t.Error("handleStatsDetail() should not contain other artifacts")
+		}
+	})
+
+	t.Run("filters by version", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/stats/detail?artifact=skills/create-adr&version=1.0.0", nil)
+		rec := httptest.NewRecorder()
+		handleStatsDetail(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Errorf("handleStatsDetail() status = %d, want %d", rec.Code, http.StatusOK)
+		}
+	})
+}

@@ -1463,3 +1463,190 @@ func loadProfileDetailVersion(ctx context.Context, name, version string) *templa
 	}
 	return loadArtifactDetailS3(ctx, "profiles", name, version, name+".md")
 }
+
+func handleStats(w http.ResponseWriter, r *http.Request) {
+	data := templates.StatsData{}
+
+	eventsData, err := os.ReadFile(".local/stats/download-events.json")
+	if err != nil {
+		data.Empty = true
+		templates.Stats(data).Render(r.Context(), w)
+		return
+	}
+
+	var events []templates.DownloadEvent
+	if err := json.Unmarshal(eventsData, &events); err != nil {
+		data.Empty = true
+		templates.Stats(data).Render(r.Context(), w)
+		return
+	}
+
+	data.Events = events
+	data.TotalDownloads = len(events)
+
+	artifactCounts := make(map[string]int)
+	typeCounts := make(map[string]int)
+	clientCounts := make(map[string]int)
+	countryCounts := make(map[string]int)
+	sourceCounts := make(map[string]int)
+
+	for _, ev := range events {
+		artifactCounts[ev.Artifact]++
+		parts := strings.SplitN(ev.Artifact, "/", 2)
+		if len(parts) > 0 {
+			typeCounts[parts[0]]++
+		}
+		if ev.Client != "" {
+			clientCounts[ev.Client]++
+		}
+		if ev.Country != "" {
+			countryCounts[ev.Country]++
+		}
+		if ev.Source != "" {
+			sourceCounts[ev.Source]++
+		}
+	}
+
+	for name, count := range artifactCounts {
+		artType := ""
+		parts := strings.SplitN(name, "/", 2)
+		if len(parts) > 0 {
+			artType = parts[0]
+		}
+		data.Artifacts = append(data.Artifacts, templates.ArtifactStats{Name: name, Type: artType, Downloads: count})
+	}
+	sort.Slice(data.Artifacts, func(i, j int) bool { return data.Artifacts[i].Downloads > data.Artifacts[j].Downloads })
+
+	for t, count := range typeCounts {
+		data.Types = append(data.Types, templates.TypeStats{Type: t, Downloads: count})
+	}
+	sort.Slice(data.Types, func(i, j int) bool { return data.Types[i].Downloads > data.Types[j].Downloads })
+
+	for client, count := range clientCounts {
+		data.Clients = append(data.Clients, templates.ClientStats{Client: client, Downloads: count})
+	}
+	sort.Slice(data.Clients, func(i, j int) bool { return data.Clients[i].Downloads > data.Clients[j].Downloads })
+
+	for country, count := range countryCounts {
+		data.Countries = append(data.Countries, templates.CountryStats{Country: country, Downloads: count})
+	}
+	sort.Slice(data.Countries, func(i, j int) bool { return data.Countries[i].Downloads > data.Countries[j].Downloads })
+
+	for source, count := range sourceCounts {
+		data.Sources = append(data.Sources, templates.SourceStats{Source: source, Downloads: count})
+	}
+	sort.Slice(data.Sources, func(i, j int) bool { return data.Sources[i].Downloads > data.Sources[j].Downloads })
+
+	// Page metrics
+	if metricsData, err := os.ReadFile(".local/stats/page-metrics.json"); err == nil {
+		var metrics []templates.DailyMetric
+		if err := json.Unmarshal(metricsData, &metrics); err == nil {
+			data.PageMetrics = metrics
+			for _, m := range metrics {
+				data.PageLoads += m.Invocations
+			}
+		}
+	}
+
+	// Page paths
+	if pathsData, err := os.ReadFile(".local/stats/page-paths.json"); err == nil {
+		type rawPath struct {
+			Date  string `json:"date"`
+			Path  string `json:"path"`
+			Count int    `json:"count"`
+		}
+		var rawPaths []rawPath
+		if err := json.Unmarshal(pathsData, &rawPaths); err == nil {
+			pathAgg := make(map[string]int)
+			for _, rp := range rawPaths {
+				pathAgg[rp.Path] += rp.Count
+			}
+			for path, count := range pathAgg {
+				pType := "page"
+				if strings.Contains(path, "/archive") {
+					pType = "download"
+				}
+				data.PagePaths = append(data.PagePaths, templates.PathStats{Path: path, Type: pType, Count: count})
+			}
+			sort.Slice(data.PagePaths, func(i, j int) bool { return data.PagePaths[i].Count > data.PagePaths[j].Count })
+		}
+	}
+
+	templates.Stats(data).Render(r.Context(), w)
+}
+
+func handleStatsDetail(w http.ResponseWriter, r *http.Request) {
+	artifact := r.URL.Query().Get("artifact")
+	version := r.URL.Query().Get("version")
+
+	if artifact == "" {
+		http.Error(w, "missing artifact param", http.StatusBadRequest)
+		return
+	}
+
+	eventsData, err := os.ReadFile(".local/stats/download-events.json")
+	if err != nil {
+		http.Error(w, "no data", http.StatusNotFound)
+		return
+	}
+
+	var events []templates.DownloadEvent
+	if err := json.Unmarshal(eventsData, &events); err != nil {
+		http.Error(w, "bad data", http.StatusInternalServerError)
+		return
+	}
+
+	// Filter to artifact
+	var filtered []templates.DownloadEvent
+	versionsSet := make(map[string]bool)
+	for _, ev := range events {
+		if ev.Artifact != artifact {
+			continue
+		}
+		versionsSet[ev.Version] = true
+		if version == "" || ev.Version == version {
+			filtered = append(filtered, ev)
+		}
+	}
+
+	var versions []string
+	for v := range versionsSet {
+		versions = append(versions, v)
+	}
+	sort.Sort(sort.Reverse(sort.StringSlice(versions)))
+
+	clientCounts := make(map[string]int)
+	countryCounts := make(map[string]int)
+	for _, ev := range filtered {
+		if ev.Client != "" {
+			clientCounts[ev.Client]++
+		}
+		if ev.Country != "" {
+			countryCounts[ev.Country]++
+		}
+	}
+
+	var clients []templates.ClientStats
+	for c, n := range clientCounts {
+		clients = append(clients, templates.ClientStats{Client: c, Downloads: n})
+	}
+	sort.Slice(clients, func(i, j int) bool { return clients[i].Downloads > clients[j].Downloads })
+
+	var countries []templates.CountryStats
+	for c, n := range countryCounts {
+		countries = append(countries, templates.CountryStats{Country: c, Downloads: n})
+	}
+	sort.Slice(countries, func(i, j int) bool { return countries[i].Downloads > countries[j].Downloads })
+
+	detail := templates.StatsDetailData{
+		Artifact:  artifact,
+		Version:   version,
+		Versions:  versions,
+		Total:     len(filtered),
+		Clients:   clients,
+		Countries: countries,
+		Events:    filtered,
+	}
+
+	templates.StatsDetail(detail).Render(r.Context(), w)
+}
