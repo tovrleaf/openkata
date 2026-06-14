@@ -20,5 +20,10 @@ jobs:
       - name: Generate templates
         run: templ generate ./cmd/openkata-web/templates/
 
+      - name: Check README badges
+        run: |
+          ./scripts/update-readme-badges.sh
+          git diff --exit-code README.md
+
       - name: Build
         run: go build ./cmd/openkata-web/
