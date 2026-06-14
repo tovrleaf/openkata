@@ -1,5 +1,16 @@
 # Open Kata
 
+<!-- badges:start -->
+[![Skills](https://img.shields.io/badge/skills-12-blue?style=flat-square)](skills/)
+[![Rules](https://img.shields.io/badge/rules-5-blue?style=flat-square)](rules/)
+[![Profiles](https://img.shields.io/badge/profiles-2-blue?style=flat-square)](profiles/)
+[![MCP Server](https://img.shields.io/badge/MCP_server-ready-green?style=flat-square)](https://openkata.dev/getting-started/)
+[![Build](https://github.com/tovrleaf/openkata/actions/workflows/build.yaml/badge.svg)](https://github.com/tovrleaf/openkata/actions/workflows/build.yaml)
+[![Go](https://img.shields.io/badge/go-1.26.1-blue?style=flat-square)](https://go.dev/)
+[![Stars](https://img.shields.io/github/stars/tovrleaf/openkata?style=flat-square)](https://github.com/tovrleaf/openkata)
+[![License](https://img.shields.io/badge/license-MIT-lightgrey?style=flat-square)](LICENSE)
+<!-- badges:end -->
+
 Codified practices for AI agents — teach your agents the way.
 
 See the [Manifesto](MANIFESTO.md) for why this exists.

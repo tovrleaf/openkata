@@ -18,3 +18,7 @@ dev:
 .PHONY: versions
 versions:
 	@go run ./cmd/generate-versions/ --local
+
+.PHONY: badges
+badges: ## Update README badges with current counts
+	@./scripts/update-readme-badges.sh
