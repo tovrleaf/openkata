@@ -159,6 +159,10 @@ func handleCatalog(w http.ResponseWriter, r *http.Request) {
 	templates.Catalog().Render(r.Context(), w)
 }
 
+func handleGettingStarted(w http.ResponseWriter, r *http.Request) {
+	templates.GettingStarted().Render(r.Context(), w)
+}
+
 func handleDesignSystem(w http.ResponseWriter, r *http.Request) {
 	templates.DesignSystem().Render(r.Context(), w)
 }

@@ -1,0 +1,262 @@
+package templates
+
+templ GettingStarted() {
+	@Layout("Getting Started") {
+		@Nav()
+
+		<main>
+			<section class="hero hero--kanji">
+				<span class="hero-kanji">道</span>
+				<div class="hero-text">
+					<h1 class="cursor">Getting Started</h1>
+					<p class="comment">Teach once, reuse everywhere.</p>
+				</div>
+			</section>
+
+			<h2>What is OpenKata?</h2>
+			<p>
+				Codified practices for AI agents. Engineering knowledge
+				in files — portable, reusable, version-controlled.
+				Kata follow the
+				<a href="https://agentskills.io/" target="_blank" rel="noopener">Agent Skills specification</a>
+				and work with any agent that supports it.
+			</p>
+
+			<h3>Vocabulary</h3>
+			<table class="gs-vocab">
+				<tr><td>Skills</td><td><strong>kata</strong></td><td>Multi-step workflows agents follow</td></tr>
+				<tr><td>Rules</td><td><strong>dojo kun</strong></td><td>Always-on constraints applied to every session</td></tr>
+				<tr><td>Profiles</td><td><strong>sensei profiles</strong></td><td>Agent role definitions with scoped permissions</td></tr>
+				<tr><td>MCP server</td><td><strong>the dojo</strong></td><td>Where kata are served and practiced</td></tr>
+				<tr><td>Framework</td><td><strong>the ryu</strong></td><td>The complete system of practices</td></tr>
+			</table>
+
+			<h2>Design Philosophy</h2>
+			<p>
+				Kata are platform-agnostic. They avoid coupling to
+				specific tooling, MCP servers, or platform features
+				so they remain portable across environments.
+			</p>
+			<ul>
+				<li><strong>Humans govern, agents execute.</strong> The engineer is always responsible for the outcome.</li>
+				<li><strong>Portable by default.</strong> No vendor lock-in. Works with any agent supporting the Agent Skills spec.</li>
+				<li><strong>Explain the why.</strong> Practices carry their reasoning so agents understand the intent, not just the rule.</li>
+			</ul>
+
+			<h2>How It Works</h2>
+
+			<div class="gs-tabs">
+				<button class="gs-tab gs-tab--active" data-tab="mcp">MCP Server</button>
+				<button class="gs-tab" data-tab="download">Download Skills</button>
+			</div>
+
+			<div class="gs-panel gs-panel--active" id="panel-mcp">
+				<p>
+					Zero install. Zero dependencies. Always up-to-date.
+					No packages to install. No local runtime. Add one URL
+					to your agent config and you have instant access to the
+					full catalog.
+				</p>
+				<pre><code>https://openkata.dev/mcp</code></pre>
+
+				<div class="gs-client-tabs">
+					<button class="gs-ctab gs-ctab--active" data-ctab="claude-code">Claude Code</button>
+					<button class="gs-ctab" data-ctab="claude-desktop">Claude Desktop</button>
+					<button class="gs-ctab" data-ctab="cursor">Cursor</button>
+					<button class="gs-ctab" data-ctab="kiro">Kiro</button>
+					<button class="gs-ctab" data-ctab="vscode">VS Code</button>
+					<button class="gs-ctab" data-ctab="windsurf">Windsurf</button>
+					<button class="gs-ctab" data-ctab="cline">Cline</button>
+					<button class="gs-ctab" data-ctab="codex">Codex CLI</button>
+					<button class="gs-ctab" data-ctab="gemini">Gemini CLI</button>
+					<button class="gs-ctab" data-ctab="antigravity">Antigravity</button>
+					<button class="gs-ctab" data-ctab="openclaw">OpenClaw</button>
+					<button class="gs-ctab" data-ctab="opencode">OpenCode</button>
+					<button class="gs-ctab" data-ctab="roo">Roo Code</button>
+					<button class="gs-ctab" data-ctab="continue">Continue</button>
+					<button class="gs-ctab" data-ctab="zed">Zed</button>
+				</div>
+
+				<div class="gs-cpanel gs-cpanel--active" id="cpanel-claude-code">
+					<p class="gs-filepath">.mcp.json</p>
+					<pre><code>{`{
+  "mcpServers": {
+    "openkata": {
+      "url": "https://openkata.dev/mcp"
+    }
+  }
+}`}</code></pre>
+				</div>
+				<div class="gs-cpanel" id="cpanel-claude-desktop">
+					<p class="gs-filepath">~/Library/Application Support/Claude/claude_desktop_config.json</p>
+					<pre><code>{`{
+  "mcpServers": {
+    "openkata": {
+      "url": "https://openkata.dev/mcp"
+    }
+  }
+}`}</code></pre>
+				</div>
+				<div class="gs-cpanel" id="cpanel-cursor">
+					<p class="gs-filepath">.cursor/mcp.json</p>
+					<pre><code>{`{
+  "mcpServers": {
+    "openkata": {
+      "url": "https://openkata.dev/mcp"
+    }
+  }
+}`}</code></pre>
+				</div>
+				<div class="gs-cpanel" id="cpanel-kiro">
+					<p class="gs-filepath">.kiro/settings/mcp.json</p>
+					<pre><code>{`{
+  "mcpServers": {
+    "openkata": {
+      "url": "https://openkata.dev/mcp"
+    }
+  }
+}`}</code></pre>
+				</div>
+				<div class="gs-cpanel" id="cpanel-vscode">
+					<p class="gs-filepath">.vscode/mcp.json</p>
+					<pre><code>{`{
+  "mcpServers": {
+    "openkata": {
+      "url": "https://openkata.dev/mcp"
+    }
+  }
+}`}</code></pre>
+				</div>
+				<div class="gs-cpanel" id="cpanel-windsurf">
+					<p class="gs-filepath">.windsurf/mcp.json</p>
+					<pre><code>{`{
+  "mcpServers": {
+    "openkata": {
+      "url": "https://openkata.dev/mcp"
+    }
+  }
+}`}</code></pre>
+				</div>
+				<div class="gs-cpanel" id="cpanel-cline">
+					<p class="gs-filepath">cline_mcp_settings.json</p>
+					<pre><code>{`{
+  "mcpServers": {
+    "openkata": {
+      "url": "https://openkata.dev/mcp"
+    }
+  }
+}`}</code></pre>
+				</div>
+				<div class="gs-cpanel" id="cpanel-codex">
+					<p class="gs-filepath">~/.codex/config.toml</p>
+					<pre><code>{`[mcp_servers.openkata]
+url = "https://openkata.dev/mcp"`}</code></pre>
+				</div>
+				<div class="gs-cpanel" id="cpanel-gemini">
+					<p class="gs-filepath">.gemini/settings.json</p>
+					<pre><code>{`{
+  "mcpServers": {
+    "openkata": {
+      "url": "https://openkata.dev/mcp"
+    }
+  }
+}`}</code></pre>
+				</div>
+				<div class="gs-cpanel" id="cpanel-antigravity">
+					<p class="gs-filepath">~/.gemini/antigravity/mcp_config.json</p>
+					<pre><code>{`{
+  "mcpServers": {
+    "openkata": {
+      "url": "https://openkata.dev/mcp"
+    }
+  }
+}`}</code></pre>
+				</div>
+				<div class="gs-cpanel" id="cpanel-openclaw">
+					<p class="gs-filepath">~/.openclaw/openclaw.json</p>
+					<pre><code>{`{
+  "mcpServers": {
+    "openkata": {
+      "url": "https://openkata.dev/mcp"
+    }
+  }
+}`}</code></pre>
+				</div>
+				<div class="gs-cpanel" id="cpanel-opencode">
+					<p class="gs-filepath">~/.config/opencode/opencode.json</p>
+					<pre><code>{`{
+  "mcpServers": {
+    "openkata": {
+      "url": "https://openkata.dev/mcp"
+    }
+  }
+}`}</code></pre>
+				</div>
+				<div class="gs-cpanel" id="cpanel-roo">
+					<p class="gs-filepath">roo_mcp_settings.json</p>
+					<pre><code>{`{
+  "mcpServers": {
+    "openkata": {
+      "url": "https://openkata.dev/mcp"
+    }
+  }
+}`}</code></pre>
+				</div>
+				<div class="gs-cpanel" id="cpanel-continue">
+					<p class="gs-filepath">~/.continue/config.json</p>
+					<pre><code>{`{
+  "mcpServers": {
+    "openkata": {
+      "url": "https://openkata.dev/mcp"
+    }
+  }
+}`}</code></pre>
+				</div>
+				<div class="gs-cpanel" id="cpanel-zed">
+					<p class="gs-filepath">~/.config/zed/settings.json</p>
+					<pre><code>{`{
+  "context_servers": {
+    "openkata": {
+      "url": "https://openkata.dev/mcp"
+    }
+  }
+}`}</code></pre>
+				</div>
+			</div>
+
+			<div class="gs-panel" id="panel-download">
+				<p>
+					For offline or local-first workflows: download skills
+					from the catalog and extract to your repository.
+					Your agent picks them up automatically.
+				</p>
+				<pre><code>.agents/skills/&lt;name&gt;/</code></pre>
+			</div>
+
+			<h2>What to Install First</h2>
+			<ul>
+				<li><a href="/skills/commit-conventions/">commit-conventions</a> — git workflows</li>
+				<li><a href="/skills/create-adr/">create-adr</a> — architecture decisions</li>
+				<li><a href="/skills/spec-workflow/">spec-workflow</a> — feature planning</li>
+				<li><a href="/skills/grill-me/">grill-me</a> — challenge your designs</li>
+			</ul>
+			<p>
+				<a href="/catalog/" class="btn-open">Browse the full catalog</a>
+			</p>
+
+			<h2>Contributing</h2>
+			<p>
+				Open Kata is open source. Add your own skills and rules,
+				improve existing ones, or help build the dojo.
+			</p>
+			<p>
+				<a href="https://github.com/tovrleaf/openkata" target="_blank" rel="noopener" class="btn-open">View on GitHub</a>
+			</p>
+			<script src="/static/js/getting-started.js"></script>
+		</main>
+
+		<footer class="footer">
+			© 2026 OPENKATA.dev // License: <a href="https://github.com/tovrleaf/openkata/blob/main/LICENSE" target="_blank" rel="noopener">MIT</a>
+		</footer>
+	}
+}
