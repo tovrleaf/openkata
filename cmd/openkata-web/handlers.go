@@ -1488,6 +1488,7 @@ func handleStats(w http.ResponseWriter, r *http.Request) {
 	typeCounts := make(map[string]int)
 	clientCounts := make(map[string]int)
 	countryCounts := make(map[string]int)
+	sourceCounts := make(map[string]int)
 
 	for _, ev := range events {
 		artifactCounts[ev.Artifact]++
@@ -1500,6 +1501,9 @@ func handleStats(w http.ResponseWriter, r *http.Request) {
 		}
 		if ev.Country != "" {
 			countryCounts[ev.Country]++
+		}
+		if ev.Source != "" {
+			sourceCounts[ev.Source]++
 		}
 	}
 
@@ -1527,6 +1531,11 @@ func handleStats(w http.ResponseWriter, r *http.Request) {
 		data.Countries = append(data.Countries, templates.CountryStats{Country: country, Downloads: count})
 	}
 	sort.Slice(data.Countries, func(i, j int) bool { return data.Countries[i].Downloads > data.Countries[j].Downloads })
+
+	for source, count := range sourceCounts {
+		data.Sources = append(data.Sources, templates.SourceStats{Source: source, Downloads: count})
+	}
+	sort.Slice(data.Sources, func(i, j int) bool { return data.Sources[i].Downloads > data.Sources[j].Downloads })
 
 	// Page metrics
 	if metricsData, err := os.ReadFile(".local/stats/page-metrics.json"); err == nil {

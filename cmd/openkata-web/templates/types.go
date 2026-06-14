@@ -38,6 +38,7 @@ type StatsData struct {
 	Types          []TypeStats
 	Clients        []ClientStats
 	Countries      []CountryStats
+	Sources        []SourceStats
 	PageLoads      int
 	PagePaths      []PathStats
 	Events         []DownloadEvent
@@ -72,6 +73,11 @@ type ClientStats struct {
 
 type CountryStats struct {
 	Country   string
+	Downloads int
+}
+
+type SourceStats struct {
+	Source    string
 	Downloads int
 }
 

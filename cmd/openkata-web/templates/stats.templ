@@ -74,6 +74,26 @@ templ Stats(data StatsData) {
 				</section>
 
 				<section>
+					<h2>Per Source</h2>
+					<table>
+						<thead>
+							<tr>
+								<th>Source</th>
+								<th>Downloads</th>
+							</tr>
+						</thead>
+						<tbody>
+							for _, s := range data.Sources {
+								<tr>
+									<td><code>{ s.Source }</code></td>
+									<td>{ fmt.Sprintf("%d", s.Downloads) }</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</section>
+
+				<section>
 					<h2>Per Client</h2>
 					<table>
 						<thead>
