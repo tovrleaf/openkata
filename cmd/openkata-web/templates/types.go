@@ -30,3 +30,25 @@ type ArtifactDetail struct {
 	Prev            string // name of previous artifact (empty if first)
 	Next            string // name of next artifact (empty if last)
 }
+
+type StatsData struct {
+	TotalDownloads int
+	Artifacts      []ArtifactDownloads
+	Clients        []ClientDownloads
+	Countries      []CountryDownloads
+}
+
+type ArtifactDownloads struct {
+	Name      string
+	Downloads int
+}
+
+type ClientDownloads struct {
+	Client    string
+	Downloads int
+}
+
+type CountryDownloads struct {
+	Country   string
+	Downloads int
+}

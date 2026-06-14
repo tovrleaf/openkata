@@ -22,3 +22,7 @@ versions:
 .PHONY: badges
 badges: ## Update README badges with current counts
 	@./scripts/update-readme-badges.sh
+
+.PHONY: stats-fetch
+stats-fetch: ## Fetch analytics data to .local/stats/
+	@go run ./cmd/stats-fetch/

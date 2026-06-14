@@ -29,5 +29,6 @@ help: ## Show this help
 	@printf "  \033[36m%-16s\033[0m %s\n" "chat master" "Start Kiro chat with dojo-master agent"
 	@printf "  \033[36m%-16s\033[0m %s\n" "chat eval" "Start Kiro chat with kata-author for eval work"
 	@printf "  \033[36m%-16s\033[0m %s\n" "versions" "Generate versions.json from local files"
+	@printf "  \033[36m%-16s\033[0m %s\n" "stats-fetch" "Fetch analytics data to .local/stats/"
 	@printf "  \033[36m%-16s\033[0m %s\n" "deploy web" "Deploy web server to AWS Lambda"
 	@printf "  \033[36m%-16s\033[0m %s\n" "deploy mcp" "Deploy MCP server to AWS Lambda"
