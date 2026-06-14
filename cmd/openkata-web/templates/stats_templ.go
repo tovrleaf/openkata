@@ -52,7 +52,7 @@ func Stats(data StatsData) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if data.Empty {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<section><p>No data. Run <code>make stats-fetch</code> first.</p></section>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<section><p>No data. Run <code>make stats</code> first.</p></section>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
