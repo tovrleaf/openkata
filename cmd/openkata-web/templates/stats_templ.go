@@ -328,7 +328,7 @@ func Stats(data StatsData) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, " <section><h2>Downloads (Short Range)</h2><div class=\"chart-toggles\"><button class=\"tab active\" onclick=\"renderShortChart('day')\">Day</button> <button class=\"tab\" onclick=\"renderShortChart('week')\">Week</button> <button class=\"tab\" onclick=\"renderShortChart('month')\">Month</button></div><canvas id=\"chart-short\" height=\"200\"></canvas></section><section><h2>Downloads (Long Range)</h2><div class=\"chart-toggles\"><button class=\"tab active\" onclick=\"renderLongChart('month')\">Month</button> <button class=\"tab\" onclick=\"renderLongChart('quarter')\">Quarter</button> <button class=\"tab\" onclick=\"renderLongChart('year')\">Year</button></div><canvas id=\"chart-long\" height=\"200\"></canvas></section><section><h2>Page Loads per Day</h2><canvas id=\"chart-pages\" height=\"200\"></canvas></section><script>\n\t\t\t\t(function() {\n\t\t\t\t\tvar accent = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();\n\t\t\t\t\tvar surface = getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim();\n\t\t\t\t\tvar events = JSON.parse(document.getElementById('events-data').textContent || '[]');\n\t\t\t\t\tvar metrics = JSON.parse(document.getElementById('metrics-data').textContent || '[]');\n\n\t\t\t\t\tfunction groupBy(events, keyFn) {\n\t\t\t\t\t\tvar m = {};\n\t\t\t\t\t\tevents.forEach(function(ev) {\n\t\t\t\t\t\t\tvar k = keyFn(ev.timestamp);\n\t\t\t\t\t\t\tm[k] = (m[k] || 0) + 1;\n\t\t\t\t\t\t});\n\t\t\t\t\t\tvar keys = Object.keys(m).sort();\n\t\t\t\t\t\treturn { labels: keys, data: keys.map(function(k) { return m[k]; }) };\n\t\t\t\t\t}\n\n\t\t\t\t\tfunction toDay(ts) { return ts.slice(0, 10); }\n\t\t\t\t\tfunction toWeek(ts) {\n\t\t\t\t\t\tvar d = new Date(ts);\n\t\t\t\t\t\tvar jan1 = new Date(d.getFullYear(), 0, 1);\n\t\t\t\t\t\tvar week = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);\n\t\t\t\t\t\treturn d.getFullYear() + '-W' + String(week).padStart(2, '0');\n\t\t\t\t\t}\n\t\t\t\t\tfunction toMonth(ts) { return ts.slice(0, 7); }\n\t\t\t\t\tfunction toQuarter(ts) {\n\t\t\t\t\t\tvar m = parseInt(ts.slice(5, 7), 10);\n\t\t\t\t\t\treturn ts.slice(0, 4) + '-Q' + Math.ceil(m / 3);\n\t\t\t\t\t}\n\t\t\t\t\tfunction toYear(ts) { return ts.slice(0, 4); }\n\n\t\t\t\t\tvar fns = { day: toDay, week: toWeek, month: toMonth, quarter: toQuarter, year: toYear };\n\t\t\t\t\tvar shortChart = null, longChart = null;\n\n\t\t\t\t\tfunction makeChart(canvasId, grouped) {\n\t\t\t\t\t\treturn new Chart(document.getElementById(canvasId), {\n\t\t\t\t\t\t\ttype: 'line',\n\t\t\t\t\t\t\tdata: {\n\t\t\t\t\t\t\t\tlabels: grouped.labels,\n\t\t\t\t\t\t\t\tdatasets: [{ data: grouped.data, borderColor: accent, backgroundColor: surface, tension: 0.1 }]\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\toptions: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }\n\t\t\t\t\t\t});\n\t\t\t\t\t}\n\n\t\t\t\t\twindow.renderShortChart = function(gran) {\n\t\t\t\t\t\tif (shortChart) shortChart.destroy();\n\t\t\t\t\t\tshortChart = makeChart('chart-short', groupBy(events, fns[gran]));\n\t\t\t\t\t\tdocument.querySelectorAll('#chart-short').forEach(function(c) {\n\t\t\t\t\t\t\tc.parentElement.querySelectorAll('.tab').forEach(function(b) { b.classList.remove('active'); });\n\t\t\t\t\t\t});\n\t\t\t\t\t};\n\n\t\t\t\t\twindow.renderLongChart = function(gran) {\n\t\t\t\t\t\tif (longChart) longChart.destroy();\n\t\t\t\t\t\tlongChart = makeChart('chart-long', groupBy(events, fns[gran]));\n\t\t\t\t\t};\n\n\t\t\t\t\t// Initial render\n\t\t\t\t\tif (events.length) {\n\t\t\t\t\t\tshortChart = makeChart('chart-short', groupBy(events, toDay));\n\t\t\t\t\t\tlongChart = makeChart('chart-long', groupBy(events, toMonth));\n\t\t\t\t\t}\n\n\t\t\t\t\t// Page loads chart\n\t\t\t\t\tif (metrics.length) {\n\t\t\t\t\t\tvar labels = metrics.map(function(m) { return m.date; });\n\t\t\t\t\t\tvar values = metrics.map(function(m) { return m.invocations; });\n\t\t\t\t\t\tnew Chart(document.getElementById('chart-pages'), {\n\t\t\t\t\t\t\ttype: 'line',\n\t\t\t\t\t\t\tdata: {\n\t\t\t\t\t\t\t\tlabels: labels,\n\t\t\t\t\t\t\t\tdatasets: [{ data: values, borderColor: accent, backgroundColor: surface, tension: 0.1 }]\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\toptions: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }\n\t\t\t\t\t\t});\n\t\t\t\t\t}\n\t\t\t\t})();\n\t\t\t\t</script>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, " <section><h2>Downloads (Short Range)</h2><div class=\"tabs\"><button class=\"tab active\" onclick=\"renderShortChart('day')\">Day</button> <button class=\"tab\" onclick=\"renderShortChart('week')\">Week</button> <button class=\"tab\" onclick=\"renderShortChart('month')\">Month</button></div><canvas id=\"chart-short\" height=\"200\"></canvas></section><section><h2>Downloads (Long Range)</h2><div class=\"tabs\"><button class=\"tab active\" onclick=\"renderLongChart('month')\">Month</button> <button class=\"tab\" onclick=\"renderLongChart('quarter')\">Quarter</button> <button class=\"tab\" onclick=\"renderLongChart('year')\">Year</button></div><canvas id=\"chart-long\" height=\"200\"></canvas></section><section><h2>Page Loads per Day</h2><canvas id=\"chart-pages\" height=\"200\"></canvas></section><script>\n\t\t\t\t(function() {\n\t\t\t\t\tvar accent = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();\n\t\t\t\t\tvar surface = getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim();\n\t\t\t\t\tvar events = JSON.parse(document.getElementById('events-data').textContent || '[]');\n\t\t\t\t\tvar metrics = JSON.parse(document.getElementById('metrics-data').textContent || '[]');\n\n\t\t\t\t\tfunction groupBy(events, keyFn) {\n\t\t\t\t\t\tvar m = {};\n\t\t\t\t\t\tevents.forEach(function(ev) {\n\t\t\t\t\t\t\tvar k = keyFn(ev.timestamp);\n\t\t\t\t\t\t\tm[k] = (m[k] || 0) + 1;\n\t\t\t\t\t\t});\n\t\t\t\t\t\tvar keys = Object.keys(m).sort();\n\t\t\t\t\t\treturn { labels: keys, data: keys.map(function(k) { return m[k]; }) };\n\t\t\t\t\t}\n\n\t\t\t\t\tfunction toDay(ts) { return ts.slice(0, 10); }\n\t\t\t\t\tfunction toWeek(ts) {\n\t\t\t\t\t\tvar d = new Date(ts);\n\t\t\t\t\t\tvar jan1 = new Date(d.getFullYear(), 0, 1);\n\t\t\t\t\t\tvar week = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);\n\t\t\t\t\t\treturn d.getFullYear() + '-W' + String(week).padStart(2, '0');\n\t\t\t\t\t}\n\t\t\t\t\tfunction toMonth(ts) { return ts.slice(0, 7); }\n\t\t\t\t\tfunction toQuarter(ts) {\n\t\t\t\t\t\tvar m = parseInt(ts.slice(5, 7), 10);\n\t\t\t\t\t\treturn ts.slice(0, 4) + '-Q' + Math.ceil(m / 3);\n\t\t\t\t\t}\n\t\t\t\t\tfunction toYear(ts) { return ts.slice(0, 4); }\n\n\t\t\t\t\tvar fns = { day: toDay, week: toWeek, month: toMonth, quarter: toQuarter, year: toYear };\n\t\t\t\t\tvar shortChart = null, longChart = null;\n\n\t\t\t\t\tfunction makeChart(canvasId, grouped) {\n\t\t\t\t\t\treturn new Chart(document.getElementById(canvasId), {\n\t\t\t\t\t\t\ttype: 'line',\n\t\t\t\t\t\t\tdata: {\n\t\t\t\t\t\t\t\tlabels: grouped.labels,\n\t\t\t\t\t\t\t\tdatasets: [{ data: grouped.data, borderColor: accent, backgroundColor: surface, tension: 0.1 }]\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\toptions: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }\n\t\t\t\t\t\t});\n\t\t\t\t\t}\n\n\t\t\t\t\twindow.renderShortChart = function(gran) {\n\t\t\t\t\t\tif (shortChart) shortChart.destroy();\n\t\t\t\t\t\tshortChart = makeChart('chart-short', groupBy(events, fns[gran]));\n\t\t\t\t\t\tvar container = document.getElementById('chart-short').closest('section');\n\t\t\t\t\t\tcontainer.querySelectorAll('.tab').forEach(function(b) { b.classList.remove('active'); });\n\t\t\t\t\t\tevent.target.classList.add('active');\n\t\t\t\t\t};\n\n\t\t\t\t\twindow.renderLongChart = function(gran) {\n\t\t\t\t\t\tif (longChart) longChart.destroy();\n\t\t\t\t\t\tlongChart = makeChart('chart-long', groupBy(events, fns[gran]));\n\t\t\t\t\t\tvar container = document.getElementById('chart-long').closest('section');\n\t\t\t\t\t\tcontainer.querySelectorAll('.tab').forEach(function(b) { b.classList.remove('active'); });\n\t\t\t\t\t\tevent.target.classList.add('active');\n\t\t\t\t\t};\n\n\t\t\t\t\t// Initial render\n\t\t\t\t\tif (events.length) {\n\t\t\t\t\t\tshortChart = makeChart('chart-short', groupBy(events, toDay));\n\t\t\t\t\t\tlongChart = makeChart('chart-long', groupBy(events, toMonth));\n\t\t\t\t\t}\n\n\t\t\t\t\t// Page loads chart\n\t\t\t\t\tif (metrics.length) {\n\t\t\t\t\t\tvar labels = metrics.map(function(m) { return m.date; });\n\t\t\t\t\t\tvar values = metrics.map(function(m) { return m.invocations; });\n\t\t\t\t\t\tnew Chart(document.getElementById('chart-pages'), {\n\t\t\t\t\t\t\ttype: 'line',\n\t\t\t\t\t\t\tdata: {\n\t\t\t\t\t\t\t\tlabels: labels,\n\t\t\t\t\t\t\t\tdatasets: [{ data: values, borderColor: accent, backgroundColor: surface, tension: 0.1 }]\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\toptions: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }\n\t\t\t\t\t\t});\n\t\t\t\t\t}\n\t\t\t\t})();\n\t\t\t\t</script>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -375,7 +375,7 @@ func StatsDetail(data StatsDetailData) templ.Component {
 		var templ_7745c5c3_Var19 string
 		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(data.Artifact)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 262, Col: 21}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 265, Col: 21}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 		if templ_7745c5c3_Err != nil {
@@ -388,7 +388,7 @@ func StatsDetail(data StatsDetailData) templ.Component {
 		var templ_7745c5c3_Var20 string
 		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/stats/detail?artifact=%s", data.Artifact))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 266, Col: 68}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 269, Col: 68}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 		if templ_7745c5c3_Err != nil {
@@ -406,7 +406,7 @@ func StatsDetail(data StatsDetailData) templ.Component {
 			var templ_7745c5c3_Var21 string
 			templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(v)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 274, Col: 22}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 277, Col: 22}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 			if templ_7745c5c3_Err != nil {
@@ -429,7 +429,7 @@ func StatsDetail(data StatsDetailData) templ.Component {
 			var templ_7745c5c3_Var22 string
 			templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(v)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 274, Col: 60}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 277, Col: 60}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 			if templ_7745c5c3_Err != nil {
@@ -447,7 +447,7 @@ func StatsDetail(data StatsDetailData) templ.Component {
 		var templ_7745c5c3_Var23 string
 		templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d downloads", data.Total))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 277, Col: 72}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 280, Col: 72}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 		if templ_7745c5c3_Err != nil {
@@ -470,7 +470,7 @@ func StatsDetail(data StatsDetailData) templ.Component {
 				var templ_7745c5c3_Var24 string
 				templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(c.Client)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 286, Col: 30}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 289, Col: 30}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 				if templ_7745c5c3_Err != nil {
@@ -483,7 +483,7 @@ func StatsDetail(data StatsDetailData) templ.Component {
 				var templ_7745c5c3_Var25 string
 				templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", c.Downloads))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 286, Col: 80}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 289, Col: 80}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 				if templ_7745c5c3_Err != nil {
@@ -512,7 +512,7 @@ func StatsDetail(data StatsDetailData) templ.Component {
 				var templ_7745c5c3_Var26 string
 				templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(c.Country)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 298, Col: 25}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 301, Col: 25}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 				if templ_7745c5c3_Err != nil {
@@ -525,7 +525,7 @@ func StatsDetail(data StatsDetailData) templ.Component {
 				var templ_7745c5c3_Var27 string
 				templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", c.Downloads))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 298, Col: 68}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 301, Col: 68}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
 				if templ_7745c5c3_Err != nil {

@@ -146,7 +146,7 @@ templ Stats(data StatsData) {
 
 				<section>
 					<h2>Downloads (Short Range)</h2>
-					<div class="chart-toggles">
+					<div class="tabs">
 						<button class="tab active" onclick="renderShortChart('day')">Day</button>
 						<button class="tab" onclick="renderShortChart('week')">Week</button>
 						<button class="tab" onclick="renderShortChart('month')">Month</button>
@@ -156,7 +156,7 @@ templ Stats(data StatsData) {
 
 				<section>
 					<h2>Downloads (Long Range)</h2>
-					<div class="chart-toggles">
+					<div class="tabs">
 						<button class="tab active" onclick="renderLongChart('month')">Month</button>
 						<button class="tab" onclick="renderLongChart('quarter')">Quarter</button>
 						<button class="tab" onclick="renderLongChart('year')">Year</button>
@@ -217,14 +217,17 @@ templ Stats(data StatsData) {
 					window.renderShortChart = function(gran) {
 						if (shortChart) shortChart.destroy();
 						shortChart = makeChart('chart-short', groupBy(events, fns[gran]));
-						document.querySelectorAll('#chart-short').forEach(function(c) {
-							c.parentElement.querySelectorAll('.tab').forEach(function(b) { b.classList.remove('active'); });
-						});
+						var container = document.getElementById('chart-short').closest('section');
+						container.querySelectorAll('.tab').forEach(function(b) { b.classList.remove('active'); });
+						event.target.classList.add('active');
 					};
 
 					window.renderLongChart = function(gran) {
 						if (longChart) longChart.destroy();
 						longChart = makeChart('chart-long', groupBy(events, fns[gran]));
+						var container = document.getElementById('chart-long').closest('section');
+						container.querySelectorAll('.tab').forEach(function(b) { b.classList.remove('active'); });
+						event.target.classList.add('active');
 					};
 
 					// Initial render
