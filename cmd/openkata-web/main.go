@@ -60,6 +60,7 @@ func main() {
 	mux.HandleFunc("/getting-started/", handleGettingStarted)
 	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") == "" {
 		mux.HandleFunc("/design-system/", handleDesignSystem)
+		mux.HandleFunc("/stats/", handleStats)
 	}
 
 	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") != "" {

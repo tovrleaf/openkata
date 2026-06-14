@@ -32,23 +32,54 @@ type ArtifactDetail struct {
 }
 
 type StatsData struct {
+	Empty          bool
 	TotalDownloads int
-	Artifacts      []ArtifactDownloads
-	Clients        []ClientDownloads
-	Countries      []CountryDownloads
+	Artifacts      []ArtifactStats
+	Types          []TypeStats
+	Clients        []ClientStats
+	Countries      []CountryStats
+	PageLoads      int
+	PagePaths      []PathStats
+	Events         []DownloadEvent
 }
 
-type ArtifactDownloads struct {
+type ArtifactStats struct {
 	Name      string
+	Type      string
 	Downloads int
 }
 
-type ClientDownloads struct {
+type TypeStats struct {
+	Type      string
+	Downloads int
+}
+
+type ClientStats struct {
 	Client    string
 	Downloads int
 }
 
-type CountryDownloads struct {
+type CountryStats struct {
 	Country   string
 	Downloads int
+}
+
+type DailyMetric struct {
+	Date        string `json:"date"`
+	Invocations int    `json:"invocations"`
+}
+
+type PathStats struct {
+	Path  string
+	Type  string
+	Count int
+}
+
+type DownloadEvent struct {
+	Artifact  string `json:"artifact"`
+	Version   string `json:"version"`
+	Source    string `json:"source"`
+	Client    string `json:"client"`
+	Country   string `json:"country"`
+	Timestamp string `json:"timestamp"`
 }

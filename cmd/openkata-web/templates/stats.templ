@@ -1,0 +1,142 @@
+package templates
+
+import "fmt"
+
+templ Stats(data StatsData) {
+	@Layout("Download Statistics") {
+		@Nav()
+
+		<main>
+			<section>
+				<h1 class="cursor">Download Statistics</h1>
+				<p class="comment">Local-only analytics dashboard</p>
+			</section>
+
+			if data.Empty {
+				<section>
+					<p>No data. Run <code>make stats-fetch</code> first.</p>
+				</section>
+			} else {
+				<section>
+					<h2>Total Downloads</h2>
+					<p style="font-family: var(--font-mono); font-size: var(--font-size-xl);">
+						{ fmt.Sprintf("%d", data.TotalDownloads) }
+					</p>
+				</section>
+
+				<section>
+					<h2>Per Artifact</h2>
+					<table>
+						<thead>
+							<tr>
+								<th>Artifact</th>
+								<th>Type</th>
+								<th>Downloads</th>
+							</tr>
+						</thead>
+						<tbody>
+							for _, a := range data.Artifacts {
+								<tr>
+									<td><code>{ a.Name }</code></td>
+									<td>{ a.Type }</td>
+									<td>{ fmt.Sprintf("%d", a.Downloads) }</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</section>
+
+				<section>
+					<h2>Per Type</h2>
+					<table>
+						<thead>
+							<tr>
+								<th>Type</th>
+								<th>Downloads</th>
+							</tr>
+						</thead>
+						<tbody>
+							for _, t := range data.Types {
+								<tr>
+									<td>{ t.Type }</td>
+									<td>{ fmt.Sprintf("%d", t.Downloads) }</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</section>
+
+				<section>
+					<h2>Per Client</h2>
+					<table>
+						<thead>
+							<tr>
+								<th>Client</th>
+								<th>Downloads</th>
+							</tr>
+						</thead>
+						<tbody>
+							for _, c := range data.Clients {
+								<tr>
+									<td><code>{ c.Client }</code></td>
+									<td>{ fmt.Sprintf("%d", c.Downloads) }</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</section>
+
+				<section>
+					<h2>Per Country</h2>
+					<table>
+						<thead>
+							<tr>
+								<th>Country</th>
+								<th>Downloads</th>
+							</tr>
+						</thead>
+						<tbody>
+							for _, c := range data.Countries {
+								<tr>
+									<td>{ c.Country }</td>
+									<td>{ fmt.Sprintf("%d", c.Downloads) }</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</section>
+
+				<section>
+					<h2>Page Views</h2>
+					<p style="font-family: var(--font-mono); font-size: var(--font-size-xl);">
+						{ fmt.Sprintf("%d", data.PageLoads) } total
+					</p>
+					if len(data.PagePaths) > 0 {
+						<table>
+							<thead>
+								<tr>
+									<th>Path</th>
+									<th>Type</th>
+									<th>Requests</th>
+								</tr>
+							</thead>
+							<tbody>
+								for _, p := range data.PagePaths {
+									<tr>
+										<td><code>{ p.Path }</code></td>
+										<td>{ p.Type }</td>
+										<td>{ fmt.Sprintf("%d", p.Count) }</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					}
+				</section>
+			}
+		</main>
+
+		<footer class="footer">
+			© 2026 OPENKATA.dev // License: <a href="https://github.com/tovrleaf/openkata/blob/main/LICENSE" target="_blank" rel="noopener">MIT</a>
+		</footer>
+	}
+}

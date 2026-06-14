@@ -1463,3 +1463,104 @@ func loadProfileDetailVersion(ctx context.Context, name, version string) *templa
 	}
 	return loadArtifactDetailS3(ctx, "profiles", name, version, name+".md")
 }
+
+func handleStats(w http.ResponseWriter, r *http.Request) {
+	data := templates.StatsData{}
+
+	eventsData, err := os.ReadFile(".local/stats/download-events.json")
+	if err != nil {
+		data.Empty = true
+		templates.Stats(data).Render(r.Context(), w)
+		return
+	}
+
+	var events []templates.DownloadEvent
+	if err := json.Unmarshal(eventsData, &events); err != nil {
+		data.Empty = true
+		templates.Stats(data).Render(r.Context(), w)
+		return
+	}
+
+	data.Events = events
+	data.TotalDownloads = len(events)
+
+	artifactCounts := make(map[string]int)
+	typeCounts := make(map[string]int)
+	clientCounts := make(map[string]int)
+	countryCounts := make(map[string]int)
+
+	for _, ev := range events {
+		artifactCounts[ev.Artifact]++
+		parts := strings.SplitN(ev.Artifact, "/", 2)
+		if len(parts) > 0 {
+			typeCounts[parts[0]]++
+		}
+		if ev.Client != "" {
+			clientCounts[ev.Client]++
+		}
+		if ev.Country != "" {
+			countryCounts[ev.Country]++
+		}
+	}
+
+	for name, count := range artifactCounts {
+		artType := ""
+		parts := strings.SplitN(name, "/", 2)
+		if len(parts) > 0 {
+			artType = parts[0]
+		}
+		data.Artifacts = append(data.Artifacts, templates.ArtifactStats{Name: name, Type: artType, Downloads: count})
+	}
+	sort.Slice(data.Artifacts, func(i, j int) bool { return data.Artifacts[i].Downloads > data.Artifacts[j].Downloads })
+
+	for t, count := range typeCounts {
+		data.Types = append(data.Types, templates.TypeStats{Type: t, Downloads: count})
+	}
+	sort.Slice(data.Types, func(i, j int) bool { return data.Types[i].Downloads > data.Types[j].Downloads })
+
+	for client, count := range clientCounts {
+		data.Clients = append(data.Clients, templates.ClientStats{Client: client, Downloads: count})
+	}
+	sort.Slice(data.Clients, func(i, j int) bool { return data.Clients[i].Downloads > data.Clients[j].Downloads })
+
+	for country, count := range countryCounts {
+		data.Countries = append(data.Countries, templates.CountryStats{Country: country, Downloads: count})
+	}
+	sort.Slice(data.Countries, func(i, j int) bool { return data.Countries[i].Downloads > data.Countries[j].Downloads })
+
+	// Page metrics
+	if metricsData, err := os.ReadFile(".local/stats/page-metrics.json"); err == nil {
+		var metrics []templates.DailyMetric
+		if err := json.Unmarshal(metricsData, &metrics); err == nil {
+			for _, m := range metrics {
+				data.PageLoads += m.Invocations
+			}
+		}
+	}
+
+	// Page paths
+	if pathsData, err := os.ReadFile(".local/stats/page-paths.json"); err == nil {
+		type rawPath struct {
+			Date  string `json:"date"`
+			Path  string `json:"path"`
+			Count int    `json:"count"`
+		}
+		var rawPaths []rawPath
+		if err := json.Unmarshal(pathsData, &rawPaths); err == nil {
+			pathAgg := make(map[string]int)
+			for _, rp := range rawPaths {
+				pathAgg[rp.Path] += rp.Count
+			}
+			for path, count := range pathAgg {
+				pType := "page"
+				if strings.Contains(path, "/archive") {
+					pType = "download"
+				}
+				data.PagePaths = append(data.PagePaths, templates.PathStats{Path: path, Type: pType, Count: count})
+			}
+			sort.Slice(data.PagePaths, func(i, j int) bool { return data.PagePaths[i].Count > data.PagePaths[j].Count })
+		}
+	}
+
+	templates.Stats(data).Render(r.Context(), w)
+}
