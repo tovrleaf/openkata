@@ -45,7 +45,7 @@ func Catalog() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <main id=\"catalog-page\"><section class=\"hero hero--kanji\"><span class=\"hero-kanji\">探</span><div class=\"hero-text\"><h1 class=\"cursor\">Catalog</h1><p class=\"comment\">Search skills, rules, and profiles.</p></div></section><div class=\"catalog-search\"><input type=\"text\" id=\"catalog-input\" class=\"catalog-input\" placeholder=\"Search by name, description, or tag...\" autocomplete=\"off\"></div><div id=\"catalog-results\" class=\"catalog-results\"></div></main><footer class=\"footer\">© 2026 OPENKATA.dev // License: <a href=\"https://github.com/tovrleaf/openkata/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT</a></footer>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <main id=\"catalog-page\"><section class=\"hero hero--kanji\"><span class=\"hero-kanji\">探</span><div class=\"hero-text\"><h1 class=\"cursor\">Catalog</h1><p class=\"comment\">Search skills, rules, and profiles.</p></div></section><div class=\"catalog-search\"><input type=\"text\" id=\"catalog-input\" class=\"catalog-input\" placeholder=\"Search skills, rules, tags...\" autocomplete=\"off\"></div><div id=\"catalog-results\" class=\"catalog-results\"></div></main><footer class=\"footer\">© 2026 OPENKATA.dev // License: <a href=\"https://github.com/tovrleaf/openkata/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT</a></footer>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -64,7 +64,8 @@
         "dynamodb:DescribeTable",
         "dynamodb:Scan",
         "dynamodb:Query",
-        "dynamodb:GetItem"
+        "dynamodb:GetItem",
+        "dynamodb:PutItem"
       ],
       "Resource": [
         "arn:aws:dynamodb:eu-north-1:*:table/openkata-downloads",
