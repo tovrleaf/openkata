@@ -41,6 +41,17 @@ type StatsData struct {
 	PageLoads      int
 	PagePaths      []PathStats
 	Events         []DownloadEvent
+	PageMetrics    []DailyMetric
+}
+
+type StatsDetailData struct {
+	Artifact  string
+	Version   string
+	Versions  []string
+	Total     int
+	Clients   []ClientStats
+	Countries []CountryStats
+	Events    []DownloadEvent
 }
 
 type ArtifactStats struct {

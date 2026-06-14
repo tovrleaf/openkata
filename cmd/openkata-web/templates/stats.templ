@@ -36,7 +36,12 @@ templ Stats(data StatsData) {
 						</thead>
 						<tbody>
 							for _, a := range data.Artifacts {
-								<tr>
+								<tr
+									style="cursor: pointer;"
+									hx-get={ fmt.Sprintf("/stats/detail?artifact=%s", a.Name) }
+									hx-target="#stats-detail"
+									hx-swap="innerHTML"
+								>
 									<td><code>{ a.Name }</code></td>
 									<td>{ a.Type }</td>
 									<td>{ fmt.Sprintf("%d", a.Downloads) }</td>
@@ -45,6 +50,8 @@ templ Stats(data StatsData) {
 						</tbody>
 					</table>
 				</section>
+
+				<div id="stats-detail"></div>
 
 				<section>
 					<h2>Per Type</h2>
@@ -132,6 +139,115 @@ templ Stats(data StatsData) {
 						</table>
 					}
 				</section>
+
+				<script src="/static/js-local/chart.min.js"></script>
+				@templ.JSONScript("events-data", data.Events)
+				@templ.JSONScript("metrics-data", data.PageMetrics)
+
+				<section>
+					<h2>Downloads (Short Range)</h2>
+					<div class="chart-toggles">
+						<button class="tab active" onclick="renderShortChart('day')">Day</button>
+						<button class="tab" onclick="renderShortChart('week')">Week</button>
+						<button class="tab" onclick="renderShortChart('month')">Month</button>
+					</div>
+					<canvas id="chart-short" height="200"></canvas>
+				</section>
+
+				<section>
+					<h2>Downloads (Long Range)</h2>
+					<div class="chart-toggles">
+						<button class="tab active" onclick="renderLongChart('month')">Month</button>
+						<button class="tab" onclick="renderLongChart('quarter')">Quarter</button>
+						<button class="tab" onclick="renderLongChart('year')">Year</button>
+					</div>
+					<canvas id="chart-long" height="200"></canvas>
+				</section>
+
+				<section>
+					<h2>Page Loads per Day</h2>
+					<canvas id="chart-pages" height="200"></canvas>
+				</section>
+
+				<script>
+				(function() {
+					var accent = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();
+					var surface = getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim();
+					var events = JSON.parse(document.getElementById('events-data').textContent || '[]');
+					var metrics = JSON.parse(document.getElementById('metrics-data').textContent || '[]');
+
+					function groupBy(events, keyFn) {
+						var m = {};
+						events.forEach(function(ev) {
+							var k = keyFn(ev.timestamp);
+							m[k] = (m[k] || 0) + 1;
+						});
+						var keys = Object.keys(m).sort();
+						return { labels: keys, data: keys.map(function(k) { return m[k]; }) };
+					}
+
+					function toDay(ts) { return ts.slice(0, 10); }
+					function toWeek(ts) {
+						var d = new Date(ts);
+						var jan1 = new Date(d.getFullYear(), 0, 1);
+						var week = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+						return d.getFullYear() + '-W' + String(week).padStart(2, '0');
+					}
+					function toMonth(ts) { return ts.slice(0, 7); }
+					function toQuarter(ts) {
+						var m = parseInt(ts.slice(5, 7), 10);
+						return ts.slice(0, 4) + '-Q' + Math.ceil(m / 3);
+					}
+					function toYear(ts) { return ts.slice(0, 4); }
+
+					var fns = { day: toDay, week: toWeek, month: toMonth, quarter: toQuarter, year: toYear };
+					var shortChart = null, longChart = null;
+
+					function makeChart(canvasId, grouped) {
+						return new Chart(document.getElementById(canvasId), {
+							type: 'line',
+							data: {
+								labels: grouped.labels,
+								datasets: [{ data: grouped.data, borderColor: accent, backgroundColor: surface, tension: 0.1 }]
+							},
+							options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+						});
+					}
+
+					window.renderShortChart = function(gran) {
+						if (shortChart) shortChart.destroy();
+						shortChart = makeChart('chart-short', groupBy(events, fns[gran]));
+						document.querySelectorAll('#chart-short').forEach(function(c) {
+							c.parentElement.querySelectorAll('.tab').forEach(function(b) { b.classList.remove('active'); });
+						});
+					};
+
+					window.renderLongChart = function(gran) {
+						if (longChart) longChart.destroy();
+						longChart = makeChart('chart-long', groupBy(events, fns[gran]));
+					};
+
+					// Initial render
+					if (events.length) {
+						shortChart = makeChart('chart-short', groupBy(events, toDay));
+						longChart = makeChart('chart-long', groupBy(events, toMonth));
+					}
+
+					// Page loads chart
+					if (metrics.length) {
+						var labels = metrics.map(function(m) { return m.date; });
+						var values = metrics.map(function(m) { return m.invocations; });
+						new Chart(document.getElementById('chart-pages'), {
+							type: 'line',
+							data: {
+								labels: labels,
+								datasets: [{ data: values, borderColor: accent, backgroundColor: surface, tension: 0.1 }]
+							},
+							options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+						});
+					}
+				})();
+				</script>
 			}
 		</main>
 
@@ -139,4 +255,69 @@ templ Stats(data StatsData) {
 			© 2026 OPENKATA.dev // License: <a href="https://github.com/tovrleaf/openkata/blob/main/LICENSE" target="_blank" rel="noopener">MIT</a>
 		</footer>
 	}
+}
+
+templ StatsDetail(data StatsDetailData) {
+	<section>
+		<h2>{ data.Artifact }</h2>
+		<div style="display: flex; align-items: center; gap: var(--space-md); margin-bottom: var(--space-md);">
+			<select
+				class="version-select"
+				hx-get={ fmt.Sprintf("/stats/detail?artifact=%s", data.Artifact) }
+				hx-target="#stats-detail"
+				hx-swap="innerHTML"
+				hx-include="this"
+				name="version"
+			>
+				<option value="">All versions</option>
+				for _, v := range data.Versions {
+					<option value={ v } selected?={ v == data.Version }>{ v }</option>
+				}
+			</select>
+			<span class="artifact-meta">{ fmt.Sprintf("%d downloads", data.Total) }</span>
+		</div>
+		if len(data.Clients) > 0 {
+			<table>
+				<thead>
+					<tr><th>Client</th><th>Downloads</th></tr>
+				</thead>
+				<tbody>
+					for _, c := range data.Clients {
+						<tr><td><code>{ c.Client }</code></td><td>{ fmt.Sprintf("%d", c.Downloads) }</td></tr>
+					}
+				</tbody>
+			</table>
+		}
+		if len(data.Countries) > 0 {
+			<table>
+				<thead>
+					<tr><th>Country</th><th>Downloads</th></tr>
+				</thead>
+				<tbody>
+					for _, c := range data.Countries {
+						<tr><td>{ c.Country }</td><td>{ fmt.Sprintf("%d", c.Downloads) }</td></tr>
+					}
+				</tbody>
+			</table>
+		}
+		@templ.JSONScript("detail-events-data", data.Events)
+		<canvas id="chart-detail" height="150"></canvas>
+		<script>
+		(function() {
+			var accent = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();
+			var surface = getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim();
+			var events = JSON.parse(document.getElementById('detail-events-data').textContent || '[]');
+			if (events.length) {
+				var m = {};
+				events.forEach(function(ev) { var k = ev.timestamp.slice(0, 10); m[k] = (m[k]||0)+1; });
+				var keys = Object.keys(m).sort();
+				new Chart(document.getElementById('chart-detail'), {
+					type: 'line',
+					data: { labels: keys, datasets: [{ data: keys.map(function(k){return m[k];}), borderColor: accent, backgroundColor: surface, tension: 0.1 }] },
+					options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+				});
+			}
+		})();
+		</script>
+	</section>
 }
