@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- Use --workspace openkata flag on tessl import to prevent local/ prefix
+
 ## 1.0.0 — 2026-04-28
 
 ### Added
