@@ -3,7 +3,7 @@
 ## Tasks
 
 ### 1. Create build workflow
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: GitHub Actions workflow that runs on PR: install
   Go, install templ, generate templates, build binary
 - **Boundary**: `.github/workflows/build.yaml`
@@ -12,7 +12,7 @@
   project on PR
 
 ### 2. Create deploy workflow
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: GitHub Actions workflow that runs on merge to
   main: build binary, assume OIDC role, push to Lambda
 - **Boundary**: `.github/workflows/deploy.yaml`
@@ -21,7 +21,7 @@
   deploy steps
 
 ### 3. Document OIDC setup instructions
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Step-by-step instructions for creating the AWS
   OIDC provider and IAM role in the console, plus GitHub
   repo settings for branch protection
