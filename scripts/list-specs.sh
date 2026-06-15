@@ -10,6 +10,9 @@ for dir in specs/[0-9]*/; do
   if [[ -f "${spec}" ]]; then
     status="$(grep -m1 '^status:' "${spec}" | sed 's/status: *//')"
     title="$(grep -m1 '^# ' "${spec}" | sed 's/^# //')"
+  elif [[ -f "${dir}brief.md" ]]; then
+    status="$(grep -m1 '^status:' "${dir}brief.md" | sed 's/status: *//')"
+    title="$(grep -m1 '^# ' "${dir}brief.md" | sed 's/^# //')"
   else
     status="—"
     title="(no spec.md)"
