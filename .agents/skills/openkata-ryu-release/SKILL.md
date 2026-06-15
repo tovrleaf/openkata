@@ -133,3 +133,7 @@ Old git tags are preserved — old S3 artifacts are deleted.
   IAM trust policy doesn't allow tag-triggered workflows
   (use `gh workflow run publish.yaml -f tag=...` as
   workaround)
+- NEVER touch `.tessl-plugin/plugin.json` version during
+  release — it is Tessl-internal and independent of our
+  versioning (ADR 0006). A difference between SKILL.md
+  version and plugin.json version is expected, not a bug.
