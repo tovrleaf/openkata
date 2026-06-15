@@ -51,7 +51,10 @@ expected output given a realistic task.
    - `inputs/` — Optional fixture files
 
 6. **Verify** — Confirm all criteria weights sum to exactly
-   100 per scenario.
+   100 per scenario. Run the validation script:
+   ```bash
+   ./scripts/check-eval-weights.sh skills/<name>
+   ```
 
 7. **Report** — List the scenarios created with descriptions.
 
