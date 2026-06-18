@@ -30,7 +30,7 @@
   install, versions)
 
 ### 4. Add tags parsing
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Parse `metadata.tags` from skill/rule metadata
 - **Boundary**: `cmd/openkata-mcp/`
 - **Depends**: 3
@@ -38,7 +38,7 @@
   responses
 
 ### 5. Web download routes
-- **Status**: In Progress
+- **Status**: Done
 - **Goal**: Archive download handler with DynamoDB counter
   increment
 - **Boundary**: `cmd/openkata-web/handlers.go`
@@ -47,7 +47,7 @@
   increments download count
 
 ### 6. Deploy and verify
-- **Status**: In Progress
+- **Status**: Done
 - **Goal**: Deploy MCP Lambda, create deploy workflow,
   verify all tools end-to-end
 - **Boundary**: `.github/workflows/deploy-mcp.yaml`
@@ -60,3 +60,6 @@
 - [2026-05-10] Tasks 1-3 completed. Infrastructure created,
   publish workflow working, MCP server deployed and verified
   via curl.
+- [2026-06-18] Tasks 4-6 confirmed complete. Tags parsing
+  live in MCP server, archive routes serving downloads with
+  analytics, deploy workflow running on main merge.
