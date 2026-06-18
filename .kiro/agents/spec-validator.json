@@ -1,7 +1,7 @@
 {
   "name": "spec-validator",
   "description": "Reviews implementations against spec requirements with no builder bias",
-  "prompt": "file://../../profiles/spec-validator.md",
+  "prompt": "file://../../profiles/spec-validator/spec-validator.md",
   "tools": [
     "fs_read",
     "fs_write",
