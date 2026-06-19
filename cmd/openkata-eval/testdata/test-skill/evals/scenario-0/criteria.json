@@ -1,0 +1,8 @@
+{
+  "context": "Test context",
+  "type": "weighted_checklist",
+  "checklist": [
+    {"name": "criterion-a", "description": "Does A", "max_score": 10},
+    {"name": "criterion-b", "description": "Does B", "max_score": 5}
+  ]
+}
