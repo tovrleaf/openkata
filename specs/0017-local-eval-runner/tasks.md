@@ -3,7 +3,7 @@
 ## Tasks
 
 ### 1. CLI skeleton and config loading
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: New binary that parses CLI args, loads
   config from file/env/flags, validates a skill path
   argument, discovers scenario directories, reads
@@ -21,7 +21,7 @@
 - **Verify**: `go build -o bin/openkata-eval ./cmd/openkata-eval/`
 
 ### 2. Completer interface and kiro-cli backend
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Define `Completer` interface and implement
   kiro-cli backend that shells out to
   `kiro-cli chat --model X --no-interactive "prompt"`,
@@ -38,7 +38,7 @@
 - **Verify**: `go test ./cmd/openkata-eval/...`
 
 ### 3. Agent prompt construction
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Build agent prompt from skill context:
   SKILL.md + references/ (minus ACKNOWLEDGMENTS.md)
   + scripts/ + assets/. Append task.md + inputs/ as
@@ -55,7 +55,7 @@
 - **Verify**: `go test ./cmd/openkata-eval/...`
 
 ### 4. Judge call and verdict parsing
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Build judge system prompt, send agent
   response (text + diff for sandboxed) + criteria,
   parse structured JSON verdict, retry once on parse
@@ -72,7 +72,7 @@
 - **Verify**: `go test ./cmd/openkata-eval/...`
 
 ### 5. Scoring, threshold, and exit logic
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Compute per-scenario and overall scores.
   Full skill mode: exit 1 if below threshold. Single
   scenario mode: always exit 0 (debug tool).
@@ -85,7 +85,7 @@
 - **Verify**: `go test ./cmd/openkata-eval/...`
 
 ### 6. Terminal output formatting
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Print colored terminal report with
   per-criterion results, scenario scores, and overall
   pass/fail with threshold
@@ -97,7 +97,7 @@
 - **Verify**: `go build -o bin/openkata-eval ./cmd/openkata-eval/`
 
 ### 7. JSON output file
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: When `--output` flag is set, write results
   to a JSON file matching the spec schema
 - **Boundary**: `cmd/openkata-eval/output.go`,
@@ -109,7 +109,7 @@
 - **Verify**: `go test ./cmd/openkata-eval/...`
 
 ### 8. Docker sandbox orchestration
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Implement container lifecycle: start from
   eval image, mount kiro-cli auth read-only, copy
   skill + scenario files in, configure network mode
@@ -129,7 +129,7 @@
 - **Verify**: `go test ./cmd/openkata-eval/...`
 
 ### 9. Workspace diff for sandboxed runs
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Snapshot workspace before agent runs,
   compare after. Produce diff summary: added,
   modified, deleted, unchanged files. Include full
@@ -144,7 +144,7 @@
 - **Verify**: `go test ./cmd/openkata-eval/...`
 
 ### 10. Parallel execution
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Run scenarios in parallel using goroutines
   (text-only) or concurrent containers (sandboxed).
   Configurable concurrency (default: 2). Collect
@@ -160,7 +160,7 @@
 - **Verify**: `go test -race ./cmd/openkata-eval/...`
 
 ### 11. Dockerfile for eval environment
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Create `Dockerfile.eval` with kiro-cli,
   git, bash, jq, and minimal tooling. Add Makefile
   target to build the image.
@@ -173,7 +173,7 @@
 - **Verify**: `docker run --rm openkata-eval kiro-cli --version`
 
 ### 12. HTTP backend (Ollama/Bedrock)
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Implement HTTP-based Completer that calls
   OpenAI-compatible chat completions endpoint. Handles
   base_url, api_key, model config, and timeouts.
@@ -186,7 +186,7 @@
 - **Verify**: `go test ./cmd/openkata-eval/...`
 
 ### 13. Makefile target
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Add `eval-local` target to Makefile
 - **Boundary**: `mk/dev.mk` or `Makefile`
 - **Key files**: `mk/dev.mk` (existing targets)
@@ -196,7 +196,7 @@
 - **Verify**: `make -n eval-local`
 
 ### 14. End-to-end integration test
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Test full pipeline: config → agent prompt
   → judge → scoring → output using a mock Completer
   and testdata scenario. Cover both sandbox:true
@@ -211,3 +211,13 @@
 - **Verify**: `go test -race ./cmd/openkata-eval/...`
 
 ## Progress Log
+
+- 2026-06-19: Tasks 1-14 implemented. CLI skeleton, config
+  loading, completer interface (kiro + HTTP), agent prompt
+  builder, judge with retry/sanity check, scoring, terminal
+  + JSON output, parallel runner, Docker sandbox with
+  workspace diff, Dockerfile, Makefile targets, and
+  integration tests. Validation found 7 gaps (sandbox not
+  wired, HTTP URL bug, missing availability checks, direct
+  mode agent config, timeout not configurable, dead code).
+  All fixed and verified.
