@@ -14,6 +14,7 @@ require (
 	github.com/awslabs/aws-lambda-go-api-proxy v0.16.2
 	github.com/mark3labs/mcp-go v0.47.1
 	github.com/yuin/goldmark v1.8.2
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
