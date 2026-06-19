@@ -1,0 +1,7 @@
+FROM ubuntu:24.04
+RUN apt-get update && apt-get install -y \
+    curl git bash jq && \
+    rm -rf /var/lib/apt/lists/*
+# NOTE: Install kiro-cli manually or mount from host.
+# The binary must be available in PATH inside the container.
+WORKDIR /workspace
