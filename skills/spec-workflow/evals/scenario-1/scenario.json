@@ -1,1 +1,1 @@
-{ "description": "tasks.md creation from existing spec", "include": ["./inputs"] }
+{ "description": "tasks.md creation from existing spec", "include": ["./inputs"], "sandbox": false }
