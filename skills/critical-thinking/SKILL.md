@@ -10,6 +10,7 @@ description: >
   critical", "devil's advocate", or wants the strongest
   counterargument to their thinking.
 metadata:
+  version: "1.0.0"
   tags: "category:review, category:architecture"
 ---
 
