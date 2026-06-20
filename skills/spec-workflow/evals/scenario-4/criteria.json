@@ -1,0 +1,36 @@
+{
+  "context": "Tests whether the agent respects spec freeze and task boundaries during implementation phase",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "does-not-modify-spec",
+      "description": "Agent explicitly states it will NOT modify spec.md because it is frozen (status: Implementing)",
+      "max_score": 20
+    },
+    {
+      "name": "notes-in-progress-log",
+      "description": "Agent says it will note the new requirement in the progress log for a follow-up spec",
+      "max_score": 20
+    },
+    {
+      "name": "does-not-expand-task-scope",
+      "description": "Agent states it will NOT add full-text indexing to the current task or any existing task",
+      "max_score": 20
+    },
+    {
+      "name": "explains-why-to-user",
+      "description": "Agent explains to the user WHY it cannot add this now (spec is frozen, scope creep, follow-up spec needed)",
+      "max_score": 15
+    },
+    {
+      "name": "suggests-follow-up-spec",
+      "description": "Agent suggests creating a separate follow-up spec for the full-text indexing feature",
+      "max_score": 15
+    },
+    {
+      "name": "continues-current-task",
+      "description": "Agent indicates it will continue with the current task as scoped, not pause indefinitely",
+      "max_score": 10
+    }
+  ]
+}
