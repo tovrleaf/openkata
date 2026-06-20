@@ -99,22 +99,33 @@ func (k *KiroCompleter) Complete(system, user string) (string, error) {
 		if ctx.Err() == context.DeadlineExceeded {
 			return "", fmt.Errorf("kiro-cli timed out after %s", k.Timeout)
 		}
+		if exitErr, ok := err.(*exec.ExitError); ok && len(exitErr.Stderr) > 0 {
+			return "", fmt.Errorf("kiro-cli failed: %w\nstderr: %s", err, exitErr.Stderr)
+		}
 		return "", fmt.Errorf("kiro-cli failed: %w", err)
+	}
+
+	if len(out) == 0 {
+		return "", fmt.Errorf("kiro-cli returned empty response")
 	}
 
 	return cleanKiroOutput(string(out)), nil
 }
 
-// cleanKiroOutput strips ANSI codes and header lines from kiro-cli output.
+// cleanKiroOutput strips ANSI codes, header lines, and markdown fences from kiro-cli output.
 func cleanKiroOutput(raw string) string {
 	// Strip ANSI escape sequences
 	cleaned := stripANSI(raw)
 
-	// Remove header lines starting with "> "
+	// Remove header lines starting with "> " and markdown code fences
 	lines := strings.Split(cleaned, "\n")
 	var result []string
 	for _, line := range lines {
 		if strings.HasPrefix(line, "> ") {
+			continue
+		}
+		trimmed := strings.TrimSpace(line)
+		if strings.HasPrefix(trimmed, "```") {
 			continue
 		}
 		result = append(result, line)

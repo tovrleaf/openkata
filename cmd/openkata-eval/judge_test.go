@@ -62,6 +62,11 @@ func TestParseJudgeResponse(t *testing.T) {
 			raw:  `[{"name": "a", "pass": true, "reason": "x"}, {"name": "b", "pass": false, "reason": "y"}]`,
 			want: 2,
 		},
+		{
+			name: "wrapped in markdown code fences",
+			raw:  "```json\n[{\"name\": \"a\", \"pass\": true, \"reason\": \"ok\"}]\n```",
+			want: 1,
+		},
 	}
 
 	for _, tt := range tests {

@@ -76,6 +76,11 @@ func TestCleanKiroOutput(t *testing.T) {
 			in:   "> info\nfirst\n> more info\nsecond",
 			want: "first\nsecond",
 		},
+		{
+			name: "strips markdown code fences",
+			in:   "```json\n[{\"name\": \"a\"}]\n```",
+			want: "[{\"name\": \"a\"}]",
+		},
 	}
 
 	for _, tt := range tests {

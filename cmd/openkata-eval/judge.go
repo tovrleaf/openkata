@@ -119,6 +119,10 @@ func parseJudgeResponse(raw string) ([]Verdict, error) {
 		}
 	}
 	if start == -1 {
+		if os.Getenv("OPENKATA_EVAL_DEBUG") != "" {
+			fmt.Fprintf(os.Stderr, "[debug] judge raw (%d bytes): %s\n", len(raw), raw)
+			fmt.Fprintf(os.Stderr, "[debug] judge cleaned (%d bytes): %s\n", len(cleaned), cleaned)
+		}
 		return nil, fmt.Errorf("no JSON found in judge response")
 	}
 
@@ -138,6 +142,9 @@ func parseJudgeResponse(raw string) ([]Verdict, error) {
 		}
 	}
 
+	if os.Getenv("OPENKATA_EVAL_DEBUG") != "" {
+		fmt.Fprintf(os.Stderr, "[debug] judge json parse failed: %s\n", jsonStr)
+	}
 	return nil, fmt.Errorf("failed to parse judge JSON")
 }
 
