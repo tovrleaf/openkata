@@ -40,6 +40,8 @@ type StatsData struct {
 	Countries      []CountryStats
 	Sources        []SourceStats
 	PageLoads      int
+	HumanPageLoads int
+	BotPageLoads   int
 	PagePaths      []PathStats
 	Events         []DownloadEvent
 	PageMetrics    []DailyMetric
@@ -90,6 +92,7 @@ type PathStats struct {
 	Path  string
 	Type  string
 	Count int
+	Bot   bool
 }
 
 type DownloadEvent struct {

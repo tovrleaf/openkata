@@ -1554,13 +1554,20 @@ func handleStats(w http.ResponseWriter, r *http.Request) {
 			Date  string `json:"date"`
 			Path  string `json:"path"`
 			Count int    `json:"count"`
+			Bot   bool   `json:"bot"`
 		}
 		var rawPaths []rawPath
 		if err := json.Unmarshal(pathsData, &rawPaths); err == nil {
 			pathAgg := make(map[string]int)
 			for _, rp := range rawPaths {
-				pathAgg[rp.Path] += rp.Count
+				if rp.Bot {
+					data.BotPageLoads += rp.Count
+				} else {
+					data.HumanPageLoads += rp.Count
+					pathAgg[rp.Path] += rp.Count
+				}
 			}
+			data.PageLoads = data.HumanPageLoads + data.BotPageLoads
 			for path, count := range pathAgg {
 				pType := "page"
 				if strings.Contains(path, "/archive") {

@@ -2,9 +2,12 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -20,6 +23,20 @@ var (
 	bucket   string
 	table    string
 )
+
+func requestLogger(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !strings.HasPrefix(r.URL.Path, "/static/") {
+			line, _ := json.Marshal(struct {
+				Req  string `json:"req"`
+				Path string `json:"path"`
+				UA   string `json:"ua"`
+			}{"page", r.URL.Path, r.UserAgent()})
+			log.Printf("%s", line)
+		}
+		next.ServeHTTP(w, r)
+	})
+}
 
 func main() {
 	bucket = os.Getenv("OPENKATA_BUCKET")
@@ -64,8 +81,10 @@ func main() {
 		mux.HandleFunc("/stats/detail", handleStatsDetail)
 	}
 
+	handler := requestLogger(mux)
+
 	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") != "" {
-		lambda.Start(httpadapter.NewV2(mux).ProxyWithContext)
+		lambda.Start(httpadapter.NewV2(handler).ProxyWithContext)
 		return
 	}
 
@@ -75,7 +94,7 @@ func main() {
 	}
 
 	fmt.Printf("Open Kata web server listening on http://localhost%s\n", addr)
-	if err := http.ListenAndServe(addr, mux); err != nil {
+	if err := http.ListenAndServe(addr, handler); err != nil {
 		fmt.Fprintf(os.Stderr, "server error: %v\n", err)
 		os.Exit(1)
 	}

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -53,6 +54,7 @@ type pagePath struct {
 	Date  string `json:"date"`
 	Path  string `json:"path"`
 	Count int    `json:"count"`
+	Bot   bool   `json:"bot"`
 }
 
 func main() {
@@ -229,14 +231,12 @@ func fetchPaths(ctx context.Context, cfg aws.Config, cur *cursor) {
 	}
 	end := time.Now().UTC()
 
-	// Best-effort query — structured logging needed for accurate per-path data
-	// TODO: add structured request logging to openkata-web for reliable path extraction
-	query := `filter @message like /\//
-| parse @message /(?<path>\/[a-z\-\/]*)/
-| filter ispresent(path)
-| stats count() as cnt by path
+	query := `filter @message like /"req":"page"/
+| parse @message /"path":"(?<path>[^"]+)"/
+| parse @message /"ua":"(?<ua>[^"]+)"/
+| stats count() as cnt by path, ua
 | sort cnt desc
-| limit 100`
+| limit 500`
 
 	startEpoch := start.Unix()
 	endEpoch := end.Unix()
@@ -255,7 +255,11 @@ func fetchPaths(ctx context.Context, cfg aws.Config, cur *cursor) {
 	}
 
 	// Poll for results
-	var results []pagePath
+	type pathKey struct {
+		path string
+		bot  bool
+	}
+	agg := make(map[pathKey]int)
 	for {
 		time.Sleep(time.Second)
 		resp, err := client.GetQueryResults(ctx, &cloudwatchlogs.GetQueryResultsInput{
@@ -270,31 +274,53 @@ func fetchPaths(ctx context.Context, cfg aws.Config, cur *cursor) {
 				log.Printf("logs query status: %s", resp.Status)
 				break
 			}
-			today := time.Now().UTC().Format("2006-01-02")
 			for _, row := range resp.Results {
-				var path string
+				var path, ua string
 				var count int
 				for _, field := range row {
 					if field.Field != nil && field.Value != nil {
 						switch *field.Field {
 						case "path":
 							path = *field.Value
+						case "ua":
+							ua = *field.Value
 						case "cnt":
 							fmt.Sscanf(*field.Value, "%d", &count)
 						}
 					}
 				}
 				if path != "" {
-					results = append(results, pagePath{Date: today, Path: path, Count: count})
+					agg[pathKey{path: path, bot: isBot(ua)}] += count
 				}
 			}
 			break
 		}
 	}
 
+	today := time.Now().UTC().Format("2006-01-02")
+	var results []pagePath
+	for k, count := range agg {
+		results = append(results, pagePath{Date: today, Path: k.path, Count: count, Bot: k.bot})
+	}
+
 	writeJSON(pathsFile, results)
 	cur.Paths = end.Format(time.RFC3339)
 	log.Printf("paths: %d entries", len(results))
+}
+
+func isBot(ua string) bool {
+	ua = strings.ToLower(ua)
+	for _, pattern := range []string{
+		"bot", "spider", "crawl", "slurp", "mediapartners",
+		"lighthouse", "pagespeed", "pingdom", "uptimerobot",
+		"headlesschrome", "phantomjs", "python-requests",
+		"go-http-client", "wget", "curl",
+	} {
+		if strings.Contains(ua, pattern) {
+			return true
+		}
+	}
+	return false
 }
 
 func attrStr(item map[string]types.AttributeValue, key string) string {

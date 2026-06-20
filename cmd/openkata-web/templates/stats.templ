@@ -136,7 +136,8 @@ templ Stats(data StatsData) {
 				<section>
 					<h2>Page Views</h2>
 					<p style="font-family: var(--font-mono); font-size: var(--font-size-xl);">
-						{ fmt.Sprintf("%d", data.PageLoads) } total
+						{ fmt.Sprintf("%d", data.HumanPageLoads) } humans
+						<span class="comment" style="font-size: var(--font-size-sm);">({ fmt.Sprintf("%d", data.BotPageLoads) } bots)</span>
 					</p>
 					if len(data.PagePaths) > 0 {
 						<table>
