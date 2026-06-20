@@ -26,6 +26,7 @@ badges: ## Update README badges with current counts
 .PHONY: stats
 stats: ## Fetch analytics data to .local/stats/
 	@go run ./cmd/stats-fetch/
+	@open http://localhost:8080/stats/
 
 .PHONY: eval-local
 eval-local: bin/openkata-eval ## Run local skill evals
