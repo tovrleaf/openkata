@@ -1,1 +1,1 @@
-{ "description": "Spec directory structure and spec.md creation" }
+{ "description": "Spec directory structure and spec.md creation", "sandbox": false }

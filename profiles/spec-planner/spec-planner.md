@@ -23,6 +23,9 @@ Plans features through specs, designs, and task breakdowns.
 ## Companions
 
 - Requires: `spec-workflow` skill (phases 1–3)
+- Optional: `grill-me` skill
+- Optional: `grill-with-docs` skill
+- Optional: `critical-thinking` skill
 
 ## Scope
 

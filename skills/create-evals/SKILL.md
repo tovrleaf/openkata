@@ -51,7 +51,10 @@ expected output given a realistic task.
    - `inputs/` — Optional fixture files
 
 6. **Verify** — Confirm all criteria weights sum to exactly
-   100 per scenario.
+   100 per scenario. Run the validation script:
+   ```bash
+   ./scripts/check-eval-weights.sh skills/<name>
+   ```
 
 7. **Report** — List the scenarios created with descriptions.
 
@@ -66,6 +69,17 @@ expected output given a realistic task.
 ```
 
 Add `"include": ["./inputs"]` when input fixtures exist.
+
+For conversational skills (no tool use), add:
+```json
+{
+  "description": "Brief description",
+  "sandbox": false
+}
+```
+
+Default is `"sandbox": true` (requires Docker). Set to
+`false` for skills that only produce text output.
 
 ### criteria.json
 

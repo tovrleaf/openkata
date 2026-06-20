@@ -3,7 +3,7 @@
 ## Tasks
 
 ### 1. Create stats-fetch CLI skeleton
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: New binary that connects to AWS, accepts
   `--since` flag, reads/writes cursor file
 - **Boundary**: `cmd/stats-fetch/main.go`, `go.mod`
@@ -15,7 +15,7 @@
 - **Verify**: `go build -o bin/stats-fetch ./cmd/stats-fetch/`
 
 ### 2. Fetch DynamoDB download events
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: stats-fetch scans `openkata-download-events`
   incrementally, appends to `.local/stats/download-events.json`
 - **Boundary**: `cmd/stats-fetch/main.go`
@@ -28,7 +28,7 @@
 - **Verify**: `go build -o bin/stats-fetch ./cmd/stats-fetch/`
 
 ### 3. Fetch CloudWatch Lambda invocation metrics
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: stats-fetch queries `AWS/Lambda` Invocations
   metric for `openkata-web`, writes daily data to
   `.local/stats/page-metrics.json`
@@ -41,7 +41,7 @@
 - **Verify**: `go build -o bin/stats-fetch ./cmd/stats-fetch/`
 
 ### 4. Fetch CloudWatch Logs Insights per-path data
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: stats-fetch runs Logs Insights query on
   `/aws/lambda/openkata-web` for per-path request counts,
   writes daily entries to `.local/stats/page-paths.json`
@@ -54,7 +54,7 @@
 - **Verify**: `go build -o bin/stats-fetch ./cmd/stats-fetch/`
 
 ### 5. Add Makefile target
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: `make stats-fetch` runs the CLI
 - **Boundary**: `mk/dev.mk`
 - **Key files**: `mk/dev.mk` (existing targets), `Makefile`
@@ -64,7 +64,7 @@
 - **Verify**: `make -n stats-fetch`
 
 ### 6. Stats page template and handler (empty state)
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: New `/stats/` route (local-only) that reads
   `.local/stats/` JSON files and renders page. Shows
   "No data" hint when files missing. New types for stats
@@ -82,7 +82,7 @@
 - **Verify**: `go build -o bin/openkata-web ./cmd/openkata-web/`
 
 ### 7. Page view statistics section
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Add page-view section to stats page — total
   loads, per-path table with type column ("page"/"download")
 - **Boundary**: `cmd/openkata-web/templates/stats.templ`,
@@ -94,7 +94,7 @@
 - **Verify**: `go build -o bin/openkata-web ./cmd/openkata-web/`
 
 ### 8. Chart.js integration and download charts
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Vendor Chart.js in `web/static/js-local/`,
   render two download chart groups (short-range:
   day/week/month, long-range: month/quarter/year) with
@@ -108,7 +108,7 @@
 - **Verify**: `go build -o bin/openkata-web ./cmd/openkata-web/`
 
 ### 9. Page loads chart
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Add page-loads-per-day line chart below the
   page-view section
 - **Boundary**: `cmd/openkata-web/templates/stats.templ`
@@ -119,7 +119,7 @@
 - **Verify**: `go build -o bin/openkata-web ./cmd/openkata-web/`
 
 ### 10. Artifact detail with HTMX and version dropdown
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Clicking an artifact loads detail partial via
   `hx-get="/stats/detail?artifact=X"`. Version dropdown
   refetches with `?version=Y`. Detail shows filtered
@@ -134,7 +134,7 @@
 - **Verify**: `go build -o bin/openkata-web ./cmd/openkata-web/`
 
 ### 11. Tests
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Tests for stats handler (empty state, with
   data), stats-fetch cursor logic
 - **Boundary**: `cmd/openkata-web/handlers_test.go`,
@@ -147,3 +147,8 @@
 - **Verify**: `go test ./cmd/openkata-web/... ./cmd/stats-fetch/...`
 
 ## Progress Log
+
+- [2026-06-18] All 11 tasks confirmed complete. stats-fetch
+  CLI fetches DynamoDB events, CloudWatch metrics, and Logs
+  Insights paths. Stats page renders with Chart.js, HTMX
+  detail drilldown, and tests passing.

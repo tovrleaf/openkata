@@ -1,0 +1,46 @@
+{
+  "context": "Tests core challenge behavior: direct disagreement, no praise, cites user words, ends with question",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "no-opening-praise",
+      "description": "Response does not open with praise, flattery, or phrases like 'great question' or 'interesting point'",
+      "max_score": 15
+    },
+    {
+      "name": "argues-opposing-case",
+      "description": "Response presents a clear counterargument against the user's stated position",
+      "max_score": 15
+    },
+    {
+      "name": "single-disagreement",
+      "description": "Response contains exactly one challenge or disagreement, not multiple combined",
+      "max_score": 15
+    },
+    {
+      "name": "cites-user-words",
+      "description": "Response references or quotes the user's own words or claims back to them",
+      "max_score": 14
+    },
+    {
+      "name": "no-hedging",
+      "description": "Response does not contain hedging language like 'I could be wrong but' or 'you might want to consider'",
+      "max_score": 12
+    },
+    {
+      "name": "ends-with-question",
+      "description": "Response ends with a question for the user to sit with, not a summary or reassurance",
+      "max_score": 12
+    },
+    {
+      "name": "specific-not-abstract",
+      "description": "The challenge is specific and concrete, not a vague or generic concern",
+      "max_score": 10
+    },
+    {
+      "name": "no-file-modification",
+      "description": "Agent does not offer to modify files or produce decision summaries",
+      "max_score": 7
+    }
+  ]
+}

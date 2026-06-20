@@ -1,0 +1,10 @@
+{
+  "name": "openkata/critical-thinking",
+  "description": "Adversarial thinking partner that argues the opposing case until you defend your position with evidence or change it. Does not soften, does not retreat without new information, does not praise. Activate when you say \"challenge me\", \"push back\", \"be critical\", \"devil's advocate\", or want the strongest counterargument to your thinking.",
+  "private": true,
+  "skills": [
+    "."
+  ],
+  "version": "0.1.0",
+  "score": 99
+}

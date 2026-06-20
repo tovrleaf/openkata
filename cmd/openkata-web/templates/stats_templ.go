@@ -281,74 +281,87 @@ func Stats(data StatsData) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var16 string
-				templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", data.PageLoads))
+				templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", data.HumanPageLoads))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 139, Col: 41}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 139, Col: 46}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, " total</p>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, " humans <span class=\"comment\" style=\"font-size: var(--font-size-sm);\">(")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var17 string
+				templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", data.BotPageLoads))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 140, Col: 107}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, " bots)</span></p>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				if len(data.PagePaths) > 0 {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "<table><thead><tr><th>Path</th><th>Type</th><th>Requests</th></tr></thead> <tbody>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "<table><thead><tr><th>Path</th><th>Type</th><th>Requests</th></tr></thead> <tbody>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					for _, p := range data.PagePaths {
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "<tr><td><code>")
-						if templ_7745c5c3_Err != nil {
-							return templ_7745c5c3_Err
-						}
-						var templ_7745c5c3_Var17 string
-						templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(p.Path)
-						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 153, Col: 28}
-						}
-						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
-						if templ_7745c5c3_Err != nil {
-							return templ_7745c5c3_Err
-						}
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "</code></td><td>")
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "<tr><td><code>")
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
 						var templ_7745c5c3_Var18 string
-						templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(p.Type)
+						templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(p.Path)
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 154, Col: 22}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 154, Col: 28}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "</td><td>")
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "</code></td><td>")
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
 						var templ_7745c5c3_Var19 string
-						templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", p.Count))
+						templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(p.Type)
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 155, Col: 42}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 155, Col: 22}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "</td></tr>")
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "</td><td>")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						var templ_7745c5c3_Var20 string
+						templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", p.Count))
+						if templ_7745c5c3_Err != nil {
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 156, Col: 42}
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "</td></tr>")
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "</tbody></table>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "</tbody></table>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "</section><script src=\"/static/js-local/chart.min.js\"></script> ")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "</section><script src=\"/static/js-local/chart.min.js\"></script> ")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -356,7 +369,7 @@ func Stats(data StatsData) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, " ")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, " ")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -364,12 +377,12 @@ func Stats(data StatsData) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, " <section><h2>Downloads (Short Range)</h2><div class=\"tabs\"><button class=\"tab active\" onclick=\"renderShortChart('day')\">Day</button> <button class=\"tab\" onclick=\"renderShortChart('week')\">Week</button> <button class=\"tab\" onclick=\"renderShortChart('month')\">Month</button></div><canvas id=\"chart-short\" height=\"200\"></canvas></section><section><h2>Downloads (Long Range)</h2><div class=\"tabs\"><button class=\"tab active\" onclick=\"renderLongChart('month')\">Month</button> <button class=\"tab\" onclick=\"renderLongChart('quarter')\">Quarter</button> <button class=\"tab\" onclick=\"renderLongChart('year')\">Year</button></div><canvas id=\"chart-long\" height=\"200\"></canvas></section><section><h2>Page Loads per Day</h2><canvas id=\"chart-pages\" height=\"200\"></canvas></section><script>\n\t\t\t\t(function() {\n\t\t\t\t\tvar accent = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();\n\t\t\t\t\tvar surface = getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim();\n\t\t\t\t\tvar events = JSON.parse(document.getElementById('events-data').textContent || '[]');\n\t\t\t\t\tvar metrics = JSON.parse(document.getElementById('metrics-data').textContent || '[]');\n\n\t\t\t\t\tfunction groupBy(events, keyFn) {\n\t\t\t\t\t\tvar m = {};\n\t\t\t\t\t\tevents.forEach(function(ev) {\n\t\t\t\t\t\t\tvar k = keyFn(ev.timestamp);\n\t\t\t\t\t\t\tm[k] = (m[k] || 0) + 1;\n\t\t\t\t\t\t});\n\t\t\t\t\t\tvar keys = Object.keys(m).sort();\n\t\t\t\t\t\treturn { labels: keys, data: keys.map(function(k) { return m[k]; }) };\n\t\t\t\t\t}\n\n\t\t\t\t\tfunction toDay(ts) { return ts.slice(0, 10); }\n\t\t\t\t\tfunction toWeek(ts) {\n\t\t\t\t\t\tvar d = new Date(ts);\n\t\t\t\t\t\tvar jan1 = new Date(d.getFullYear(), 0, 1);\n\t\t\t\t\t\tvar week = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);\n\t\t\t\t\t\treturn d.getFullYear() + '-W' + String(week).padStart(2, '0');\n\t\t\t\t\t}\n\t\t\t\t\tfunction toMonth(ts) { return ts.slice(0, 7); }\n\t\t\t\t\tfunction toQuarter(ts) {\n\t\t\t\t\t\tvar m = parseInt(ts.slice(5, 7), 10);\n\t\t\t\t\t\treturn ts.slice(0, 4) + '-Q' + Math.ceil(m / 3);\n\t\t\t\t\t}\n\t\t\t\t\tfunction toYear(ts) { return ts.slice(0, 4); }\n\n\t\t\t\t\tvar fns = { day: toDay, week: toWeek, month: toMonth, quarter: toQuarter, year: toYear };\n\t\t\t\t\tvar shortChart = null, longChart = null;\n\n\t\t\t\t\tfunction makeChart(canvasId, grouped) {\n\t\t\t\t\t\treturn new Chart(document.getElementById(canvasId), {\n\t\t\t\t\t\t\ttype: 'line',\n\t\t\t\t\t\t\tdata: {\n\t\t\t\t\t\t\t\tlabels: grouped.labels,\n\t\t\t\t\t\t\t\tdatasets: [{ data: grouped.data, borderColor: accent, backgroundColor: surface, tension: 0.1 }]\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\toptions: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }\n\t\t\t\t\t\t});\n\t\t\t\t\t}\n\n\t\t\t\t\twindow.renderShortChart = function(gran) {\n\t\t\t\t\t\tif (shortChart) shortChart.destroy();\n\t\t\t\t\t\tshortChart = makeChart('chart-short', groupBy(events, fns[gran]));\n\t\t\t\t\t\tvar container = document.getElementById('chart-short').closest('section');\n\t\t\t\t\t\tcontainer.querySelectorAll('.tab').forEach(function(b) { b.classList.remove('active'); });\n\t\t\t\t\t\tevent.target.classList.add('active');\n\t\t\t\t\t};\n\n\t\t\t\t\twindow.renderLongChart = function(gran) {\n\t\t\t\t\t\tif (longChart) longChart.destroy();\n\t\t\t\t\t\tlongChart = makeChart('chart-long', groupBy(events, fns[gran]));\n\t\t\t\t\t\tvar container = document.getElementById('chart-long').closest('section');\n\t\t\t\t\t\tcontainer.querySelectorAll('.tab').forEach(function(b) { b.classList.remove('active'); });\n\t\t\t\t\t\tevent.target.classList.add('active');\n\t\t\t\t\t};\n\n\t\t\t\t\t// Initial render\n\t\t\t\t\tif (events.length) {\n\t\t\t\t\t\tshortChart = makeChart('chart-short', groupBy(events, toDay));\n\t\t\t\t\t\tlongChart = makeChart('chart-long', groupBy(events, toMonth));\n\t\t\t\t\t}\n\n\t\t\t\t\t// Page loads chart\n\t\t\t\t\tif (metrics.length) {\n\t\t\t\t\t\tvar labels = metrics.map(function(m) { return m.date; });\n\t\t\t\t\t\tvar values = metrics.map(function(m) { return m.invocations; });\n\t\t\t\t\t\tnew Chart(document.getElementById('chart-pages'), {\n\t\t\t\t\t\t\ttype: 'line',\n\t\t\t\t\t\t\tdata: {\n\t\t\t\t\t\t\t\tlabels: labels,\n\t\t\t\t\t\t\t\tdatasets: [{ data: values, borderColor: accent, backgroundColor: surface, tension: 0.1 }]\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\toptions: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }\n\t\t\t\t\t\t});\n\t\t\t\t\t}\n\t\t\t\t})();\n\t\t\t\t</script>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, " <section><h2>Downloads</h2><div class=\"tabs\"><button class=\"tab active\" onclick=\"renderChart('day')\">Day</button> <button class=\"tab\" onclick=\"renderChart('week')\">Week</button> <button class=\"tab\" onclick=\"renderChart('month')\">Month</button> <button class=\"tab\" onclick=\"renderChart('quarter')\">Quarter</button> <button class=\"tab\" onclick=\"renderChart('year')\">Year</button></div><canvas id=\"chart-downloads\" height=\"200\"></canvas></section><section><h2>Page Loads per Day</h2><canvas id=\"chart-pages\" height=\"200\"></canvas></section><script>\n\t\t\t\t(function() {\n\t\t\t\t\tvar accent = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();\n\t\t\t\t\tvar surface = getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim();\n\t\t\t\t\tvar events = JSON.parse(document.getElementById('events-data').textContent || '[]');\n\t\t\t\t\tvar metrics = JSON.parse(document.getElementById('metrics-data').textContent || '[]');\n\n\t\t\t\t\tfunction groupBy(events, keyFn) {\n\t\t\t\t\t\tvar m = {};\n\t\t\t\t\t\tevents.forEach(function(ev) {\n\t\t\t\t\t\t\tvar k = keyFn(ev.timestamp);\n\t\t\t\t\t\t\tm[k] = (m[k] || 0) + 1;\n\t\t\t\t\t\t});\n\t\t\t\t\t\tvar keys = Object.keys(m).sort();\n\t\t\t\t\t\treturn { labels: keys, data: keys.map(function(k) { return m[k]; }) };\n\t\t\t\t\t}\n\n\t\t\t\t\tfunction toDay(ts) { return ts.slice(0, 10); }\n\t\t\t\t\tfunction toWeek(ts) {\n\t\t\t\t\t\tvar d = new Date(ts);\n\t\t\t\t\t\tvar jan1 = new Date(d.getFullYear(), 0, 1);\n\t\t\t\t\t\tvar week = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);\n\t\t\t\t\t\treturn d.getFullYear() + '-W' + String(week).padStart(2, '0');\n\t\t\t\t\t}\n\t\t\t\t\tfunction toMonth(ts) { return ts.slice(0, 7); }\n\t\t\t\t\tfunction toQuarter(ts) {\n\t\t\t\t\t\tvar m = parseInt(ts.slice(5, 7), 10);\n\t\t\t\t\t\treturn ts.slice(0, 4) + '-Q' + Math.ceil(m / 3);\n\t\t\t\t\t}\n\t\t\t\t\tfunction toYear(ts) { return ts.slice(0, 4); }\n\n\t\t\t\t\tvar fns = { day: toDay, week: toWeek, month: toMonth, quarter: toQuarter, year: toYear };\n\t\t\t\t\tvar dlChart = null;\n\n\t\t\t\t\tfunction makeChart(canvasId, grouped) {\n\t\t\t\t\t\treturn new Chart(document.getElementById(canvasId), {\n\t\t\t\t\t\t\ttype: 'line',\n\t\t\t\t\t\t\tdata: {\n\t\t\t\t\t\t\t\tlabels: grouped.labels,\n\t\t\t\t\t\t\t\tdatasets: [{ data: grouped.data, borderColor: accent, backgroundColor: surface, tension: 0.1 }]\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\toptions: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }\n\t\t\t\t\t\t});\n\t\t\t\t\t}\n\n\t\t\t\t\twindow.renderChart = function(gran) {\n\t\t\t\t\t\tif (dlChart) dlChart.destroy();\n\t\t\t\t\t\tdlChart = makeChart('chart-downloads', groupBy(events, fns[gran]));\n\t\t\t\t\t\tvar container = document.getElementById('chart-downloads').closest('section');\n\t\t\t\t\t\tcontainer.querySelectorAll('.tab').forEach(function(b) { b.classList.remove('active'); });\n\t\t\t\t\t\tevent.target.classList.add('active');\n\t\t\t\t\t};\n\n\t\t\t\t\t// Initial render\n\t\t\t\t\tif (events.length) {\n\t\t\t\t\t\tdlChart = makeChart('chart-downloads', groupBy(events, toDay));\n\t\t\t\t\t}\n\n\t\t\t\t\t// Page loads chart\n\t\t\t\t\tif (metrics.length) {\n\t\t\t\t\t\tvar labels = metrics.map(function(m) { return m.date; });\n\t\t\t\t\t\tvar values = metrics.map(function(m) { return m.invocations; });\n\t\t\t\t\t\tnew Chart(document.getElementById('chart-pages'), {\n\t\t\t\t\t\t\ttype: 'line',\n\t\t\t\t\t\t\tdata: {\n\t\t\t\t\t\t\t\tlabels: labels,\n\t\t\t\t\t\t\t\tdatasets: [{ data: values, borderColor: accent, backgroundColor: surface, tension: 0.1 }]\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\toptions: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }\n\t\t\t\t\t\t});\n\t\t\t\t\t}\n\t\t\t\t})();\n\t\t\t\t</script>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "</main><footer class=\"footer\">© 2026 OPENKATA.dev // License: <a href=\"https://github.com/tovrleaf/openkata/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT</a></footer>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "</main><footer class=\"footer\">© 2026 OPENKATA.dev // License: <a href=\"https://github.com/tovrleaf/openkata/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT</a></footer>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -399,180 +412,180 @@ func StatsDetail(data StatsDetailData) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var20 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var20 == nil {
-			templ_7745c5c3_Var20 = templ.NopComponent
+		templ_7745c5c3_Var21 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var21 == nil {
+			templ_7745c5c3_Var21 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "<section><h2>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var21 string
-		templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(data.Artifact)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 285, Col: 21}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 39, "</h2><div style=\"display: flex; align-items: center; gap: var(--space-md); margin-bottom: var(--space-md);\"><select class=\"version-select\" hx-get=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 39, "<section><h2>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var22 string
-		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/stats/detail?artifact=%s", data.Artifact))
+		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(data.Artifact)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 289, Col: 68}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 269, Col: 21}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "\" hx-target=\"#stats-detail\" hx-swap=\"innerHTML\" hx-include=\"this\" name=\"version\"><option value=\"\">All versions</option> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "</h2><div style=\"display: flex; align-items: center; gap: var(--space-md); margin-bottom: var(--space-md);\"><select class=\"version-select\" hx-get=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var23 string
+		templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/stats/detail?artifact=%s", data.Artifact))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 273, Col: 68}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "\" hx-target=\"#stats-detail\" hx-swap=\"innerHTML\" hx-include=\"this\" name=\"version\"><option value=\"\">All versions</option> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, v := range data.Versions {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "<option value=\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var23 string
-			templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(v)
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 297, Col: 22}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 42, "\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			if v == data.Version {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 43, " selected")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 44, ">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 42, "<option value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var24 string
 			templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(v)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 297, Col: 60}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 281, Col: 22}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 45, "</option>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 43, "\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if v == data.Version {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 44, " selected")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 45, ">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var25 string
+			templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(v)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 281, Col: 60}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 46, "</option>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 46, "</select> <span class=\"artifact-meta\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 47, "</select> <span class=\"artifact-meta\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var25 string
-		templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d downloads", data.Total))
+		var templ_7745c5c3_Var26 string
+		templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d downloads", data.Total))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 300, Col: 72}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 284, Col: 72}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 47, "</span></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 48, "</span></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if len(data.Clients) > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 48, "<table><thead><tr><th>Client</th><th>Downloads</th></tr></thead> <tbody>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 49, "<table><thead><tr><th>Client</th><th>Downloads</th></tr></thead> <tbody>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			for _, c := range data.Clients {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 49, "<tr><td><code>")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				var templ_7745c5c3_Var26 string
-				templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(c.Client)
-				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 309, Col: 30}
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 50, "</code></td><td>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 50, "<tr><td><code>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var27 string
-				templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", c.Downloads))
+				templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(c.Client)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 309, Col: 80}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 293, Col: 30}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 51, "</td></tr>")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 52, "</tbody></table>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-		}
-		if len(data.Countries) > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 53, "<table><thead><tr><th>Country</th><th>Downloads</th></tr></thead> <tbody>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			for _, c := range data.Countries {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 54, "<tr><td>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 51, "</code></td><td>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var28 string
-				templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.JoinStringErrs(c.Country)
+				templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", c.Downloads))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 321, Col: 25}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 293, Col: 80}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var28))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 55, "</td><td>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 52, "</td></tr>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 53, "</tbody></table>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		if len(data.Countries) > 0 {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 54, "<table><thead><tr><th>Country</th><th>Downloads</th></tr></thead> <tbody>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			for _, c := range data.Countries {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 55, "<tr><td>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var29 string
-				templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", c.Downloads))
+				templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.JoinStringErrs(c.Country)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 321, Col: 68}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 305, Col: 25}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var29))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 56, "</td></tr>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 56, "</td><td>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var30 string
+				templ_7745c5c3_Var30, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", c.Downloads))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 305, Col: 68}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var30))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 57, "</td></tr>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 57, "</tbody></table>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 58, "</tbody></table>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -581,7 +594,7 @@ func StatsDetail(data StatsDetailData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 58, "<canvas id=\"chart-detail\" height=\"150\"></canvas><script>\n\t\t(function() {\n\t\t\tvar accent = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();\n\t\t\tvar surface = getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim();\n\t\t\tvar events = JSON.parse(document.getElementById('detail-events-data').textContent || '[]');\n\t\t\tif (events.length) {\n\t\t\t\tvar m = {};\n\t\t\t\tevents.forEach(function(ev) { var k = ev.timestamp.slice(0, 10); m[k] = (m[k]||0)+1; });\n\t\t\t\tvar keys = Object.keys(m).sort();\n\t\t\t\tnew Chart(document.getElementById('chart-detail'), {\n\t\t\t\t\ttype: 'line',\n\t\t\t\t\tdata: { labels: keys, datasets: [{ data: keys.map(function(k){return m[k];}), borderColor: accent, backgroundColor: surface, tension: 0.1 }] },\n\t\t\t\t\toptions: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }\n\t\t\t\t});\n\t\t\t}\n\t\t})();\n\t\t</script></section>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 59, "<canvas id=\"chart-detail\" height=\"150\"></canvas><script>\n\t\t(function() {\n\t\t\tvar accent = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim();\n\t\t\tvar surface = getComputedStyle(document.documentElement).getPropertyValue('--color-surface').trim();\n\t\t\tvar events = JSON.parse(document.getElementById('detail-events-data').textContent || '[]');\n\t\t\tif (events.length) {\n\t\t\t\tvar m = {};\n\t\t\t\tevents.forEach(function(ev) { var k = ev.timestamp.slice(0, 10); m[k] = (m[k]||0)+1; });\n\t\t\t\tvar keys = Object.keys(m).sort();\n\t\t\t\tnew Chart(document.getElementById('chart-detail'), {\n\t\t\t\t\ttype: 'line',\n\t\t\t\t\tdata: { labels: keys, datasets: [{ data: keys.map(function(k){return m[k];}), borderColor: accent, backgroundColor: surface, tension: 0.1 }] },\n\t\t\t\t\toptions: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }\n\t\t\t\t});\n\t\t\t}\n\t\t})();\n\t\t</script></section>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

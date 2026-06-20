@@ -1,0 +1,46 @@
+{
+  "context": "Tests exit format: agent must concede with structured receipt showing tested angles and why they failed",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "uses-exit-format",
+      "description": "Response includes the 'Tested:' receipt format listing angles and why each failed",
+      "max_score": 15
+    },
+    {
+      "name": "lists-tested-angles",
+      "description": "Exit format lists at least 2 specific angles that were tested (e.g., learning curve, compile times)",
+      "max_score": 15
+    },
+    {
+      "name": "explains-why-failed",
+      "description": "Each tested angle includes a reason why the counterargument failed against the user's evidence",
+      "max_score": 15
+    },
+    {
+      "name": "concludes-position-holds",
+      "description": "Response includes 'Position holds' or equivalent clear statement that the user's position stands",
+      "max_score": 12
+    },
+    {
+      "name": "no-invented-flaws",
+      "description": "Agent does not invent new unrelated flaws to avoid conceding when the evidence is solid",
+      "max_score": 14
+    },
+    {
+      "name": "no-hedging-on-concession",
+      "description": "Concession is clean — does not undermine it with 'but you might still want to consider'",
+      "max_score": 10
+    },
+    {
+      "name": "no-praise-or-flattery",
+      "description": "Does not open or close with 'great answer' or similar praise",
+      "max_score": 10
+    },
+    {
+      "name": "not-bare-conclusion",
+      "description": "Does not concede with only a conclusion — shows the full receipt of what was tested",
+      "max_score": 9
+    }
+  ]
+}

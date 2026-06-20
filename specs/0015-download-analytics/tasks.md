@@ -3,7 +3,7 @@
 ## Tasks
 
 ### 1. Infrastructure: create events table and update IAM
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Add DynamoDB table creation to infra script,
   update IAM policies for both Lambdas
 - **Boundary**: `infra/create-mcp-stack.sh`,
@@ -22,7 +22,7 @@
 proceeding to task 2.**
 
 ### 2. Create shared analytics package
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Create `internal/analytics` package with
   `RecordDownload` function and client parsing logic
 - **Boundary**: `internal/analytics/analytics.go`,
@@ -37,7 +37,7 @@ proceeding to task 2.**
 - **Verify**: `go test ./internal/analytics/...`
 
 ### 3. Integrate analytics in web server
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Call RecordDownload from the archive handler
   with source=web, parsed client, version, and country
 - **Boundary**: `cmd/openkata-web/handlers.go`
@@ -50,7 +50,7 @@ proceeding to task 2.**
 - **Verify**: `go build -o bin/openkata-web ./cmd/openkata-web/`
 
 ### 4. Integrate analytics in MCP server
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Call RecordDownload from installArtifact
   with source=mcp, best-effort client detection,
   version, and empty country
@@ -63,7 +63,7 @@ proceeding to task 2.**
 - **Verify**: `go build -o bin/openkata-mcp ./cmd/openkata-mcp/`
 
 ### 5. Add tests
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Test client parsing logic, test event
   recording with mock DynamoDB client
 - **Boundary**: `internal/analytics/analytics_test.go`
@@ -73,3 +73,7 @@ proceeding to task 2.**
 - **Verify**: `go test -race ./internal/analytics/...`
 
 ## Progress Log
+
+- [2026-06-18] All tasks confirmed complete. Events table
+  in infra, shared analytics package with tests, integrated
+  in both web and MCP servers.

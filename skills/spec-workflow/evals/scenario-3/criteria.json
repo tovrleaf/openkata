@@ -1,0 +1,46 @@
+{
+  "context": "Tests whether the agent follows the implement phase protocol: status updates before/after, progress log, commit format, and correct sequencing",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "reads-progress-log-first",
+      "description": "Agent mentions reading the progress log for context from prior tasks BEFORE starting work",
+      "max_score": 10
+    },
+    {
+      "name": "reads-task-goal-and-boundary",
+      "description": "Agent mentions reading the task's goal, boundary, and done-when criteria before building",
+      "max_score": 10
+    },
+    {
+      "name": "updates-status-to-in-progress",
+      "description": "Agent explicitly states updating task 2 status to 'In Progress' before doing the work",
+      "max_score": 15
+    },
+    {
+      "name": "updates-status-to-done",
+      "description": "Agent explicitly states updating task 2 status to 'Done' after completing the work",
+      "max_score": 12
+    },
+    {
+      "name": "adds-progress-log-entry",
+      "description": "Agent mentions adding a progress log entry with date and summary after completing the task",
+      "max_score": 15
+    },
+    {
+      "name": "commit-references-spec-and-task",
+      "description": "Agent shows a commit message that references the spec number and task number (e.g. 'Part of specs/0002-notifications task 2')",
+      "max_score": 15
+    },
+    {
+      "name": "verifies-done-when",
+      "description": "Agent mentions running tests or verifying against the done-when criteria before marking Done",
+      "max_score": 10
+    },
+    {
+      "name": "correct-sequence",
+      "description": "The sequence is: read context → set In Progress → build → verify → set Done → log → commit (not jumbled)",
+      "max_score": 13
+    }
+  ]
+}

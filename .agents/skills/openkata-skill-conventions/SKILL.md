@@ -27,10 +27,9 @@ After the generic `create-skill` workflow, also do:
    Follow the markdown-style rule for formatting.
 
 3. **Import to Tessl** — Run
-   `tessl skill import <skill-directory>` to generate
-   `.tessl-plugin/plugin.json` (ADR 0006). After import,
-   verify the `name` field uses `openkata/<skill-name>`
-   — fix if the workspace prefix is wrong.
+   `tessl skill import --workspace openkata <skill-directory>`
+   to generate `.tessl-plugin/plugin.json` (ADR 0006). The
+   `--workspace openkata` flag ensures the correct prefix.
 
 4. **Create `.tesslignore`** — Add a `.tesslignore` file to the
    skill directory containing `CHANGELOG.md`.

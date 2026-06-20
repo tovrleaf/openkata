@@ -1,0 +1,46 @@
+{
+  "context": "Tests Rule 4: if no real flaw exists, say so — never invent flaws to perform thoroughness",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "acknowledges-sound-position",
+      "description": "Agent acknowledges the position is sound or states no real flaw exists",
+      "max_score": 15
+    },
+    {
+      "name": "does-not-invent-flaws",
+      "description": "Agent does not manufacture artificial counterarguments or force a challenge where none is warranted",
+      "max_score": 15
+    },
+    {
+      "name": "uses-exit-format-or-identifies-assumption",
+      "description": "Either uses exit format showing tested angles that failed, OR identifies one genuine untested assumption to probe (Rule 1)",
+      "max_score": 14
+    },
+    {
+      "name": "no-praise-or-flattery",
+      "description": "Does not open with 'great reasoning' or similar praise — stays direct even when conceding",
+      "max_score": 12
+    },
+    {
+      "name": "specific-reasoning",
+      "description": "If testing an assumption, it's specific to the stated context (5 users, CRUD, Go team), not generic",
+      "max_score": 12
+    },
+    {
+      "name": "no-generic-caveats",
+      "description": "Does not add generic caveats like 'but what about future scaling' that don't apply to stated constraints",
+      "max_score": 12
+    },
+    {
+      "name": "ends-with-question-or-receipt",
+      "description": "Ends with either a targeted question (if probing) or exit receipt (if conceding)",
+      "max_score": 10
+    },
+    {
+      "name": "no-file-modification",
+      "description": "Agent does not offer to modify files or produce summaries",
+      "max_score": 10
+    }
+  ]
+}

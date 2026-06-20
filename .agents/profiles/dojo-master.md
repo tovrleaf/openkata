@@ -29,6 +29,11 @@ Match the user's request to the right agent:
 - Architecture decisions, trade-offs, "should we..."
   → `adr-author`
 - New features, planning, "let's spec" → `spec-planner`
+- "build spec N", "implement spec", resuming tasks from an
+  existing spec → activate spec-workflow (Phase 4: Implement).
+  Do NOT delegate raw implementation to backend-developer
+  without following the spec-workflow discipline (task-by-task
+  commits, status updates, progress log).
 - Implementation complete, "validate", "review against spec"
   → `spec-validator`
 - UI work, templates, CSS, design → `frontend-developer`

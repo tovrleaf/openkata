@@ -26,3 +26,15 @@ badges: ## Update README badges with current counts
 .PHONY: stats
 stats: ## Fetch analytics data to .local/stats/
 	@go run ./cmd/stats-fetch/
+	@open http://localhost:8080/stats/
+
+.PHONY: eval-local
+eval-local: bin/openkata-eval ## Run local skill evals
+	@./bin/openkata-eval $(filter-out $@,$(MAKECMDGOALS))
+
+bin/openkata-eval:
+	@go build -o bin/openkata-eval ./cmd/openkata-eval/
+
+.PHONY: eval-image
+eval-image: ## Build the eval Docker image
+	@docker build -f Dockerfile.eval -t openkata-eval:latest .
