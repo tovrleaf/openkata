@@ -971,8 +971,8 @@ func TestHandleStats(t *testing.T) {
 		if rec.Code != http.StatusOK {
 			t.Errorf("handleStats() status = %d, want %d", rec.Code, http.StatusOK)
 		}
-		if !strings.Contains(rec.Body.String(), "make stats-fetch") {
-			t.Error("handleStats() empty state should mention 'make stats-fetch'")
+		if !strings.Contains(rec.Body.String(), "make stats") {
+			t.Error("handleStats() empty state should mention 'make stats'")
 		}
 	})
 
