@@ -61,7 +61,7 @@ When in doubt, ask the user.
    ```text
    release(<type>): <name> vX.Y.Z
 
-   Assisted-by: Kiro:<model>  # <model> = your current model
+   Assisted-by: <agent>:<model>
    ```
 
 5. Tag:
