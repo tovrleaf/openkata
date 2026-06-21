@@ -1,6 +1,7 @@
 {
   "name": "dojo-master",
   "description": "Orchestrates multi-agent workflows by routing tasks to specialized agents",
+  "model": "claude-haiku-4.5",
   "prompt": "file://../../.agents/profiles/dojo-master.md",
   "tools": [
     "subagent",

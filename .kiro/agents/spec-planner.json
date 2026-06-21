@@ -1,6 +1,7 @@
 {
   "name": "spec-planner",
   "description": "Plans features through specs, designs, and task breakdowns",
+  "model": "claude-opus-4.6",
   "prompt": "file://../../.agents/profiles/spec-planner.md",
   "tools": [
     "fs_read",
