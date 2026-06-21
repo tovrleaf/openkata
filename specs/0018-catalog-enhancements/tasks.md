@@ -1,6 +1,6 @@
 ## Task 0018-01 — Add model-label and skill-version to openkata-eval
 
-Status: Pending
+Status: Done
 Files: cmd/openkata-eval/main.go, cmd/openkata-eval/config.go, cmd/openkata-eval/output.go, cmd/openkata-eval/output_test.go
 
 Add `--model-label` flag to openkata-eval CLI. Read skill
@@ -14,7 +14,7 @@ Add test for version parsing from CHANGELOG.md.
 
 ## Task 0018-02 — Output eval results to nested directory
 
-Status: Pending
+Status: Done
 Files: cmd/openkata-eval/output.go, cmd/openkata-eval/output_test.go
 
 Change default `--output` path resolution when running
@@ -28,7 +28,7 @@ directories as needed.
 
 ## Task 0018-03 — Extend generate-versions to read eval results
 
-Status: Pending
+Status: Done
 Files: cmd/generate-versions/main.go
 
 In local mode, after scanning skills:
@@ -44,7 +44,7 @@ Skip skills with no results or version mismatch.
 
 ## Task 0018-04 — Add models and scenarios to versions.json schema
 
-Status: Pending
+Status: Done
 Files: cmd/generate-versions/main.go
 
 Extend `artifactInfo` struct to include:
@@ -66,7 +66,7 @@ Add `Models map[string]modelInfo` to `artifactInfo`
 
 ## Task 0018-05 — Update SkillEntry type for effectiveness data
 
-Status: Pending
+Status: Done
 Files: cmd/openkata-web/templates/types.go
 
 Add fields to `SkillEntry`:
@@ -86,7 +86,7 @@ Add to `ArtifactDetail`:
 
 ## Task 0018-06 — Load effectiveness data into skill listings
 
-Status: Pending
+Status: Done
 Files: cmd/openkata-web/handlers.go
 
 Update `loadArtifactList` to parse the `models` field
@@ -96,7 +96,7 @@ on each `SkillEntry`.
 
 ## Task 0018-07 — Display effectiveness on listing page
 
-Status: Pending
+Status: Done
 Files: cmd/openkata-web/templates/skills.templ
 
 In the skill listing row:
@@ -107,7 +107,7 @@ In the skill listing row:
 
 ## Task 0018-08 — Add Benchmarks tab to skill detail page
 
-Status: Pending
+Status: Done
 Files: cmd/openkata-web/templates/skill_detail.templ, cmd/openkata-web/handlers.go
 
 Add conditional "Benchmarks" tab (hidden if no data):
@@ -123,7 +123,7 @@ and published status.
 
 ## Task 0018-09 — Update handlers_test.go for effectiveness
 
-Status: Pending
+Status: Done
 Files: cmd/openkata-web/handlers_test.go
 
 Add test cases:
@@ -136,7 +136,7 @@ Add test cases:
 
 ## Task 0018-10 — Generate templ and verify build
 
-Status: Pending
+Status: Done
 Files: cmd/openkata-web/templates/*_templ.go
 
 Run `templ generate ./cmd/openkata-web/templates/` and
