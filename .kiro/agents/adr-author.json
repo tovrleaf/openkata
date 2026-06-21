@@ -1,6 +1,7 @@
 {
   "name": "adr-author",
   "description": "Records architecture decisions by researching context and writing ADRs",
+  "model": "claude-opus-4.6",
   "prompt": "file://../../.agents/profiles/adr-author.md",
   "tools": [
     "fs_read",
