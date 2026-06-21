@@ -17,6 +17,7 @@ type Config struct {
 	Backend       string
 	Model         string
 	JudgeModel    string
+	ModelLabel    string
 	Threshold     int
 	Output        string
 	DirectTimeout int
@@ -178,6 +179,9 @@ func loadConfig(flags *flagValues) Config {
 	if flags.output != "" {
 		cfg.Output = flags.output
 	}
+	if flags.modelLabel != "" {
+		cfg.ModelLabel = flags.modelLabel
+	}
 
 	// If judge model not set, use agent model
 	if cfg.JudgeModel == "" {
@@ -194,6 +198,7 @@ type flagValues struct {
 	judgeModel string
 	threshold  int
 	output     string
+	modelLabel string
 }
 
 // discoverScenarios finds scenario directories under the skill's evals/ dir.

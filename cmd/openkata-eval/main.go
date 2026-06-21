@@ -25,6 +25,7 @@ func main() {
 	flag.StringVar(&flags.judgeModel, "judge-model", "", "model for judge calls")
 	flag.IntVar(&flags.threshold, "threshold", 0, "pass threshold percentage (default 95)")
 	flag.StringVar(&flags.output, "output", "", "JSON output file or directory path")
+	flag.StringVar(&flags.modelLabel, "model-label", "", "human-readable label for the model")
 	flag.Usage = usage
 	flag.Parse()
 
@@ -131,9 +132,14 @@ func main() {
 	printOverall(evalResult)
 
 	// Write JSON output
+	direct := false
+	if cfg.Output == "" && mode == modeSkill {
+		cfg.Output = autoResolvePath(skillPath, cfg.Model, time.Now())
+		direct = true
+	}
 	if cfg.Output != "" {
 		skill := filepath.Base(skillPath)
-		if err := writeJSONOutput(cfg.Output, skill, cfg, evalResult); err != nil {
+		if err := writeJSONOutput(cfg.Output, skill, skillPath, cfg, evalResult, direct); err != nil {
 			fmt.Fprintf(os.Stderr, "error writing output: %v\n", err)
 		}
 	}
