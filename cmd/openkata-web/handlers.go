@@ -332,6 +332,15 @@ func loadArtifactList(ctx context.Context, artifactType string) []templates.Skil
 		Version     string `json:"version"`
 		Description string `json:"description"`
 		Tags        string `json:"tags"`
+		Models      map[string]struct {
+			Label         string `json:"label"`
+			Effectiveness int    `json:"effectiveness"`
+			Scenarios     []struct {
+				Name        string `json:"name"`
+				Description string `json:"description"`
+				Pass        bool   `json:"pass"`
+			} `json:"scenarios"`
+		} `json:"models"`
 	}
 	if err := json.Unmarshal(artifactData, &artifacts); err != nil {
 		return nil
@@ -344,13 +353,32 @@ func loadArtifactList(ctx context.Context, artifactType string) []templates.Skil
 		if info.Version == "0.0.0" {
 			continue
 		}
-		entries = append(entries, templates.SkillEntry{
+		entry := templates.SkillEntry{
 			Name:        name,
 			Version:     info.Version,
 			Description: info.Description,
 			Tags:        info.Tags,
 			Downloads:   counts[artifactType+"/"+name],
-		})
+		}
+		if artifactType == "skills" && len(info.Models) > 0 {
+			entry.HasBenchmarks = true
+			for id, m := range info.Models {
+				bm := templates.BenchmarkModel{
+					ID: id, Label: m.Label, Effectiveness: m.Effectiveness,
+				}
+				for _, s := range m.Scenarios {
+					bm.Scenarios = append(bm.Scenarios, templates.BenchmarkScenario{
+						Name: s.Name, Description: s.Description, Pass: s.Pass,
+					})
+				}
+				entry.Models = append(entry.Models, bm)
+				if m.Effectiveness > entry.BestScore {
+					entry.BestScore = m.Effectiveness
+					entry.BestModel = m.Label
+				}
+			}
+		}
+		entries = append(entries, entry)
 	}
 	sort.Slice(entries, func(i, j int) bool { return entries[i].Name < entries[j].Name })
 	return entries
@@ -622,6 +650,48 @@ func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templ
 		}
 		return nil
 	})
+	// Load benchmark data for skills
+	if artifactType == "skills" && vjData != nil {
+		var parsed map[string]map[string]struct {
+			Models map[string]struct {
+				Label         string `json:"label"`
+				Effectiveness int    `json:"effectiveness"`
+				Scenarios     []struct {
+					Name        string `json:"name"`
+					Description string `json:"description"`
+					Pass        bool   `json:"pass"`
+				} `json:"scenarios"`
+			} `json:"models"`
+		}
+		if json.Unmarshal(vjData, &parsed) == nil {
+			if skills, ok := parsed["skills"]; ok {
+				if info, ok := skills[name]; ok {
+					for id, m := range info.Models {
+						bm := templates.BenchmarkModel{
+							ID: id, Label: m.Label, Effectiveness: m.Effectiveness,
+						}
+						for _, s := range m.Scenarios {
+							bm.Scenarios = append(bm.Scenarios, templates.BenchmarkScenario{
+								Name: s.Name, Description: s.Description, Pass: s.Pass,
+							})
+						}
+						detail.Models = append(detail.Models, bm)
+					}
+				}
+			}
+		}
+		// Load tessl plugin data
+		if pData, err := os.ReadFile(filepath.Join(dir, ".tessl-plugin", "plugin.json")); err == nil {
+			var plugin struct {
+				Score     int  `json:"score"`
+				Published bool `json:"published"`
+			}
+			if json.Unmarshal(pData, &plugin) == nil {
+				detail.TesslScore = plugin.Score
+				detail.Published = plugin.Published
+			}
+		}
+	}
 	sort.Strings(detail.Files)
 	return detail
 }

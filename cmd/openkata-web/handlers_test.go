@@ -1045,3 +1045,143 @@ func TestHandleStatsDetail(t *testing.T) {
 		}
 	})
 }
+
+func setupTestSkillDirWithBenchmarks(t *testing.T) string {
+	t.Helper()
+	dir := t.TempDir()
+
+	skillDir := filepath.Join(dir, "skills", "test-skill")
+	if err := os.MkdirAll(skillDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(skillDir, "SKILL.md"), []byte("# Test Skill\n\nA test."), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	versionsDir := filepath.Join(dir, "web", "static")
+	if err := os.MkdirAll(versionsDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	versionsJSON := `{
+  "skills": {
+    "test-skill": {
+      "version": "1.2.0",
+      "description": "A test skill",
+      "tags": "category:test",
+      "models": {
+        "claude-sonnet-4-20250514": {
+          "label": "Sonnet 4.6",
+          "effectiveness": 92,
+          "scenarios": [{"name": "scenario-0", "description": "Basic test", "pass": true}]
+        },
+        "claude-opus-4-20250514": {
+          "label": "Opus 4.6",
+          "effectiveness": 96,
+          "scenarios": [{"name": "scenario-0", "description": "Basic test", "pass": true}]
+        }
+      }
+    }
+  },
+  "rules": {}
+}`
+	if err := os.WriteFile(filepath.Join(versionsDir, "versions.json"), []byte(versionsJSON), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	return dir
+}
+
+func TestSkillsListingEffectiveness(t *testing.T) {
+	origDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chdir(origDir) })
+
+	t.Run("shows badge when data exists", func(t *testing.T) {
+		testDir := setupTestSkillDirWithBenchmarks(t)
+		if err := os.Chdir(testDir); err != nil {
+			t.Fatal(err)
+		}
+
+		req := httptest.NewRequest("GET", "/skills/", nil)
+		rec := httptest.NewRecorder()
+		handleSkills(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Fatalf("status = %d, want 200", rec.Code)
+		}
+		body := rec.Body.String()
+		if !strings.Contains(body, "96%") {
+			t.Error("listing missing best effectiveness score '96%'")
+		}
+		if !strings.Contains(body, "Opus 4.6") {
+			t.Error("listing missing best model label 'Opus 4.6'")
+		}
+	})
+
+	t.Run("omits badge when no data", func(t *testing.T) {
+		testDir := setupTestSkillDir(t)
+		if err := os.Chdir(testDir); err != nil {
+			t.Fatal(err)
+		}
+
+		req := httptest.NewRequest("GET", "/skills/", nil)
+		rec := httptest.NewRecorder()
+		handleSkills(rec, req)
+
+		body := rec.Body.String()
+		if strings.Contains(body, "artifact-effectiveness") {
+			t.Error("listing should not contain effectiveness badge without data")
+		}
+	})
+}
+
+func TestSkillDetailBenchmarksTab(t *testing.T) {
+	origDir, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chdir(origDir) })
+
+	t.Run("shows tab when data exists", func(t *testing.T) {
+		testDir := setupTestSkillDirWithBenchmarks(t)
+		if err := os.Chdir(testDir); err != nil {
+			t.Fatal(err)
+		}
+
+		req := httptest.NewRequest("GET", "/skills/test-skill", nil)
+		rec := httptest.NewRecorder()
+		handleSkills(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Fatalf("status = %d, want 200", rec.Code)
+		}
+		body := rec.Body.String()
+		if !strings.Contains(body, "benchmarks") {
+			t.Error("detail page missing benchmarks tab")
+		}
+		if !strings.Contains(body, "Sonnet 4.6") {
+			t.Error("detail page missing model label")
+		}
+	})
+
+	t.Run("hides tab when no data", func(t *testing.T) {
+		testDir := setupTestSkillDir(t)
+		if err := os.Chdir(testDir); err != nil {
+			t.Fatal(err)
+		}
+
+		req := httptest.NewRequest("GET", "/skills/test-skill", nil)
+		rec := httptest.NewRecorder()
+		handleSkills(rec, req)
+
+		if rec.Code != http.StatusOK {
+			t.Fatalf("status = %d, want 200", rec.Code)
+		}
+		body := rec.Body.String()
+		if strings.Contains(body, "panel-benchmarks") {
+			t.Error("detail page should not have benchmarks panel without data")
+		}
+	})
+}

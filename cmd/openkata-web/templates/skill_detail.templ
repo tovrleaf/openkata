@@ -64,15 +64,7 @@ templ SkillDetailPage(skill ArtifactDetail) {
 				}
 			</section>
 
-			if skill.Rationale != "" && skill.Acknowledgments != "" {
-				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"rationale", "Rationale"}, {"changelog", "Changelog"}, {"acknowledgments", "Acknowledgments"}}, "Skill sections")
-			} else if skill.Rationale != "" {
-				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"rationale", "Rationale"}, {"changelog", "Changelog"}}, "Skill sections")
-			} else if skill.Acknowledgments != "" {
-				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"changelog", "Changelog"}, {"acknowledgments", "Acknowledgments"}}, "Skill sections")
-			} else {
-				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"changelog", "Changelog"}}, "Skill sections")
-			}
+			@TabBar(SkillTabs(skill), "Skill sections")
 
 			<section class="tab-panel active" id="panel-overview">
 				if skill.Description != "" {
@@ -104,6 +96,54 @@ templ SkillDetailPage(skill ArtifactDetail) {
 					<p class="comment">No changelog available.</p>
 				}
 			</section>
+
+			if len(skill.Models) > 0 || skill.TesslScore > 0 {
+				<section class="tab-panel" id="panel-benchmarks">
+					if skill.TesslScore > 0 {
+						<div class="benchmark-tessl">
+							<h3>Quality Score</h3>
+							<p class="benchmark-score">{ fmt.Sprintf("%d", skill.TesslScore) }%</p>
+							if skill.Published {
+								<a href={ templ.SafeURL(fmt.Sprintf("https://tessl.io/skills/%s", skill.Name)) } target="_blank">View on Tessl Registry</a>
+							}
+						</div>
+					}
+					if len(skill.Models) > 0 {
+						<div class="benchmark-effectiveness">
+							<h3>Effectiveness</h3>
+							<table class="benchmark-table">
+								<thead><tr><th>Model</th><th>Effectiveness</th><th>Scenarios</th></tr></thead>
+								<tbody>
+									for _, m := range skill.Models {
+										<tr>
+											<td>{ m.Label }</td>
+											<td>{ fmt.Sprintf("%d%%", m.Effectiveness) }</td>
+											<td>{ fmt.Sprintf("%d/%d pass", CountPass(m.Scenarios), len(m.Scenarios)) }</td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+						<div class="benchmark-scenarios">
+							<h3>Scenarios</h3>
+							for _, m := range skill.Models {
+								<h4>{ m.Label }</h4>
+								for _, s := range m.Scenarios {
+									<div class="benchmark-scenario-row">
+										if s.Pass {
+											<span class="benchmark-pass">✓</span>
+										} else {
+											<span class="benchmark-fail">✗</span>
+										}
+										<span>{ s.Name }</span>
+										<span class="comment">{ s.Description }</span>
+									</div>
+								}
+							}
+						</div>
+					}
+				</section>
+			}
 
 			if skill.Acknowledgments != "" {
 				<section class="tab-panel" id="panel-acknowledgments">
