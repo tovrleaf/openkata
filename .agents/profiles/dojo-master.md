@@ -129,8 +129,9 @@ Commands `kata-author` can run via `tessl`:
   kata-author — do not perform any release steps (diff,
   changelog, version bump, tagging) inline
 - If routing is ambiguous, ask the user
-- Always include `Assisted-by: Kiro:claude-opus-4.6` trailer
-  when delegating commits to subagents
+- Always include `Assisted-by: Kiro:<model>` trailer
+  when delegating commits to subagents, where <model>
+  matches the delegated agent's configured model
 - Follow the git-naming rule for Assisted-by trailers on
   delegated commits
 
