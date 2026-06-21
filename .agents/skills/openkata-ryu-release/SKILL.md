@@ -61,7 +61,7 @@ When in doubt, ask the user.
    ```text
    release(<type>): <name> vX.Y.Z
 
-   Assisted-by: Kiro:claude-opus-4.6
+   Assisted-by: Kiro:<model>  # <model> = your current model
    ```
 
 5. Tag:
