@@ -16,10 +16,23 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
-type artifactInfo struct {
-	Version     string `json:"version"`
+type modelInfo struct {
+	Label         string         `json:"label"`
+	Effectiveness int            `json:"effectiveness"`
+	Scenarios     []scenarioInfo `json:"scenarios"`
+}
+
+type scenarioInfo struct {
+	Name        string `json:"name"`
 	Description string `json:"description"`
-	Tags        string `json:"tags,omitempty"`
+	Pass        bool   `json:"pass"`
+}
+
+type artifactInfo struct {
+	Version     string               `json:"version"`
+	Description string               `json:"description"`
+	Tags        string               `json:"tags,omitempty"`
+	Models      map[string]modelInfo `json:"models,omitempty"`
 }
 
 type versionsFile struct {
@@ -59,6 +72,15 @@ func runLocal() {
 	scanLocal("skills", "SKILL.md", func(name string, info artifactInfo) {
 		versions.Skills[name] = info
 	})
+
+	// Load eval results for skills
+	for name, info := range versions.Skills {
+		models := loadEvalResults(filepath.Join("skills", name), info.Version)
+		if models != nil {
+			info.Models = models
+			versions.Skills[name] = info
+		}
+	}
 
 	// Scan rules
 	scanLocal("rules", "RULE.md", func(name string, info artifactInfo) {
@@ -349,6 +371,84 @@ func parseVersion(v string) [3]int {
 		result[i], _ = strconv.Atoi(parts[i])
 	}
 	return result
+}
+
+// loadEvalResults reads eval results from skills/<name>/evals/results/
+// and returns model effectiveness data for the given version.
+func loadEvalResults(skillDir, currentVersion string) map[string]modelInfo {
+	resultsDir := filepath.Join(skillDir, "evals", "results")
+	modelDirs, err := os.ReadDir(resultsDir)
+	if err != nil {
+		return nil
+	}
+
+	models := make(map[string]modelInfo)
+	for _, md := range modelDirs {
+		if !md.IsDir() {
+			continue
+		}
+		modelID := md.Name()
+		modelDir := filepath.Join(resultsDir, modelID)
+
+		files, err := os.ReadDir(modelDir)
+		if err != nil {
+			continue
+		}
+		var latest string
+		for _, f := range files {
+			if !f.IsDir() && strings.HasSuffix(f.Name(), ".json") {
+				if f.Name() > latest {
+					latest = f.Name()
+				}
+			}
+		}
+		if latest == "" {
+			continue
+		}
+
+		data, err := os.ReadFile(filepath.Join(modelDir, latest))
+		if err != nil {
+			continue
+		}
+
+		var result struct {
+			SkillVersion      string  `json:"skill_version"`
+			OverallPercentage float64 `json:"overall_percentage"`
+			Config            struct {
+				ModelLabel string `json:"model_label"`
+			} `json:"config"`
+			Scenarios []struct {
+				Name        string `json:"name"`
+				Description string `json:"description"`
+				Pass        bool   `json:"pass"`
+			} `json:"scenarios"`
+		}
+		if err := json.Unmarshal(data, &result); err != nil {
+			continue
+		}
+
+		if result.SkillVersion != currentVersion {
+			continue
+		}
+
+		mi := modelInfo{
+			Label:         result.Config.ModelLabel,
+			Effectiveness: int(result.OverallPercentage + 0.5),
+		}
+		for _, s := range result.Scenarios {
+			mi.Scenarios = append(mi.Scenarios, scenarioInfo{
+				Name:        s.Name,
+				Description: s.Description,
+				Pass:        s.Pass,
+			})
+		}
+		models[modelID] = mi
+	}
+
+	if len(models) == 0 {
+		return nil
+	}
+	return models
 }
 
 func strPtr(s string) *string { return &s }
