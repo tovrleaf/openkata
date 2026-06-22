@@ -1401,19 +1401,32 @@ section {
 
 /* Benchmarks tab */
 
-.benchmark-tessl-header {
+.benchmark-score {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0.25rem 0;
   display: flex;
   align-items: center;
-  gap: var(--space-lg, 1.5rem);
+  gap: 0.5rem;
 }
 
-.benchmark-tessl-header > div {
-  flex: 1;
+.benchmark-score-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.benchmark-score-link:hover {
+  text-decoration: underline;
+}
+
+.benchmark-tessl-logo-link {
+  display: inline-flex;
+  align-items: center;
 }
 
 .benchmark-tessl-logo {
-  width: 48px;
-  height: 48px;
+  height: 1.5rem;
+  width: auto;
 }
 
 .benchmark-tessl-logo--dark {
@@ -1437,12 +1450,6 @@ section {
 .benchmark-tessl-link {
   display: inline-block;
   margin-top: 0.5rem;
-}
-
-.benchmark-score {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0.25rem 0;
 }
 
 .benchmark-table {
