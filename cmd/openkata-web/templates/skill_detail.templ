@@ -101,11 +101,18 @@ templ SkillDetailPage(skill ArtifactDetail) {
 				<section class="tab-panel" id="panel-benchmarks">
 					if skill.TesslScore > 0 {
 						<div class="benchmark-tessl">
-							<h3>Quality Score</h3>
-							<p class="benchmark-score">{ fmt.Sprintf("%d", skill.TesslScore) }%</p>
-							if skill.Published {
-								<a href={ templ.SafeURL(fmt.Sprintf("https://tessl.io/skills/%s", skill.Name)) } target="_blank">View on Tessl Registry</a>
-							}
+							<div class="benchmark-tessl-header">
+								<div>
+									<h3>Quality Score</h3>
+									<p class="benchmark-score">{ fmt.Sprintf("%d", skill.TesslScore) }%</p>
+									<p class="benchmark-tessl-desc">Structural quality score from <a href="https://tessl.io" target="_blank">tessl</a> lint — measures formatting, metadata, and SKILL.md structure.</p>
+									if skill.Published {
+										<a href={ templ.SafeURL(fmt.Sprintf("https://tessl.io/skills/%s", skill.Name)) } target="_blank" class="benchmark-tessl-link">View on Tessl Registry →</a>
+									}
+								</div>
+								<img class="benchmark-tessl-logo benchmark-tessl-logo--light" src="/static/img/tessl-icon-black.svg" alt="Tessl" width="48" height="48"/>
+								<img class="benchmark-tessl-logo benchmark-tessl-logo--dark" src="/static/img/tessl-icon-white.svg" alt="Tessl" width="48" height="48"/>
+							</div>
 						</div>
 					}
 					if len(skill.Models) > 0 {
