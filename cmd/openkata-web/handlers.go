@@ -631,7 +631,9 @@ func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templ
 	// Load benchmark data for skills
 	if artifactType == "skills" && vjData != nil {
 		var parsed map[string]map[string]struct {
-			Models map[string]struct {
+			TesslScore int  `json:"tessl_score"`
+			Published  bool `json:"published"`
+			Models     map[string]struct {
 				Label         string `json:"label"`
 				Effectiveness int    `json:"effectiveness"`
 				Scenarios     []struct {
@@ -645,6 +647,8 @@ func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templ
 		if json.Unmarshal(vjData, &parsed) == nil {
 			if skills, ok := parsed["skills"]; ok {
 				if info, ok := skills[name]; ok {
+					detail.TesslScore = info.TesslScore
+					detail.Published = info.Published
 					for id, m := range info.Models {
 						bm := templates.BenchmarkModel{
 							ID: id, Label: m.Label, Effectiveness: m.Effectiveness,
@@ -657,17 +661,6 @@ func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templ
 						detail.Models = append(detail.Models, bm)
 					}
 				}
-			}
-		}
-		// Load tessl plugin data
-		if pData, err := os.ReadFile(filepath.Join(dir, ".tessl-plugin", "plugin.json")); err == nil {
-			var plugin struct {
-				Score     int  `json:"score"`
-				Published bool `json:"published"`
-			}
-			if json.Unmarshal(pData, &plugin) == nil {
-				detail.TesslScore = plugin.Score
-				detail.Published = plugin.Published
 			}
 		}
 	}
