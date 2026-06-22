@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/tovrleaf/openkata/internal/exclude"
 )
 
 func TestStripFrontmatter(t *testing.T) {
@@ -211,9 +213,9 @@ func TestIsExcludedFile(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.path, func(t *testing.T) {
-			got := isExcludedFile(tt.path)
+			got := exclude.FromFilesTab(tt.path)
 			if got != tt.want {
-				t.Errorf("isExcludedFile(%q) = %v, want %v", tt.path, got, tt.want)
+				t.Errorf("exclude.FromFilesTab(%q) = %v, want %v", tt.path, got, tt.want)
 			}
 		})
 	}

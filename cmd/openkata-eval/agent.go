@@ -55,18 +55,6 @@ func buildAgentPrompt(skillPath string, scenario Scenario) (string, error) {
 	return strings.Join(parts, "\n\n"), nil
 }
 
-// isExcludedSkillFile returns true for files that should not be in the agent prompt.
-func isExcludedSkillFile(relPath string) bool {
-	switch relPath {
-	case "CHANGELOG.md", "RATIONALE.md", "tile.json", ".tesslignore":
-		return true
-	}
-	if strings.HasPrefix(relPath, ".tessl-plugin/") || strings.HasPrefix(relPath, "evals/") {
-		return true
-	}
-	return false
-}
-
 // collectDir reads all files in a directory recursively, applying an exclude filter.
 // Returns file contents prefixed with their relative path as a header.
 func collectDir(dir string, exclude func(string) bool) ([]string, error) {

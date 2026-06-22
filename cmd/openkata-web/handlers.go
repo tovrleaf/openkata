@@ -24,34 +24,11 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/tovrleaf/openkata/cmd/openkata-web/templates"
 	"github.com/tovrleaf/openkata/internal/analytics"
+	"github.com/tovrleaf/openkata/internal/exclude"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/renderer/html"
 )
-
-// isExcludedFile returns true if the file should be excluded from the Files tab.
-func isExcludedFile(path string) bool {
-	switch path {
-	case "tile.json", ".tesslignore", "CHANGELOG.md", "RATIONALE.md", "references/ACKNOWLEDGMENTS.md":
-		return true
-	}
-	if strings.HasPrefix(path, "evals/") || strings.HasPrefix(path, ".tessl-plugin/") {
-		return true
-	}
-	return false
-}
-
-// isExcludedFromArchive returns true if the file should not be included in archive downloads.
-func isExcludedFromArchive(path string) bool {
-	switch path {
-	case "tile.json", ".tesslignore", "references/ACKNOWLEDGMENTS.md", "CHANGELOG.md", "RATIONALE.md":
-		return true
-	}
-	if strings.HasPrefix(path, "evals/") || strings.HasPrefix(path, ".tessl-plugin/") {
-		return true
-	}
-	return false
-}
 
 // artifactRedirects maps old artifact names to their current names.
 // Used for permanent redirects after renames.
@@ -515,7 +492,7 @@ func loadArtifactDetailS3(ctx context.Context, artifactType, name, version, docF
 					} else {
 						*target = renderMarkdown(data, name)
 					}
-					if !isExcludedFile(relPath) {
+					if !exclude.FromFilesTab(relPath) {
 						detail.FileContents[relPath] = string(data)
 						if strings.HasSuffix(relPath, ".md") {
 							detail.FileContents["__rendered__"+relPath] = renderMarkdownFull(data, name)
@@ -526,7 +503,7 @@ func loadArtifactDetailS3(ctx context.Context, artifactType, name, version, docF
 		}
 
 		// Only add non-excluded files to the Files tab and FileContents
-		if !isExcludedFile(relPath) {
+		if !exclude.FromFilesTab(relPath) {
 			detail.Files = append(detail.Files, relPath)
 			if target == nil {
 				getResp, err := s3Client.GetObject(ctx, &s3.GetObjectInput{
@@ -638,7 +615,7 @@ func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templ
 		}
 		relPath, _ := filepath.Rel(dir, path)
 		relPath = filepath.ToSlash(relPath)
-		if isExcludedFile(relPath) {
+		if exclude.FromFilesTab(relPath) {
 			return nil
 		}
 		detail.Files = append(detail.Files, relPath)
@@ -1192,7 +1169,7 @@ func handleArchive(w http.ResponseWriter, r *http.Request, artifactType, name, v
 		if relPath == "" || strings.HasSuffix(relPath, "/") {
 			continue
 		}
-		if isExcludedFromArchive(relPath) {
+		if exclude.FromInstall(relPath) {
 			continue
 		}
 
@@ -1324,7 +1301,7 @@ func handleArchiveLocal(w http.ResponseWriter, r *http.Request, artifactType, na
 		}
 		relPath, _ := filepath.Rel(dir, path)
 		relPath = filepath.ToSlash(relPath)
-		if isExcludedFromArchive(relPath) {
+		if exclude.FromInstall(relPath) {
 			return nil
 		}
 		data, err := os.ReadFile(path)
