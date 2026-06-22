@@ -53,11 +53,9 @@ func (d *DockerSandbox) createArgs(name, network string) []string {
 		"-v", home + "/.aws:/root/.aws:ro",
 		"-v", home + "/.kiro:/root/.kiro:ro",
 		"-w", "/workspace",
+		d.Config.Image,
+		"sleep", "infinity",
 	}
-	if kiroPath, err := exec.LookPath("kiro-cli"); err == nil {
-		args = append(args, "-v", kiroPath+":/usr/local/bin/kiro-cli:ro")
-	}
-	args = append(args, d.Config.Image, "sleep", "infinity")
 	return args
 }
 
