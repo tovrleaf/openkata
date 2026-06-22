@@ -3,32 +3,39 @@
     "commit-conventions": {
       "version": "1.4.0",
       "description": "Enforces Conventional Commits format and branch naming conventions, validating commit message structure (type/scope/description header), suggesting branch name patterns (feature/*, fix/*, hotfix/*), and enforcing breaking change notation. Use when the user is about to commit, creating a branch, reviewing commit history, preparing a pull request, setting up commit linting, or asking about commit message format, branch naming, or Conventional Commits.",
-      "tags": "category:conventions, category:version-control, tool:git"
+      "tags": "category:conventions, category:version-control, tool:git",
+      "tessl_score": 100,
+      "published": true
     },
     "create-adr": {
       "version": "1.2.1",
       "description": "Detects architectural decisions in conversation and guides creation of Architecture Decision Records. Activate when the user is making, discussing, or debating: technology choices (languages, frameworks, databases, cloud services), structural patterns (monolith vs microservices, event-driven, CQRS, API design), cross-cutting conventions (error handling, logging, authentication, API versioning), hard-to-reverse decisions (data models, public API contracts, infrastructure topology), or deviations from existing standards. Also activate when the user explicitly asks to create an ADR.",
-      "tags": "category:documentation, category:architecture"
+      "tags": "category:documentation, category:architecture",
+      "tessl_score": 100
     },
     "create-evals": {
       "version": "1.0.0",
       "description": "Generate diverse evaluation scenarios that test whether an agent using a skill produces correct output, including happy-path cases, edge cases, and failure scenarios across varying complexity levels. Produces structured scenario directories containing task prompts, weighted scoring checklists, and optional input fixtures for each scenario. Use when the user says \"create evals\", \"generate eval scenarios\", \"write evals\", \"test this skill\", or before publishing a skill.",
-      "tags": "category:scaffolding, category:quality"
+      "tags": "category:scaffolding, category:quality",
+      "tessl_score": 97
     },
     "create-profile": {
       "version": "1.1.0",
       "description": "Creates agent profiles that define roles with scoped permissions and constraints. Investigates the repo for existing profiles and conventions, writes a focused profile markdown file, and validates scope boundaries. Use when the user wants to create an agent profile, define a specialized role, scope an agent to specific files or domains, set up a new team member persona, restrict what an agent can touch, or wants consistent behavior from a domain-specific agent.",
-      "tags": "category:scaffolding"
+      "tags": "category:scaffolding",
+      "tessl_score": 97
     },
     "create-rule": {
       "version": "1.2.1",
       "description": "Creates rule files that define always-on constraints for agent sessions. Investigates the repo for existing conventions, writes a RULE.md with clear structure, and validates against real usage. Use when the user wants to create a rule, add a convention, enforce a standard, establish a project-wide constraint, define coding style, standardize formatting across generated files, notices inconsistent output across sessions, or is setting up a new project's conventions.",
-      "tags": "category:scaffolding, category:conventions"
+      "tags": "category:scaffolding, category:conventions",
+      "tessl_score": 97
     },
     "create-skill": {
       "version": "1.3.1",
       "description": "Creates new agent skills following the Agent Skills specification. Investigates the repo for conventions, designs the skill around progressive disclosure, writes SKILL.md with effective trigger descriptions, and validates with representative prompts. Use when the user wants to create a skill, build a SKILL.md, turn a workflow into a reusable skill, teach the agent a new task, scaffold a new agent capability, has a repeated workflow they want to codify, is frustrated by inconsistent agent behavior, or wants to package expertise for a team.",
-      "tags": "category:scaffolding"
+      "tags": "category:scaffolding",
+      "tessl_score": 100
     },
     "critical-thinking": {
       "version": "1.0.0",
@@ -65,37 +72,44 @@
             }
           ]
         }
-      }
+      },
+      "tessl_score": 99
     },
     "git-worktree": {
       "version": "1.0.1",
       "description": "Creates, lists, and removes git worktrees to manage parallel workspaces. Activate when the user needs to work on multiple branches simultaneously, run parallel tasks in isolation, or when an agent needs its own workspace. Also activate when the user says \"worktree\", \"parallel branch\", \"work on two things at once\", or \"run these in parallel\".",
-      "tags": "category:workflow, tool:git"
+      "tags": "category:workflow, tool:git",
+      "tessl_score": 100
     },
     "github-create-pr": {
       "version": "1.0.0",
       "description": "Creates a pull request using GitHub CLI by following every numbered step in order. Do not skip steps. Do not improvise — execute the workflow literally. Activate when the user says \"create PR\", \"open PR\", \"push and PR\", \"submit for review\", or work is ready for review.",
-      "tags": "category:workflow, tool:git, tool:github"
+      "tags": "category:workflow, tool:git, tool:github",
+      "tessl_score": 96
     },
     "grill-me": {
       "version": "1.0.1",
       "description": "Challenge a plan, spec, ADR, or design by interviewing the user relentlessly until all corners are covered. Identifies edge cases, questions assumptions, probes failure modes, and surfaces missing requirements. Use when the user wants to stress-test a plan, get grilled on their design, says \"grill me\", \"challenge this\", or \"poke holes in this.\"",
-      "tags": "category:review, category:architecture"
+      "tags": "category:review, category:architecture",
+      "tessl_score": 100
     },
     "grill-with-docs": {
       "version": "1.0.0",
       "description": "Domain-driven grilling session that challenges a plan against the project's language, sharpens terminology, and writes documentation inline as decisions crystallise. Use when the user wants to stress-test a plan against domain language, says \"grill with docs\", \"sharpen terms\", \"challenge against domain\", or wants a grilling session that produces glossary updates and ADRs as it goes.",
-      "tags": "category:review, category:architecture, category:documentation"
+      "tags": "category:review, category:architecture, category:documentation",
+      "tessl_score": 100
     },
     "makefile-conventions": {
       "version": "1.0.1",
       "description": "Structures Makefiles as a universal command interface using modular includes and self-documenting help. Use when the user wants to add a make target, create a Makefile, organize build commands, set up a make-based workflow, or asks how to structure make targets. Also activate before modifying any Makefile or mk/ file in this project.",
-      "tags": "category:conventions, tool:makefile"
+      "tags": "category:conventions, tool:makefile",
+      "tessl_score": 100
     },
     "spec-workflow": {
       "version": "1.1.1",
       "description": "Drives feature development through a repo-stored, phased spec workflow: specify requirements, design architecture, break into atomic tasks, then implement autonomously with frequent per-task commits and a progress log for session continuity. Use when the user says \"let's spec this\", \"new feature\", or \"let's plan\", or when a change touches 3+ files, adds dependencies, alters infrastructure, or requires trade-off decisions. Distinct from general coding assistance: this skill manages a persistent spec directory lifecycle (Draft → Implementing → Done) with explicit phase gates and user confirmation checkpoints before each transition.",
-      "tags": "category:planning, category:workflow"
+      "tags": "category:planning, category:workflow",
+      "tessl_score": 96
     }
   },
   "rules": {

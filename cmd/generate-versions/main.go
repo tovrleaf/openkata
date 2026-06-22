@@ -34,6 +34,8 @@ type artifactInfo struct {
 	Description string               `json:"description"`
 	Tags        string               `json:"tags,omitempty"`
 	Models      map[string]modelInfo `json:"models,omitempty"`
+	TesslScore  int                  `json:"tessl_score,omitempty"`
+	Published   bool                 `json:"published,omitempty"`
 }
 
 type versionsFile struct {
@@ -80,6 +82,22 @@ func runLocal() {
 		if models != nil {
 			info.Models = models
 			versions.Skills[name] = info
+		}
+	}
+
+	// Load tessl scores for skills
+	for name, info := range versions.Skills {
+		pData, err := os.ReadFile(filepath.Join("skills", name, ".tessl-plugin", "plugin.json"))
+		if err == nil {
+			var plugin struct {
+				Score   int  `json:"score"`
+				Private bool `json:"private"`
+			}
+			if json.Unmarshal(pData, &plugin) == nil && plugin.Score > 0 {
+				info.TesslScore = plugin.Score
+				info.Published = !plugin.Private
+				versions.Skills[name] = info
+			}
 		}
 	}
 
@@ -222,6 +240,20 @@ func runS3() {
 
 			switch artifactType {
 			case "skills":
+				// Load tessl score from S3
+				pluginKey := artifactType + "/" + name + "/" + latest + "/.tessl-plugin/plugin.json"
+				if pResp, err := client.GetObject(ctx, &s3.GetObjectInput{Bucket: &bucket, Key: &pluginKey}); err == nil {
+					var plugin struct {
+						Score   int  `json:"score"`
+						Private bool `json:"private"`
+					}
+					pBody, _ := io.ReadAll(pResp.Body)
+					pResp.Body.Close()
+					if json.Unmarshal(pBody, &plugin) == nil && plugin.Score > 0 {
+						info.TesslScore = plugin.Score
+						info.Published = !plugin.Private
+					}
+				}
 				versions.Skills[name] = info
 			case "rules":
 				versions.Rules[name] = info

@@ -129,7 +129,7 @@ func listRulesTool() mcp.Tool {
 
 func installSkillTool() mcp.Tool {
 	return mcp.NewTool("install_skill",
-		mcp.WithDescription("Install an OpenKata skill. Returns all files and a .manifest.json. Write files to .agents/skills/<name>/ in your project."),
+		mcp.WithDescription("Install an OpenKata skill. Returns all files and a .manifest.json. Write files to the skills directory in your project: .agents/skills/<name>/ (Kiro, standard) or .claude/skills/<name>/ (Claude Code)."),
 		mcp.WithString("skill", mcp.Required(), mcp.Description("Name of the skill to install")),
 		mcp.WithString("version", mcp.Description("Version to install (default: latest)")),
 	)
@@ -137,7 +137,7 @@ func installSkillTool() mcp.Tool {
 
 func installRuleTool() mcp.Tool {
 	return mcp.NewTool("install_rule",
-		mcp.WithDescription("Install an OpenKata rule. Returns all files and a .manifest.json. Write files to .agents/rules/<name>/ in your project."),
+		mcp.WithDescription("Install an OpenKata rule. Returns all files and a .manifest.json. Write files to the rules directory in your project: .agents/rules/<name>/ (Kiro, standard) or .claude/rules/<name>/ (Claude Code)."),
 		mcp.WithString("rule", mcp.Required(), mcp.Description("Name of the rule to install")),
 		mcp.WithString("version", mcp.Description("Version to install (default: latest)")),
 	)
@@ -166,7 +166,7 @@ func listProfilesTool() mcp.Tool {
 
 func installProfileTool() mcp.Tool {
 	return mcp.NewTool("install_profile",
-		mcp.WithDescription("Install an OpenKata agent profile. Returns the profile file and a .manifest.json. Write to profiles/<name>/ in your project."),
+		mcp.WithDescription("Install an OpenKata agent profile. Returns the profile file and a .manifest.json. Write to the profiles directory in your project: .agents/profiles/<name>/ (Kiro, standard) or .claude/profiles/<name>/ (Claude Code)."),
 		mcp.WithString("profile", mcp.Required(), mcp.Description("Name of the profile to install")),
 		mcp.WithString("version", mcp.Description("Version to install (default: latest)")),
 	)
