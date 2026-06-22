@@ -45,17 +45,19 @@ func containerName(scenario string) string {
 // createArgs builds the docker create command arguments.
 func (d *DockerSandbox) createArgs(name, network string) []string {
 	home, _ := os.UserHomeDir()
-	awsMount := home + "/.aws:/root/.aws:ro"
 
 	args := []string{
 		"create",
 		"--name", name,
 		"--network", network,
-		"-v", awsMount,
+		"-v", home + "/.aws:/root/.aws:ro",
+		"-v", home + "/.kiro:/root/.kiro:ro",
 		"-w", "/workspace",
-		d.Config.Image,
-		"sleep", "infinity",
 	}
+	if kiroPath, err := exec.LookPath("kiro-cli"); err == nil {
+		args = append(args, "-v", kiroPath+":/usr/local/bin/kiro-cli:ro")
+	}
+	args = append(args, d.Config.Image, "sleep", "infinity")
 	return args
 }
 
