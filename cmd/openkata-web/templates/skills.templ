@@ -26,10 +26,6 @@ templ Skills(skills []SkillEntry) {
 									<span class="artifact-number">{ fmt.Sprintf("%02d", i+1) }</span>
 									<span class="artifact-name">{ s.Name }</span>
 									<span class="artifact-summary-right">
-										if s.HasBenchmarks {
-											<span class="artifact-effectiveness">{ fmt.Sprintf("%d%%", s.BestScore) } { s.BestModel }</span>
-											<span class="artifact-sep">|</span>
-										}
 										<span class="artifact-downloads">{ fmt.Sprintf("%d", s.Downloads) } ↓</span>
 										<span class="artifact-sep">|</span>
 										<span class="artifact-version">v{ s.Version }</span>
@@ -51,17 +47,7 @@ templ Skills(skills []SkillEntry) {
 								} else {
 									<p class="artifact-description"><strong>{ FirstSentence(s.Description) }</strong><br/>{ AfterFirstSentence(s.Description) }</p>
 								}
-								if s.HasBenchmarks {
-									<p class="artifact-models">
-										for i, m := range s.Models {
-											if i > 0 {
-												<span class="artifact-sep"> | </span>
-											}
-											{ m.Label }: { fmt.Sprintf("%d%%", m.Effectiveness) }
-										}
-									</p>
-								}
-							</div>
+								</div>
 						</details>
 					}
 				</div>
