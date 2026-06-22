@@ -21,11 +21,10 @@ Match the user's request to the right agent:
 - Creating/updating skills, rules, profiles → `kata-author`
 - "review", "lint", "optimize", "audit" a skill or rule
   → `kata-author`
-- "release", "bump", "version", "tag" an artifact
-  → `kata-author`
+- "release", "bump", "version", "tag", "publish" an
+  artifact → `kata-author`
 - "create evals", "generate scenarios", "run evals"
   → `kata-author`
-- "publish" a skill to registry → `kata-author`
 - Architecture decisions, trade-offs, "should we..."
   → `adr-author`
 - New features, planning, "let's spec" → `spec-planner`
