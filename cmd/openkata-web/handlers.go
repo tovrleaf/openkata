@@ -316,6 +316,7 @@ func loadArtifactList(ctx context.Context, artifactType string) []templates.Skil
 				Name        string `json:"name"`
 				Description string `json:"description"`
 				Pass        bool   `json:"pass"`
+				Score       int    `json:"score"`
 			} `json:"scenarios"`
 		} `json:"models"`
 	}
@@ -345,7 +346,7 @@ func loadArtifactList(ctx context.Context, artifactType string) []templates.Skil
 				}
 				for _, s := range m.Scenarios {
 					bm.Scenarios = append(bm.Scenarios, templates.BenchmarkScenario{
-						Name: s.Name, Description: s.Description, Pass: s.Pass,
+						Name: s.Name, Description: s.Description, Pass: s.Pass, Score: s.Score,
 					})
 				}
 				entry.Models = append(entry.Models, bm)
@@ -637,6 +638,7 @@ func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templ
 					Name        string `json:"name"`
 					Description string `json:"description"`
 					Pass        bool   `json:"pass"`
+					Score       int    `json:"score"`
 				} `json:"scenarios"`
 			} `json:"models"`
 		}
@@ -649,7 +651,7 @@ func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templ
 						}
 						for _, s := range m.Scenarios {
 							bm.Scenarios = append(bm.Scenarios, templates.BenchmarkScenario{
-								Name: s.Name, Description: s.Description, Pass: s.Pass,
+								Name: s.Name, Description: s.Description, Pass: s.Pass, Score: s.Score,
 							})
 						}
 						detail.Models = append(detail.Models, bm)

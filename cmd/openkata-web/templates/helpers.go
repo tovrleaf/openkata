@@ -177,6 +177,18 @@ func SkillTabs(skill ArtifactDetail) []TabDef {
 	return tabs
 }
 
+// ScenarioBarClass returns CSS classes for the scenario color bar.
+func ScenarioBarClass(score int) string {
+	switch {
+	case score >= 95:
+		return "scenario-bar scenario-bar--green"
+	case score >= 70:
+		return "scenario-bar scenario-bar--yellow"
+	default:
+		return "scenario-bar scenario-bar--red"
+	}
+}
+
 // CountPass returns the number of passing scenarios.
 func CountPass(scenarios []BenchmarkScenario) int {
 	n := 0

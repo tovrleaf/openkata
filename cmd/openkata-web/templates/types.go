@@ -49,6 +49,7 @@ type BenchmarkScenario struct {
 	Name        string
 	Description string
 	Pass        bool
+	Score       int
 }
 
 type StatsData struct {

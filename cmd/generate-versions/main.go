@@ -26,6 +26,7 @@ type scenarioInfo struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Pass        bool   `json:"pass"`
+	Score       int    `json:"score"`
 }
 
 type artifactInfo struct {
@@ -418,9 +419,10 @@ func loadEvalResults(skillDir, currentVersion string) map[string]modelInfo {
 				ModelLabel string `json:"model_label"`
 			} `json:"config"`
 			Scenarios []struct {
-				Name        string `json:"name"`
-				Description string `json:"description"`
-				Pass        bool   `json:"pass"`
+				Name        string  `json:"name"`
+				Description string  `json:"description"`
+				Pass        bool    `json:"pass"`
+				Percentage  float64 `json:"percentage"`
 			} `json:"scenarios"`
 		}
 		if err := json.Unmarshal(data, &result); err != nil {
@@ -440,6 +442,7 @@ func loadEvalResults(skillDir, currentVersion string) map[string]modelInfo {
 				Name:        s.Name,
 				Description: s.Description,
 				Pass:        s.Pass,
+				Score:       int(s.Percentage + 0.5),
 			})
 		}
 		models[modelID] = mi

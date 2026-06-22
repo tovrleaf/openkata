@@ -136,14 +136,13 @@ templ SkillDetailPage(skill ArtifactDetail) {
 							for _, m := range skill.Models {
 								<h4>{ m.Label }</h4>
 								for _, s := range m.Scenarios {
-									<div class="benchmark-scenario-row">
-										if s.Pass {
-											<span class="benchmark-pass">✓</span>
-										} else {
-											<span class="benchmark-fail">✗</span>
-										}
-										<span>{ s.Name }</span>
-										<span class="comment">{ s.Description }</span>
+									<div class="scenario-row">
+										<div class="scenario-row-top">
+											<span class={ ScenarioBarClass(s.Score) }></span>
+											<span class="scenario-score">{ fmt.Sprintf("%d%%", s.Score) }</span>
+											<span class="scenario-name">{ s.Name }</span>
+										</div>
+										<div class="scenario-row-desc">{ s.Description }</div>
 									</div>
 								}
 							}
