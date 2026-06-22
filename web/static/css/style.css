@@ -1441,6 +1441,18 @@ section {
   display: inline;
 }
 
+.benchmark-effectiveness-desc {
+  color: var(--color-comment, #6b7280);
+  font-size: 0.8125rem;
+  margin-top: 0.5rem;
+}
+
+.benchmark-tessl,
+.benchmark-effectiveness,
+.benchmark-scenarios {
+  margin-bottom: 2.5rem;
+}
+
 .benchmark-tessl-desc {
   color: var(--color-comment, #6b7280);
   font-size: 0.875rem;
@@ -1516,7 +1528,7 @@ section {
 }
 
 .scenario-row-desc {
-  margin-left: 6.75rem;
+  margin-left: 7.5rem;
   color: var(--color-ink-muted);
   font-size: 0.8125rem;
 }

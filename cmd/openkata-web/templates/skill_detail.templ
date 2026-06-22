@@ -119,17 +119,17 @@ templ SkillDetailPage(skill ArtifactDetail) {
 						<div class="benchmark-effectiveness">
 							<h3>Effectiveness</h3>
 							<table class="benchmark-table">
-								<thead><tr><th>Model</th><th>Effectiveness</th><th>Scenarios</th></tr></thead>
+								<thead><tr><th>Model</th><th>Effectiveness</th></tr></thead>
 								<tbody>
 									for _, m := range skill.Models {
 										<tr>
 											<td>{ m.Label }</td>
 											<td>{ fmt.Sprintf("%d%%", m.Effectiveness) }</td>
-											<td>{ fmt.Sprintf("%d/%d pass", CountPass(m.Scenarios), len(m.Scenarios)) }</td>
 										</tr>
 									}
 								</tbody>
 							</table>
+							<p class="benchmark-effectiveness-desc">How well the skill performs across eval scenarios — averaged score when tested against an LLM.</p>
 						</div>
 						<div class="benchmark-scenarios">
 							<h3>Scenarios</h3>
