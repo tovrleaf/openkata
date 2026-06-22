@@ -107,7 +107,7 @@ templ SkillDetailPage(skill ArtifactDetail) {
 									<p class="benchmark-score">{ fmt.Sprintf("%d", skill.TesslScore) }%</p>
 									<p class="benchmark-tessl-desc">Structural quality score from <a href="https://tessl.io" target="_blank">tessl</a> lint — measures formatting, metadata, and SKILL.md structure.</p>
 									if skill.Published {
-										<a href={ templ.SafeURL(fmt.Sprintf("https://tessl.io/skills/%s", skill.Name)) } target="_blank" class="benchmark-tessl-link">View on Tessl Registry →</a>
+										<a href={ templ.SafeURL(fmt.Sprintf("https://tessl.io/registry/openkata/%s", skill.Name)) } target="_blank" class="benchmark-tessl-link">View on Tessl Registry →</a>
 									}
 								</div>
 								<img class="benchmark-tessl-logo benchmark-tessl-logo--light" src="/static/img/tessl-icon-black.svg" alt="Tessl" width="48" height="48"/>

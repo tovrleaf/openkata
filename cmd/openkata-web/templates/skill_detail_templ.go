@@ -515,9 +515,9 @@ func SkillDetailPage(skill ArtifactDetail) templ.Component {
 							return templ_7745c5c3_Err
 						}
 						var templ_7745c5c3_Var26 templ.SafeURL
-						templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("https://tessl.io/skills/%s", skill.Name)))
+						templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("https://tessl.io/registry/openkata/%s", skill.Name)))
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 110, Col: 88}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/skill_detail.templ`, Line: 110, Col: 99}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 						if templ_7745c5c3_Err != nil {
