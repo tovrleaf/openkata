@@ -6,11 +6,15 @@ type TabDef struct {
 }
 
 type SkillEntry struct {
-	Name        string
-	Version     string
-	Description string
-	Tags        string
-	Downloads   int
+	Name          string
+	Version       string
+	Description   string
+	Tags          string
+	Downloads     int
+	BestScore     int
+	BestModel     string
+	HasBenchmarks bool
+	Models        []BenchmarkModel
 }
 
 type ArtifactDetail struct {
@@ -29,6 +33,23 @@ type ArtifactDetail struct {
 	FileContents    map[string]string
 	Prev            string // name of previous artifact (empty if first)
 	Next            string // name of next artifact (empty if last)
+	Models          []BenchmarkModel
+	TesslScore      int
+	Published       bool
+}
+
+type BenchmarkModel struct {
+	ID            string
+	Label         string
+	Effectiveness int
+	Scenarios     []BenchmarkScenario
+}
+
+type BenchmarkScenario struct {
+	Name        string
+	Description string
+	Pass        bool
+	Score       int
 }
 
 type StatsData struct {

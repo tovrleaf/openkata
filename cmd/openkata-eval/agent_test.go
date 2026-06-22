@@ -3,6 +3,8 @@ package main
 import (
 	"strings"
 	"testing"
+
+	"github.com/tovrleaf/openkata/internal/exclude"
 )
 
 func TestBuildAgentPrompt(t *testing.T) {
@@ -87,9 +89,9 @@ func TestIsExcludedSkillFile(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := isExcludedSkillFile(tt.path)
+			got := exclude.FromInstall(tt.path)
 			if got != tt.want {
-				t.Errorf("isExcludedSkillFile(%q) = %v, want %v", tt.path, got, tt.want)
+				t.Errorf("exclude.FromInstall(%q) = %v, want %v", tt.path, got, tt.want)
 			}
 		})
 	}

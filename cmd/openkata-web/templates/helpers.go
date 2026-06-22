@@ -160,3 +160,42 @@ func renderNode(sb *strings.Builder, node *treeNode, prefix string, isLast bool)
 		sb.WriteString(fmt.Sprintf(`<div class="file-tree-file"><span class="file-tree-prefix">%s%s</span><a class="file-tree-link" href="#file-%s">%s</a></div>`, prefix, connector, fileID(node.path), node.name))
 	}
 }
+
+// SkillTabs returns the tab definitions for a skill detail page.
+func SkillTabs(skill ArtifactDetail) []TabDef {
+	tabs := []TabDef{{"overview", "Overview"}, {"files", "Files"}}
+	if skill.Rationale != "" {
+		tabs = append(tabs, TabDef{"rationale", "Rationale"})
+	}
+	tabs = append(tabs, TabDef{"changelog", "Changelog"})
+	if len(skill.Models) > 0 || skill.TesslScore > 0 {
+		tabs = append(tabs, TabDef{"benchmarks", "Benchmarks"})
+	}
+	if skill.Acknowledgments != "" {
+		tabs = append(tabs, TabDef{"acknowledgments", "Acknowledgments"})
+	}
+	return tabs
+}
+
+// ScenarioBarClass returns CSS classes for the scenario color bar.
+func ScenarioBarClass(score int) string {
+	switch {
+	case score >= 95:
+		return "scenario-bar scenario-bar--green"
+	case score >= 70:
+		return "scenario-bar scenario-bar--yellow"
+	default:
+		return "scenario-bar scenario-bar--red"
+	}
+}
+
+// CountPass returns the number of passing scenarios.
+func CountPass(scenarios []BenchmarkScenario) int {
+	n := 0
+	for _, s := range scenarios {
+		if s.Pass {
+			n++
+		}
+	}
+	return n
+}

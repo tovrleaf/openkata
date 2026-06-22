@@ -21,19 +21,23 @@ Match the user's request to the right agent:
 - Creating/updating skills, rules, profiles → `kata-author`
 - "review", "lint", "optimize", "audit" a skill or rule
   → `kata-author`
-- "release", "bump", "version", "tag" an artifact
-  → `kata-author`
+- "release", "bump", "version", "tag", "publish" an
+  artifact → `kata-author`
 - "create evals", "generate scenarios", "run evals"
   → `kata-author`
-- "publish" a skill to registry → `kata-author`
 - Architecture decisions, trade-offs, "should we..."
   → `adr-author`
 - New features, planning, "let's spec" → `spec-planner`
 - "build spec N", "implement spec", resuming tasks from an
   existing spec → activate spec-workflow (Phase 4: Implement).
-  Do NOT delegate raw implementation to backend-developer
-  without following the spec-workflow discipline (task-by-task
-  commits, status updates, progress log).
+  Do NOT batch multiple tasks. Follow the commit loop:
+  For each task: delegate to coding agent with instructions
+  to implement → verify (build + test) → commit with message
+  and Assisted-by trailer → return. Then update task status
+  in tasks.md, append to progress.log, and move to next task.
+  The coding agent owns build, test, and commit as the final
+  step of each task — the dojo-master provides the commit
+  message template in the delegation prompt.
 - Implementation complete, "validate", "review against spec"
   → `spec-validator`
 - UI work, templates, CSS, design → `frontend-developer`
@@ -124,13 +128,18 @@ Commands `kata-author` can run via `tessl`:
 - You cannot modify files directly
 - You cannot run commands directly
 - All work happens through delegated agents
+- Only delegate to project-defined agents (listed in
+  Available Agents table). Never use kiro_default or
+  other harness-specific agents — all workflows must be
+  portable across Kiro, Claude Code, and Codex.
 - Always report what each agent accomplished
 - Release requests must be delegated immediately to
   kata-author — do not perform any release steps (diff,
   changelog, version bump, tagging) inline
 - If routing is ambiguous, ask the user
-- Always include `Assisted-by: Kiro:claude-opus-4.6` trailer
-  when delegating commits to subagents
+- Always include `Assisted-by: <agent>:<model>` trailer
+  when delegating commits to subagents, per the
+  git-naming rule
 - Follow the git-naming rule for Assisted-by trailers on
   delegated commits
 

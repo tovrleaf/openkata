@@ -182,7 +182,7 @@ func TestIntegrationJSONOutput(t *testing.T) {
 		JudgeModel: "test-judge",
 	}
 
-	if err := writeJSONOutput(outPath, "test-skill", cfg, eval); err != nil {
+	if err := writeJSONOutput(outPath, "test-skill", "", cfg, eval, false); err != nil {
 		t.Fatalf("writeJSONOutput() error: %v", err)
 	}
 

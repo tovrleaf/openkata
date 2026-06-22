@@ -49,6 +49,7 @@ func printOverall(result EvalResult) {
 // JSONOutput is the JSON report structure.
 type JSONOutput struct {
 	Skill             string           `json:"skill"`
+	SkillVersion      string           `json:"skill_version"`
 	Timestamp         string           `json:"timestamp"`
 	Config            JSONOutputConfig  `json:"config"`
 	Threshold         int              `json:"threshold"`
@@ -62,6 +63,7 @@ type JSONOutputConfig struct {
 	Backend    string `json:"backend"`
 	AgentModel string `json:"agent_model"`
 	JudgeModel string `json:"judge_model"`
+	ModelLabel string `json:"model_label,omitempty"`
 }
 
 // JSONScenario is a scenario in JSON output.
@@ -84,17 +86,51 @@ type JSONCriterion struct {
 	Reason   string `json:"reason"`
 }
 
+// parseSkillVersion reads CHANGELOG.md from skillPath and returns the latest version
+// from the first "## [x.y.z]" heading found.
+func parseSkillVersion(skillPath string) string {
+	data, err := os.ReadFile(filepath.Join(skillPath, "CHANGELOG.md"))
+	if err != nil {
+		return ""
+	}
+	for _, line := range strings.Split(string(data), "\n") {
+		if !strings.HasPrefix(line, "## [") {
+			continue
+		}
+		// line starts with "## [", find closing "]"
+		rest := line[3:] // "[x.y.z] ..."
+		end := strings.Index(rest, "]")
+		if end < 0 {
+			continue
+		}
+		v := rest[1:end] // strip leading "["
+		if v != "Unreleased" {
+			return v
+		}
+	}
+	return ""
+}
+
+// autoResolvePath returns the auto-resolved output path for a skill eval.
+func autoResolvePath(skillPath, model string, now time.Time) string {
+	ts := now.UTC().Format("2006-01-02T150405")
+	return filepath.Join(skillPath, "evals", "results", model, ts+".json")
+}
+
 // writeJSONOutput writes the eval result to a JSON file.
-func writeJSONOutput(outputPath string, skill string, cfg Config, result EvalResult) error {
+// If direct is true, outputPath is used as-is (no timestamp appended).
+func writeJSONOutput(outputPath string, skill string, skillPath string, cfg Config, result EvalResult, direct bool) error {
 	now := time.Now().UTC()
 
 	out := JSONOutput{
-		Skill:     skill,
-		Timestamp: now.Format(time.RFC3339),
+		Skill:        skill,
+		SkillVersion: parseSkillVersion(skillPath),
+		Timestamp:    now.Format(time.RFC3339),
 		Config: JSONOutputConfig{
 			Backend:    cfg.Backend,
 			AgentModel: cfg.Model,
 			JudgeModel: cfg.JudgeModel,
+			ModelLabel: cfg.ModelLabel,
 		},
 		Threshold:         result.Threshold,
 		OverallPercentage: result.OverallPercentage,
@@ -127,7 +163,12 @@ func writeJSONOutput(outputPath string, skill string, cfg Config, result EvalRes
 		return err
 	}
 
-	filePath := resolveOutputPath(outputPath, now)
+	var filePath string
+	if direct {
+		filePath = outputPath
+	} else {
+		filePath = resolveOutputPath(outputPath, now)
+	}
 	if err := os.MkdirAll(filepath.Dir(filePath), 0755); err != nil {
 		return err
 	}

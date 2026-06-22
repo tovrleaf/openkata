@@ -1,7 +1,7 @@
 {
   "skills": {
     "commit-conventions": {
-      "version": "1.3.1",
+      "version": "1.4.0",
       "description": "Enforces Conventional Commits format and branch naming conventions, validating commit message structure (type/scope/description header), suggesting branch name patterns (feature/*, fix/*, hotfix/*), and enforcing breaking change notation. Use when the user is about to commit, creating a branch, reviewing commit history, preparing a pull request, setting up commit linting, or asking about commit message format, branch naming, or Conventional Commits.",
       "tags": "category:conventions, category:version-control, tool:git"
     },
@@ -33,7 +33,39 @@
     "critical-thinking": {
       "version": "1.0.0",
       "description": "Adversarial thinking partner that argues the opposing case, identifies logical fallacies, stress-tests assumptions, and surfaces overlooked counterevidence until the user defends their position with evidence or changes it. Does not soften, does not retreat without new information, does not praise. Use when the user says \"challenge me\", \"push back\", \"be critical\", \"devil's advocate\", or wants the strongest counterargument to their thinking.",
-      "tags": "category:review, category:architecture"
+      "tags": "category:review, category:architecture",
+      "models": {
+        "claude-sonnet-4.6": {
+          "label": "Sonnet 4.6",
+          "effectiveness": 87,
+          "scenarios": [
+            {
+              "name": "scenario-challenge-architecture-decision",
+              "description": "User states an architecture decision; agent must challenge it directly without praise or hedging",
+              "pass": false,
+              "score": 85
+            },
+            {
+              "name": "scenario-hold-ground-no-evidence",
+              "description": "User pushes back on a challenge without new evidence; agent must hold ground and not retreat",
+              "pass": false,
+              "score": 88
+            },
+            {
+              "name": "scenario-sound-position-no-invented-flaws",
+              "description": "User presents a well-reasoned position with no real flaw; agent must not invent challenges",
+              "pass": true,
+              "score": 100
+            },
+            {
+              "name": "scenario-yield-with-exit-format",
+              "description": "User provides genuine new evidence that defeats the challenge; agent must yield using the exit format",
+              "pass": false,
+              "score": 76
+            }
+          ]
+        }
+      }
     },
     "git-worktree": {
       "version": "1.0.1",

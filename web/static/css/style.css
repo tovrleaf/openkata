@@ -1398,3 +1398,142 @@ section {
     gap: var(--space-xs);
   }
 }
+
+/* Benchmarks tab */
+
+.benchmark-score {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.benchmark-score-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.benchmark-score-link:hover {
+  text-decoration: underline;
+}
+
+.benchmark-tessl-logo-link {
+  display: inline-flex;
+  align-items: center;
+}
+
+.benchmark-tessl-logo {
+  height: 1.5rem;
+  width: auto;
+}
+
+.benchmark-tessl-logo--dark {
+  display: none;
+}
+
+[data-theme="indigo"] .benchmark-tessl-logo--light {
+  display: none;
+}
+
+[data-theme="indigo"] .benchmark-tessl-logo--dark {
+  display: inline;
+}
+
+.benchmark-effectiveness-desc {
+  color: var(--color-comment, #6b7280);
+  font-size: 0.8125rem;
+  margin-top: 0.5rem;
+}
+
+.benchmark-tessl,
+.benchmark-effectiveness,
+.benchmark-scenarios {
+  margin-bottom: 2.5rem;
+}
+
+.benchmark-tessl-desc {
+  color: var(--color-comment, #6b7280);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.benchmark-tessl-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+.benchmark-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+}
+
+.benchmark-table th,
+.benchmark-table td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
+}
+
+.benchmark-table thead th {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.scenario-row {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.scenario-row:last-child {
+  border-bottom: none;
+}
+
+.scenario-row-top {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.scenario-bar {
+  display: inline-block;
+  width: 3rem;
+  height: 0.5rem;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.scenario-bar--green {
+  background: var(--color-green);
+}
+
+.scenario-bar--yellow {
+  background: var(--color-yellow);
+}
+
+.scenario-bar--red {
+  background: var(--color-red);
+}
+
+.scenario-score {
+  font-weight: 600;
+  min-width: 3rem;
+}
+
+.scenario-name {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+}
+
+.scenario-row-desc {
+  margin-left: 7.5rem;
+  color: var(--color-ink-muted);
+  font-size: 0.8125rem;
+}
+
+.artifact-effectiveness {
+  color: var(--color-green, #22c55e);
+  font-weight: 600;
+}

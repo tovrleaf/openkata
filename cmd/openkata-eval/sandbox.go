@@ -45,13 +45,12 @@ func containerName(scenario string) string {
 // createArgs builds the docker create command arguments.
 func (d *DockerSandbox) createArgs(name, network string) []string {
 	home, _ := os.UserHomeDir()
-	awsMount := home + "/.aws:/root/.aws:ro"
 
 	args := []string{
 		"create",
 		"--name", name,
 		"--network", network,
-		"-v", awsMount,
+		"-v", home + "/.aws:/root/.aws:ro",
 		"-w", "/workspace",
 		d.Config.Image,
 		"sleep", "infinity",

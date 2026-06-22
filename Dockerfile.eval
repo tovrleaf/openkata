@@ -1,7 +1,7 @@
 FROM ubuntu:24.04
 RUN apt-get update && apt-get install -y \
-    curl git bash jq && \
+    curl git bash jq unzip && \
     rm -rf /var/lib/apt/lists/*
-# NOTE: Install kiro-cli manually or mount from host.
-# The binary must be available in PATH inside the container.
+RUN curl -fsSL https://cli.kiro.dev/install | bash
+ENV PATH="/root/.local/bin:${PATH}"
 WORKDIR /workspace

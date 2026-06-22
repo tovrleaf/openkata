@@ -1,6 +1,7 @@
 {
   "name": "backend-developer",
   "description": "Backend agent — Go handlers, types, data loading, and tests",
+  "model": "claude-sonnet-4.6",
   "prompt": null,
   "tools": ["fs_read", "fs_write", "execute_bash", "grep", "glob", "code"],
   "allowedTools": ["fs_read", "grep", "glob"],

@@ -64,15 +64,7 @@ templ SkillDetailPage(skill ArtifactDetail) {
 				}
 			</section>
 
-			if skill.Rationale != "" && skill.Acknowledgments != "" {
-				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"rationale", "Rationale"}, {"changelog", "Changelog"}, {"acknowledgments", "Acknowledgments"}}, "Skill sections")
-			} else if skill.Rationale != "" {
-				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"rationale", "Rationale"}, {"changelog", "Changelog"}}, "Skill sections")
-			} else if skill.Acknowledgments != "" {
-				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"changelog", "Changelog"}, {"acknowledgments", "Acknowledgments"}}, "Skill sections")
-			} else {
-				@TabBar([]TabDef{{"overview", "Overview"}, {"files", "Files"}, {"changelog", "Changelog"}}, "Skill sections")
-			}
+			@TabBar(SkillTabs(skill), "Skill sections")
 
 			<section class="tab-panel active" id="panel-overview">
 				if skill.Description != "" {
@@ -104,6 +96,60 @@ templ SkillDetailPage(skill ArtifactDetail) {
 					<p class="comment">No changelog available.</p>
 				}
 			</section>
+
+			if len(skill.Models) > 0 || skill.TesslScore > 0 {
+				<section class="tab-panel" id="panel-benchmarks">
+					if skill.TesslScore > 0 {
+						<div class="benchmark-tessl">
+							<h3>Quality Score</h3>
+							<p class="benchmark-score">
+								<a href={ templ.SafeURL(fmt.Sprintf("https://tessl.io/registry/openkata/%s", skill.Name)) } target="_blank" class="benchmark-score-link">{ fmt.Sprintf("%d", skill.TesslScore) }%</a>
+								<a href={ templ.SafeURL(fmt.Sprintf("https://tessl.io/registry/openkata/%s", skill.Name)) } target="_blank" class="benchmark-tessl-logo-link">
+									<img class="benchmark-tessl-logo benchmark-tessl-logo--light" src="/static/img/tessl-icon-black.svg" alt="Tessl"/>
+									<img class="benchmark-tessl-logo benchmark-tessl-logo--dark" src="/static/img/tessl-icon-white.svg" alt="Tessl"/>
+								</a>
+							</p>
+							<p class="benchmark-tessl-desc">Structural quality score from <a href={ templ.SafeURL(fmt.Sprintf("https://tessl.io/registry/openkata/%s", skill.Name)) } target="_blank">tessl</a> lint — measures formatting, metadata, and SKILL.md structure.</p>
+							if skill.Published {
+								<a href={ templ.SafeURL(fmt.Sprintf("https://tessl.io/registry/openkata/%s", skill.Name)) } target="_blank" class="benchmark-tessl-link">View on Tessl Registry →</a>
+							}
+						</div>
+					}
+					if len(skill.Models) > 0 {
+						<div class="benchmark-effectiveness">
+							<h3>Effectiveness</h3>
+							<table class="benchmark-table">
+								<thead><tr><th>Model</th><th>Effectiveness</th></tr></thead>
+								<tbody>
+									for _, m := range skill.Models {
+										<tr>
+											<td>{ m.Label }</td>
+											<td>{ fmt.Sprintf("%d%%", m.Effectiveness) }</td>
+										</tr>
+									}
+								</tbody>
+							</table>
+							<p class="benchmark-effectiveness-desc">How well the skill performs across eval scenarios — averaged score when tested against an LLM.</p>
+						</div>
+						<div class="benchmark-scenarios">
+							<h3>Scenarios</h3>
+							for _, m := range skill.Models {
+								<h4>{ m.Label }</h4>
+								for _, s := range m.Scenarios {
+									<div class="scenario-row">
+										<div class="scenario-row-top">
+											<span class={ ScenarioBarClass(s.Score) }></span>
+											<span class="scenario-score">{ fmt.Sprintf("%d%%", s.Score) }</span>
+											<span class="scenario-name">{ s.Name }</span>
+										</div>
+										<div class="scenario-row-desc">{ s.Description }</div>
+									</div>
+								}
+							}
+						</div>
+					}
+				</section>
+			}
 
 			if skill.Acknowledgments != "" {
 				<section class="tab-panel" id="panel-acknowledgments">

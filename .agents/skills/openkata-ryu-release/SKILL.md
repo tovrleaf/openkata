@@ -2,7 +2,8 @@
 name: openkata-ryu-release
 description: >
   Releases distributable artifacts (skills, rules, profiles)
-  with proper versioning, changelog, and git tags.
+  with proper versioning, changelog, git tags, and optional
+  tessl registry publish.
 ---
 
 # openkata-ryu-release
@@ -61,7 +62,7 @@ When in doubt, ask the user.
    ```text
    release(<type>): <name> vX.Y.Z
 
-   Assisted-by: Kiro:claude-opus-4.6
+   Assisted-by: <agent>:<model>
    ```
 
 5. Tag:
@@ -74,6 +75,14 @@ When in doubt, ask the user.
    git push origin main
    git push origin <type>/<name>/vX.Y.Z
    ```
+
+7. Ask the user: "Release to tessl registry as well? (y/n)"
+   If yes:
+   ```bash
+   cd <type>/<name> && tessl tile publish --bump patch
+   ```
+   If the tile doesn't exist yet, run `tessl skill import`
+   first, then `tessl tile publish`.
 
 ## Validation
 
@@ -133,7 +142,7 @@ Old git tags are preserved — old S3 artifacts are deleted.
   IAM trust policy doesn't allow tag-triggered workflows
   (use `gh workflow run publish.yaml -f tag=...` as
   workaround)
-- NEVER touch `.tessl-plugin/plugin.json` version during
-  release — it is Tessl-internal and independent of our
-  versioning (ADR 0006). A difference between SKILL.md
-  version and plugin.json version is expected, not a bug.
+- NEVER manually edit `.tessl-plugin/plugin.json` version —
+  tessl manages it via `tessl tile publish --bump`. A
+  difference between SKILL.md version and plugin.json
+  version is expected (ADR 0006).

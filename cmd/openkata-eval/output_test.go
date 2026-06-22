@@ -38,7 +38,7 @@ func TestWriteJSONOutput(t *testing.T) {
 		Pass:              false,
 	}
 
-	err := writeJSONOutput(outPath, "commit-conventions", cfg, result)
+	err := writeJSONOutput(outPath, "commit-conventions", "", cfg, result, false)
 	if err != nil {
 		t.Fatalf("writeJSONOutput() error: %v", err)
 	}
@@ -82,7 +82,7 @@ func TestWriteJSONOutputDirectory(t *testing.T) {
 	cfg := Config{Backend: "kiro", Model: "test", JudgeModel: "test"}
 	result := EvalResult{Threshold: 95}
 
-	err := writeJSONOutput(dir, "test-skill", cfg, result)
+	err := writeJSONOutput(dir, "test-skill", "", cfg, result, false)
 	if err != nil {
 		t.Fatalf("writeJSONOutput() error: %v", err)
 	}
@@ -134,4 +134,57 @@ func TestResolveOutputPath(t *testing.T) {
 			t.Errorf("resolveOutputPath(dir) = %q, want %q", got, want)
 		}
 	})
+}
+
+func TestParseSkillVersion(t *testing.T) {
+	tests := []struct {
+		name      string
+		changelog string
+		want      string
+	}{
+		{
+			name: "version found",
+			changelog: "# Changelog\n\n## [Unreleased]\n\n## [1.2.3] - 2026-06-01\n\n### Added\n- stuff\n",
+			want: "1.2.3",
+		},
+		{
+			name: "no unreleased, direct version",
+			changelog: "## [0.5.0] - 2026-01-01\n",
+			want: "0.5.0",
+		},
+		{
+			name:      "no changelog file",
+			changelog: "",
+			want:      "",
+		},
+		{
+			name:      "no version headings",
+			changelog: "# Changelog\n\nNo versions yet.\n",
+			want:      "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dir := t.TempDir()
+			if tt.changelog != "" {
+				if err := os.WriteFile(filepath.Join(dir, "CHANGELOG.md"), []byte(tt.changelog), 0644); err != nil {
+					t.Fatal(err)
+				}
+			}
+			got := parseSkillVersion(dir)
+			if got != tt.want {
+				t.Errorf("parseSkillVersion(%q) = %q, want %q", tt.changelog, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestAutoResolvePath(t *testing.T) {
+	now := time.Date(2026, 6, 21, 19, 43, 0, 0, time.UTC)
+	got := autoResolvePath("skills/commit-conventions", "claude-sonnet-4.6", now)
+	want := filepath.Join("skills", "commit-conventions", "evals", "results", "claude-sonnet-4.6", "2026-06-21T194300.json")
+	if got != want {
+		t.Errorf("autoResolvePath() = %q, want %q", got, want)
+	}
 }

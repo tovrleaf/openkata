@@ -24,34 +24,11 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/tovrleaf/openkata/cmd/openkata-web/templates"
 	"github.com/tovrleaf/openkata/internal/analytics"
+	"github.com/tovrleaf/openkata/internal/exclude"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/renderer/html"
 )
-
-// isExcludedFile returns true if the file should be excluded from the Files tab.
-func isExcludedFile(path string) bool {
-	switch path {
-	case "tile.json", ".tesslignore", "CHANGELOG.md", "RATIONALE.md", "references/ACKNOWLEDGMENTS.md":
-		return true
-	}
-	if strings.HasPrefix(path, "evals/") || strings.HasPrefix(path, ".tessl-plugin/") {
-		return true
-	}
-	return false
-}
-
-// isExcludedFromArchive returns true if the file should not be included in archive downloads.
-func isExcludedFromArchive(path string) bool {
-	switch path {
-	case "tile.json", ".tesslignore", "references/ACKNOWLEDGMENTS.md":
-		return true
-	}
-	if strings.HasPrefix(path, "evals/") || strings.HasPrefix(path, ".tessl-plugin/") {
-		return true
-	}
-	return false
-}
 
 // artifactRedirects maps old artifact names to their current names.
 // Used for permanent redirects after renames.
@@ -332,6 +309,16 @@ func loadArtifactList(ctx context.Context, artifactType string) []templates.Skil
 		Version     string `json:"version"`
 		Description string `json:"description"`
 		Tags        string `json:"tags"`
+		Models      map[string]struct {
+			Label         string `json:"label"`
+			Effectiveness int    `json:"effectiveness"`
+			Scenarios     []struct {
+				Name        string `json:"name"`
+				Description string `json:"description"`
+				Pass        bool   `json:"pass"`
+				Score       int    `json:"score"`
+			} `json:"scenarios"`
+		} `json:"models"`
 	}
 	if err := json.Unmarshal(artifactData, &artifacts); err != nil {
 		return nil
@@ -344,13 +331,32 @@ func loadArtifactList(ctx context.Context, artifactType string) []templates.Skil
 		if info.Version == "0.0.0" {
 			continue
 		}
-		entries = append(entries, templates.SkillEntry{
+		entry := templates.SkillEntry{
 			Name:        name,
 			Version:     info.Version,
 			Description: info.Description,
 			Tags:        info.Tags,
 			Downloads:   counts[artifactType+"/"+name],
-		})
+		}
+		if artifactType == "skills" && len(info.Models) > 0 {
+			entry.HasBenchmarks = true
+			for id, m := range info.Models {
+				bm := templates.BenchmarkModel{
+					ID: id, Label: m.Label, Effectiveness: m.Effectiveness,
+				}
+				for _, s := range m.Scenarios {
+					bm.Scenarios = append(bm.Scenarios, templates.BenchmarkScenario{
+						Name: s.Name, Description: s.Description, Pass: s.Pass, Score: s.Score,
+					})
+				}
+				entry.Models = append(entry.Models, bm)
+				if m.Effectiveness > entry.BestScore {
+					entry.BestScore = m.Effectiveness
+					entry.BestModel = m.Label
+				}
+			}
+		}
+		entries = append(entries, entry)
 	}
 	sort.Slice(entries, func(i, j int) bool { return entries[i].Name < entries[j].Name })
 	return entries
@@ -487,7 +493,7 @@ func loadArtifactDetailS3(ctx context.Context, artifactType, name, version, docF
 					} else {
 						*target = renderMarkdown(data, name)
 					}
-					if !isExcludedFile(relPath) {
+					if !exclude.FromFilesTab(relPath) {
 						detail.FileContents[relPath] = string(data)
 						if strings.HasSuffix(relPath, ".md") {
 							detail.FileContents["__rendered__"+relPath] = renderMarkdownFull(data, name)
@@ -498,7 +504,7 @@ func loadArtifactDetailS3(ctx context.Context, artifactType, name, version, docF
 		}
 
 		// Only add non-excluded files to the Files tab and FileContents
-		if !isExcludedFile(relPath) {
+		if !exclude.FromFilesTab(relPath) {
 			detail.Files = append(detail.Files, relPath)
 			if target == nil {
 				getResp, err := s3Client.GetObject(ctx, &s3.GetObjectInput{
@@ -610,7 +616,7 @@ func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templ
 		}
 		relPath, _ := filepath.Rel(dir, path)
 		relPath = filepath.ToSlash(relPath)
-		if isExcludedFile(relPath) {
+		if exclude.FromFilesTab(relPath) {
 			return nil
 		}
 		detail.Files = append(detail.Files, relPath)
@@ -622,6 +628,49 @@ func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templ
 		}
 		return nil
 	})
+	// Load benchmark data for skills
+	if artifactType == "skills" && vjData != nil {
+		var parsed map[string]map[string]struct {
+			Models map[string]struct {
+				Label         string `json:"label"`
+				Effectiveness int    `json:"effectiveness"`
+				Scenarios     []struct {
+					Name        string `json:"name"`
+					Description string `json:"description"`
+					Pass        bool   `json:"pass"`
+					Score       int    `json:"score"`
+				} `json:"scenarios"`
+			} `json:"models"`
+		}
+		if json.Unmarshal(vjData, &parsed) == nil {
+			if skills, ok := parsed["skills"]; ok {
+				if info, ok := skills[name]; ok {
+					for id, m := range info.Models {
+						bm := templates.BenchmarkModel{
+							ID: id, Label: m.Label, Effectiveness: m.Effectiveness,
+						}
+						for _, s := range m.Scenarios {
+							bm.Scenarios = append(bm.Scenarios, templates.BenchmarkScenario{
+								Name: s.Name, Description: s.Description, Pass: s.Pass, Score: s.Score,
+							})
+						}
+						detail.Models = append(detail.Models, bm)
+					}
+				}
+			}
+		}
+		// Load tessl plugin data
+		if pData, err := os.ReadFile(filepath.Join(dir, ".tessl-plugin", "plugin.json")); err == nil {
+			var plugin struct {
+				Score     int  `json:"score"`
+				Published bool `json:"published"`
+			}
+			if json.Unmarshal(pData, &plugin) == nil {
+				detail.TesslScore = plugin.Score
+				detail.Published = plugin.Published
+			}
+		}
+	}
 	sort.Strings(detail.Files)
 	return detail
 }
@@ -1122,7 +1171,7 @@ func handleArchive(w http.ResponseWriter, r *http.Request, artifactType, name, v
 		if relPath == "" || strings.HasSuffix(relPath, "/") {
 			continue
 		}
-		if isExcludedFromArchive(relPath) {
+		if exclude.FromInstall(relPath) {
 			continue
 		}
 
@@ -1254,7 +1303,7 @@ func handleArchiveLocal(w http.ResponseWriter, r *http.Request, artifactType, na
 		}
 		relPath, _ := filepath.Rel(dir, path)
 		relPath = filepath.ToSlash(relPath)
-		if isExcludedFromArchive(relPath) {
+		if exclude.FromInstall(relPath) {
 			return nil
 		}
 		data, err := os.ReadFile(path)

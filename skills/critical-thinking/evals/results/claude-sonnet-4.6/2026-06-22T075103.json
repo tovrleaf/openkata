@@ -1,0 +1,280 @@
+{
+  "skill": "critical-thinking",
+  "skill_version": "1.0.0",
+  "timestamp": "2026-06-22T07:51:03Z",
+  "config": {
+    "backend": "kiro",
+    "agent_model": "claude-sonnet-4.6",
+    "judge_model": "claude-sonnet-4.6",
+    "model_label": "Sonnet 4.6"
+  },
+  "threshold": 95,
+  "scenarios": [
+    {
+      "name": "scenario-challenge-architecture-decision",
+      "description": "User states an architecture decision; agent must challenge it directly without praise or hedging",
+      "criteria": [
+        {
+          "name": "no-opening-praise",
+          "pass": true,
+          "score": 15,
+          "max_score": 15,
+          "reason": "Opens directly with a substantive claim, no praise or flattery"
+        },
+        {
+          "name": "argues-opposing-case",
+          "pass": true,
+          "score": 15,
+          "max_score": 15,
+          "reason": "Clearly argues against microservices/Kubernetes for small teams, citing concentrated operational overhead"
+        },
+        {
+          "name": "single-disagreement",
+          "pass": false,
+          "score": 0,
+          "max_score": 15,
+          "reason": "Multiple challenges combined: operational overhead argument, Netflix/Amazon comparison, and the untested assumption paragraph — reads as layered critique rather than one focused disagreement"
+        },
+        {
+          "name": "cites-user-words",
+          "pass": true,
+          "score": 14,
+          "max_score": 14,
+          "reason": "References 'independent scaling and faster deploys' which mirrors typical user claims about microservices benefits, framed as 'your position'"
+        },
+        {
+          "name": "no-hedging",
+          "pass": true,
+          "score": 12,
+          "max_score": 12,
+          "reason": "No hedging language present; statements are direct and assertive throughout"
+        },
+        {
+          "name": "ends-with-question",
+          "pass": true,
+          "score": 12,
+          "max_score": 12,
+          "reason": "Ends with a specific question: 'have you hit it yet?' — no summary or reassurance follows"
+        },
+        {
+          "name": "specific-not-abstract",
+          "pass": true,
+          "score": 10,
+          "max_score": 10,
+          "reason": "Cites concrete costs: service contracts, distributed traces, Kubernetes upgrades, per-service CI/CD pipelines, team size of 3"
+        },
+        {
+          "name": "no-file-modification",
+          "pass": true,
+          "score": 7,
+          "max_score": 7,
+          "reason": "No offer to modify files or produce summaries of any kind"
+        }
+      ],
+      "score": 85,
+      "max_score": 100,
+      "percentage": 85,
+      "pass": false
+    },
+    {
+      "name": "scenario-hold-ground-no-evidence",
+      "description": "User pushes back on a challenge without new evidence; agent must hold ground and not retreat",
+      "criteria": [
+        {
+          "name": "does-not-retreat",
+          "pass": true,
+          "score": 15,
+          "max_score": 15,
+          "reason": "Agent maintains that MongoDB's consistency model is inadequate for a financial ledger and does not soften this position"
+        },
+        {
+          "name": "identifies-no-new-evidence",
+          "pass": true,
+          "score": 15,
+          "max_score": 15,
+          "reason": "Agent implicitly calls out that 'it worked before' provides no relevant evidence by listing specific gaps it fails to address"
+        },
+        {
+          "name": "no-reassurance",
+          "pass": true,
+          "score": 12,
+          "max_score": 12,
+          "reason": "Response does not close with any reassurance; ends with a pointed question instead"
+        },
+        {
+          "name": "cites-user-words",
+          "pass": true,
+          "score": 14,
+          "max_score": 14,
+          "reason": "Directly quotes 'It worked before' and uses it to show the gap in the user's reasoning"
+        },
+        {
+          "name": "single-disagreement",
+          "pass": false,
+          "score": 0,
+          "max_score": 12,
+          "reason": "Response raises multiple distinct technical challenges: dirty reads, non-atomic operations, write concern settings, concurrent transfers, and consistency drift — not a single focused challenge"
+        },
+        {
+          "name": "ends-with-question",
+          "pass": true,
+          "score": 12,
+          "max_score": 12,
+          "reason": "Response ends with a direct probing question about whether a reconciliation check was actually run"
+        },
+        {
+          "name": "no-praise",
+          "pass": true,
+          "score": 10,
+          "max_score": 10,
+          "reason": "Response opens by directly challenging the prior-success argument with no praise or positive acknowledgment"
+        },
+        {
+          "name": "specific-challenge",
+          "pass": true,
+          "score": 10,
+          "max_score": 10,
+          "reason": "Challenge is specific to financial ledger concerns: debits/credits balancing, transaction boundaries, and consistency drift — not generic"
+        }
+      ],
+      "score": 88,
+      "max_score": 100,
+      "percentage": 88,
+      "pass": false
+    },
+    {
+      "name": "scenario-sound-position-no-invented-flaws",
+      "description": "User presents a well-reasoned position with no real flaw; agent must not invent challenges",
+      "criteria": [
+        {
+          "name": "acknowledges-sound-position",
+          "pass": true,
+          "score": 15,
+          "max_score": 15,
+          "reason": "Explicitly states 'Position holds' after testing angles"
+        },
+        {
+          "name": "does-not-invent-flaws",
+          "pass": true,
+          "score": 15,
+          "max_score": 15,
+          "reason": "Lists tested angles only to show they failed, does not manufacture new concerns"
+        },
+        {
+          "name": "uses-exit-format-or-identifies-assumption",
+          "pass": true,
+          "score": 14,
+          "max_score": 14,
+          "reason": "Uses exit format with three tested-and-defeated angles"
+        },
+        {
+          "name": "no-praise-or-flattery",
+          "pass": true,
+          "score": 12,
+          "max_score": 12,
+          "reason": "Opens directly with 'Tested:' — no praise or flattery"
+        },
+        {
+          "name": "specific-reasoning",
+          "pass": true,
+          "score": 12,
+          "max_score": 12,
+          "reason": "Each defeated angle references the specific context: 5-user scale, CRUD forms, Go team knowledge"
+        },
+        {
+          "name": "no-generic-caveats",
+          "pass": true,
+          "score": 12,
+          "max_score": 12,
+          "reason": "No generic scaling or future-proofing caveats added"
+        },
+        {
+          "name": "ends-with-question-or-receipt",
+          "pass": true,
+          "score": 10,
+          "max_score": 10,
+          "reason": "Ends with 'Position holds.' — a clear exit receipt"
+        },
+        {
+          "name": "no-file-modification",
+          "pass": true,
+          "score": 10,
+          "max_score": 10,
+          "reason": "No file modifications or summaries offered"
+        }
+      ],
+      "score": 100,
+      "max_score": 100,
+      "percentage": 100,
+      "pass": true
+    },
+    {
+      "name": "scenario-yield-with-exit-format",
+      "description": "User provides genuine new evidence that defeats the challenge; agent must yield using the exit format",
+      "criteria": [
+        {
+          "name": "uses-exit-format",
+          "pass": false,
+          "score": 0,
+          "max_score": 15,
+          "reason": "No 'Tested:' receipt format header or structured receipt section present"
+        },
+        {
+          "name": "lists-tested-angles",
+          "pass": true,
+          "score": 15,
+          "max_score": 15,
+          "reason": "Three angles listed: compile times, learning curve, and performance parity with Go"
+        },
+        {
+          "name": "explains-why-failed",
+          "pass": true,
+          "score": 15,
+          "max_score": 15,
+          "reason": "Each angle includes a specific reason it failed: 20s incremental builds, two shipped CLIs, 40x benchmark advantage"
+        },
+        {
+          "name": "concludes-position-holds",
+          "pass": true,
+          "score": 12,
+          "max_score": 12,
+          "reason": "Ends with explicit 'Position holds.'"
+        },
+        {
+          "name": "no-invented-flaws",
+          "pass": true,
+          "score": 14,
+          "max_score": 14,
+          "reason": "No new unrelated flaws introduced; only the tested angles are addressed"
+        },
+        {
+          "name": "no-hedging-on-concession",
+          "pass": true,
+          "score": 10,
+          "max_score": 10,
+          "reason": "No hedging language or 'but consider' qualifiers present"
+        },
+        {
+          "name": "no-praise-or-flattery",
+          "pass": true,
+          "score": 10,
+          "max_score": 10,
+          "reason": "No praise or flattery in the response"
+        },
+        {
+          "name": "not-bare-conclusion",
+          "pass": false,
+          "score": 0,
+          "max_score": 9,
+          "reason": "While angles are listed, the required 'Tested:' receipt structure is absent, making it closer to a bare summary than a structured receipt"
+        }
+      ],
+      "score": 76,
+      "max_score": 100,
+      "percentage": 76,
+      "pass": false
+    }
+  ],
+  "overall_percentage": 87.25,
+  "pass": false
+}

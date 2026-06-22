@@ -1,0 +1,16 @@
+# Progress Log — Spec 0018
+
+## 2026-06-21
+
+- Tasks 1-2: Added --model-label flag and skill_version to
+  eval JSON output. Auto-resolve output path to nested
+  evals/results/<model>/<timestamp>.json structure.
+- Tasks 3-4: Extended generate-versions to read eval results
+  and produce models field in versions.json with per-model
+  effectiveness and scenario data.
+- Tasks 5-9: Added BenchmarkModel types, loaded models in
+  handlers, displayed effectiveness badge on listing page
+  and Benchmarks tab on detail page. Added handler tests.
+- Task 10: Regenerated templ output, verified build passes.
+- Note: All tasks implemented in single session. Commits
+  created per-task-group retroactively.
