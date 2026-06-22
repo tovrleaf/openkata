@@ -51,7 +51,6 @@ func (d *DockerSandbox) createArgs(name, network string) []string {
 		"--name", name,
 		"--network", network,
 		"-v", home + "/.aws:/root/.aws:ro",
-		"-v", home + "/.kiro:/root/.kiro:ro",
 		"-w", "/workspace",
 		d.Config.Image,
 		"sleep", "infinity",
