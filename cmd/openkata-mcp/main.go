@@ -439,7 +439,7 @@ func listPrefixes(ctx context.Context, prefix string) ([]string, error) {
 // isExcludedFromArchive returns true if the file should not be included in installs.
 func isExcludedFromArchive(path string) bool {
 	switch path {
-	case "tile.json", ".tesslignore", "references/ACKNOWLEDGMENTS.md":
+	case "tile.json", ".tesslignore", "references/ACKNOWLEDGMENTS.md", "CHANGELOG.md", "RATIONALE.md":
 		return true
 	}
 	if strings.HasPrefix(path, "evals/") || strings.HasPrefix(path, ".tessl-plugin/") {

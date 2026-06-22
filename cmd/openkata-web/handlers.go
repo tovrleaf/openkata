@@ -44,7 +44,7 @@ func isExcludedFile(path string) bool {
 // isExcludedFromArchive returns true if the file should not be included in archive downloads.
 func isExcludedFromArchive(path string) bool {
 	switch path {
-	case "tile.json", ".tesslignore", "references/ACKNOWLEDGMENTS.md":
+	case "tile.json", ".tesslignore", "references/ACKNOWLEDGMENTS.md", "CHANGELOG.md", "RATIONALE.md":
 		return true
 	}
 	if strings.HasPrefix(path, "evals/") || strings.HasPrefix(path, ".tessl-plugin/") {
