@@ -2,7 +2,7 @@
 
 <!-- badges:start -->
 [![Skills](https://img.shields.io/badge/skills-13-blue?style=flat-square)](skills/)
-[![Rules](https://img.shields.io/badge/rules-5-blue?style=flat-square)](rules/)
+[![Rules](https://img.shields.io/badge/rules-6-blue?style=flat-square)](rules/)
 [![Profiles](https://img.shields.io/badge/profiles-2-blue?style=flat-square)](profiles/)
 [![MCP Server](https://img.shields.io/badge/MCP_server-ready-green?style=flat-square)](https://openkata.dev/getting-started/)
 [![Build](https://github.com/tovrleaf/openkata/actions/workflows/build.yaml/badge.svg)](https://github.com/tovrleaf/openkata/actions/workflows/build.yaml)
