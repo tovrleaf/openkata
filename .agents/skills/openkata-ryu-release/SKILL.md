@@ -52,31 +52,37 @@ When in doubt, ask the user.
    ```
    If no diff, abort — nothing to release.
 
-2. Update `CHANGELOG.md` — add a version section after
+2. Run the badge update script to sync counts:
+   ```bash
+   ./scripts/update-readme-badges.sh
+   ```
+   If README.md changed, stage it for the release commit.
+
+3. Update `CHANGELOG.md` — add a version section after
    `[Unreleased]` with today's date and what changed.
 
-3. Bump version in the frontmatter of the main doc
+4. Bump version in the frontmatter of the main doc
    (`SKILL.md`, `RULE.md`, or `<name>.md`).
 
-4. Commit:
+5. Commit:
    ```text
    release(<type>): <name> vX.Y.Z
 
    Assisted-by: <agent>:<model>
    ```
 
-5. Tag:
+6. Tag:
    ```bash
    git tag <type>/<name>/vX.Y.Z
    ```
 
-6. Push (only with user confirmation):
+7. Push (only with user confirmation):
    ```bash
    git push origin main
    git push origin <type>/<name>/vX.Y.Z
    ```
 
-7. Ask the user: "Release to tessl registry as well? (y/n)"
+8. Ask the user: "Release to tessl registry as well? (y/n)"
    If yes:
    ```bash
    cd <type>/<name> && tessl tile publish --bump patch

@@ -44,24 +44,8 @@ files. CI regenerates templ output — if the committed
 
 ### Testing
 
-- Standard library only — no testify or external test
-  frameworks
-- Table-driven tests with named subtests (`t.Run`)
-- Test files next to source: `handlers.go` →
-  `handlers_test.go`
-- Test fixtures in `testdata/` directories
-- HTTP handlers tested with `httptest`
-- Test behavior, not implementation details
-- Omit tests for trivial logic (simple getters, constant
-  returns). Prioritize business logic and conditional branches.
-- Use `errors.Is()` and `errors.As()` for error assertions,
-  not string comparison
-- Test helpers must call `t.Helper()` so failures point to
-  the caller
-- Failure messages must include function name, inputs, got,
-  and want: `t.Errorf("Func(%v) = %v, want %v", input, got, want)`
-- Run: `go test ./...`
-- Run with race detection: `go test -race ./...`
+- See [`rules/go-testing/RULE.md`](rules/go-testing/RULE.md)
+  for full conventions
 
 ### Bash
 

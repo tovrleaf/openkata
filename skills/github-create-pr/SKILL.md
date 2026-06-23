@@ -27,12 +27,13 @@ Open a pull request for the current branch using `gh`.
    If on `main` or `master`, stop and warn: "You are on
    the default branch. Create a feature branch first."
 
-3. **Check remote state** — Run `git status -sb` to
-   detect if the branch is behind the remote. If behind,
-   ask: "Branch is behind remote. Rebase onto origin/main
-   before pushing?" If yes, run
-   `git fetch origin && git rebase origin/main`. If rebase
-   conflicts, stop and let the user resolve.
+3. **Rebase on main** — Always fetch and rebase before
+   pushing:
+   ```bash
+   git fetch origin main
+   git rebase origin/main
+   ```
+   If rebase conflicts, stop and let the user resolve.
 
 4. **Check for existing PR** — Run:
    ```bash
