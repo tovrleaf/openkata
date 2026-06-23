@@ -11,7 +11,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -332,8 +331,7 @@ func installArtifact(ctx context.Context, req mcp.CallToolRequest, artifactType,
 		"name":        name,
 		"version":     version,
 		"source":      source,
-		"installedAt": time.Now().UTC().Format(time.RFC3339),
-		"checksums":   checksums,
+		"checksums": checksums,
 	}
 
 	// Increment download counter

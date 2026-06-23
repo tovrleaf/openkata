@@ -1200,7 +1200,6 @@ func handleArchive(w http.ResponseWriter, r *http.Request, artifactType, name, v
   "name": %q,
   "version": %q,
   "source": "github.com/tovrleaf/openkata",
-  "installedAt": "",
   "checksums": %s
 }
 `, name, version, string(checksumJSON))
@@ -1322,7 +1321,6 @@ func handleArchiveLocal(w http.ResponseWriter, r *http.Request, artifactType, na
   "name": %q,
   "version": %q,
   "source": "github.com/tovrleaf/openkata",
-  "installedAt": "",
   "checksums": %s
 }
 `, name, version, string(checksumJSON))
