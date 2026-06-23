@@ -1223,9 +1223,9 @@ func handleArchive(w http.ResponseWriter, r *http.Request, artifactType, name, v
 		tw.Write(f.data)
 	}
 
-	// Write .manifest.json
+	// Write .openkata-manifest.json
 	tw.WriteHeader(&tar.Header{
-		Name: name + "/.manifest.json",
+		Name: name + "/.openkata-manifest.json",
 		Size: int64(len(manifest)),
 		Mode: 0644,
 	})
@@ -1344,7 +1344,7 @@ func handleArchiveLocal(w http.ResponseWriter, r *http.Request, artifactType, na
 	}
 
 	tw.WriteHeader(&tar.Header{
-		Name: name + "/.manifest.json",
+		Name: name + "/.openkata-manifest.json",
 		Size: int64(len(manifest)),
 		Mode: 0644,
 	})
