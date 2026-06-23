@@ -36,48 +36,23 @@ OpenCode, or others. Skills avoid coupling to specific tooling,
 MCP servers, or platform-specific features so they remain
 portable across environments.
 
-## Using kata from this repository
+## Using kata
 
-Each kata lives in its own folder under `skills/`. To use a kata:
+The fastest way to use kata is via the MCP server — add
+`https://openkata.dev/mcp` to your agent config. Zero install,
+always up-to-date.
 
-1. **Copy the skill folder** into your project's `.agents/skills/` directory
-2. Your agent will discover it automatically on the next session
+For offline or local-first workflows, download and extract
+skill folders into your project's `.agents/skills/<name>/`
+directory. Your agent discovers them automatically.
 
-```bash
-cp -r skills/create-adr /path/to/your-project/.agents/skills/
-```
-
-Or use the dojo (MCP server) to install kata into your project — see
-[cmd/openkata-mcp/README.md](cmd/openkata-mcp/README.md) for setup.
-
-## Available kata
-
-| Kata | Description |
-|------|-------------|
-| [create-adr](skills/create-adr/) | Detects architectural decisions in conversation and guides creation of Architecture Decision Records |
-| [commit-conventions](skills/commit-conventions/) | Enforces Conventional Commits format and branch naming conventions |
-| [create-skill](skills/create-skill/) | Creates agent skills by investigating repo conventions, designing workflows, and writing SKILL.md files |
-| [create-rule](skills/create-rule/) | Creates always-on agent rules by investigating repo conventions and writing RULE.md files |
-| [create-profile](skills/create-profile/) | Creates sensei profiles that define agent roles with scoped permissions and constraints |
-| [grill-me](skills/grill-me/) | Challenges a plan, spec, or ADR by interviewing the user until all corners are covered |
-| [makefile-conventions](skills/makefile-conventions/) | Structures Makefiles as a universal command interface using modular includes and self-documenting help |
-| [spec-workflow](skills/spec-workflow/) | Drives feature development through a phased workflow: specify, design, tasks, implement, and validate |
-
-## Available dojo kun
-
-| Rule | Description |
-|------|-------------|
-| [markdown-style](rules/markdown-style/) | Consistent markdown formatting conventions applied to all generated files |
-| [bash-style](rules/bash-style/) | Bash scripting conventions based on the Google Shell Style Guide |
-| [design-system](rules/design-system/) | Token-based CSS design system conventions |
-| [git-naming](rules/git-naming/) | Branch naming, commit message format, and trailer conventions |
-
-## Available sensei profiles
-
-| Profile | Description |
-|---------|-------------|
-| [frontend-developer](profiles/frontend-developer.md) | Frontend developer scoped to web UI — templates, styles, and handlers only |
-| [spec-planner](profiles/spec-planner.md) | Plans features through specs, designs, and task breakdowns |
+- Skills live in `skills/`, rules in `rules/`, profiles in
+  `profiles/`
+- See the [full catalog](https://openkata.dev/catalog/) for
+  all available artifacts
+- See [Getting Started](https://openkata.dev/getting-started/)
+  for client-specific setup (Kiro, Claude Code, OpenCode,
+  and others)
 
 ## Contributing
 
