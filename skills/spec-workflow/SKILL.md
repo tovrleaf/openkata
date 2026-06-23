@@ -53,8 +53,7 @@ specs/
   0001-auth/
     spec.md         # requirements (Draft → Implementing → Done)
     design.md       # architecture notes (deep depth only)
-    tasks.md        # task list with Status fields
-    progress.log    # append-only session log
+    tasks.md        # task list with Status fields + progress log
     validation-report.md  # created during Phase 5
   0002-payments/
     ...
@@ -91,7 +90,7 @@ When `specs/_current` points to an active spec:
 | 1. Specify | New feature | `spec.md` with sections: Problem, Requirements, Constraints, Acceptance Criteria | [phase-specify.md](references/phase-specify.md) |
 | 2. Design | Deep depth only | `design.md` with sections: Architecture, Key Components, Data Flow, Trade-offs | [phase-design.md](references/phase-design.md) |
 | 3. Tasks | After spec confirmed | `tasks.md` with atomic, commit-sized tasks, each listing Status and Files | [phase-tasks.md](references/phase-tasks.md) |
-| 4. Implement | Tasks are Pending | Code commits (one per task) + `progress.log` entries | [phase-implement.md](references/phase-implement.md) |
+| 4. Implement | Tasks are Pending | Code commits (one per task) + progress log entries | [phase-implement.md](references/phase-implement.md) |
 | 5. Validate | All tasks Done | `validation-report.md` summarising acceptance criteria results | [phase-validate.md](references/phase-validate.md) |
 
 See [example-spec.md](references/example-spec.md) for a

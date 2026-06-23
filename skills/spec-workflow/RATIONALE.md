@@ -43,6 +43,14 @@ what was done, what was decided, and what to do next.
 Without it, resuming requires the user to re-explain
 context that was already established.
 
+## Why the progress log is in tasks.md
+
+Tasks and progress are read together when resuming. An
+agent reads tasks.md once and gets both the "what to do
+next" (status fields) and the "what happened before"
+(progress log). A separate file adds a read with no
+benefit — the two are never consumed independently.
+
 ## Why there are two depth modes
 
 Quick (< 3 files, no design phase) and Standard (full
