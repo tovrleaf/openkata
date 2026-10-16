@@ -24,7 +24,6 @@ help: ## Show this help
 	@echo "Development:"
 	@printf "  \033[36m%-16s\033[0m %s\n" "check" "Check development prerequisites"
 	@printf "  \033[36m%-16s\033[0m %s\n" "test" "Run all tests"
-	@printf "  \033[36m%-16s\033[0m %s\n" "changelog" "Generate root CHANGELOG.md"
 	@printf "  \033[36m%-16s\033[0m %s\n" "dev" "Start local dev server with hot reload"
 	@printf "  \033[36m%-16s\033[0m %s\n" "chat master" "Start Kiro chat with dojo-master agent"
 	@printf "  \033[36m%-16s\033[0m %s\n" "chat eval" "Start Kiro chat with kata-author for eval work"
