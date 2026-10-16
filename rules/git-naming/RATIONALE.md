@@ -17,9 +17,11 @@ busywork. Requiring it for trade-offs and decisions
 ensures bodies exist where they add value. The rule
 is: if someone would ask "why?", include a body.
 
-## Why squash merges use the PR title, not concatenated commits
+## Why PRs are never squash-merged
 
-Concatenated commit messages produce unreadable
-merge commits. The PR title is already a reviewed
-summary. Individual commits are preserved in branch
-history for anyone who needs detail.
+Squashing replaces many described commits with one, losing
+the per-step reasoning, spec references, and trailers.
+It also hides branch ancestry: `git branch --merged` and
+`git branch -d` cannot tell that a squashed branch was
+merged, so cleanup needs extra checks. Merge commits and
+rebases keep every commit and its message intact.

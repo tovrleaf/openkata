@@ -64,12 +64,8 @@ Discovery hints:
 - Claude Code: read `ANTHROPIC_MODEL` env var
 - Others: use the model name from your session context
 
-## Squash Merges
+## Merging
 
-When squash-merging a PR, use the PR title as the commit
-header and the PR description as the body. Do not use
-GitHub's "Commit messages" option — it concatenates
-individual commits into noise.
-
-The individual commits with spec references and trailers
-remain in the branch history for auditability.
+Never squash-merge a PR. Merge with a merge commit or
+rebase so each commit keeps its own message, spec references,
+and trailers in the main history.

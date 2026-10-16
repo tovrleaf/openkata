@@ -6,10 +6,6 @@ check:
 test:
 	@go test ./...
 
-.PHONY: changelog
-changelog:
-	@./scripts/generate-changelog.sh
-
 .PHONY: dev
 dev:
 	@lsof -ti:8080 | xargs kill 2>/dev/null || true
