@@ -92,7 +92,7 @@ Same as above for rules.
 
 1. Resolve version (default: latest from versions.json)
 2. Read all files from S3 prefix
-3. Generate `.manifest.json` with checksums
+3. Generate `.openkata-manifest.json` with checksums
 4. Increment DynamoDB counter
 5. Return structured response:
    ```json

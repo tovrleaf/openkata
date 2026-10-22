@@ -35,7 +35,7 @@ commit, except:
 ### What gets installed by users
 
 - All skill/rule files (SKILL.md, references/, assets/)
-- `.manifest.json` with version, source, and checksums
+- `.openkata-manifest.json` with version, source, and checksums
 - Excludes `tile.json` and `references/ACKNOWLEDGMENTS.md`
 
 ## Deployments
