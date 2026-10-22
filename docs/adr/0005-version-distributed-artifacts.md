@@ -44,7 +44,8 @@ mirror directory paths. The repo itself has no version.
 - Git tags follow the pattern `<directory-path>/v<major>.<minor>.<patch>`
 - The dojo binary version is set in the Go source
 - The dojo resolves the version from the git tag at install time and
-  writes it to `.manifest.json` — frontmatter does not carry version
+  writes it to `.openkata-manifest.json` — frontmatter does not carry
+  version
 - `CHANGELOG.md` is not copied to the target project on install — it
   stays in the source repository only
 
@@ -64,20 +65,25 @@ from CHANGELOG.md only.
 
 ### Install manifest
 
-When the dojo installs an artifact, it writes a `.manifest.json` in the
-installed directory to track provenance:
+When the dojo installs an artifact, it writes a hidden
+`.openkata-manifest.json` in the installed directory as a mark of
+provenance:
 
 ```json
 {
   "name": "create-adr",
   "version": "1.0.0",
-  "source": "github.com/tovrleaf/openkata",
-  "installedAt": "2026-04-16T20:26:45Z"
+  "source": "github.com/tovrleaf/openkata"
 }
 ```
 
 This allows the dojo to compare installed versions against available
-versions and trace any installed artifact back to its origin.
+versions and trace any installed artifact back to its origin. The
+file is a record next to the artifact, not an operational file. The
+filename is namespaced with `openkata` to avoid collisions with other
+tools that use a generic `.manifest.json`. Install time is not
+stored; it is visible in the git history of the project that
+committed the install.
 
 ### CHANGELOG format
 

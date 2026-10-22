@@ -117,8 +117,8 @@ name and an optional version parameter. The server
 returns:
 
 - All files with their relative paths and content
-- A pre-generated `.manifest.json` with name, version,
-  source, installedAt, and per-file checksums
+- A pre-generated `.openkata-manifest.json` with name, version,
+  source, and per-file checksums
 
 If no version is specified, the latest is served. The
 calling agent writes files to `.agents/skills/<name>/`
@@ -145,7 +145,6 @@ modification detection:
   "name": "create-adr",
   "version": "1.0.0",
   "source": "github.com/tovrleaf/openkata",
-  "installedAt": "2026-05-10T20:00:00Z",
   "checksums": {
     "SKILL.md": "sha256:abc123...",
     "references/checklist.md": "sha256:def456..."
@@ -164,7 +163,7 @@ content with checksums. The calling agent is responsible
 for:
 
 1. Checking if the skill/rule already exists locally
-2. Reading the existing `.manifest.json`
+2. Reading the existing `.openkata-manifest.json`
 3. Comparing checksums to detect local modifications
 4. Warning the user before overwriting modified files
 
