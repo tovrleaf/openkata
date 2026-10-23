@@ -1,3 +1,9 @@
+---
+title: Infrastructure diagram
+description: The AWS infrastructure behind openkata.dev and the MCP server.
+order: 2
+---
+
 # Infrastructure Diagram
 
 ```

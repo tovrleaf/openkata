@@ -1,3 +1,9 @@
+---
+title: Agent workflow
+description: How agents move a feature from spec to release.
+order: 1
+---
+
 # Agent Workflow
 
 ## Feature Development
