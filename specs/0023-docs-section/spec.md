@@ -7,11 +7,15 @@ depth: Deep
 
 ## Story
 
-As a visitor to openkata.dev, I want a documentation section
-with guides, reference, architecture notes, and contributor
-instructions so that I can learn how OpenKata works, install
-and use its artifacts, and contribute without reading the
-repository source.
+As a maintainer of openkata.dev, I want a documentation engine
+that renders Markdown pages into a docs section with
+navigation, so that guides, reference, architecture notes and
+contributor instructions can be written and previewed locally
+before the section goes public.
+
+This spec builds the engine and moves the existing
+architecture docs into it. Writing the pages and making the
+section public are spec 0024.
 
 ## Requirements
 
@@ -21,9 +25,9 @@ repository source.
   next to `web/static/`
 - `web/docs/` is a Go package (`embed.go`, same pattern as
   `web/static/embed.go`) so the content is compiled into the
-  `openkata-web` binary; production ships only the binary
-- In local development the server may read the files from
-  disk so edits show without a rebuild, as it does for
+  `openkata-web` binary, ready for go-live
+- In local development the server reads the files from disk
+  so edits show without a rebuild, as it does for
   `web/static/`
 - Pages use frontmatter for `title`, optional `description`,
   and optional `order`; existing `stripFrontmatter` handling
@@ -31,40 +35,16 @@ repository source.
 
 ### Sections
 
-The first version has four sections, each with an index page
-and at least the pages listed:
+- The engine supports four sections: Guides, Reference,
+  Architecture and Contributing
+- Each section has an `index.md`; in this spec the Guides,
+  Reference and Contributing indexes are stubs
+- The Architecture section contains the two moved documents
+  below
+- The page list for each section is spec 0024
 
-- **Guides**
-  - Skills, rules and profiles: what each is and how they
-    differ, with the kata vocabulary (dojo kun, sensei
-    profiles, the dojo, the ryu)
-  - Installing artifacts through the MCP server
-  - Using the catalog
-- **Reference**
-  - How MCP discovery works: the `list_*` tools and tag
-    filter, and where the index lives (`versions.json` in S3)
-  - Where skills, rules and profiles are stored: the S3
-    bucket layout and how `versions.json` is generated
-  - Downloads: how downloads are recorded and counted, and
-    what the stats dashboard shows
-  - How we use evals, including the local eval runner and
-    its Docker sandbox
-  - How we score skills: effectiveness and the tessl score
-  - How we use tessl: reviews, evals and the registry
-  - Versioning and `.openkata-manifest.json`
-- **Architecture**
-  - Our agent workflow
-  - The infrastructure diagram
-  - The published ADRs
-- **Contributing**
-  - Authoring skills, rules and profiles
-  - Release workflow, one page each for a new version of the
-    site, of a skill, rule or profile, and of the MCP server
-  - Repository conventions
-
-Reference pages are written by hand. There is a single live
-version of the docs (current `main`); there is no per-release
-snapshot or version selector.
+There is a single live version of the docs (current `main`);
+there is no per-release snapshot or version selector.
 
 ### Existing Architecture Docs
 
@@ -78,31 +58,31 @@ snapshot or version selector.
 - Nothing in the repository references the old paths today;
   the move must leave no dangling references
 
-### ADRs
+### Visibility
 
-- ADRs stay in `docs/adr/` as the source of truth, so existing
-  repository links, tooling and agent instructions keep
-  working
-- They are published under the Architecture section from
-  those files, with no hand-edited copy
-- No generated content is committed to the repository
-- A clean checkout builds and serves exactly the ADR set that
-  `docs/adr/` contains, and a build can never silently ship
-  without them
-- The mechanism (embedding `docs/adr/` directly or generating a
-  copy that is gitignored) is decided in the design
+- `/docs/` is registered only in local development, in the
+  same block as `/design-system/` and `/stats/`; production
+  serves nothing under `/docs/`
+- There is no "Docs" link in the main or mobile nav
+- Existing production JavaScript is not changed
 
-### Diagrams
+### Links
 
-- Fenced `mermaid` blocks render as diagrams, because
-  `docs/agent-workflow.md` already uses them and the site has
-  no Mermaid support today
-- Diagrams follow the active theme and stay readable in light
-  and dark themes; if scripts do not run, the diagram source
-  remains visible
-- Preformatted blocks such as the ASCII infrastructure diagram
-  scroll inside their own container instead of widening the
-  page
+- Relative links between documentation pages resolve to the
+  matching `/docs/...` URL
+- Links to anything outside `web/docs/`, including ADRs, are
+  absolute GitHub URLs on `main`; a relative link that leaves
+  `web/docs/` is an error
+- External links open in a new tab
+
+### Diagrams and Preformatted Blocks
+
+- Fenced `mermaid` blocks are shown as their source in a
+  `<pre>` and marked with a class, so rendering can be added
+  later without changing the server
+- Preformatted blocks, such as the ASCII infrastructure
+  diagram, scroll inside their own container instead of
+  widening the page
 
 ### Routing and Rendering
 
@@ -110,20 +90,36 @@ snapshot or version selector.
   sections
 - `/docs/<section>/` serves a section index and
   `/docs/<section>/<page>/` serves a page
-- Unknown paths return 404; requests can only reach embedded
-  documentation files (no path traversal)
+- A page path without a trailing slash redirects to the slash
+  form; `/docs/search-index.json` is exempt
+- Unknown paths return 404; requests can only reach
+  documentation pages (no path traversal)
 - Markdown renders through the existing goldmark pipeline
-  (tables, external links open in a new tab)
-- Relative links between documentation pages resolve to the
-  matching `/docs/...` URL
+  (tables, unsafe HTML for trusted repo content)
+
+### Content Validation
+
+The loader is strict. Any of these fails the whole docs site,
+naming the file and the problem:
+
+- Malformed frontmatter
+- Two files mapping to the same URL
+- A section directory without `index.md`
+- A relative link that does not resolve to a docs page
+
+Locally a failure returns 500 with the error for every
+`/docs/` request; in CI the real-tree test fails.
+
+### Ordering
+
+- Sections and pages sort by frontmatter `order`
+- Pages without `order` sort after all ordered pages, then by
+  file name
 
 ### Navigation and Layout
 
-- A "Docs" link is added to the main nav and to the mobile
-  nav menu
-- Pages show a sidebar listing every section and its pages,
-  built from the file tree and frontmatter `order`; the
-  current page is highlighted
+- Pages show a sidebar listing every section and its pages;
+  the current page is highlighted
 - On narrow screens the sidebar collapses behind a control
   and the page content remains readable without horizontal
   scroll
@@ -131,23 +127,30 @@ snapshot or version selector.
   all themes render correctly
 - Each page has previous and next links within its section
 
-### Search
+### Search Index
 
-- Documentation pages are findable through the existing
-  search overlay
-- The server builds a small client-side index of page titles,
-  descriptions and headings from the embedded content and the
-  overlay loads it; no new search endpoint is added
+- The server serves `/docs/search-index.json`: page titles,
+  paths, sections, descriptions and headings built from the
+  docs content
+- It is data, not a query endpoint
+- The search overlay does not use it in this spec
 
 ### Quality
 
-- Handler behavior is covered by table-driven tests using
-  `httptest` and fixtures in `testdata/`
+- Handler and loader behavior is covered by table-driven tests
+  using `httptest` and `fstest.MapFS` fixtures
+- A test runs the loader against the real embedded tree
 - `go build` has no warnings and committed `_templ.go` files
   are in sync with `.templ` sources
 
 ## Out of Scope
 
+- Writing guide, reference and contributing pages (spec 0024)
+- Public route, nav link and search overlay integration
+  (spec 0024)
+- Rendering Mermaid diagrams
+- Publishing ADRs; they stay in `docs/adr/` and are read on
+  GitHub
 - "Edit on GitHub" links on pages
 - Versioned (per-release) docs and a version selector
 - Generating reference pages from code (MCP tool list, CLI
@@ -160,18 +163,27 @@ snapshot or version selector.
 
 ## Rejected Approaches
 
-- **Static site generator (Hugo, MkDocs)** — adds a second
+- **Static site generator (Hugo, MkDocs)**: adds a second
   build and deploy pipeline for one section, and ADR 0007
   keeps the site server-rendered by the Go binary
-- **Serving `docs/` directly** — mixes public pages with
-  internal files and requires an exclude list to hide
-  agent-only documents
-- **Reading Markdown from S3 at request time** — pages would
+- **Serving `docs/` directly**: mixes public pages with
+  internal files and needs an exclude list to hide agent-only
+  documents
+- **Reading Markdown from S3 at request time**: pages would
   update independently of releases, but this adds latency and
   an AWS dependency for content that changes with the code
-- **Moving ADRs to `web/docs/architecture/`** — one copy and no
-  build step, but every link, tool and agent instruction that
-  points at `docs/adr/` would need updating
+- **Publishing ADRs**: they record decisions for maintainers,
+  not end users, and GitHub already serves them. Publishing
+  them needed a second embedded tree and links resolved
+  across both trees
+- **Shipping engine and content together**: one large PR, and
+  the engine waits for the slowest page
+- **Hiding the section in production with only the nav link
+  removed**: the route and search overlay would still expose
+  half-written pages
+- **Vendoring Mermaid now**: about 3 MB, more than the
+  current 1.2 MB of static assets, plus theme re-render code,
+  for four diagrams in one file
 
 ## Open Questions
 
