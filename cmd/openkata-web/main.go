@@ -79,6 +79,7 @@ func main() {
 		mux.HandleFunc("/design-system/", handleDesignSystem)
 		mux.HandleFunc("/stats/", handleStats)
 		mux.HandleFunc("/stats/detail", handleStatsDetail)
+		mux.HandleFunc("/docs/", handleDocs)
 	}
 
 	handler := requestLogger(mux)
