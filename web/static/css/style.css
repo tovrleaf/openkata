@@ -6,6 +6,7 @@
 @import "typography.css";
 @import "components/card.css";
 @import "components/theme-switcher.css";
+@import "components/docs.css";
 @import "layouts/grid.css";
 
 /* Page-specific */

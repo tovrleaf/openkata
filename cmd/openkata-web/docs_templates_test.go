@@ -135,6 +135,25 @@ func TestDocsHomePage(t *testing.T) {
 	}
 }
 
+func TestDocsSidebarScript(t *testing.T) {
+	const script = `src="/static/js/docs.js"`
+	tests := []struct {
+		target string
+		want   bool
+	}{
+		{"/docs/guides/intro/", true},
+		{"/docs/guides/", true},
+		{"/docs/", false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.target, func(t *testing.T) {
+			if got := strings.Contains(docsBody(t, tt.target), script); got != tt.want {
+				t.Errorf("GET %s loads docs.js = %v, want %v", tt.target, got, tt.want)
+			}
+		})
+	}
+}
+
 func TestDocsPageUsesSiteLayout(t *testing.T) {
 	for _, target := range []string{"/docs/", "/docs/guides/intro/"} {
 		t.Run(target, func(t *testing.T) {
