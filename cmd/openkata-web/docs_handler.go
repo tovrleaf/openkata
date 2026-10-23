@@ -1,11 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
-	"fmt"
-	"html"
 	"net/http"
 	"os"
+
+	"github.com/tovrleaf/openkata/cmd/openkata-web/templates"
 )
 
 const docsSearchIndexPath = "/docs/search-index.json"
@@ -38,7 +39,7 @@ func docsHandler(load func() (*docsSite, error)) http.HandlerFunc {
 		case p == docsSearchIndexPath:
 			writeDocsSearchIndex(w, site)
 		case site.byURL[p] != nil:
-			writeDocsPage(w, site.byURL[p])
+			writeDocsPage(w, r, site, site.byURL[p])
 		case site.byURL[p+"/"] != nil:
 			target := p + "/"
 			if r.URL.RawQuery != "" {
@@ -51,12 +52,83 @@ func docsHandler(load func() (*docsSite, error)) http.HandlerFunc {
 	}
 }
 
-// writeDocsPage renders a bare page. Task 5 replaces it with the docs
-// templates.
-func writeDocsPage(w http.ResponseWriter, p *docsPage) {
+// writeDocsPage renders the home page or a docs page through the
+// templates. It renders to a buffer first so a template error becomes a
+// 500 instead of a half-written page.
+func writeDocsPage(w http.ResponseWriter, r *http.Request, site *docsSite, p *docsPage) {
+	var buf bytes.Buffer
+	var err error
+	if p == site.Home {
+		err = templates.DocsHome(site.homeModel()).Render(r.Context(), &buf)
+	} else {
+		err = templates.DocsPage(site.pageModel(p)).Render(r.Context(), &buf)
+	}
+	if err != nil {
+		http.Error(w, "docs render failed: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	fmt.Fprintf(w, "<!doctype html>\n<title>%s</title>\n<h1>%s</h1>\n%s",
-		html.EscapeString(p.Title), html.EscapeString(p.Title), p.Body)
+	w.Write(buf.Bytes())
+}
+
+func (s *docsSite) homeModel() templates.DocsHomeModel {
+	m := templates.DocsHomeModel{Title: s.Home.Title, Body: s.Home.Body}
+	for _, sec := range s.Sections {
+		m.Sections = append(m.Sections, templates.DocsHomeSection{
+			DocsLink:    templates.DocsLink{Title: sec.Title, URL: sec.Index.URL},
+			Description: sec.Index.Description,
+		})
+	}
+	return m
+}
+
+func (s *docsSite) pageModel(p *docsPage) templates.DocsPageModel {
+	m := templates.DocsPageModel{Title: p.Title, Body: p.Body, Nav: s.navFor(p)}
+	m.Prev, m.Next = s.pager(p)
+	return m
+}
+
+// navFor lists every section and its pages, marking the current page.
+func (s *docsSite) navFor(current *docsPage) []templates.DocsNavSection {
+	navPage := func(p *docsPage) templates.DocsNavPage {
+		return templates.DocsNavPage{
+			DocsLink: templates.DocsLink{Title: p.Title, URL: p.URL},
+			Current:  p == current,
+		}
+	}
+	nav := make([]templates.DocsNavSection, 0, len(s.Sections))
+	for _, sec := range s.Sections {
+		ns := templates.DocsNavSection{DocsNavPage: navPage(sec.Index)}
+		for _, p := range sec.Pages {
+			ns.Pages = append(ns.Pages, navPage(p))
+		}
+		nav = append(nav, ns)
+	}
+	return nav
+}
+
+// pager returns the neighbours of p within its section. A section's
+// index page comes first, then its pages in order.
+func (s *docsSite) pager(p *docsPage) (prev, next *templates.DocsLink) {
+	for _, sec := range s.Sections {
+		chain := append([]*docsPage{sec.Index}, sec.Pages...)
+		for i, c := range chain {
+			if c != p {
+				continue
+			}
+			link := func(q *docsPage) *templates.DocsLink {
+				return &templates.DocsLink{Title: q.Title, URL: q.URL}
+			}
+			if i > 0 {
+				prev = link(chain[i-1])
+			}
+			if i < len(chain)-1 {
+				next = link(chain[i+1])
+			}
+			return prev, next
+		}
+	}
+	return nil, nil
 }
 
 type docsSearchEntry struct {

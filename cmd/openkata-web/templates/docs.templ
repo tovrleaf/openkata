@@ -1,0 +1,92 @@
+package templates
+
+templ DocsHome(m DocsHomeModel) {
+	@Layout(m.Title) {
+		@Nav()
+		<main class="docs docs--home">
+			<h1>{ m.Title }</h1>
+			<div class="docs-content">
+				@templ.Raw(m.Body)
+			</div>
+			<ul class="docs-sections">
+				for _, s := range m.Sections {
+					<li class="docs-section-card">
+						<a href={ templ.SafeURL(s.URL) } class="docs-section-link">{ s.Title }</a>
+						if s.Description != "" {
+							<p class="docs-section-desc">{ s.Description }</p>
+						}
+					</li>
+				}
+			</ul>
+		</main>
+	}
+}
+
+templ DocsPage(m DocsPageModel) {
+	@Layout(m.Title) {
+		@Nav()
+		<main class="docs">
+			<div class="docs-layout">
+				@docsSidebar(m.Nav)
+				<article class="docs-article">
+					<h1>{ m.Title }</h1>
+					<div class="docs-content">
+						@templ.Raw(m.Body)
+					</div>
+					@docsPager(m.Prev, m.Next)
+				</article>
+			</div>
+		</main>
+	}
+}
+
+templ docsSidebar(nav []DocsNavSection) {
+	<details class="docs-sidebar" id="docs-sidebar">
+		<summary class="docs-sidebar__toggle">Documentation menu</summary>
+		<nav class="docs-sidebar__nav" aria-label="Documentation">
+			<ul class="docs-nav">
+				for _, s := range nav {
+					<li class="docs-nav__section">
+						@docsNavLink(s.DocsNavPage, "docs-nav__section-link")
+						if len(s.Pages) > 0 {
+							<ul class="docs-nav__pages">
+								for _, p := range s.Pages {
+									<li>
+										@docsNavLink(p, "docs-nav__link")
+									</li>
+								}
+							</ul>
+						}
+					</li>
+				}
+			</ul>
+		</nav>
+	</details>
+}
+
+templ docsNavLink(p DocsNavPage, class string) {
+	if p.Current {
+		<a href={ templ.SafeURL(p.URL) } class={ class, "is-current" } aria-current="page">{ p.Title }</a>
+	} else {
+		<a href={ templ.SafeURL(p.URL) } class={ class }>{ p.Title }</a>
+	}
+}
+
+templ docsPager(prev, next *DocsLink) {
+	if prev != nil || next != nil {
+		<nav class="docs-pager" aria-label="Section pages">
+			if prev != nil {
+				<a href={ templ.SafeURL(prev.URL) } class="docs-pager__link docs-pager__link--prev" rel="prev">
+					<span class="docs-pager__label">Previous</span>
+					<span class="docs-pager__title">{ prev.Title }</span>
+				</a>
+			}
+			if next != nil {
+				<a href={ templ.SafeURL(next.URL) } class="docs-pager__link docs-pager__link--next" rel="next">
+					<span class="docs-pager__label">Next</span>
+					<span class="docs-pager__title">{ next.Title }</span>
+				</a>
+			}
+		</nav>
+	}
+}
