@@ -83,9 +83,25 @@ func (s *docsSite) homeModel() templates.DocsHomeModel {
 }
 
 func (s *docsSite) pageModel(p *docsPage) templates.DocsPageModel {
-	m := templates.DocsPageModel{Title: p.Title, Body: p.Body, Nav: s.navFor(p)}
+	m := templates.DocsPageModel{Title: p.Title, Body: p.Body, Crumbs: s.crumbs(p), Nav: s.navFor(p)}
 	m.Prev, m.Next = s.pager(p)
 	return m
+}
+
+// crumbs returns the breadcrumb trail for p: Docs, then its section,
+// then the page itself. A section index ends at the section.
+func (s *docsSite) crumbs(p *docsPage) []templates.DocsLink {
+	trail := []templates.DocsLink{{Title: "Docs", URL: s.Home.URL}}
+	for _, sec := range s.Sections {
+		if sec.Slug != p.Section {
+			continue
+		}
+		trail = append(trail, templates.DocsLink{Title: sec.Title, URL: sec.Index.URL})
+		if p != sec.Index {
+			trail = append(trail, templates.DocsLink{Title: p.Title, URL: p.URL})
+		}
+	}
+	return trail
 }
 
 // navFor lists every section and its pages, marking the current page.

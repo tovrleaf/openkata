@@ -66,8 +66,8 @@ func TestDocsPageCurrentHighlight(t *testing.T) {
 			if !strings.Contains(body, tt.wantCurrent) {
 				t.Errorf("GET %s: want current link %s in %q", tt.target, tt.wantCurrent, body)
 			}
-			if n := strings.Count(body, `aria-current="page"`); n != 1 {
-				t.Errorf("GET %s has %d current links, want exactly 1", tt.target, n)
+			if n := strings.Count(body, "is-current"); n != 1 {
+				t.Errorf("GET %s has %d current sidebar links, want exactly 1", tt.target, n)
 			}
 		})
 	}
@@ -133,6 +133,86 @@ func TestDocsHomePage(t *testing.T) {
 	if strings.Contains(body, `aria-current`) {
 		t.Error("home page marks a current link, want none")
 	}
+}
+
+// breadcrumbHTML returns the breadcrumb nav element of a page, or "".
+func breadcrumbHTML(body string) string {
+	start := strings.Index(body, `<nav class="docs-breadcrumb"`)
+	if start == -1 {
+		return ""
+	}
+	end := strings.Index(body[start:], "</nav>")
+	if end == -1 {
+		return ""
+	}
+	return body[start : start+end+len("</nav>")]
+}
+
+func TestDocsBreadcrumb(t *testing.T) {
+	tests := []struct {
+		name      string
+		target    string
+		wantLinks []string // hrefs of the linked crumbs, in order
+		wantLast  string   // text of the current crumb
+	}{
+		{"page", "/docs/guides/intro/", []string{"/docs/", "/docs/guides/"}, "Intro &lt;b&gt;"},
+		{"section index", "/docs/guides/", []string{"/docs/"}, "Guides"},
+		{"section without pages", "/docs/reference/", []string{"/docs/"}, "Reference"},
+		{"last page of a section", "/docs/guides/other/", []string{"/docs/", "/docs/guides/"}, "Other"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			crumb := breadcrumbHTML(docsBody(t, tt.target))
+			if crumb == "" {
+				t.Fatalf("GET %s has no breadcrumb", tt.target)
+			}
+			if !strings.Contains(crumb, `aria-label="Breadcrumb"`) {
+				t.Errorf("breadcrumb of %s = %q, want aria-label=\"Breadcrumb\"", tt.target, crumb)
+			}
+			if n := strings.Count(crumb, "<a "); n != len(tt.wantLinks) {
+				t.Errorf("breadcrumb of %s has %d links, want %d", tt.target, n, len(tt.wantLinks))
+			}
+			pos := -1
+			for _, href := range tt.wantLinks {
+				i := strings.Index(crumb, `<a href="`+href+`">`)
+				if i == -1 {
+					t.Errorf("breadcrumb of %s is missing a link to %s in %q", tt.target, href, crumb)
+					continue
+				}
+				if i < pos {
+					t.Errorf("breadcrumb of %s lists %s out of order in %q", tt.target, href, crumb)
+				}
+				pos = i
+			}
+			wantCurrent := `<span aria-current="page">` + tt.wantLast + `</span>`
+			last := strings.Index(crumb, wantCurrent)
+			if last == -1 {
+				t.Fatalf("breadcrumb of %s = %q, want current crumb %s", tt.target, crumb, wantCurrent)
+			}
+			if last < pos {
+				t.Errorf("breadcrumb of %s puts the current page before its parents in %q", tt.target, crumb)
+			}
+			if n := strings.Count(crumb, "aria-current"); n != 1 {
+				t.Errorf("breadcrumb of %s has %d current items, want 1", tt.target, n)
+			}
+		})
+	}
+
+	t.Run("home has no breadcrumb", func(t *testing.T) {
+		if got := breadcrumbHTML(docsBody(t, "/docs/")); got != "" {
+			t.Errorf("home page has breadcrumb %q, want none", got)
+		}
+	})
+
+	t.Run("trail sits above the title and the sidebar", func(t *testing.T) {
+		body := docsBody(t, "/docs/guides/intro/")
+		crumb := strings.Index(body, `class="docs-breadcrumb"`)
+		sidebar := strings.Index(body, `class="docs-sidebar"`)
+		title := strings.Index(body, "<h1>")
+		if crumb == -1 || !(crumb < sidebar && crumb < title) {
+			t.Errorf("positions breadcrumb=%d sidebar=%d h1=%d, want the breadcrumb first", crumb, sidebar, title)
+		}
+	})
 }
 
 func TestDocsSidebarScript(t *testing.T) {

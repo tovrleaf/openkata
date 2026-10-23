@@ -21,11 +21,12 @@ type DocsNavSection struct {
 // DocsPageModel is everything DocsPage needs. Body is trusted HTML
 // rendered from repository Markdown.
 type DocsPageModel struct {
-	Title string
-	Body  string
-	Nav   []DocsNavSection
-	Prev  *DocsLink
-	Next  *DocsLink
+	Title  string
+	Body   string
+	Crumbs []DocsLink // breadcrumb trail; the last item is the current page
+	Nav    []DocsNavSection
+	Prev   *DocsLink
+	Next   *DocsLink
 }
 
 // DocsHomeSection is one section card on the docs home page.

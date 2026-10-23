@@ -27,6 +27,7 @@ templ DocsPage(m DocsPageModel) {
 		@Nav()
 		<main class="docs">
 			<div class="docs-layout">
+				@docsBreadcrumb(m.Crumbs)
 				@docsSidebar(m.Nav)
 				<article class="docs-article">
 					<h1>{ m.Title }</h1>
@@ -38,6 +39,24 @@ templ DocsPage(m DocsPageModel) {
 			</div>
 		</main>
 		<script src="/static/js/docs.js" defer></script>
+	}
+}
+
+templ docsBreadcrumb(crumbs []DocsLink) {
+	if len(crumbs) > 0 {
+		<nav class="docs-breadcrumb" aria-label="Breadcrumb">
+			<ol class="docs-breadcrumb__list">
+				for i, c := range crumbs {
+					<li class="docs-breadcrumb__item">
+						if i == len(crumbs)-1 {
+							<span aria-current="page">{ c.Title }</span>
+						} else {
+							<a href={ templ.SafeURL(c.URL) }>{ c.Title }</a>
+						}
+					</li>
+				}
+			</ol>
+		</nav>
 	}
 }
 

@@ -47,6 +47,47 @@
   min-width: 0;
 }
 
+/* Breadcrumb: a full-width row above the sidebar and article */
+
+.docs-breadcrumb {
+  grid-column: 1 / -1;
+}
+
+.docs-breadcrumb__list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-sm);
+  padding-left: 0;
+  margin-bottom: 0;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-muted);
+}
+
+.docs-breadcrumb__item {
+  margin-bottom: 0;
+  overflow-wrap: anywhere;
+}
+
+.docs-breadcrumb__item:not(:last-child)::after {
+  content: "›";
+  margin-left: var(--space-sm);
+  color: var(--color-border);
+}
+
+.docs-breadcrumb__item a {
+  color: var(--color-ink-muted);
+}
+
+.docs-breadcrumb__item a:hover {
+  color: var(--color-accent);
+}
+
+.docs-breadcrumb__item [aria-current] {
+  color: var(--color-ink);
+}
+
 .docs-sidebar {
   position: sticky;
   top: var(--space-md);

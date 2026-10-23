@@ -113,7 +113,7 @@
 - **Verify**: run the server locally and open `/docs/`
 
 ### 7. Breadcrumb navigation
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Every docs page shows a breadcrumb trail at the top
 - **Boundary**: `cmd/openkata-web/docs_handler.go`,
   `cmd/openkata-web/docs_templates_test.go`,
