@@ -3,7 +3,7 @@
 ## Tasks
 
 ### 1. Move architecture docs into the embedded tree
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: `web/docs/` exists as an embeddable package with
   the four sections and the two moved documents
 - **Boundary**: `web/docs/**`, `docs/agent-workflow.md`,
@@ -21,7 +21,7 @@
   --exclude-dir=.git --exclude-dir=specs .` returns nothing
 
 ### 2. Loader: frontmatter, model and ordering
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: `buildSite(fs.FS)` builds sections and pages with
   URLs and ordering, and fails strictly on structural errors
 - **Boundary**: `cmd/openkata-web/docs.go`,
@@ -38,7 +38,7 @@
 - **Verify**: `go test ./cmd/openkata-web/ -run Docs`
 
 ### 3. Loader: rendering, link rewriting and headings
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Each page's body is rendered HTML with docs links
   rewritten, Mermaid blocks marked and headings collected
 - **Boundary**: `cmd/openkata-web/docs.go`,
@@ -57,7 +57,7 @@
 - **Verify**: `go test ./cmd/openkata-web/ -run Docs`
 
 ### 4. Handler, routing and search index
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: `/docs/` serves pages locally, with 404, redirect
   and search index behavior from the design
 - **Boundary**: `cmd/openkata-web/docs.go`,
@@ -77,7 +77,7 @@
 - **Verify**: `go test ./cmd/openkata-web/...`
 
 ### 5. Templates: docs home and page with sidebar
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Docs pages render inside the site layout with a
   sidebar and previous/next links
 - **Boundary**: `cmd/openkata-web/templates/docs.templ`,
@@ -95,7 +95,7 @@
   then `go test ./cmd/openkata-web/...`
 
 ### 6. Styles and sidebar script
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: The docs layout works in both themes and on narrow
   screens
 - **Boundary**: `web/static/css/components/docs.css`,
@@ -112,7 +112,29 @@
   desktop widths, including the infrastructure diagram page
 - **Verify**: run the server locally and open `/docs/`
 
-### 7. Real-tree test and final checks
+### 7. Breadcrumb navigation
+- **Status**: Pending
+- **Goal**: Every docs page shows a breadcrumb trail at the top
+- **Boundary**: `cmd/openkata-web/docs_handler.go`,
+  `cmd/openkata-web/docs_templates_test.go`,
+  `cmd/openkata-web/templates/docs.templ`,
+  `cmd/openkata-web/templates/docs_types.go`,
+  `web/static/css/components/docs.css`
+- **Key files**: `docsSidebar` and `docsPager` in
+  `cmd/openkata-web/templates/docs.templ`
+- **Depends**: 5, 6
+- **Done when**: section index and page views show
+  `Docs > Section > Page` above the layout, spanning the full
+  width; every item but the last is a link and the last is
+  plain text with `aria-current="page"`; the home page has no
+  breadcrumb; the trail wraps on narrow screens without
+  horizontal scroll; tests cover the home, section index and
+  page trails
+- **Verify**: `templ generate ./cmd/openkata-web/templates/`
+  then `go test ./cmd/openkata-web/...`; check by hand in both
+  themes at phone and desktop widths
+
+### 8. Real-tree test and final checks
 - **Status**: Pending
 - **Goal**: CI fails if the committed docs tree is invalid
 - **Boundary**: `cmd/openkata-web/docs_test.go`

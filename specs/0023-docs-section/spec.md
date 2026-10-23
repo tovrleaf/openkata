@@ -118,6 +118,9 @@ Locally a failure returns 500 with the error for every
 
 ### Navigation and Layout
 
+- Section and page views show a breadcrumb trail at the top,
+  `Docs > Section > Page`; every item but the last links to
+  its page, and the home page has none
 - Pages show a sidebar listing every section and its pages;
   the current page is highlighted
 - On narrow screens the sidebar collapses behind a control

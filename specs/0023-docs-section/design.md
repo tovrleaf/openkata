@@ -114,6 +114,13 @@ func buildSite(fsys fs.FS) (*Site, error)
 ### Navigation and layout
 
 - No nav changes in this spec
+- A breadcrumb trail (`<nav aria-label="Breadcrumb">` with an
+  ordered list) sits above the two columns and spans the full
+  width: `Docs` links to `/docs/`, the section links to its
+  index, and the last item is the current page as plain text
+  with `aria-current="page"`. A section index shows
+  `Docs > Section`. The page model gets the trail as a list of
+  titled links, built from the page's section
 - The page is two columns: a sidebar of every section and its
   pages, and the content. The current page is highlighted, and
   previous/next links follow the section order
