@@ -135,7 +135,7 @@
   themes at phone and desktop widths
 
 ### 8. Real-tree test and final checks
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: CI fails if the committed docs tree is invalid
 - **Boundary**: `cmd/openkata-web/docs_test.go`
 - **Key files**: `web/docs/embed.go`
