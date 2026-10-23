@@ -68,4 +68,5 @@ local-only.
 - How much of the S3 bucket layout and AWS setup should be
   public?
 - Is rendered Mermaid needed at go-live, or is the source view
-  enough? Decide once the pages show how many diagrams exist
+  enough? Spec 0025 evaluates diagram rendering and static
+  asset delivery; decide whether go-live waits for it
