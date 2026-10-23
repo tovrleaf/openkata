@@ -36,6 +36,8 @@ type docsPage struct {
 	hasOrder    bool
 	name        string
 	Source      []byte
+	Body        string   // rendered HTML, set by renderDocs
+	Headings    []string // h2 and h3 text, set by renderDocs
 }
 
 type docsSection struct {
@@ -51,6 +53,7 @@ type docsSite struct {
 	Home     *docsPage
 	Sections []*docsSection
 	byURL    map[string]*docsPage
+	byFile   map[string]*docsPage
 }
 
 type docsFrontmatter struct {
@@ -62,7 +65,7 @@ type docsFrontmatter struct {
 // buildSite reads every Markdown file in fsys and returns the site. It
 // fails on the first structural problem instead of skipping the page.
 func buildSite(fsys fs.FS) (*docsSite, error) {
-	site := &docsSite{byURL: map[string]*docsPage{}}
+	site := &docsSite{byURL: map[string]*docsPage{}, byFile: map[string]*docsPage{}}
 
 	home, err := loadDocsPage(fsys, "index.md", "", "/docs/")
 	if err != nil {
@@ -100,6 +103,10 @@ func buildSite(fsys fs.FS) (*docsSite, error) {
 		}
 		return a.Slug < b.Slug
 	})
+
+	if err := site.renderDocs(); err != nil {
+		return nil, err
+	}
 	return site, nil
 }
 
@@ -169,6 +176,7 @@ func (s *docsSite) register(p *docsPage) error {
 		return fmt.Errorf("%s: %w with %s at %s", p.name, errDocsCollision, prev.name, p.URL)
 	}
 	s.byURL[p.URL] = p
+	s.byFile[p.name] = p
 	return nil
 }
 

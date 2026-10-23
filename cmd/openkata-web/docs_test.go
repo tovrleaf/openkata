@@ -181,7 +181,7 @@ func TestBuildSiteOrdering(t *testing.T) {
 }
 
 func TestRegisterCollision(t *testing.T) {
-	site := &docsSite{byURL: map[string]*docsPage{}}
+	site := &docsSite{byURL: map[string]*docsPage{}, byFile: map[string]*docsPage{}}
 	if err := site.register(&docsPage{URL: "/docs/a/", name: "a/one.md"}); err != nil {
 		t.Fatalf("register() first page error = %v", err)
 	}
