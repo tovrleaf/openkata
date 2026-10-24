@@ -21,18 +21,19 @@ yet would fail the strict loader. Pages ship one section per PR.
 
 ### 1. Guide: manifesto
 - **Status**: Pending
-- **Goal**: The manifesto is part of the docs, with one source
-- **Boundary**: `web/docs/guides/manifesto.md`, `MANIFESTO.md`,
-  `README.md`
+- **Goal**: Developers find the manifesto from the docs; the root
+  file stays the single source
+- **Boundary**: `web/docs/guides/manifesto.md`,
+  `web/docs/guides/index.md`
 - **Key files**: `MANIFESTO.md`, the "See the Manifesto" link in
   `README.md`
 - **Depends**: None
-- **Done when**: `MANIFESTO.md` is moved with `git mv` to
-  `web/docs/guides/manifesto.md` with frontmatter added and the
-  text unchanged; no copy remains at the repository root;
-  `README.md` links to the new path; no other reference to the
-  old path remains (`grep -rn MANIFESTO.md`); the guides index
-  stub is replaced with a short introduction
+- **Done when**: `MANIFESTO.md` stays at the repository root,
+  unchanged; `manifesto.md` is a short page that says what the
+  manifesto is and links to it with an absolute GitHub URL on
+  `main`, without copying its text; the guides index stub is
+  replaced with a short introduction that also links to the
+  manifesto page
 - **Verify**: `go test ./cmd/openkata-web/ -run Embedded`
 
 ### 2. Guide: skills, rules and profiles
