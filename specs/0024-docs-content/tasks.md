@@ -20,7 +20,7 @@ yet would fail the strict loader. Pages ship one section per PR.
 ## Tasks
 
 ### 1. Guide: manifesto
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Developers find the manifesto from the docs; the root
   file stays the single source
 - **Boundary**: `web/docs/guides/manifesto.md`,
