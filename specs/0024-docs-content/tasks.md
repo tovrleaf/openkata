@@ -37,7 +37,7 @@ yet would fail the strict loader. Pages ship one section per PR.
 - **Verify**: `go test ./cmd/openkata-web/ -run Embedded`
 
 ### 2. Guide: skills, rules and profiles
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: A reader learns what each artifact type is, how they
   differ, and the kata vocabulary
 - **Boundary**: `web/docs/guides/skills-rules-profiles.md`
