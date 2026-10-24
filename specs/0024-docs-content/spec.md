@@ -22,6 +22,9 @@ Builds on spec 0023, which provides the docs engine.
 Each section gets at least these pages, written by hand:
 
 - **Guides**
+  - Manifesto: why OpenKata exists. It moves from the repository
+    root `MANIFESTO.md` into the docs, so there is one source,
+    and the README link points to the new page
   - Skills, rules and profiles: what each is and how they
     differ, with the kata vocabulary (dojo kun, sensei
     profiles, the dojo, the ryu)
