@@ -60,7 +60,75 @@ yet would fail the strict loader. Pages ship one section per PR.
 - **Done when**: shows connecting a client, listing, installing a
   skill, rule and profile, and choosing a version
 
-### 4. Guide: using the catalog
+### 4. Page footer with the last-updated date
+- **Status**: Pending
+- **Goal**: Every docs page shows when it was last updated at the
+  bottom, and looks the same when the date is unknown
+- **Boundary**: `cmd/openkata-web/docs.go`,
+  `cmd/openkata-web/docs_handler.go`,
+  `cmd/openkata-web/docs_templates_test.go`,
+  `cmd/openkata-web/templates/docs.templ`,
+  `cmd/openkata-web/templates/docs_types.go`,
+  `web/static/css/components/docs.css`
+- **Key files**: `docsPager` in `cmd/openkata-web/templates/docs.templ`,
+  `buildSite` in `cmd/openkata-web/docs.go`
+- **Depends**: None
+- **Done when**: `buildSite` takes dates by file, and an empty set
+  is allowed; every page, including the docs home and the section
+  indexes, ends with a footer below the previous/next links; a
+  known date reads `Last updated 25 October 2026` inside a `<time
+  datetime="2026-10-25">`; an unknown date reads `Last updated: not
+  committed yet` without a `datetime`; the markup, position and
+  styling are the same in both cases and use design tokens only;
+  tests cover a known date, an unknown date, the home page, a
+  section index and the date format
+- **Verify**: `templ generate ./cmd/openkata-web/templates/`, then
+  `go test ./cmd/openkata-web/...`; check both states in both
+  themes at phone and desktop widths
+
+### 5. Last-updated dates from git for local development
+- **Status**: Pending
+- **Goal**: The local server shows each page's real date
+- **Boundary**: `internal/docsdates/` (new),
+  `cmd/openkata-web/docs_handler.go`
+- **Key files**: `cmd/generate-versions/main.go` (how it calls git)
+- **Depends**: 4
+- **Done when**: a lookup returns the author date of the last
+  commit that touched each docs file (`git log --format=%as`); an
+  untracked file, a missing `git` binary or a directory that is
+  not a repository gives no date and no error, so the page shows
+  the placeholder; the local handler does not run one git process
+  per page on every request; tests use a temporary repository with
+  fixed commit dates and cover a tracked file, an edited but
+  uncommitted file (its previous date), an untracked file and no
+  repository
+- **Verify**: `go test ./internal/docsdates/`, then run the local
+  server and check a committed and a new page
+
+### 6. Stamp last-updated dates at deploy
+- **Status**: Pending
+- **Goal**: Production pages show correct dates, and a deploy never
+  ships without them
+- **Boundary**: `cmd/docs-dates/` (new), `web/docs/embed.go`,
+  `web/docs/generated/`, `.gitignore`, `scripts/deploy-web.sh`,
+  `.github/workflows/deploy.yaml`, `cmd/openkata-web/main.go`
+- **Key files**: `scripts/deploy-web.sh`,
+  `.github/workflows/deploy.yaml`, `internal/docsdates/`
+- **Depends**: 5
+- **Done when**: a generator writes `web/docs/generated/dates.json`
+  (file path to date) using `internal/docsdates`; the file is
+  gitignored and a committed `.gitkeep` keeps the embed pattern
+  valid, so `go build ./...` and `go test ./...` pass without
+  running the generator; `embed.go` includes the directory and the
+  production loader reads the dates from the embedded files;
+  `deploy-web.sh` runs the generator before the build and fails if
+  any docs page has no date; the web deploy job checks out with
+  `fetch-depth: 0`; nothing generated is committed
+- **Verify**: run the generator locally and read `dates.json`, run
+  `scripts/deploy-web.sh` steps up to the build, and run
+  `go test ./...`
+
+### 7. Guide: using the catalog
 - **Status**: Pending
 - **Goal**: A reader can find, filter, sort and inspect artifacts
   on the site
@@ -71,7 +139,7 @@ yet would fail the strict loader. Pages ship one section per PR.
 - **Done when**: covers the catalog, tag filter, sorting, search,
   the detail page tabs and the download counts shown
 
-### 5. Reference: how MCP discovery works
+### 8. Reference: how MCP discovery works
 - **Status**: Pending
 - **Goal**: Explain the `list_*` tools, the tag filter and where
   the index lives
@@ -83,7 +151,7 @@ yet would fail the strict loader. Pages ship one section per PR.
 - **Done when**: lists every tool with its arguments as the code
   defines them, explains tag filtering and `versions.json`
 
-### 6. Reference: where artifacts are stored
+### 9. Reference: where artifacts are stored
 - **Status**: Pending
 - **Goal**: Document the S3 bucket layout and how `versions.json`
   is generated
@@ -91,11 +159,11 @@ yet would fail the strict loader. Pages ship one section per PR.
 - **Key files**: `infra/README.md`, `infra/openkata-stack.yaml`,
   `cmd/generate-versions/main.go`, `.github/workflows/`,
   `docs/adr/0005-version-distributed-artifacts.md`
-- **Depends**: 5
+- **Depends**: 8
 - **Done when**: shows the bucket layout, what writes to it and
   when, and how versions come from git tags
 
-### 7. Reference: downloads
+### 10. Reference: downloads
 - **Status**: Pending
 - **Goal**: Explain how downloads are recorded and counted, and
   the public counts
@@ -103,12 +171,12 @@ yet would fail the strict loader. Pages ship one section per PR.
 - **Key files**: `cmd/openkata-web/handlers.go`
   (`incrementDownload`, archive handlers), `internal/analytics/`,
   `docs/adr/0010-deploy-mcp-to-lambda.md`
-- **Depends**: 6
+- **Depends**: 9
 - **Done when**: covers what counts as a download, the counters,
   and where counts show on the site; does not document the
   local-only `/stats/` dashboard
 
-### 8. Reference: how we use evals
+### 11. Reference: how we use evals
 - **Status**: Pending
 - **Goal**: Explain evals and the local runner with its Docker
   sandbox
@@ -116,33 +184,33 @@ yet would fail the strict loader. Pages ship one section per PR.
 - **Key files**: `cmd/openkata-eval/`,
   `.agents/skills/openkata-eval-runner/SKILL.md`,
   `skills/create-evals/SKILL.md`
-- **Depends**: 5
+- **Depends**: 8
 - **Done when**: covers scenario structure, running locally, the
   sandbox, and where results are written and read
 
-### 9. Reference: how we score skills
+### 12. Reference: how we score skills
 - **Status**: Pending
 - **Goal**: Explain effectiveness and the tessl score
 - **Boundary**: `web/docs/reference/scoring.md`
 - **Key files**: `cmd/generate-versions/main.go`,
   `cmd/openkata-web/templates/skill_detail.templ` (Benchmarks tab),
   `docs/adr/0006-adopt-tessl-as-skill-quality-toolchain.md`
-- **Depends**: 8
+- **Depends**: 11
 - **Done when**: defines both scores, how each is produced and
   shown, and the difference between them
 
-### 10. Reference: how we use tessl
+### 13. Reference: how we use tessl
 - **Status**: Pending
 - **Goal**: Explain tessl reviews, evals and the registry
 - **Boundary**: `web/docs/reference/tessl.md`
 - **Key files**: `docs/adr/0006-adopt-tessl-as-skill-quality-toolchain.md`,
   `docs/adr/0012-use-tessl-evals-and-registry-for-distribution.md`,
   `.github/workflows/publish.yaml`
-- **Depends**: 9
+- **Depends**: 12
 - **Done when**: covers reviews, evals, publishing to the
   registry and what the score means
 
-### 11. Reference: versioning and the manifest
+### 14. Reference: versioning and the manifest
 - **Status**: Pending
 - **Goal**: Explain artifact versions and `.openkata-manifest.json`
 - **Boundary**: `web/docs/reference/versioning.md`
@@ -150,11 +218,11 @@ yet would fail the strict loader. Pages ship one section per PR.
   `docs/adr/0005-version-distributed-artifacts.md`,
   `docs/adr/0011-artifact-dependency-metadata.md`,
   `cmd/openkata-mcp/main.go`
-- **Depends**: 6
+- **Depends**: 9
 - **Done when**: covers tag format, CHANGELOG versions, what the
   manifest records and when it is written
 
-### 12. Contributing: authoring artifacts
+### 15. Contributing: authoring artifacts
 - **Status**: Pending
 - **Goal**: A contributor can write a skill, rule or profile that
   passes review
@@ -168,17 +236,17 @@ yet would fail the strict loader. Pages ship one section per PR.
 - **Done when**: covers the layout and limits for each type, the
   changelog and the review step
 
-### 13. Contributing: release a new version of the site
+### 16. Contributing: release a new version of the site
 - **Status**: Pending
 - **Goal**: Describe how the site is built and deployed
 - **Boundary**: `web/docs/contributing/release-site.md`
 - **Key files**: `RELEASING.md`, `.github/workflows/build.yaml`,
   `.github/workflows/deploy.yaml`, `AGENTS.md` (before pushing)
-- **Depends**: 12
+- **Depends**: 15
 - **Done when**: covers the checks before pushing, what CI runs
   and what a deploy does
 
-### 14. Contributing: release a skill, rule or profile
+### 17. Contributing: release a skill, rule or profile
 - **Status**: Pending
 - **Goal**: Describe tagging and publishing an artifact version
 - **Boundary**: `web/docs/contributing/release-artifact.md`
@@ -186,33 +254,33 @@ yet would fail the strict loader. Pages ship one section per PR.
   `.agents/skills/openkata-ryu-release/SKILL.md`,
   `.github/workflows/publish.yaml`,
   `.github/workflows/publish-on-merge.yaml`
-- **Depends**: 12
+- **Depends**: 15
 - **Done when**: covers the version bump, `skills/<name>/v<version>`
   tags and what the publish workflows do
 
-### 15. Contributing: release the MCP server
+### 18. Contributing: release the MCP server
 - **Status**: Pending
 - **Goal**: Describe building and deploying the MCP server
 - **Boundary**: `web/docs/contributing/release-mcp.md`
 - **Key files**: `RELEASING.md`, `infra/create-mcp-stack.sh`,
   `.github/workflows/deploy.yaml`,
   `docs/adr/0010-deploy-mcp-to-lambda.md`
-- **Depends**: 12
+- **Depends**: 15
 - **Done when**: covers the build, the Lambda deploy and how to
   check it
 
-### 16. Contributing: repository conventions
+### 19. Contributing: repository conventions
 - **Status**: Pending
 - **Goal**: Summarize the conventions a contributor must follow
 - **Boundary**: `web/docs/contributing/conventions.md`
 - **Key files**: `AGENTS.md`, `rules/git-naming/RULE.md`,
   `rules/markdown-style/RULE.md`, `rules/go-testing/RULE.md`,
   `rules/bash-style/RULE.md`
-- **Depends**: 12
+- **Depends**: 15
 - **Done when**: covers branches, commits and the `Assisted-by`
   trailer, code style, testing, and the no-squash merge rule
 
-### 17. Go-live
+### 20. Go-live
 - **Status**: Pending
 - **Goal**: Make the docs public
 - **Boundary**: `cmd/openkata-web/main.go`,
@@ -221,13 +289,14 @@ yet would fail the strict loader. Pages ship one section per PR.
   `web/static/js/search.js`, `cmd/openkata-web/handlers_test.go`
 - **Key files**: `docs_handler.go` (`handleDocs`),
   `web/static/js/search.js`, `docs_embedded_test.go`
-- **Depends**: 1-16, and spec 0025's diagram decision
+- **Depends**: 1-19, and spec 0025's diagram decision
 - **Done when**: `/docs/` is registered outside the local-only
   block and serves `docs.FS` with the site built once and cached;
   the main and mobile nav have a Docs link; the search overlay
   shows docs results from `/docs/search-index.json` and
-  `/catalog/` filters them out; tests cover the production path
-  and the search change
+  `/catalog/` filters them out; the deployed pages show real
+  last-updated dates, not the placeholder; tests cover the
+  production path and the search change
 - **Verify**: `templ generate ./cmd/openkata-web/templates/`,
   `go build -o bin/openkata-web ./cmd/openkata-web/`,
   `go test ./cmd/openkata-web/...`

@@ -57,6 +57,24 @@ Each section gets at least these pages, written by hand:
 Pages may ship one section per PR while the section is still
 local-only.
 
+### Last-Updated Date
+
+- Every docs page, including the docs home and the section
+  indexes, shows when it was last updated at the bottom, below
+  the previous/next links, for example `Last updated 25 October
+  2026`
+- The date is the author date of the last commit that touched the
+  page's file, so an unrelated commit does not change it. It is
+  not written in the page
+- Locally the date is read from git. A page git has no date for,
+  such as a new uncommitted file, shows `Last updated: not
+  committed yet` in the same place and style, so the page looks
+  the same everywhere
+- In production the dates are stamped at deploy time from the full
+  git history, embedded in the binary, and not committed; CI never
+  pushes a commit for them. A deploy fails if any page has no
+  date, so production never shows the placeholder
+
 ### Go-Live
 
 - Go-live happens after spec 0025 decides how diagrams are
