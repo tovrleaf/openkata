@@ -121,6 +121,19 @@ directory. The skills themselves would remain fully functional.
 Reconsider if Tessl development stalls, the Agent Skills ecosystem
 converges on a different toolchain, or a better quality tool emerges.
 
+## Update — 2026-10-28
+
+The decision to use Tessl stands. The implementation differs from
+the text in these ways:
+
+- `tessl skill import` creates `.tessl-plugin/plugin.json`, not
+  `tile.json`. The file holds the review score and a `private` flag.
+  A `.tesslignore` keeps files such as `CHANGELOG.md` and `evals/`
+  out of the published package.
+- Tessl commands are run by hand. No workflow runs lint or review.
+- Publishing to the registry is an optional, manual step of the
+  release workflow (see ADR 0012, which is proposed).
+
 ## References
 
 - [Tessl CLI documentation](https://docs.tessl.io)

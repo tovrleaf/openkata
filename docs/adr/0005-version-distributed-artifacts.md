@@ -156,6 +156,27 @@ Categories: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**,
 - Automation can be added later to enforce version/tag/changelog
   consistency
 
+## Update — 2026-10-28
+
+The decision stands. The implementation differs from the text in
+these ways:
+
+- The install manifest also records a SHA-256 checksum for each
+  installed file (`checksums`), next to `name`, `version` and
+  `source`.
+- Frontmatter does carry the version, as `metadata.version`. The
+  release workflow bumps it and checks it against the tag and the
+  newest changelog section.
+- The MCP server does not read git tags at install time. It takes
+  the version from `versions.json`, or the version the caller names,
+  and reads that version's folder from the bucket.
+- `versions.json` is not an embedded build artifact. The publish
+  workflow builds it with `cmd/generate-versions` from the bucket
+  and uploads it to the bucket root. With `--local` the command
+  builds it from the repository into `web/static/versions.json`.
+- `CHANGELOG.md` is not the only file left out of an install. The
+  full list is in `internal/exclude`.
+
 ## References
 
 - [Semantic Versioning](https://semver.org/)
