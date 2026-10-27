@@ -144,7 +144,7 @@ yet would fail the strict loader. Pages ship one section per PR.
   benchmarks) and the download counts shown
 
 ### 8. Reference: how MCP discovery works
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Explain the `list_*` tools, the tag filter and where
   the index lives
 - **Boundary**: `web/docs/reference/mcp-discovery.md`,
