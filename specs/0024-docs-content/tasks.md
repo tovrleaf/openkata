@@ -168,7 +168,7 @@ yet would fail the strict loader. Pages ship one section per PR.
   when, and how versions come from git tags
 
 ### 10. Reference: downloads
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Explain how downloads are recorded and counted, and
   the public counts
 - **Boundary**: `web/docs/reference/downloads.md`
