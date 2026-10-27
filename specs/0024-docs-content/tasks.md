@@ -181,7 +181,7 @@ yet would fail the strict loader. Pages ship one section per PR.
   local-only `/stats/` dashboard
 
 ### 11. Reference: how we use evals
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Explain evals and the local runner with its Docker
   sandbox
 - **Boundary**: `web/docs/reference/evals.md`
