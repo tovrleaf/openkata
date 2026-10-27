@@ -34,7 +34,8 @@ Creates and maintains skills, rules, and profiles for the ryu.
 Modify only:
 - `skills/`, `rules/`, `profiles/`
 - `.agents/skills/`, `.agents/rules/`
-- CHANGELOGs and tile.json within artifact directories
+- CHANGELOGs and the tessl files (`.tessl-plugin/`,
+  `.tesslignore`) within artifact directories
 
 Do not touch: application code, infrastructure, CI, web UI,
 Go source, Makefiles. If a change requires those, describe

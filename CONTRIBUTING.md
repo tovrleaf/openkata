@@ -57,7 +57,8 @@ See the `commit-conventions` skill for full details.
 
 - Follow Keep a Changelog format
 - Blank lines around `###` headings
-- Do not mention dev-only artifacts (tile.json, tessl.json)
+- Do not mention dev-only artifacts (`.tessl-plugin/`,
+  `.tesslignore`, tessl.json)
 
 ## Design principles
 

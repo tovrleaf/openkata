@@ -5,6 +5,8 @@
 ### Fixed
 
 - Use --workspace openkata flag on tessl import to prevent local/ prefix
+- Name the files that tessl skill import sets up as they are now
+  created, in the conventions, the changelog rule and the boundaries
 
 ## 1.0.0 — 2026-04-28
 

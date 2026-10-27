@@ -109,5 +109,5 @@ is a command:
 - Distributable artifacts get git tags:
   `skills/<name>/v<version>`
 - Local artifacts (in `.agents/`) are not tagged
-- Changelogs must not mention dev-only files (tile.json,
-  tessl.json)
+- Changelogs must not mention dev-only files
+  (`.tessl-plugin/`, `.tesslignore`, tessl.json)
