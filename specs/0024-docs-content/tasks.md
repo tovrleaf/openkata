@@ -61,7 +61,7 @@ yet would fail the strict loader. Pages ship one section per PR.
   skill, rule and profile, and choosing a version
 
 ### 4. Page footer with the last-updated date
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Every docs page shows when it was last updated at the
   bottom, and looks the same when the date is unknown
 - **Boundary**: `cmd/openkata-web/docs.go`,
@@ -119,8 +119,10 @@ yet would fail the strict loader. Pages ship one section per PR.
   (file path to date) using `internal/docsdates`; the file is
   gitignored and a committed `.gitkeep` keeps the embed pattern
   valid, so `go build ./...` and `go test ./...` pass without
-  running the generator; `embed.go` includes the directory and the
-  production loader reads the dates from the embedded files;
+  running the generator; `embed.go` includes the directory, the
+  loader skips `generated/` instead of treating it as a section,
+  and the production loader reads the dates from the embedded
+  files;
   `deploy-web.sh` runs the generator before the build and fails if
   any docs page has no date; the web deploy job checks out with
   `fetch-depth: 0`; nothing generated is committed

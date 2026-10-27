@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/tovrleaf/openkata/cmd/openkata-web/templates"
 )
@@ -72,7 +73,7 @@ func writeDocsPage(w http.ResponseWriter, r *http.Request, site *docsSite, p *do
 }
 
 func (s *docsSite) homeModel() templates.DocsHomeModel {
-	m := templates.DocsHomeModel{Title: s.Home.Title, Body: s.Home.Body}
+	m := templates.DocsHomeModel{Title: s.Home.Title, Body: s.Home.Body, Updated: updatedFor(s.Home)}
 	for _, sec := range s.Sections {
 		m.Sections = append(m.Sections, templates.DocsHomeSection{
 			DocsLink:    templates.DocsLink{Title: sec.Title, URL: sec.Index.URL},
@@ -83,9 +84,23 @@ func (s *docsSite) homeModel() templates.DocsHomeModel {
 }
 
 func (s *docsSite) pageModel(p *docsPage) templates.DocsPageModel {
-	m := templates.DocsPageModel{Title: p.Title, Body: p.Body, Crumbs: s.crumbs(p), Nav: s.navFor(p)}
+	m := templates.DocsPageModel{Title: p.Title, Body: p.Body, Crumbs: s.crumbs(p), Nav: s.navFor(p), Updated: updatedFor(p)}
 	m.Prev, m.Next = s.pager(p)
 	return m
+}
+
+// updatedFor formats the last-updated date of p for display, for example
+// "25 October 2026". A page without a date gets the zero value, which the
+// footer shows as a placeholder.
+func updatedFor(p *docsPage) templates.DocsUpdated {
+	if p.Updated == "" {
+		return templates.DocsUpdated{}
+	}
+	t, err := time.Parse(docsDateLayout, p.Updated)
+	if err != nil {
+		return templates.DocsUpdated{}
+	}
+	return templates.DocsUpdated{ISO: p.Updated, Label: t.Format("2 January 2006")}
 }
 
 // crumbs returns the breadcrumb trail for p: Docs, then its section,

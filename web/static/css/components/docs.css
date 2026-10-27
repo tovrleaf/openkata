@@ -173,6 +173,17 @@
   overflow-x: auto;
 }
 
+/* Last updated: the same footer on every page, with or without a date */
+
+.docs-updated {
+  margin-top: var(--space-md);
+  font-family: var(--font-mono);
+  font-size: calc(var(--font-size-sm) * 0.85);
+  color: var(--color-ink-muted);
+  opacity: 0.8;
+  text-align: right;
+}
+
 /* Previous / next */
 
 .docs-pager {

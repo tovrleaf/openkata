@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+	"time"
 
 	"gopkg.in/yaml.v3"
 )
@@ -21,7 +22,10 @@ var (
 	errDocsCollision   = errors.New("url collision")
 	errDocsNoIndex     = errors.New("section has no index.md")
 	errDocsLayout      = errors.New("unsupported layout")
+	errDocsDate        = errors.New("invalid date")
 )
+
+const docsDateLayout = "2006-01-02"
 
 var docsSlugRe = regexp.MustCompile(`^[a-z0-9][a-z0-9-]*$`)
 
@@ -38,6 +42,7 @@ type docsPage struct {
 	Source      []byte
 	Body        string   // rendered HTML, set by renderDocs
 	Headings    []string // h2 and h3 text, set by renderDocs
+	Updated     string   // last-updated date as YYYY-MM-DD, empty when unknown
 }
 
 type docsSection struct {
@@ -62,9 +67,28 @@ type docsFrontmatter struct {
 	Order       *int   `yaml:"order"`
 }
 
+type siteConfig struct {
+	dates map[string]string
+}
+
+// siteOption configures buildSite.
+type siteOption func(*siteConfig)
+
+// withDates sets the last-updated date of pages, keyed by file path in
+// the docs tree (for example "guides/manifesto.md") with values as
+// YYYY-MM-DD. Pages without an entry have an unknown date, which is not
+// an error. Entries for files that do not exist are ignored.
+func withDates(dates map[string]string) siteOption {
+	return func(c *siteConfig) { c.dates = dates }
+}
+
 // buildSite reads every Markdown file in fsys and returns the site. It
 // fails on the first structural problem instead of skipping the page.
-func buildSite(fsys fs.FS) (*docsSite, error) {
+func buildSite(fsys fs.FS, opts ...siteOption) (*docsSite, error) {
+	var cfg siteConfig
+	for _, opt := range opts {
+		opt(&cfg)
+	}
 	site := &docsSite{byURL: map[string]*docsPage{}, byFile: map[string]*docsPage{}}
 
 	home, err := loadDocsPage(fsys, "index.md", "", "/docs/")
@@ -104,6 +128,9 @@ func buildSite(fsys fs.FS) (*docsSite, error) {
 		return a.Slug < b.Slug
 	})
 
+	if err := site.applyDates(cfg.dates); err != nil {
+		return nil, err
+	}
 	if err := site.renderDocs(); err != nil {
 		return nil, err
 	}
@@ -169,6 +196,27 @@ func loadDocsSection(fsys fs.FS, site *docsSite, dir string) (*docsSection, erro
 		return a.name < b.name
 	})
 	return sec, nil
+}
+
+// applyDates sets Updated on the pages that have a date. A date that is
+// not YYYY-MM-DD is an error, so a broken date source is not shown.
+func (s *docsSite) applyDates(dates map[string]string) error {
+	files := make([]string, 0, len(dates))
+	for f := range dates {
+		files = append(files, f)
+	}
+	sort.Strings(files)
+	for _, f := range files {
+		p := s.byFile[f]
+		if p == nil {
+			continue
+		}
+		if _, err := time.Parse(docsDateLayout, dates[f]); err != nil {
+			return fmt.Errorf("%s: %w: %q is not a YYYY-MM-DD date", f, errDocsDate, dates[f])
+		}
+		p.Updated = dates[f]
+	}
+	return nil
 }
 
 func (s *docsSite) register(p *docsPage) error {
