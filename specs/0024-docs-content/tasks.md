@@ -274,7 +274,7 @@ yet would fail the strict loader. Pages ship one section per PR.
   check it
 
 ### 19. Contributing: repository conventions
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Summarize the conventions a contributor must follow
 - **Boundary**: `web/docs/contributing/conventions.md`
 - **Key files**: `AGENTS.md`, `rules/git-naming/RULE.md`,
