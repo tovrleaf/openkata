@@ -77,7 +77,7 @@ func main() {
 		}
 	}
 
-	s := server.NewMCPServer("openkata", "0.3.0",
+	s := server.NewMCPServer("openkata", serverVersion(),
 		server.WithToolCapabilities(false),
 	)
 
