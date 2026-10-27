@@ -79,10 +79,12 @@ name both locations and the agent writes to the one its client
 uses. If your project already follows one convention, tell the
 agent to use it.
 
-The manifest is saved as `.openkata-manifest.json` next to the
-files. It records the artifact name, the version, the source
-(`github.com/tovrleaf/openkata`) and a SHA-256 checksum for every
-installed file.
+The manifest is a record of what was installed: the artifact name,
+the version, the source (`github.com/tovrleaf/openkata`) and a
+SHA-256 checksum for every installed file. The server returns it as
+a separate field. The tool's description presents it as the
+artifact's `.openkata-manifest.json`, for the agent to save next to
+the files. An archive download contains the file itself.
 
 An install leaves out the files that only matter to the project
 that maintains the artifact: the changelog, the rationale, the
