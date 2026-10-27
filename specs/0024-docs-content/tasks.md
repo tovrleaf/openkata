@@ -241,7 +241,7 @@ yet would fail the strict loader. Pages ship one section per PR.
   changelog and the review step
 
 ### 16. Contributing: release a new version of the site
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Describe how the site is built and deployed
 - **Boundary**: `web/docs/contributing/release-site.md`
 - **Key files**: `RELEASING.md`, `.github/workflows/build.yaml`,
