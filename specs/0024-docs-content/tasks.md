@@ -49,7 +49,7 @@ yet would fail the strict loader. Pages ship one section per PR.
   of each, plus dojo kun, sensei profiles, the dojo and the ryu
 
 ### 3. Guide: installing artifacts through the MCP server
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: A reader can connect an agent to the dojo and install
   an artifact
 - **Boundary**: `web/docs/guides/installing-artifacts.md`
