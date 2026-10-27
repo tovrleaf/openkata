@@ -204,7 +204,7 @@ yet would fail the strict loader. Pages ship one section per PR.
   shown, and the difference between them
 
 ### 13. Reference: how we use tessl
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Explain tessl reviews, evals and the registry
 - **Boundary**: `web/docs/reference/tessl.md`
 - **Key files**: `docs/adr/0006-adopt-tessl-as-skill-quality-toolchain.md`,
