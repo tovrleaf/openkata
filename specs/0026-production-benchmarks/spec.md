@@ -40,6 +40,34 @@ Checked against the live site and the code on 2026-10-27:
   while the README badge counts 6, and 1 of its 13 skills has eval
   results
 
+### Missing artifacts and versions
+
+Checked on 2026-10-28 by comparing git tags with the live site. Each
+version is probed through its raw-file route, which answers only for a
+file that is in the bucket. The probe was checked first: an existing
+version gives 200, a made-up version gives 404.
+
+Pushed tags whose files are not in the bucket (8 of 40):
+
+- `skills/commit-conventions/v1.0.0`, `v1.1.0` and `v1.1.1`
+- `skills/create-adr/v1.0.0`, `v1.0.1` and `v1.0.2`
+- `skills/create-rule/v1.0.0`
+- `skills/create-skill/v1.0.0`
+
+Tags that exist only in the local clone and were never pushed, so the
+publish workflow never ran for them:
+
+- `skills/create-evals/v1.0.0` and `skills/critical-thinking/v1.0.0`,
+  which is why the live listing shows 11 of the 13 skills
+- `skills/commit-conventions/v1.4.0`, `skills/create-skill/v1.2.1` and
+  `v1.3.1`, which is why the live site shows older latest versions than
+  the repository, for example commit-conventions at 1.3.1
+
+`rules/changelog-format` has never been tagged, so the live listing
+shows 5 of the 6 rules. The publish workflow runs by hand most of the
+time: 54 of its 61 runs are manual, and the tag-push runs of 2026-06-11
+failed for several artifacts.
+
 ## Requirements
 
 ### Index
@@ -71,7 +99,9 @@ Checked against the live site and the code on 2026-10-27:
 
 - Every released version of an artifact, that is every git tag of
   the form `<type>/<name>/v<version>`, has a folder in the bucket.
-  Versions that are missing are published
+  Versions that are missing are published, starting with the eight
+  listed under Missing artifacts and versions
+- Every tag is pushed, so that the publish workflow runs for it
 
 ### Quality
 
@@ -96,5 +126,6 @@ Checked against the live site and the code on 2026-10-27:
 - The sandbox does not pass `--model` to `kiro-cli`, so a result
   filed under a model name may have run with another model. Is
   that settled before the scores are shown publicly?
-- Why does the live listing show 11 of the 13 skills? Are two not
-  released?
+- Should a check, such as a script or a workflow step, compare the
+  tags with the bucket, so that an unpushed tag or a failed publish is
+  noticed?
