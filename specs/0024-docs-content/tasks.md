@@ -293,8 +293,12 @@ yet would fail the strict loader. Pages ship one section per PR.
   `web/static/js/search.js`, `cmd/openkata-web/handlers_test.go`
 - **Key files**: `docs_handler.go` (`handleDocs`),
   `web/static/js/search.js`, `docs_embedded_test.go`
-- **Depends**: 1-19, and spec 0025's diagram decision
-- **Done when**: `/docs/` is registered outside the local-only
+- **Depends**: 1-19, spec 0025's diagram decision, and spec 0026
+  (benchmarks and the version list in production)
+- **Done when**: the live site shows what the docs describe: a
+  Benchmarks tab for skills that have scores and every released
+  version in the version control (spec 0026); `/docs/` is
+  registered outside the local-only
   block and serves `docs.FS` with the site built once and cached;
   the main and mobile nav have a Docs link; the search overlay
   shows docs results from `/docs/search-index.json` and

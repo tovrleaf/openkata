@@ -77,11 +77,14 @@ local-only.
 
 ### Go-Live
 
-- Go-live happens after spec 0025 decides how diagrams are
+- Go-live happens after spec 0026, so the live site shows the
+  benchmarks and version list that the Guides and Reference
+  describe
+- Go-live also happens after spec 0025 decides how diagrams are
   rendered and where its libraries are served from, so the
-  first public page does not show raw diagram source. The
-  pages above do not wait for it; they are written while the
-  section is local-only
+  first public page does not show raw diagram source
+- The pages above do not wait for either; they are written while
+  the section is local-only
 - `/docs/` moves out of the local-only block and is served in
   production from the embedded tree, with the `Site` built
   once and cached
