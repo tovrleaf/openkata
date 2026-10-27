@@ -156,7 +156,7 @@ yet would fail the strict loader. Pages ship one section per PR.
   defines them, explains tag filtering and `versions.json`
 
 ### 9. Reference: where artifacts are stored
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Document the S3 bucket layout and how `versions.json`
   is generated
 - **Boundary**: `web/docs/reference/storage.md`
