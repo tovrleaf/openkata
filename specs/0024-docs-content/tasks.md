@@ -87,7 +87,7 @@ yet would fail the strict loader. Pages ship one section per PR.
   themes at phone and desktop widths
 
 ### 5. Last-updated dates from git for local development
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: The local server shows each page's real date
 - **Boundary**: `internal/docsdates/` (new),
   `cmd/openkata-web/docs_handler.go`

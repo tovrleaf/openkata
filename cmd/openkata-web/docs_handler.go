@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/tovrleaf/openkata/cmd/openkata-web/templates"
+	"github.com/tovrleaf/openkata/internal/docsdates"
 )
 
 const docsSearchIndexPath = "/docs/search-index.json"
@@ -16,7 +17,10 @@ const docsSearchIndexPath = "/docs/search-index.json"
 // the site on every request so edits show without a rebuild. It is only
 // registered in local development.
 var handleDocs = docsHandler(func() (*docsSite, error) {
-	return buildSite(os.DirFS("web/docs"))
+	// Without git, or outside a repository, there are no dates and the
+	// pages show the placeholder, so the error is not fatal here.
+	dates, _ := docsdates.Lookup("web/docs")
+	return buildSite(os.DirFS("web/docs"), withDates(dates))
 })
 
 // docsHandler serves pages from the site returned by load. Requests are
