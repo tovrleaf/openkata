@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+	"testing/fstest"
 )
 
 func TestBuildSiteDates(t *testing.T) {
@@ -65,6 +66,90 @@ func TestBuildSiteDates(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestGeneratedDirIsNotASection(t *testing.T) {
+	fsys := handlerFixture()
+	fsys["generated/.gitkeep"] = docsFile("")
+	fsys["generated/dates.json"] = docsFile(`{"guides/intro.md": "2026-10-05"}`)
+
+	site, err := buildSite(fsys)
+	if err != nil {
+		t.Fatalf("buildSite() with a generated directory error = %v, want it skipped", err)
+	}
+	for _, s := range site.Sections {
+		if s.Slug == "generated" {
+			t.Error("buildSite() made a section of the generated directory")
+		}
+	}
+	for url := range site.byURL {
+		if strings.Contains(url, "generated") {
+			t.Errorf("buildSite() has a page at %s from the generated directory", url)
+		}
+	}
+}
+
+func TestSiteFromFSDates(t *testing.T) {
+	with := func(dates string) fstest.MapFS {
+		fsys := handlerFixture()
+		if dates != "" {
+			fsys["generated/dates.json"] = docsFile(dates)
+		}
+		return fsys
+	}
+
+	t.Run("dates come from generated/dates.json", func(t *testing.T) {
+		site, err := siteFromFS(with(`{"index.md": "2026-01-31", "guides/intro.md": "2026-10-05"}`))
+		if err != nil {
+			t.Fatalf("siteFromFS() error = %v", err)
+		}
+		if got := site.byURL["/docs/guides/intro/"].Updated; got != "2026-10-05" {
+			t.Errorf("Updated of intro = %q, want 2026-10-05", got)
+		}
+		if got := site.byURL["/docs/"].Updated; got != "2026-01-31" {
+			t.Errorf("Updated of home = %q, want 2026-01-31", got)
+		}
+		if got := site.byURL["/docs/guides/other/"].Updated; got != "" {
+			t.Errorf("Updated of a page without an entry = %q, want empty", got)
+		}
+	})
+
+	t.Run("a tree without the file has no dates", func(t *testing.T) {
+		site, err := siteFromFS(with(""))
+		if err != nil {
+			t.Fatalf("siteFromFS() without dates.json error = %v, want nil", err)
+		}
+		if got := site.byURL["/docs/guides/intro/"].Updated; got != "" {
+			t.Errorf("Updated = %q, want empty", got)
+		}
+	})
+
+	t.Run("an empty object is fine", func(t *testing.T) {
+		if _, err := siteFromFS(with(`{}`)); err != nil {
+			t.Errorf("siteFromFS() with {} error = %v, want nil", err)
+		}
+	})
+
+	for name, content := range map[string]string{
+		"not JSON":              "not json",
+		"truncated":             `{"guides/intro.md": "2026-10`,
+		"wrong type":            `["2026-10-05"]`,
+		"value is not a string": `{"guides/intro.md": 20261005}`,
+	} {
+		t.Run("malformed file: "+name, func(t *testing.T) {
+			_, err := siteFromFS(with(content))
+			if !errors.Is(err, errDocsDate) {
+				t.Errorf("siteFromFS(%q) error = %v, want %v", content, err, errDocsDate)
+			}
+		})
+	}
+
+	t.Run("a bad date inside the file is an error", func(t *testing.T) {
+		_, err := siteFromFS(with(`{"guides/intro.md": "05/10/2026"}`))
+		if !errors.Is(err, errDocsDate) {
+			t.Errorf("siteFromFS() with a bad date error = %v, want %v", err, errDocsDate)
+		}
+	})
 }
 
 func datedHandler(t *testing.T, dates map[string]string) http.HandlerFunc {

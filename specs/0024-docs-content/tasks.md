@@ -106,7 +106,7 @@ yet would fail the strict loader. Pages ship one section per PR.
   server and check a committed and a new page
 
 ### 6. Stamp last-updated dates at deploy
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Production pages show correct dates, and a deploy never
   ships without them
 - **Boundary**: `cmd/docs-dates/` (new), `web/docs/embed.go`,

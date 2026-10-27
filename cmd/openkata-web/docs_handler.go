@@ -9,6 +9,7 @@ import (
 
 	"github.com/tovrleaf/openkata/cmd/openkata-web/templates"
 	"github.com/tovrleaf/openkata/internal/docsdates"
+	"github.com/tovrleaf/openkata/web/docs"
 )
 
 const docsSearchIndexPath = "/docs/search-index.json"
@@ -22,6 +23,13 @@ var handleDocs = docsHandler(func() (*docsSite, error) {
 	dates, _ := docsdates.Lookup("web/docs")
 	return buildSite(os.DirFS("web/docs"), withDates(dates))
 })
+
+// loadEmbeddedSite builds the site from the docs compiled into the binary,
+// with the dates the deploy stamped into it. It is what production serves
+// once the section goes public.
+func loadEmbeddedSite() (*docsSite, error) {
+	return siteFromFS(docs.FS)
+}
 
 // docsHandler serves pages from the site returned by load. Requests are
 // resolved only through the site's URL index, so no file path ever

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -26,6 +27,10 @@ var (
 )
 
 const docsDateLayout = "2006-01-02"
+
+// docsGeneratedDir holds files made at deploy time, such as the
+// last-updated dates. It is not a section.
+const docsGeneratedDir = "generated"
 
 var docsSlugRe = regexp.MustCompile(`^[a-z0-9][a-z0-9-]*$`)
 
@@ -106,6 +111,8 @@ func buildSite(fsys fs.FS, opts ...siteOption) (*docsSite, error) {
 	}
 	for _, e := range entries {
 		switch {
+		case e.IsDir() && e.Name() == docsGeneratedDir:
+			continue
 		case e.IsDir():
 			sec, err := loadDocsSection(fsys, site, e.Name())
 			if err != nil {
@@ -196,6 +203,35 @@ func loadDocsSection(fsys fs.FS, site *docsSite, dir string) (*docsSection, erro
 		return a.name < b.name
 	})
 	return sec, nil
+}
+
+// datesFromFS reads the dates the deploy stamped into generated/dates.json,
+// a JSON object from file path to YYYY-MM-DD. A tree without the file has
+// no dates, which is not an error; a file that is not valid JSON is.
+func datesFromFS(fsys fs.FS) (map[string]string, error) {
+	file := docsGeneratedDir + "/dates.json"
+	data, err := fs.ReadFile(fsys, file)
+	if errors.Is(err, fs.ErrNotExist) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("read %s: %w", file, err)
+	}
+	var dates map[string]string
+	if err := json.Unmarshal(data, &dates); err != nil {
+		return nil, fmt.Errorf("%s: %w: %v", file, errDocsDate, err)
+	}
+	return dates, nil
+}
+
+// siteFromFS builds the site from a docs tree that may carry its own
+// stamped dates.
+func siteFromFS(fsys fs.FS) (*docsSite, error) {
+	dates, err := datesFromFS(fsys)
+	if err != nil {
+		return nil, err
+	}
+	return buildSite(fsys, withDates(dates))
 }
 
 // applyDates sets Updated on the pages that have a date. A date that is

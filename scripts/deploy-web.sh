@@ -7,6 +7,11 @@ REGION="${AWS_REGION:-eu-north-1}"
 echo "Generating templates..."
 "$(go env GOPATH)/bin/templ" generate ./cmd/openkata-web/templates/
 
+echo "Stamping docs last-updated dates..."
+# Fails on a shallow clone, and if any docs page has no date, so the site
+# never ships with the "not committed yet" placeholder.
+go run ./cmd/docs-dates -require
+
 BUILD_DIR="$(mktemp -d)"
 trap 'rm -rf "${BUILD_DIR}"' EXIT
 

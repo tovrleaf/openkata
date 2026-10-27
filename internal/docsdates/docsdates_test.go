@@ -200,6 +200,48 @@ func TestLookupWithoutDates(t *testing.T) {
 		}
 	})
 
+	t.Run("shallow clone", func(t *testing.T) {
+		src := newRepo(t)
+		src.commit("2026-05-01", map[string]string{"docs/a.md": "a1"})
+		src.commit("2026-05-02", map[string]string{"docs/b.md": "b1"})
+
+		shallow := filepath.Join(t.TempDir(), "shallow")
+		clone := exec.Command("git", "clone", "-q", "--depth", "1", "file://"+src.dir, shallow)
+		clone.Env = append(os.Environ(), "GIT_CONFIG_GLOBAL="+os.DevNull, "GIT_CONFIG_NOSYSTEM=1")
+		if out, err := clone.CombinedOutput(); err != nil {
+			t.Fatalf("git clone --depth 1: %v\n%s", err, out)
+		}
+
+		got, err := Lookup(filepath.Join(shallow, "docs"))
+		if !errors.Is(err, ErrShallowClone) {
+			t.Errorf("Lookup(shallow clone) error = %v, want %v", err, ErrShallowClone)
+		}
+		if got == nil || len(got) != 0 {
+			t.Errorf("Lookup(shallow clone) = %v, want an empty map, not dates that would all be wrong", got)
+		}
+	})
+
+	t.Run("full clone", func(t *testing.T) {
+		src := newRepo(t)
+		src.commit("2026-05-01", map[string]string{"docs/a.md": "a1"})
+		src.commit("2026-05-02", map[string]string{"docs/b.md": "b1"})
+
+		full := filepath.Join(t.TempDir(), "full")
+		clone := exec.Command("git", "clone", "-q", "file://"+src.dir, full)
+		clone.Env = append(os.Environ(), "GIT_CONFIG_GLOBAL="+os.DevNull, "GIT_CONFIG_NOSYSTEM=1")
+		if out, err := clone.CombinedOutput(); err != nil {
+			t.Fatalf("git clone: %v\n%s", err, out)
+		}
+
+		got, err := Lookup(filepath.Join(full, "docs"))
+		if err != nil {
+			t.Fatalf("Lookup(full clone) error = %v", err)
+		}
+		if got["a.md"] != "2026-05-01" || got["b.md"] != "2026-05-02" {
+			t.Errorf("Lookup(full clone) = %v, want a.md on 2026-05-01 and b.md on 2026-05-02", got)
+		}
+	})
+
 	t.Run("git is not installed", func(t *testing.T) {
 		t.Setenv("PATH", t.TempDir())
 		got, err := Lookup(t.TempDir())

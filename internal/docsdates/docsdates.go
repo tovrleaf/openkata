@@ -17,6 +17,10 @@ var (
 	ErrGitUnavailable = errors.New("git is not available")
 	// ErrNotRepository means the directory is not inside a git repository.
 	ErrNotRepository = errors.New("not a git repository")
+	// ErrShallowClone means the repository has truncated history, so the
+	// last commit that touched a file cannot be known. In a clone with a
+	// single commit every file would get that commit's date.
+	ErrShallowClone = errors.New("shallow clone, full history is needed")
 )
 
 const dateLayout = "2006-01-02"
@@ -29,13 +33,13 @@ const dateLayout = "2006-01-02"
 // Only files git currently tracks are in the map. A new file that is not
 // committed yet, or one that reuses the path of a deleted file, has no
 // date; a file with uncommitted edits keeps the date of its last commit.
-// Two git processes read the history and the file list, however many
-// files there are.
+// Three git processes check the repository, read the history and list the
+// tracked files, however many files there are.
 //
-// The map is never nil. When git is missing or dir is not in a repository
-// the map is empty and the error says why, so a caller that can live
-// without dates may ignore it. A repository without commits is not an
-// error.
+// The map is never nil. When git is missing, dir is not in a repository
+// or the repository is a shallow clone, the map is empty and the error
+// says why, so a caller that can live without dates may ignore it. A
+// repository without commits is not an error.
 func Lookup(dir string) (map[string]string, error) {
 	dates := map[string]string{}
 
@@ -44,29 +48,27 @@ func Lookup(dir string) (map[string]string, error) {
 		return dates, fmt.Errorf("%w: %v", ErrGitUnavailable, err)
 	}
 
+	shallow, err := runGit(git, dir, "rev-parse", "--is-shallow-repository")
+	if err != nil {
+		return dates, err
+	}
+	if strings.TrimSpace(string(shallow)) == "true" {
+		return dates, fmt.Errorf("%w: %s", ErrShallowClone, dir)
+	}
+
 	// Newest commit first, so the first time a path is seen is its last
 	// change. Merge commits list no files, and renames list the new path
 	// only. core.quotepath keeps non-ASCII names readable.
-	cmd := exec.Command(git,
+	out, err := runGit(git, dir,
 		"-c", "core.quotepath=off",
 		"log", "-M", "--relative",
 		"--format=%x01%as", "--name-only",
 		"--", ".")
-	cmd.Dir = dir
-	cmd.Env = append(os.Environ(), "LC_ALL=C")
-	var stderr bytes.Buffer
-	cmd.Stderr = &stderr
-
-	out, err := cmd.Output()
 	if err != nil {
-		msg := stderr.String()
-		switch {
-		case strings.Contains(msg, "not a git repository"):
-			return dates, fmt.Errorf("%w: %s", ErrNotRepository, dir)
-		case strings.Contains(msg, "does not have any commits yet"):
+		if errors.Is(err, errNoCommits) {
 			return dates, nil
 		}
-		return dates, fmt.Errorf("git log in %s: %w: %s", dir, err, strings.TrimSpace(msg))
+		return dates, err
 	}
 
 	var date string
@@ -88,9 +90,15 @@ func Lookup(dir string) (map[string]string, error) {
 	// History also names files that were renamed or deleted since. Keep
 	// only the ones git tracks now, so a new file at an old path has no
 	// date of its own.
-	tracked, err := trackedFiles(git, dir)
+	listed, err := runGit(git, dir, "-c", "core.quotepath=off", "ls-files", "-z", "--", ".")
 	if err != nil {
 		return map[string]string{}, err
+	}
+	tracked := map[string]bool{}
+	for _, path := range strings.Split(string(listed), "\x00") {
+		if path != "" {
+			tracked[path] = true
+		}
 	}
 	for path := range dates {
 		if !tracked[path] {
@@ -100,20 +108,28 @@ func Lookup(dir string) (map[string]string, error) {
 	return dates, nil
 }
 
-// trackedFiles lists the files under dir that git tracks, relative to dir.
-func trackedFiles(git, dir string) (map[string]bool, error) {
-	cmd := exec.Command(git, "-c", "core.quotepath=off", "ls-files", "-z", "--", ".")
+// errNoCommits is returned by runGit for a repository without commits.
+var errNoCommits = errors.New("repository has no commits")
+
+// runGit runs git in dir and maps the failures callers care about to
+// errors. The C locale keeps the messages it matches on stable.
+func runGit(git, dir string, args ...string) ([]byte, error) {
+	cmd := exec.Command(git, args...)
 	cmd.Dir = dir
 	cmd.Env = append(os.Environ(), "LC_ALL=C")
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
+
 	out, err := cmd.Output()
-	if err != nil {
-		return nil, fmt.Errorf("git ls-files in %s: %w", dir, err)
+	if err == nil {
+		return out, nil
 	}
-	tracked := map[string]bool{}
-	for _, path := range strings.Split(string(out), "\x00") {
-		if path != "" {
-			tracked[path] = true
-		}
+	msg := stderr.String()
+	switch {
+	case strings.Contains(msg, "not a git repository"):
+		return nil, fmt.Errorf("%w: %s", ErrNotRepository, dir)
+	case strings.Contains(msg, "does not have any commits yet"):
+		return nil, errNoCommits
 	}
-	return tracked, nil
+	return nil, fmt.Errorf("git %s in %s: %w: %s", args[len(args)-1], dir, err, strings.TrimSpace(msg))
 }
