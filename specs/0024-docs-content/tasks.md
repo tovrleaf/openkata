@@ -215,7 +215,7 @@ yet would fail the strict loader. Pages ship one section per PR.
   registry and what the score means
 
 ### 14. Reference: versioning and the manifest
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Explain artifact versions and `.openkata-manifest.json`
 - **Boundary**: `web/docs/reference/versioning.md`
 - **Key files**: `RELEASING.md`,
