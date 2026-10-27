@@ -251,7 +251,7 @@ yet would fail the strict loader. Pages ship one section per PR.
   and what a deploy does
 
 ### 17. Contributing: release a skill, rule or profile
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Describe tagging and publishing an artifact version
 - **Boundary**: `web/docs/contributing/release-artifact.md`
 - **Key files**: `RELEASING.md`,
