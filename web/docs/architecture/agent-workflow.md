@@ -71,49 +71,33 @@ flowchart TD
 
 ## Agents
 
+The scopes come from each agent's profile in `.agents/profiles/`.
+
 | Agent | Scope | Writes to |
-|-------|-------|----------|
-| spec-planner | Feature planning | specs/NNNN/ |
-| frontend-developer | Templates, CSS, JS | web/, templates/ |
-| backend-developer | Go handlers, types, tests | cmd/, handlers, types |
-| spec-validator | Acceptance review | specs/NNNN/validation-report.md |
-| adr-author | Architecture decisions | docs/adr/ |
-| kata-author | Skills, rules, profiles | skills/, rules/, .agents/ |
+|-------|-------|-----------|
+| spec-planner | Feature planning | `specs/` |
+| frontend-developer | Templates, CSS, JS | `cmd/openkata-web/templates/`, `web/static/` |
+| backend-developer | Go handlers, types, tests | `cmd/openkata-web/` (`handlers.go`, `handlers_test.go`, `main.go`), `templates/types.go`, `templates/helpers.go`, `cmd/openkata-mcp/` |
+| spec-validator | Acceptance review | `specs/NNNN-slug/validation-report.md` |
+| adr-author | Architecture decisions | `docs/adr/` |
+| kata-author | Skills, rules, profiles | `skills/`, `rules/`, `profiles/`, `.agents/skills/`, `.agents/rules/` |
 | dojo-master | Coordination | nothing (delegates only) |
 
-## Skill & Rule Usage
+## What each agent uses
 
-### Distributable Skills (skills/)
+Each profile names the skills and rules its agent works with. A
+skill or rule that no profile names is still available to any agent.
 
-| Skill | Used by | When |
-|-------|---------|------|
-| spec-workflow | spec-planner | Feature planning lifecycle |
-| commit-conventions | all agents | Every commit |
-| create-skill | kata-author | Creating new skills |
-| create-rule | kata-author | Creating new rules |
-| create-profile | kata-author | Creating new agent profiles |
-| create-adr | adr-author | Recording architecture decisions |
-| github-create-pr | any agent (on push) | Opening pull requests |
-| git-worktree | any agent | Parallel branch work |
-| makefile-conventions | backend-developer | Makefile changes |
-| grill-me | spec-validator | Challenging implementations against spec |
+| Agent | Skills | Rules |
+|-------|--------|-------|
+| spec-planner | `spec-workflow` (phases 1-3); optional `grill-me`, `grill-with-docs`, `critical-thinking` | markdown-style, git-naming |
+| spec-validator | `spec-workflow` (phase 5) | markdown-style |
+| adr-author | `create-adr` | markdown-style, git-naming |
+| kata-author | `create-skill` with `openkata-skill-conventions`; `create-rule` with `openkata-rule-conventions`; `create-profile`; `openkata-review-skill`; `openkata-review-rule`; `openkata-ryu-release`; `openkata-eval-runner` | markdown-style, git-naming |
+| frontend-developer | none named | design-system, git-naming |
+| backend-developer | none named | git-naming |
+| dojo-master | none; it delegates | git-naming, for the `Assisted-by` trailer on delegated commits |
 
-### Local Skills (.agents/skills/)
-
-| Skill | Used by | When |
-|-------|---------|------|
-| openkata-skill-conventions | kata-author | Alongside create-skill for project-specific conventions |
-| openkata-rule-conventions | kata-author | Alongside create-rule for project-specific conventions |
-| openkata-review-skill | kata-author | Reviewing/auditing skills |
-| openkata-review-rule | kata-author | Reviewing/auditing rules |
-| openkata-ryu-release | kata-author | Release workflow (diff, bump, changelog, commit, tag) |
-| openkata-eval-runner | kata-author | Running eval scenarios |
-
-### Rules (rules/)
-
-| Rule | Used by | When |
-|------|---------|------|
-| git-naming | all agents | Branch names, commit messages, Assisted-by trailers |
-| markdown-style | kata-author, adr-author, spec-planner | Any markdown file |
-| bash-style | any agent writing scripts | Shell scripts |
-| design-system | frontend-developer | All template/CSS work |
+The distributable skills, rules and profiles are in `skills/`,
+`rules/` and `profiles/`. The local skills, which only this
+repository uses, are in `.agents/skills/`.
