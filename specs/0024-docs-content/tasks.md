@@ -227,7 +227,7 @@ yet would fail the strict loader. Pages ship one section per PR.
   manifest records and when it is written
 
 ### 15. Contributing: authoring artifacts
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: A contributor can write a skill, rule or profile that
   passes review
 - **Boundary**: `web/docs/contributing/authoring.md`,
