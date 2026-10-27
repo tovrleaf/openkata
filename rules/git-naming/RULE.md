@@ -41,7 +41,11 @@ Header rules:
 - Scope is the area of the codebase affected
 
 Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`,
-`chore`, `perf`, `ci`, `build`
+`chore`, `perf`, `ci`, `build`, `release`
+
+`release` is for the commit that releases an artifact. The
+scope is the artifact type and the description is the name
+and version: `release(skills): grill-me v1.0.1`.
 
 Body is optional when the diff is under 20 lines and touches
 one file. Required when the change involves a decision,
