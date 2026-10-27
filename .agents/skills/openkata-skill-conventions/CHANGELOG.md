@@ -7,6 +7,8 @@
 - Use --workspace openkata flag on tessl import to prevent local/ prefix
 - Name the files that tessl skill import sets up as they are now
   created, in the conventions, the changelog rule and the boundaries
+- Say that RATIONALE.md is left out of installs and archives, and
+  that the ignore file lists the changelog and the evals folder
 
 ## 1.0.0 — 2026-04-28
 

@@ -32,7 +32,7 @@ After the generic `create-skill` workflow, also do:
    `--workspace openkata` flag ensures the correct prefix.
 
 4. **Create `.tesslignore`** — Add a `.tesslignore` file to the
-   skill directory containing `CHANGELOG.md`.
+   skill directory containing `CHANGELOG.md` and `evals/`.
 
 5. **Symlink if distributable** — For skills in `skills/`, ask
    the user if they want it symlinked into `.agents/skills/`:
@@ -105,7 +105,8 @@ decisions, trade-offs, and why the skill is structured
 the way it is.
 
 - Visible on the website as a "Rationale" tab
-- Distributed in archives (users see it)
+- Stored with each version, but left out of installs and
+  archives (like CHANGELOG.md)
 - Excluded from the Files tab (like CHANGELOG.md)
 - Each heading answers one "why" question
 - Keep entries concise — a paragraph per decision
