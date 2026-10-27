@@ -17,9 +17,9 @@ skills have scores. Rules and profiles do not.
 | | Effectiveness | Quality score |
 |---|---|---|
 | Question | Does an agent using the skill do what the skill asks? | How good is the skill itself, by tessl's review? |
-| Produced by | The local eval runner: an agent attempts each scenario and a judge scores it | `tessl skill review` on the skill's files |
+| Produced by | The eval runner: an agent attempts, a judge scores | `tessl skill review` on the skill's files |
 | Result | A percentage for each model | One percentage for the skill |
-| Recorded in | `skills/<name>/evals/results/<model>/<time>.json` | The `score` field of `skills/<name>/.tessl-plugin/plugin.json` |
+| Recorded in | `skills/<name>/evals/results/<model>/<time>.json` | `score` in `skills/<name>/.tessl-plugin/plugin.json` |
 | Target | 95% overall | 95% or more |
 
 Both are snapshots. Nothing recomputes them, so after a skill
@@ -88,7 +88,7 @@ described in [where artifacts are stored](storage.md):
 
 | Score | In the index | Written by |
 |-------|--------------|------------|
-| Effectiveness | `models`: for each model its label, its effectiveness and its scenarios | The repository mode only |
+| Effectiveness | `models`: label, effectiveness, scenarios per model | The repository mode only |
 | Quality score | `tessl_score`, and `published` | Both modes |
 
 The index built from the repository, with `make versions`, reads the

@@ -17,11 +17,12 @@ A version has three numbers, `MAJOR.MINOR.PATCH`, as in
 [semantic versioning](https://semver.org/). The first release of an
 artifact is `1.0.0`.
 
-| Bump | When |
-|------|------|
-| Patch | Documentation, typos and other changes that do not change behavior, such as adding a `RATIONALE.md` |
-| Minor | New features, steps or references, and behavior changes that do not break existing use |
-| Major | Breaking changes, such as a renamed trigger, a removed step, or an output format that others rely on |
+- **Patch** (`x.y.Z`): documentation, typos and other changes that do
+  not change behavior, such as adding a `RATIONALE.md`.
+- **Minor** (`x.Y.0`): new features, steps or references, and behavior
+  changes that do not break existing use.
+- **Major** (`X.0.0`): breaking changes, such as a renamed trigger, a
+  removed step, or an output format that others rely on.
 
 ### The git tag is the source of truth
 
@@ -101,7 +102,7 @@ and what its files were when it was installed:
 | `name` | The artifact's name |
 | `version` | The version that was installed |
 | `source` | Where it came from, always `github.com/tovrleaf/openkata` |
-| `checksums` | The SHA-256 of each installed file, keyed by its path inside the artifact's folder |
+| `checksums` | SHA-256 of each installed file, by path in the folder |
 
 The checksums cover exactly the files that were installed. They do
 not include the manifest itself or the files an install leaves out

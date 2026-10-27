@@ -113,8 +113,8 @@ different ones:
 
 | Copy | Read by |
 |------|---------|
-| `s3://openkata-artifacts/versions.json` | The MCP server, once at startup, and the website in production, on every request |
-| `web/static/versions.json` | The website in local development, and the catalog search in the browser |
+| `s3://openkata-artifacts/versions.json` | MCP server (at startup), production website (each request) |
+| `web/static/versions.json` | Local website, and the catalog search in the browser |
 
 The second copy is committed to the repository and compiled into
 the website, so the catalog search shows what it held at the last

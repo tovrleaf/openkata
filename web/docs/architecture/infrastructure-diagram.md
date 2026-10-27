@@ -6,7 +6,7 @@ order: 2
 
 # Infrastructure Diagram
 
-```
+```text
 ┌───────────────────────────────────────────────────────────────────┐
 │                                                                   │
 │                               USERS                               │
@@ -64,7 +64,7 @@ order: 2
 | DynamoDB | `openkata-download-events` | Per-download event log (analytics) |
 | Lambda | `openkata-web` | Website serving |
 | Lambda | `openkata-mcp` | MCP server for agent clients (nine tools) |
-| CloudFront | distribution | HTTPS and the viewer-country header; routes `/mcp*` to the MCP Lambda and everything else to the web Lambda |
+| CloudFront | distribution | HTTPS, viewer country; routes `/mcp*` to MCP |
 | Route 53 | `openkata.dev` | DNS |
 | ACM | certificate | TLS for openkata.dev |
 

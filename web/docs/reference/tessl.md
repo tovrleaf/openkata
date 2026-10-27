@@ -20,7 +20,7 @@ depends on it.
 | `tessl skill review <dir>` | Scores the skill and lists suggestions and warnings. |
 | `tessl skill review --optimize <dir>` | Proposes edits. We apply the ones that help. |
 | `tessl skill import --workspace openkata <dir>` | Sets a new skill up for tessl, once. |
-| `tessl tile publish --bump patch` | Publishes the skill to the registry, as an optional release step. |
+| `tessl tile publish --bump patch` | Publishes to the registry, an optional release step. |
 
 The linter checks Markdown links in `SKILL.md` as file paths relative
 to the skill folder, so a link to a file outside the skill fails
@@ -33,10 +33,11 @@ The CLI is listed as a prerequisite in the contributing guide, and
 
 ## What it adds to a skill
 
-| File | Purpose |
-|------|---------|
-| `.tessl-plugin/plugin.json` | Made by `tessl skill import`. Holds the name `openkata/<skill>`, the `private` flag, tessl's own `version`, and the `score`. |
-| `.tesslignore` | Lists what is left out of the published package, such as `CHANGELOG.md` and `evals/`. |
+- **`.tessl-plugin/plugin.json`** is made by `tessl skill import`. It
+  holds the name `openkata/<skill>`, the `private` flag, tessl's own
+  `version`, and the `score`.
+- **`.tesslignore`** lists what is left out of the published package,
+  such as `CHANGELOG.md` and `evals/`.
 
 At the repository root, `tessl.json` holds the workspace settings.
 

@@ -43,7 +43,7 @@ The server has nine tools, three for each artifact type.
 | Tool | Arguments | Returns |
 |------|-----------|---------|
 | `list_skills`, `list_rules`, `list_profiles` | `tag` (optional) | Every artifact of that type |
-| `install_skill`, `install_rule`, `install_profile` | `skill`, `rule` or `profile` (required); `version` (optional) | The files and a manifest |
+| `install_skill`, `install_rule`, `install_profile` | `skill`, `rule` or `profile`; optional `version` | The files and a manifest |
 | `skill_versions`, `rule_versions`, `profile_versions` | `skill`, `rule` or `profile` (required) | Every available version |
 
 You rarely call them yourself. You ask your agent in plain
