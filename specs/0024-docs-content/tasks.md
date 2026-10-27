@@ -263,7 +263,7 @@ yet would fail the strict loader. Pages ship one section per PR.
   tags and what the publish workflows do
 
 ### 18. Contributing: release the MCP server
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Describe building and deploying the MCP server
 - **Boundary**: `web/docs/contributing/release-mcp.md`
 - **Key files**: `RELEASING.md`, `infra/create-mcp-stack.sh`,
