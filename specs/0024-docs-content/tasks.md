@@ -193,7 +193,7 @@ yet would fail the strict loader. Pages ship one section per PR.
   sandbox, and where results are written and read
 
 ### 12. Reference: how we score skills
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Explain effectiveness and the tessl score
 - **Boundary**: `web/docs/reference/scoring.md`
 - **Key files**: `cmd/generate-versions/main.go`,

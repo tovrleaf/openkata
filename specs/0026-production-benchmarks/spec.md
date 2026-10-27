@@ -78,6 +78,9 @@ Checked against the live site and the code on 2026-10-27:
 - The production loaders are covered by tests with a fake bucket
   that holds several versions and some skills without benchmarks
 - Local and production show the same data for the same files
+- The Reference pages that say which mode of `generate-versions`
+  writes which fields (where artifacts are stored, how we score
+  skills) are updated to match the change
 
 ## Out of Scope
 
