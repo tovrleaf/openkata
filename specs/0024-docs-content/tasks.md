@@ -131,15 +131,17 @@ yet would fail the strict loader. Pages ship one section per PR.
   `go test ./...`
 
 ### 7. Guide: using the catalog
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: A reader can find, filter, sort and inspect artifacts
   on the site
 - **Boundary**: `web/docs/guides/using-the-catalog.md`
 - **Key files**: `cmd/openkata-web/templates/catalog.templ`,
   `skills.templ`, `skill_detail.templ`, `web/static/js/search.js`
 - **Depends**: 2
-- **Done when**: covers the catalog, tag filter, sorting, search,
-  the detail page tabs and the download counts shown
+- **Done when**: covers the type listings (alphabetical, no sort
+  control), search (the overlay and the catalog page, how terms
+  and tag terms match), the detail page (version selector, tabs,
+  benchmarks) and the download counts shown
 
 ### 8. Reference: how MCP discovery works
 - **Status**: Pending
