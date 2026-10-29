@@ -32,6 +32,20 @@ func (f fakeBucket) ListObjectsV2(ctx context.Context, in *s3.ListObjectsV2Input
 	}
 	sort.Strings(keys)
 	out := &s3.ListObjectsV2Output{}
+	if in.Delimiter != nil && *in.Delimiter != "" {
+		seen := map[string]bool{}
+		for _, k := range keys {
+			rest := strings.TrimPrefix(k, *in.Prefix)
+			if i := strings.Index(rest, *in.Delimiter); i >= 0 {
+				p := *in.Prefix + rest[:i+1]
+				if !seen[p] {
+					seen[p] = true
+					out.CommonPrefixes = append(out.CommonPrefixes, types.CommonPrefix{Prefix: aws.String(p)})
+				}
+			}
+		}
+		return out, nil
+	}
 	for _, k := range keys {
 		out.Contents = append(out.Contents, types.Object{Key: aws.String(k)})
 	}
@@ -112,4 +126,58 @@ func TestLoadArtifactDetailS3Benchmarks(t *testing.T) {
 			t.Errorf("detail = %+v, want no score and no models", d)
 		}
 	})
+}
+
+func TestLoadArtifactDetailS3Versions(t *testing.T) {
+	objects := testObjects()
+	for _, v := range []string{"1.9.0", "1.10.0"} {
+		objects["skills/many/"+v+"/SKILL.md"] = "# Many\n"
+	}
+	objects["skills/many/2.0.0/SKILL.md"] = "# Many\n"
+	objects["skills/many/2.0.0/evals/results/m/x.json"] = "{}"
+	objects["versions.json"] = `{"skills": {
+	  "many": {"version": "2.0.0"}, "with-bench": {"version": "1.2.0"}, "no-bench": {"version": "1.0.0"}},
+	  "rules": {"r": {"version": "1.0.0"}}, "profiles": {}}`
+	objects["rules/r/1.0.0/RULE.md"] = "# R\n"
+	objects["rules/r/0.9.0/RULE.md"] = "# R\n"
+	useFakeBucket(t, objects)
+	ctx := context.Background()
+
+	tests := []struct {
+		name, typ, art, doc string
+		want                []string
+	}{
+		{"several versions, numeric order", "skills", "many", "SKILL.md", []string{"2.0.0", "1.10.0", "1.9.0"}},
+		{"two versions", "skills", "with-bench", "SKILL.md", []string{"1.2.0", "1.1.0"}},
+		{"one version", "skills", "no-bench", "SKILL.md", []string{"1.0.0"}},
+		{"rules get the list too", "rules", "r", "RULE.md", []string{"1.0.0", "0.9.0"}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			d := loadArtifactDetailS3(ctx, tt.typ, tt.art, "", tt.doc)
+			if d == nil {
+				t.Fatal("loadArtifactDetailS3() = nil")
+			}
+			if strings.Join(d.Versions, " ") != strings.Join(tt.want, " ") {
+				t.Errorf("Versions = %v, want %v, newest first", d.Versions, tt.want)
+			}
+		})
+	}
+
+	t.Run("a page for an older version lists all of them", func(t *testing.T) {
+		d := loadArtifactDetailS3(ctx, "skills", "many", "1.9.0", "SKILL.md")
+		if d == nil || len(d.Versions) != 3 || d.Versions[0] != "2.0.0" || d.Version != "1.9.0" {
+			t.Errorf("detail = %+v, want version 1.9.0 among three listed", d)
+		}
+	})
+}
+
+func TestVersionsWith(t *testing.T) {
+	if got := versionsWith(nil, "1.0.0"); len(got) != 1 || got[0] != "1.0.0" {
+		t.Errorf("versionsWith(nil) = %v, want the shown version", got)
+	}
+	got := versionsWith([]string{"1.10.0", "1.2.0"}, "1.9.0")
+	if strings.Join(got, " ") != "1.10.0 1.9.0 1.2.0" {
+		t.Errorf("versionsWith() = %v, want the shown version added in order", got)
+	}
 }

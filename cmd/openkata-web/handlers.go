@@ -113,7 +113,47 @@ func gitVersions(artifactType, name string) []string {
 			versions = append(versions, strings.TrimPrefix(line, prefix))
 		}
 	}
-	sort.Sort(sort.Reverse(sort.StringSlice(versions)))
+	sortVersionsNewestFirst(versions)
+	return versions
+}
+
+// sortVersionsNewestFirst orders versions by number, so 1.10.0 comes before
+// 1.9.0.
+func sortVersionsNewestFirst(versions []string) {
+	sort.SliceStable(versions, func(i, j int) bool {
+		return compareVersions(versions[i], versions[j]) > 0
+	})
+}
+
+// bucketVersions returns the versions published for an artifact, newest
+// first, from the version folders in the bucket.
+func bucketVersions(ctx context.Context, artifactType, name string) []string {
+	prefix := artifactType + "/" + name + "/"
+	delimiter := "/"
+	var versions []string
+	var token *string
+	for {
+		resp, err := s3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
+			Bucket:            &bucket,
+			Prefix:            &prefix,
+			Delimiter:         &delimiter,
+			ContinuationToken: token,
+		})
+		if err != nil {
+			return nil
+		}
+		for _, p := range resp.CommonPrefixes {
+			v := strings.TrimSuffix(strings.TrimPrefix(*p.Prefix, prefix), "/")
+			if v != "" {
+				versions = append(versions, v)
+			}
+		}
+		if resp.IsTruncated == nil || !*resp.IsTruncated || resp.NextContinuationToken == nil {
+			break
+		}
+		token = resp.NextContinuationToken
+	}
+	sortVersionsNewestFirst(versions)
 	return versions
 }
 
@@ -410,7 +450,7 @@ func loadArtifactDetailS3(ctx context.Context, artifactType, name, version, docF
 		Version:      version,
 		Description:  info.Description,
 		Tags:         info.Tags,
-		Versions:     []string{version},
+		Versions:     versionsWith(bucketVersions(ctx, artifactType, name), version),
 		FileContents: make(map[string]string),
 	}
 
@@ -490,6 +530,19 @@ func loadArtifactDetailS3(ctx context.Context, artifactType, name, version, docF
 
 	sort.Strings(detail.Files)
 	return detail
+}
+
+// versionsWith returns the listed versions, newest first, and makes sure the
+// shown version is among them, so the version control always has it.
+func versionsWith(listed []string, version string) []string {
+	for _, v := range listed {
+		if v == version {
+			return listed
+		}
+	}
+	listed = append(listed, version)
+	sortVersionsNewestFirst(listed)
+	return listed
 }
 
 // applyIndexScores sets the quality score, the published flag and the

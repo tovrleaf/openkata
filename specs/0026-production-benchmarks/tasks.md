@@ -69,7 +69,7 @@
 - **Verify**: `go test ./cmd/openkata-web/...`
 
 ### 6. Production artifact page: version list
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: The version control lists every version in the bucket
 - **Boundary**: `cmd/openkata-web/handlers.go`,
   `cmd/openkata-web/handlers_test.go`
