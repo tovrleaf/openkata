@@ -61,7 +61,16 @@ major, as described in the versioning page.
 4. **Bump the version** in the frontmatter of the main file (`SKILL.md`,
    `RULE.md` or `<name>.md`) to match.
 
-5. **Commit** with the release message, adding the `Assisted-by`
+5. **For a skill that has evals, run them.** Do this after the
+   version bump and before the commit, with `make eval-local
+   skills/<name>`. A result counts only when its `skill_version` is the
+   skill's current version, so a report from before the bump is
+   ignored and the release would show no effectiveness. The new
+   report in `skills/<name>/evals/results/` goes into the release
+   commit. How the evals work is in
+   [how we use evals](../reference/evals.md).
+
+6. **Commit** with the release message, adding the `Assisted-by`
    trailer if an agent helped:
 
    ```text
@@ -71,7 +80,7 @@ major, as described in the versioning page.
    `release` is one of the commit types in the git-naming rule, for
    the commit that releases an artifact.
 
-6. **Tag the release commit.**
+7. **Tag the release commit.**
 
    ```bash
    git tag <type>/<name>/vX.Y.Z
@@ -79,14 +88,14 @@ major, as described in the versioning page.
 
    Tag the commit you just made, never an earlier one.
 
-7. **Push the commit and the tag.**
+8. **Push the commit and the tag.**
 
    ```bash
    git push origin main
    git push origin <type>/<name>/vX.Y.Z
    ```
 
-8. **For a skill, optionally publish it to the Tessl registry.**
+9. **For a skill, optionally publish it to the Tessl registry.**
 
    ```bash
    cd <type>/<name> && tessl tile publish --bump patch
@@ -104,13 +113,16 @@ Before you tag, these must all be true:
 - it matches the newest section of `CHANGELOG.md`, and that section is
   not empty
 - the tag points at the release commit
+- for a skill with evals, the release commit holds a report for this
+  version
 
 ## What CI does with the tag
 
 Pushing a tag that matches `skills/*/v*`, `rules/*/v*` or
 `profiles/*/v*` starts the publish workflow. It uploads the artifact
 as it was at the tag to `<type>/<name>/<version>/` in the bucket and
-regenerates `versions.json`.
+regenerates `versions.json`, reading a skill's eval results from the
+uploaded version.
 
 If the tag cannot start the workflow, for example because the AWS
 trust policy does not allow tag-triggered runs, start it by hand:
@@ -155,5 +167,7 @@ bucket.
 - Reading the current version from the changelog or the frontmatter
   instead of the tag.
 - Releasing without a difference since the last tag.
+- Running the evals before the version bump, or not committing the
+  report. The index is built from what the tag contains.
 - Tagging a commit other than the release commit.
 - Editing the version in `plugin.json` by hand.

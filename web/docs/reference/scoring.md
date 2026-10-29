@@ -88,14 +88,19 @@ described in [where artifacts are stored](storage.md):
 
 | Score | In the index | Written by |
 |-------|--------------|------------|
-| Effectiveness | `models`: label, effectiveness, scenarios per model | The repository mode only |
+| Effectiveness | `models`: label, effectiveness, scenarios per model | Both modes |
 | Quality score | `tessl_score`, and `published` | Both modes |
 
-The index built from the repository, with `make versions`, reads the
-eval reports in each skill's `evals/results/` and the skill's
-`plugin.json`. The index built from the bucket by the publish
-workflow reads `plugin.json` from the released version, and does not
-read the eval reports.
+Both read the eval reports in the skill's `evals/results/` and its
+`plugin.json`, and apply the two rules above. The index built from
+the repository, with `make versions`, reads the working tree. The
+index built from the bucket by the publish workflow reads the
+released version's own folder, so what the site shows for a version
+is what was committed with that version.
+
+The index holds one entry for each artifact, the latest version. The
+Benchmarks tab and the quality score are shown only on that
+version's page, and an older version's page shows neither.
 
 ## Keeping scores current
 
@@ -106,7 +111,10 @@ typical round for a skill is:
 2. Run the evals until the overall result is 95% or more, and the
    review until its score is 95% or more.
 3. Commit the new eval report and `plugin.json` with the change.
-4. Release the skill, and rebuild the index.
+4. Release the skill. Bump the version first and run the evals
+   after the bump, because only a report for the released version
+   counts, and commit the report with the release commit. CI then
+   rebuilds the index from the tag.
 
 A skill that is new, or changed since its last run, shows no
 effectiveness until its evals have been run for the current version.

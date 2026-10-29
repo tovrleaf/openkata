@@ -91,7 +91,9 @@ each type it lists the artifact names, and for each name the version
 folders. It takes the highest version, reads the description and
 tags from the frontmatter of the artifact's main file in that
 version, and, for skills, reads the tessl score from
-`.tessl-plugin/plugin.json`. A skill counts as published unless that
+`.tessl-plugin/plugin.json` and the eval results from
+`evals/results/` in that version's folder, using the same rules as
+the repository mode. A skill counts as published unless the plugin
 file marks it private. It then uploads the result as
 `s3://openkata-artifacts/versions.json`.
 
@@ -103,8 +105,9 @@ also reads the eval results in
 each model, kept only when it was run against the skill's current
 version. The output is written to `web/static/versions.json`.
 
-Eval results (`models` in the file) are written only by the
-repository mode, and the tessl score by both.
+Both modes write the eval results (`models`) and the tessl score.
+The bucket mode reads them from the files uploaded with the version,
+so a release must commit its eval report before it is tagged.
 
 ### Which copy is used
 

@@ -64,25 +64,31 @@ When in doubt, ask the user.
 4. Bump version in the frontmatter of the main doc
    (`SKILL.md`, `RULE.md`, or `<name>.md`).
 
-5. Commit:
+5. For a skill that has evals, run them now, after the version
+   bump and before the commit. A result counts only when its
+   `skill_version` equals the skill's version, so results from
+   before the bump are ignored. The new report in
+   `evals/results/` goes into the release commit.
+
+6. Commit:
    ```text
    release(<type>): <name> vX.Y.Z
 
    Assisted-by: <agent>:<model>
    ```
 
-6. Tag:
+7. Tag:
    ```bash
    git tag <type>/<name>/vX.Y.Z
    ```
 
-7. Push (only with user confirmation):
+8. Push (only with user confirmation):
    ```bash
    git push origin main
    git push origin <type>/<name>/vX.Y.Z
    ```
 
-8. Ask the user: "Release to tessl registry as well? (y/n)"
+9. Ask the user: "Release to tessl registry as well? (y/n)"
    If yes:
    ```bash
    cd <type>/<name> && tessl tile publish --bump patch
@@ -96,6 +102,8 @@ When in doubt, ask the user.
 - Tag version must match latest CHANGELOG.md section
 - Tag must point to the release commit (not an
   earlier commit)
+- For a skill with evals, the release commit holds a report
+  whose `skill_version` is the tag's version
 - CHANGELOG entry must not be empty
 
 ## Renaming an Artifact
@@ -141,6 +149,9 @@ Old git tags are preserved — old S3 artifacts are deleted.
 
 - NEVER determine current version from CHANGELOG.md —
   it may contain unreleased or untagged entries
+- NEVER run the evals before the version bump — the report
+  would be for the previous version and the site would show
+  no effectiveness for the release
 - NEVER skip the diff check — releasing unchanged
   artifacts creates noise
 - NEVER use `git tag` on a commit other than HEAD

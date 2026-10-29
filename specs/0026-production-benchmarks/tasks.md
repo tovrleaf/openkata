@@ -82,7 +82,7 @@
 - **Verify**: `go test ./cmd/openkata-web/...`
 
 ### 7. Document the release order
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: A release carries results for its own version
 - **Boundary**: `web/docs/contributing/release-artifact.md`,
   `web/docs/reference/storage.md`,
