@@ -98,7 +98,7 @@
 - **Verify**: `go test ./cmd/openkata-web/...` for the docs tree
 
 ### 8. Check that tags and the bucket agree
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: An unpushed tag or a missing version is noticed
 - **Boundary**: `scripts/check-published.sh` (new), `Makefile`,
   `web/docs/contributing/release-artifact.md`

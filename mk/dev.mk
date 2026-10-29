@@ -15,6 +15,10 @@ dev:
 versions:
 	@go run ./cmd/generate-versions/ --local
 
+.PHONY: published
+published: ## Check that artifact tags are pushed and on the site
+	@./scripts/check-published.sh
+
 .PHONY: badges
 badges: ## Update README badges with current counts
 	@./scripts/update-readme-badges.sh

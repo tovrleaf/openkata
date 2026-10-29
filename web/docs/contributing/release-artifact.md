@@ -135,6 +135,24 @@ When a pull request is merged, a second workflow re-pushes the artifact
 tags that point at commits in that pull request, which publishes them
 again. So a release can go through a pull request too.
 
+## Check that releases went out
+
+Nothing else notices a tag that was never pushed, or a publish run that
+failed. `make published` compares the tags in your clone with the
+remote, and the pushed tags with the site:
+
+```bash
+make published
+```
+
+It lists tags that exist only in your clone, and pushed tags whose
+files are not on the site, and exits with an error if there are any.
+Tags of renamed artifacts are skipped, since their old files are
+deleted on purpose. A missing version is published with the `gh
+workflow run` command shown above. The check reads the live site and
+the remote, so it needs the network. Set `OPENKATA_SITE` or
+`OPENKATA_REMOTE` to check something else.
+
 ## Renaming an artifact
 
 A rename starts the artifact's versions again at `1.0.0` under the new
