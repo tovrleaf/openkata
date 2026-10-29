@@ -25,7 +25,7 @@
   --local --out <tmp>` gives the same file as before
 
 ### 3. Share the eval result parsing
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: One place decides which results count
 - **Boundary**: `internal/evalresults/` (new),
   `cmd/generate-versions/main.go`

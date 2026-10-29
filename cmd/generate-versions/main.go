@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"sort"
@@ -14,6 +15,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/tovrleaf/openkata/internal/evalresults"
 	"github.com/tovrleaf/openkata/internal/versionindex"
 )
 
@@ -369,84 +371,28 @@ func parseVersion(v string) [3]int {
 	return result
 }
 
-// loadEvalResults reads eval results from skills/<name>/evals/results/
-// and returns model effectiveness data for the given version.
+// loadEvalResults reads the eval reports in skills/<name>/evals/results/ and
+// returns the effectiveness by model for the given version. The rules for
+// which reports count are in internal/evalresults.
 func loadEvalResults(skillDir, currentVersion string) map[string]versionindex.Model {
 	resultsDir := filepath.Join(skillDir, "evals", "results")
-	modelDirs, err := os.ReadDir(resultsDir)
-	if err != nil {
-		return nil
-	}
-
-	models := make(map[string]versionindex.Model)
-	for _, md := range modelDirs {
-		if !md.IsDir() {
-			continue
+	var files []evalresults.File
+	filepath.WalkDir(resultsDir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return nil
 		}
-		modelID := md.Name()
-		modelDir := filepath.Join(resultsDir, modelID)
-
-		files, err := os.ReadDir(modelDir)
+		rel, err := filepath.Rel(resultsDir, path)
 		if err != nil {
-			continue
+			return nil
 		}
-		var latest string
-		for _, f := range files {
-			if !f.IsDir() && strings.HasSuffix(f.Name(), ".json") {
-				if f.Name() > latest {
-					latest = f.Name()
-				}
-			}
-		}
-		if latest == "" {
-			continue
-		}
-
-		data, err := os.ReadFile(filepath.Join(modelDir, latest))
+		data, err := os.ReadFile(path)
 		if err != nil {
-			continue
+			return nil
 		}
-
-		var result struct {
-			SkillVersion      string  `json:"skill_version"`
-			OverallPercentage float64 `json:"overall_percentage"`
-			Config            struct {
-				ModelLabel string `json:"model_label"`
-			} `json:"config"`
-			Scenarios []struct {
-				Name        string  `json:"name"`
-				Description string  `json:"description"`
-				Pass        bool    `json:"pass"`
-				Percentage  float64 `json:"percentage"`
-			} `json:"scenarios"`
-		}
-		if err := json.Unmarshal(data, &result); err != nil {
-			continue
-		}
-
-		if result.SkillVersion != currentVersion {
-			continue
-		}
-
-		mi := versionindex.Model{
-			Label:         result.Config.ModelLabel,
-			Effectiveness: int(result.OverallPercentage + 0.5),
-		}
-		for _, s := range result.Scenarios {
-			mi.Scenarios = append(mi.Scenarios, versionindex.Scenario{
-				Name:        s.Name,
-				Description: s.Description,
-				Pass:        s.Pass,
-				Score:       int(s.Percentage + 0.5),
-			})
-		}
-		models[modelID] = mi
-	}
-
-	if len(models) == 0 {
+		files = append(files, evalresults.File{Path: filepath.ToSlash(rel), Data: data})
 		return nil
-	}
-	return models
+	})
+	return evalresults.ForVersion(files, currentVersion)
 }
 
 func strPtr(s string) *string { return &s }
