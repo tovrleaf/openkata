@@ -14,35 +14,8 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/tovrleaf/openkata/internal/versionindex"
 )
-
-type modelInfo struct {
-	Label         string         `json:"label"`
-	Effectiveness int            `json:"effectiveness"`
-	Scenarios     []scenarioInfo `json:"scenarios"`
-}
-
-type scenarioInfo struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Pass        bool   `json:"pass"`
-	Score       int    `json:"score"`
-}
-
-type artifactInfo struct {
-	Version     string               `json:"version"`
-	Description string               `json:"description"`
-	Tags        string               `json:"tags,omitempty"`
-	Models      map[string]modelInfo `json:"models,omitempty"`
-	TesslScore  int                  `json:"tessl_score,omitempty"`
-	Published   bool                 `json:"published,omitempty"`
-}
-
-type versionsFile struct {
-	Skills   map[string]artifactInfo `json:"skills"`
-	Rules    map[string]artifactInfo `json:"rules"`
-	Profiles map[string]artifactInfo `json:"profiles"`
-}
 
 var (
 	local  = flag.Bool("local", false, "Read from local filesystem instead of S3")
@@ -65,14 +38,10 @@ func runLocal() {
 		outPath = "web/static/versions.json"
 	}
 
-	versions := versionsFile{
-		Skills:   make(map[string]artifactInfo),
-		Rules:    make(map[string]artifactInfo),
-		Profiles: make(map[string]artifactInfo),
-	}
+	versions := versionindex.New()
 
 	// Scan skills
-	scanLocal("skills", "SKILL.md", func(name string, info artifactInfo) {
+	scanLocal("skills", "SKILL.md", func(name string, info versionindex.Artifact) {
 		versions.Skills[name] = info
 	})
 
@@ -102,7 +71,7 @@ func runLocal() {
 	}
 
 	// Scan rules
-	scanLocal("rules", "RULE.md", func(name string, info artifactInfo) {
+	scanLocal("rules", "RULE.md", func(name string, info versionindex.Artifact) {
 		versions.Rules[name] = info
 	})
 
@@ -118,15 +87,14 @@ func runLocal() {
 			continue
 		}
 		desc, tags := parseFrontmatter(string(data))
-		versions.Profiles[name] = artifactInfo{
+		versions.Profiles[name] = versionindex.Artifact{
 			Version:     latestTag("profiles/" + name),
 			Description: desc,
 			Tags:        tags,
 		}
 	}
 
-	data, _ := json.MarshalIndent(versions, "", "  ")
-	data = append(data, '\n')
+	data, _ := versions.Marshal()
 
 	os.MkdirAll(filepath.Dir(outPath), 0755)
 	if err := os.WriteFile(outPath, data, 0644); err != nil {
@@ -138,7 +106,7 @@ func runLocal() {
 	fmt.Println(string(data))
 }
 
-func scanLocal(dir, mdFile string, add func(string, artifactInfo)) {
+func scanLocal(dir, mdFile string, add func(string, versionindex.Artifact)) {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
 		return
@@ -154,7 +122,7 @@ func scanLocal(dir, mdFile string, add func(string, artifactInfo)) {
 			continue
 		}
 		desc, tags := parseFrontmatter(string(data))
-		add(name, artifactInfo{
+		add(name, versionindex.Artifact{
 			Version:     latestTag(dir + "/" + name),
 			Description: desc,
 			Tags:        tags,
@@ -200,11 +168,7 @@ func runS3() {
 	}
 
 	client := s3.NewFromConfig(cfg)
-	versions := versionsFile{
-		Skills:   make(map[string]artifactInfo),
-		Rules:    make(map[string]artifactInfo),
-		Profiles: make(map[string]artifactInfo),
-	}
+	versions := versionindex.New()
 
 	for _, artifactType := range []string{"skills", "rules", "profiles"} {
 		names, err := listPrefixes(ctx, client, bucket, artifactType+"/")
@@ -232,7 +196,7 @@ func runS3() {
 			key := artifactType + "/" + name + "/" + latest + "/" + mdFile
 			description, tags := readFrontmatterS3(ctx, client, bucket, key)
 
-			info := artifactInfo{
+			info := versionindex.Artifact{
 				Version:     latest,
 				Description: description,
 				Tags:        tags,
@@ -263,8 +227,7 @@ func runS3() {
 		}
 	}
 
-	data, _ := json.MarshalIndent(versions, "", "  ")
-	data = append(data, '\n')
+	data, _ := versions.Marshal()
 
 	if err := os.WriteFile(outPath, data, 0644); err != nil {
 		fmt.Fprintf(os.Stderr, "write: %v\n", err)
@@ -408,14 +371,14 @@ func parseVersion(v string) [3]int {
 
 // loadEvalResults reads eval results from skills/<name>/evals/results/
 // and returns model effectiveness data for the given version.
-func loadEvalResults(skillDir, currentVersion string) map[string]modelInfo {
+func loadEvalResults(skillDir, currentVersion string) map[string]versionindex.Model {
 	resultsDir := filepath.Join(skillDir, "evals", "results")
 	modelDirs, err := os.ReadDir(resultsDir)
 	if err != nil {
 		return nil
 	}
 
-	models := make(map[string]modelInfo)
+	models := make(map[string]versionindex.Model)
 	for _, md := range modelDirs {
 		if !md.IsDir() {
 			continue
@@ -465,12 +428,12 @@ func loadEvalResults(skillDir, currentVersion string) map[string]modelInfo {
 			continue
 		}
 
-		mi := modelInfo{
+		mi := versionindex.Model{
 			Label:         result.Config.ModelLabel,
 			Effectiveness: int(result.OverallPercentage + 0.5),
 		}
 		for _, s := range result.Scenarios {
-			mi.Scenarios = append(mi.Scenarios, scenarioInfo{
+			mi.Scenarios = append(mi.Scenarios, versionindex.Scenario{
 				Name:        s.Name,
 				Description: s.Description,
 				Pass:        s.Pass,

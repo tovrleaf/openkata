@@ -10,7 +10,7 @@
   model
 
 ### 2. Share the index types
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: One definition of `versions.json`
 - **Boundary**: `internal/versionindex/` (new),
   `cmd/generate-versions/main.go`, `cmd/openkata-web/handlers.go`
