@@ -3,19 +3,11 @@
 ## Tasks
 
 ### 1. Pass the model to kiro-cli in the eval sandbox
-- **Status**: Pending
+- **Status**: Dropped
 - **Goal**: A sandboxed result is produced by the model it is filed under
-- **Boundary**: `cmd/openkata-eval/sandbox.go`,
-  `cmd/openkata-eval/sandbox_test.go`, `cmd/openkata-eval/runner.go`,
-  `web/docs/reference/evals.md`
-- **Key files**: `sandboxRun` and `NewSandboxRunner` in
-  `cmd/openkata-eval/sandbox.go`, `KiroCompleter` in `kiro.go`
-- **Depends**: None
-- **Done when**: the `docker exec` command includes `--model <model>`
-  when a model is set, and omits it when it is empty; a test asserts
-  the arguments with the fake executor for both cases; the evals
-  reference page no longer says the sandbox ignores `--model`
-- **Verify**: `go test ./cmd/openkata-eval/...`
+- **Note**: The sandbox is going to be removed, so this is not done. The
+  evals reference page keeps saying that the sandbox does not pass the
+  model
 
 ### 2. Share the index types
 - **Status**: Pending

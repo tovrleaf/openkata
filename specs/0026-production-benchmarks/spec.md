@@ -115,17 +115,19 @@ failed for several artifacts.
 ## Out of Scope
 
 - Generating eval results or tessl scores; that stays a local step
+- Fixing the model flag in the eval sandbox
 - Sorting or filtering the catalog (spec 0019)
 - Changing how scores are computed
 
+## Decisions
+
+- Eval results are read from the released version's folder in the
+  bucket, not from a committed copy of the index
+- Benchmarks show only on the page of the version in the index
+- The sandbox model gap is not fixed, because the sandbox is going to
+  be removed
+- A script, run by hand, compares the tags with the bucket
+
 ## Open Questions
 
-- Where do the eval results come from in production: the
-  `evals/results/` folder that is already uploaded with each
-  released version, or a committed copy of the index?
-- The sandbox does not pass `--model` to `kiro-cli`, so a result
-  filed under a model name may have run with another model. Is
-  that settled before the scores are shown publicly?
-- Should a check, such as a script or a workflow step, compare the
-  tags with the bucket, so that an unpushed tag or a failed publish is
-  noticed?
+None.

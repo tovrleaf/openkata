@@ -1,7 +1,7 @@
 # Design: Benchmarks and Version List in Production
 
-Status: proposed. The decisions marked **Decide** are waiting for
-confirmation.
+Status: decided. The sandbox model fix is dropped; the other
+decisions are confirmed.
 
 ## Where the data comes from
 
@@ -12,7 +12,7 @@ results of a released version are already in the bucket under
 `skills/<name>/<version>/evals/results/`. Installs and archives leave
 `evals/` out, but it is stored.
 
-**Decide: read the results from the bucket.** The index generator, in
+**Decided: read the results from the bucket.** The index generator, in
 its bucket mode, reads the results from the released version's folder,
 as it already reads `.tessl-plugin/plugin.json`. This keeps one rule
 everywhere: what the site shows for a version is what was committed with
@@ -60,7 +60,7 @@ web server, and the eval parsing exists only in the generator.
   `<type>/<name>/` and sorts them newest first with the existing
   `compareVersions`, instead of showing only the current version.
 
-**Decide: benchmarks only for the latest version.** The index holds one
+**Decided: benchmarks only for the latest version.** The index holds one
 entry per artifact, the latest version. The local loader shows that
 entry's scores on any version's page, which breaks the rule that a result
 of another version is never shown. In production the Benchmarks tab and
@@ -70,12 +70,12 @@ index, and are hidden on older versions.
 ## The sandbox model
 
 The sandbox starts `kiro-cli` without `--model`, so a result filed under
-a model may have run with another. Since the results become public
-scores, the sandbox passes the model, as the direct mode already does.
+a model may have run with another.
 
-**Decide: fix this first.** Old reports would still be labelled with
-the configured model and may have used another, so they should be
-regenerated before they are published.
+**Decided: leave it.** The sandbox is going to be removed, so fixing the
+model flag is not worth doing. Until it is removed, a result from a
+sandboxed scenario may have run with a different model than its label,
+and the evals reference page says so.
 
 ## Checking published versions
 
@@ -83,7 +83,7 @@ A script compares the pushed tags with the bucket, using the raw-file
 route's behavior as the check, and lists tags that were never pushed and
 versions that are missing, so neither goes unnoticed again.
 
-**Decide: add the script, and run it by hand.** A scheduled workflow
+**Decided: add the script, and run it by hand.** A scheduled workflow
 would need more bucket access than the CI role has.
 
 ## Not in this spec
