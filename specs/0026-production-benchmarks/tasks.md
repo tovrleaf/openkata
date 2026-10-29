@@ -39,7 +39,7 @@
 - **Verify**: `go test ./internal/evalresults/ ./cmd/generate-versions/`
 
 ### 4. Read eval results from the bucket in the index generator
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: The index the publish workflow uploads has `models`
 - **Boundary**: `cmd/generate-versions/main.go`,
   `cmd/generate-versions/s3_test.go`

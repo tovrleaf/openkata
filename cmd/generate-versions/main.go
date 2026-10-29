@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -170,64 +169,7 @@ func runS3() {
 	}
 
 	client := s3.NewFromConfig(cfg)
-	versions := versionindex.New()
-
-	for _, artifactType := range []string{"skills", "rules", "profiles"} {
-		names, err := listPrefixes(ctx, client, bucket, artifactType+"/")
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "listing %s: %v\n", artifactType, err)
-			continue
-		}
-
-		for _, name := range names {
-			versionList, err := listPrefixes(ctx, client, bucket, artifactType+"/"+name+"/")
-			if err != nil || len(versionList) == 0 {
-				continue
-			}
-
-			sortVersions(versionList)
-			latest := versionList[len(versionList)-1]
-
-			mdFile := "SKILL.md"
-			if artifactType == "rules" {
-				mdFile = "RULE.md"
-			} else if artifactType == "profiles" {
-				mdFile = name + ".md"
-			}
-
-			key := artifactType + "/" + name + "/" + latest + "/" + mdFile
-			description, tags := readFrontmatterS3(ctx, client, bucket, key)
-
-			info := versionindex.Artifact{
-				Version:     latest,
-				Description: description,
-				Tags:        tags,
-			}
-
-			switch artifactType {
-			case "skills":
-				// Load tessl score from S3
-				pluginKey := artifactType + "/" + name + "/" + latest + "/.tessl-plugin/plugin.json"
-				if pResp, err := client.GetObject(ctx, &s3.GetObjectInput{Bucket: &bucket, Key: &pluginKey}); err == nil {
-					var plugin struct {
-						Score   int  `json:"score"`
-						Private bool `json:"private"`
-					}
-					pBody, _ := io.ReadAll(pResp.Body)
-					pResp.Body.Close()
-					if json.Unmarshal(pBody, &plugin) == nil && plugin.Score > 0 {
-						info.TesslScore = plugin.Score
-						info.Published = !plugin.Private
-					}
-				}
-				versions.Skills[name] = info
-			case "rules":
-				versions.Rules[name] = info
-			case "profiles":
-				versions.Profiles[name] = info
-			}
-		}
-	}
+	versions := buildIndexFromBucket(ctx, client, bucket)
 
 	data, _ := versions.Marshal()
 
@@ -252,45 +194,6 @@ func runS3() {
 
 	fmt.Printf("Uploaded versions.json to s3://%s/versions.json\n", bucket)
 	fmt.Println(string(data))
-}
-
-func listPrefixes(ctx context.Context, client *s3.Client, bucket, prefix string) ([]string, error) {
-	resp, err := client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
-		Bucket:    &bucket,
-		Prefix:    &prefix,
-		Delimiter: strPtr("/"),
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	var names []string
-	for _, p := range resp.CommonPrefixes {
-		name := strings.TrimPrefix(*p.Prefix, prefix)
-		name = strings.TrimSuffix(name, "/")
-		if name != "" {
-			names = append(names, name)
-		}
-	}
-	return names, nil
-}
-
-func readFrontmatterS3(ctx context.Context, client *s3.Client, bucket, key string) (description, tags string) {
-	resp, err := client.GetObject(ctx, &s3.GetObjectInput{
-		Bucket: &bucket,
-		Key:    &key,
-	})
-	if err != nil {
-		return "", ""
-	}
-	defer resp.Body.Close()
-
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", ""
-	}
-
-	return parseFrontmatter(string(data))
 }
 
 func parseFrontmatter(content string) (description, tags string) {

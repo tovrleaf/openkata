@@ -7,6 +7,7 @@ package evalresults
 import (
 	"encoding/json"
 	"path"
+	"sort"
 	"strings"
 
 	"github.com/tovrleaf/openkata/internal/versionindex"
@@ -43,15 +44,18 @@ type report struct {
 // an older one would have matched, so a stale result is never shown. Files
 // that are not "<model>/<name>.json" are ignored.
 func ForVersion(files []File, version string) map[string]versionindex.Model {
-	newest := map[string]File{}
+	byPath := map[string]File{}
+	paths := make([]string, 0, len(files))
 	for _, f := range files {
-		model, name, ok := split(f.Path)
-		if !ok {
-			continue
+		if _, seen := byPath[f.Path]; !seen {
+			paths = append(paths, f.Path)
 		}
-		if cur, seen := newest[model]; !seen || name > fileName(cur.Path) {
-			newest[model] = f
-		}
+		byPath[f.Path] = f
+	}
+	newest := map[string]File{}
+	for _, p := range Newest(paths) {
+		model, _, _ := split(p)
+		newest[model] = byPath[p]
 	}
 
 	models := map[string]versionindex.Model{}
@@ -81,6 +85,28 @@ func ForVersion(files []File, version string) map[string]versionindex.Model {
 		return nil
 	}
 	return models
+}
+
+// Newest returns, for each model, the path of its newest report, sorted. It
+// is the selection ForVersion makes, for callers that want to read only
+// those files. Paths that are not "<model>/<name>.json" are ignored.
+func Newest(paths []string) []string {
+	newest := map[string]string{}
+	for _, p := range paths {
+		model, name, ok := split(p)
+		if !ok {
+			continue
+		}
+		if cur, seen := newest[model]; !seen || name > fileName(cur) {
+			newest[model] = p
+		}
+	}
+	out := make([]string, 0, len(newest))
+	for _, p := range newest {
+		out = append(out, p)
+	}
+	sort.Strings(out)
+	return out
 }
 
 // split separates "<model>/<name>.json" into its model and file name.

@@ -188,3 +188,23 @@ func TestForVersionIgnoresInputOrder(t *testing.T) {
 		}
 	}
 }
+
+func TestNewest(t *testing.T) {
+	got := Newest([]string{
+		"b/2026-06-01T100000.json",
+		"a/2026-06-01T100000.json",
+		"a/2026-06-09T100000.json",
+		"a/README.md",
+		"top.json",
+		"a/sub/deep.json",
+	})
+	want := []string{"a/2026-06-09T100000.json", "b/2026-06-01T100000.json"}
+	if len(got) != len(want) {
+		t.Fatalf("Newest() = %v, want %v", got, want)
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			t.Errorf("Newest()[%d] = %q, want %q", i, got[i], want[i])
+		}
+	}
+}
