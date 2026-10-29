@@ -54,7 +54,7 @@
 - **Verify**: `go test ./cmd/generate-versions/`
 
 ### 5. Production artifact page: benchmarks
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: The live Benchmarks tab, shown only for the indexed version
 - **Boundary**: `cmd/openkata-web/handlers.go`,
   `cmd/openkata-web/main.go`, `cmd/openkata-web/handlers_test.go`

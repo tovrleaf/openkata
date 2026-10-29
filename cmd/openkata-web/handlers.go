@@ -484,8 +484,40 @@ func loadArtifactDetailS3(ctx context.Context, artifactType, name, version, docF
 		}
 	}
 
+	if artifactType == "skills" {
+		applyIndexScores(detail, info)
+	}
+
 	sort.Strings(detail.Files)
 	return detail
+}
+
+// applyIndexScores sets the quality score, the published flag and the
+// benchmark models from the index entry. The index holds only the latest
+// version of an artifact, so a page for any other version gets none of them:
+// a result must never be shown for a version it was not run against.
+func applyIndexScores(detail *templates.ArtifactDetail, info versionindex.Artifact) {
+	if detail.Version != info.Version {
+		return
+	}
+	detail.TesslScore = info.TesslScore
+	detail.Published = info.Published
+
+	ids := make([]string, 0, len(info.Models))
+	for id := range info.Models {
+		ids = append(ids, id)
+	}
+	sort.Strings(ids)
+	for _, id := range ids {
+		m := info.Models[id]
+		bm := templates.BenchmarkModel{ID: id, Label: m.Label, Effectiveness: m.Effectiveness}
+		for _, s := range m.Scenarios {
+			bm.Scenarios = append(bm.Scenarios, templates.BenchmarkScenario{
+				Name: s.Name, Description: s.Description, Pass: s.Pass, Score: s.Score,
+			})
+		}
+		detail.Models = append(detail.Models, bm)
+	}
 }
 
 func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templates.ArtifactDetail {
@@ -581,19 +613,7 @@ func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templ
 	// Load benchmark data for skills
 	if artifactType == "skills" && bundled != nil {
 		if info, ok := bundled.Skills[name]; ok {
-			detail.TesslScore = info.TesslScore
-			detail.Published = info.Published
-			for id, m := range info.Models {
-				bm := templates.BenchmarkModel{
-					ID: id, Label: m.Label, Effectiveness: m.Effectiveness,
-				}
-				for _, s := range m.Scenarios {
-					bm.Scenarios = append(bm.Scenarios, templates.BenchmarkScenario{
-						Name: s.Name, Description: s.Description, Pass: s.Pass, Score: s.Score,
-					})
-				}
-				detail.Models = append(detail.Models, bm)
-			}
+			applyIndexScores(detail, info)
 		}
 	}
 	sort.Strings(detail.Files)
