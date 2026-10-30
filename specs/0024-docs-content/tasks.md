@@ -290,9 +290,10 @@ yet would fail the strict loader. Pages ship one section per PR.
 - **Boundary**: `cmd/openkata-web/main.go`,
   `cmd/openkata-web/docs_handler.go`,
   `cmd/openkata-web/templates/nav.templ`,
-  `web/static/js/search.js`, `cmd/openkata-web/handlers_test.go`
+  `cmd/openkata-web/handlers_test.go`
 - **Key files**: `docs_handler.go` (`handleDocs`),
-  `web/static/js/search.js`, `docs_embedded_test.go`
+  `docs_embedded_test.go`
+- **Note**: the search part of the spec is task 21
 - **Depends**: 1-19, spec 0025's diagram decision, and spec 0026
   (benchmarks and the version list in production)
 - **Done when**: the live site shows what the docs describe: a
@@ -300,13 +301,36 @@ yet would fail the strict loader. Pages ship one section per PR.
   version in the version control (spec 0026); `/docs/` is
   registered outside the local-only
   block and serves `docs.FS` with the site built once and cached;
-  the main and mobile nav have a Docs link; the search overlay
-  shows docs results from `/docs/search-index.json` and
-  `/catalog/` filters them out; the deployed pages show real
-  last-updated dates, not the placeholder; tests cover the
-  production path and the search change
+  the main and mobile nav have a Docs link; the footer's
+  Documentation link shows in production (`templates.DocsEnabled`
+  is set where the route is registered); the deployed pages show
+  real last-updated dates, not the placeholder; tests cover the
+  production path
 - **Verify**: `templ generate ./cmd/openkata-web/templates/`,
   `go build -o bin/openkata-web ./cmd/openkata-web/`,
   `go test ./cmd/openkata-web/...`
+
+### 21. Search includes the docs
+- **Status**: Pending
+- **Goal**: The search overlay finds docs pages as well as artifacts
+- **Boundary**: `web/static/js/search.js`,
+  `cmd/openkata-web/templates/catalog.templ` and the catalog page
+  script, `cmd/openkata-web/docs_handler.go`,
+  `cmd/openkata-web/handlers_test.go`
+- **Key files**: `web/static/js/search.js` (`fetchData`,
+  `parseData`, `renderOverlayResults`), `docsSearchIndexPath` in
+  `docs_handler.go`
+- **Depends**: 20
+- **Note**: built later, after go-live. The overlay loads only
+  `/static/versions.json` today
+- **Done when**: the overlay also loads `/docs/search-index.json` and
+  lists docs results next to skills, rules and profiles, with a
+  label that says they are docs and a link to the page; the same
+  ranking and tag-less matching rules apply; the `/catalog/` page
+  and its "View all" count leave the docs results out; the overlay
+  still works if the docs index cannot be loaded; tests cover the
+  index response and the catalog filter
+- **Verify**: `go test ./cmd/openkata-web/...`, and search for a docs
+  page title in the overlay with `make dev`
 
 ## Progress Log
