@@ -59,7 +59,8 @@ major, as described in the versioning page.
    headings.
 
 4. **Bump the version** in the frontmatter of the main file (`SKILL.md`,
-   `RULE.md` or `<name>.md`) to match.
+   `RULE.md` or `<name>.md`), if the file has a `version` there. Not
+   every artifact does, and then the changelog and the tag carry it.
 
 5. **For a skill that has evals, run them.** Do this after the
    version bump and before the commit, with `make eval-local
@@ -114,7 +115,8 @@ major, as described in the versioning page.
 
 Before you tag, these must all be true:
 
-- the tag's version matches the `version` in the frontmatter
+- the tag's version matches the `version` in the frontmatter, where
+  the file has one
 - it matches the newest section of `CHANGELOG.md`, and that section is
   not empty
 - the tag points at the release commit
