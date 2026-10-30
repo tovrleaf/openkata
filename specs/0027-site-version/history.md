@@ -6,9 +6,10 @@ release is placed at a commit where a coherent piece had landed, mostly
 at the merge of a pull request. The numbers are minor bumps, as the
 project has had no stable interface yet (`0.x`).
 
-Nothing is tagged. If you accept it, the tags are made on these
-commits, so each release has the date of its commit, and a GitHub
-release is written for each from the summary below.
+The list was accepted and the tags exist. They were made on these
+commits with `scripts/history-commands.sh`, so each release has the date
+of its commit, and they are pushed. A GitHub release was written for
+each from the summary below.
 
 | Version | Date | Commit | What it holds |
 |---------|------|--------|---------------|

@@ -24,9 +24,10 @@ clients can tell builds apart.
 asdlc.io shows the plain text `Release v0.27.2` at the bottom of every
 page, after the copyright line. It has no link.
 
-## Decisions to confirm
+## Decisions
 
-These are proposals. The open questions are marked.
+These were confirmed with the user. Where the code differs from the
+first wording, the text says so.
 
 - **One version for the project.** The site, the docs, the MCP server
   and the tooling share one number. Artifact versions stay separate.
@@ -41,11 +42,14 @@ These are proposals. The open questions are marked.
   made on a commit `release(site): v0.x.y` when there is something to
   commit, such as a docs update. The `site` scope is new in the
   git-naming rule.
-- **The deploy reads the newest `v*` tag** with
-  `git describe --tags --match 'v[0-9]*'`. The deploy checkout already
-  has full history. The number is built into the web binary at deploy
-  time, so it is not committed anywhere else and cannot disagree with
-  the tag.
+- **The deploy reads the newest `v*` tag** that the deployed commit
+  contains, with `git tag --merged HEAD`, compared by number. This
+  replaces the `git describe` of the first draft, which orders by
+  ancestry distance, not by number. A consequence is that a mistyped
+  high tag, such as `v0.150.0`, wins until it is deleted. The deploy
+  checkout has full history. The number is built into the web and MCP
+  binaries at deploy time, so it is not committed anywhere else and
+  cannot disagree with the tag.
 - **Pushing a release tag deploys.** The Deploy workflow also runs on
   `v*` tags, so a release is live as soon as its tag is pushed, even
   when the commit was merged earlier. A tag deploys only when it is on
@@ -70,12 +74,15 @@ These are proposals. The open questions are marked.
   each tag that exists only locally, one at a time, so a tag cannot be
   forgotten and the publish workflow starts for each artifact tag. It
   only pushes tags of the forms `<type>/<name>/vX.Y.Z` and `vX.Y.Z`,
-  never every tag, and ends with `make published`. It is the
-  user's command: agents still do not push on their own.
-- **The past**: the history before the first tag is given releases
-  from the commit history, proposed in [history.md](history.md). The
-  tags are made on those commits, so they carry the commit dates.
-  Making and pushing them, and writing the GitHub releases, is yours.
+  never every tag, and ends with the check that `make published` runs.
+  It is the user's command. The user has authorized the agent to run
+  `make push YES=1`, which skips the question, when it opens a new pull
+  request, and at no other time.
+- **The past**: the history before the first tag was given releases
+  from the commit history, listed in [history.md](history.md). The
+  tags `v0.1.0` to `v0.14.0` were made on those commits, so they carry
+  the commit dates, and were pushed, and a GitHub release was written
+  for each. The user did this.
 - **The MCP server** reports the same number as its `serverInfo`
   version, replacing `0.3.0+<commit>`, and keeps the commit as build
   metadata, so `0.3.0+<commit>` becomes `<release>+<commit>`.
@@ -93,7 +100,7 @@ These are proposals. The open questions are marked.
 - `release(site)` is a valid commit scope in the git-naming rule
 - The release page for the site describes how to make a release: the
   tag, the GitHub release and what a deploy shows
-- The proposed history is accepted or changed before any tag is made
+- The history is accepted or changed before any tag is made (done)
 
 ## Out of scope
 
@@ -101,10 +108,23 @@ These are proposals. The open questions are marked.
 - Automatic version bumps from commit messages
 - Versioning the infrastructure separately
 
-## Open questions
+## Resolved questions
 
-1. Is the list in [history.md](history.md) right? It decides the
-   numbers, so it has to be settled before the tags are made.
+1. The list in [history.md](history.md) was accepted, and the tags
+   exist.
 2. The history ends at `v0.14.0`, so the first deploy of the new
-   footer would show `v0.14.0` until `v0.15.0` is tagged. Should
-   `v0.15.0` be tagged just before the go-live merge?
+   footer shows `v0.14.0`. `v0.15.0` is tagged on the head of `main`
+   after the merge, and pushing that tag deploys again with it.
+
+## Known limits
+
+- Nothing checks that a new tag follows the previous one, so a typo
+  in a tag is not caught.
+- A tag made on a branch is not contained in `main` after a rebase
+  merge, so the site keeps the old number. Tag after the merge, or
+  merge with a merge commit.
+- The Deploy workflow has no concurrency group, so a branch push and a
+  tag push can deploy at the same time. The code is the same.
+- A manual deploy from a shallow clone can report an older release.
+- That the tag trigger and the head-of-`main` guard work on GitHub has
+  not been seen yet. The first deploy after the merge shows it.
