@@ -88,7 +88,8 @@ the files. An archive download contains the file itself.
 
 An install leaves out the files that only matter to the project
 that maintains the artifact: the changelog, the rationale, the
-`evals/` folder and the tessl metadata.
+acknowledgments file (`references/ACKNOWLEDGMENTS.md`), the `evals/`
+folder and the tessl metadata.
 
 ## Choose a version
 

@@ -44,7 +44,7 @@ The version also appears in two files, and all three have to agree
 at a release:
 
 - the `version` in the frontmatter of the main file (`SKILL.md`,
-  `RULE.md` or `<name>.md`)
+  `RULE.md` or `<name>.md`), where the file has one
 - the newest section of the artifact's `CHANGELOG.md`
 
 When a tool needs the current version, it uses the tag. A changelog

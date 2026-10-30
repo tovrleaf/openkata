@@ -65,7 +65,8 @@ main() {
     git push "${REMOTE}" "refs/tags/${tag}"
   done <<< "${tags}"
 
-  "$(dirname "${BASH_SOURCE[0]}")/check-published.sh" || true
+  # Runs after the push, so a failure here is reported but the push stands
+  "$(dirname "${BASH_SOURCE[0]}")/check-published.sh"
 }
 
 main "$@"

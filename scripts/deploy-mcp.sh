@@ -4,8 +4,14 @@ set -euo pipefail
 FUNCTION_NAME="openkata-mcp"
 REGION="${AWS_REGION:-eu-north-1}"
 
+# A shallow clone has only some of the tags and would report an older release
+if [[ "$(git rev-parse --is-shallow-repository)" == "true" ]]; then
+  echo "This is a shallow clone, fetch the full history first" >&2
+  exit 1
+fi
+
 echo "Reading the release..."
-# Fails if the commit has no release tag, so the site never ships "dev".
+# Fails if the commit has no release tag, so the server never reports 0.0.0.
 RELEASE="$(go run ./cmd/site-version -require)"
 echo "Release ${RELEASE}"
 

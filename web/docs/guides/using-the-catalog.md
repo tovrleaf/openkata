@@ -88,7 +88,7 @@ artifact has that content.
 | Tab | On | What it shows |
 |-----|----|---------------|
 | Overview | all types | The description and the artifact's documentation |
-| Files | skills and rules | The files of the version you are viewing |
+| Files | skills and rules | The installable files of the version you are viewing |
 | Rationale | all types, when present | Why the artifact is the way it is |
 | Changelog | all types | What changed in each version |
 | Benchmarks | skills with scores | Quality score and effectiveness |
