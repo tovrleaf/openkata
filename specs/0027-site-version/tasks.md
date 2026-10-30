@@ -3,7 +3,7 @@
 ## Tasks
 
 ### 1. Read the release version from git
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: One function turns the tags of a clone into the site's version
 - **Boundary**: `internal/siteversion/` (new)
 - **Key files**: `cmd/openkata-mcp/version.go` for the existing stamp
@@ -17,7 +17,7 @@
 - **Verify**: `go test ./internal/siteversion/`
 
 ### 2. A shared footer with the release
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Every page shows `Release v0.x.y`, linked to GitHub
 - **Boundary**: `cmd/openkata-web/templates/*.templ` and the generated
   files, `cmd/openkata-web/templates/docs.templ`,
@@ -35,7 +35,7 @@
   `go test ./cmd/openkata-web/...`, and look at a page with `make dev`
 
 ### 3. Build the version into the binaries
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: The deployed site and MCP server know their release
 - **Boundary**: `cmd/openkata-web/`, `cmd/openkata-mcp/`,
   `scripts/deploy-web.sh`, `scripts/deploy-mcp.sh`
@@ -50,7 +50,7 @@
   build with the flag and read the version
 
 ### 4. Describe the site release in the rules and docs
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: A release of the site is a known procedure
 - **Boundary**: `rules/git-naming/RULE.md` and its changelog,
   `web/docs/contributing/release-site.md`,
@@ -69,7 +69,7 @@
 - **Verify**: `go test ./cmd/openkata-web/...` for the docs tree
 
 ### 5. `make push`
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: A tag is never forgotten when pushing
 - **Boundary**: `scripts/push.sh` (new), `mk/dev.mk`
 - **Key files**: `scripts/check-published.sh`
@@ -84,7 +84,7 @@
   unpushed tag, and check it lists the 5 known tags without pushing
 
 ### 6. The release docs use `make push`
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: One way to push, in every description of a release
 - **Boundary**: `.agents/skills/openkata-ryu-release/SKILL.md`,
   `web/docs/contributing/release-artifact.md`,
@@ -99,7 +99,7 @@
   is deliberate
 
 ### 7. The commands for the proposed history
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: The user can create the past releases in one go
 - **Boundary**: `specs/0027-site-version/history.md`, a script under
   `scripts/` that prints commands
