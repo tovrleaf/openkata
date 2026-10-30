@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/tovrleaf/openkata/cmd/openkata-web/templates"
@@ -14,21 +15,50 @@ import (
 
 const docsSearchIndexPath = "/docs/search-index.json"
 
-// handleDocs serves the documentation from web/docs on disk, rebuilding
-// the site on every request so edits show without a rebuild. It is only
-// registered in local development.
-var handleDocs = docsHandler(func() (*docsSite, error) {
+// docsSiteLoader returns how the docs site is loaded. In Lambda it is the
+// docs compiled into the binary, built once. Locally it is web/docs on
+// disk, rebuilt on every request so edits show without a rebuild.
+func docsSiteLoader(inLambda bool) func() (*docsSite, error) {
+	if inLambda {
+		return cachedSite(loadEmbeddedSite)
+	}
+	return loadDiskSite
+}
+
+// loadDiskSite builds the site from web/docs on disk, with the dates from
+// git.
+func loadDiskSite() (*docsSite, error) {
 	// Without git, or outside a repository, there are no dates and the
 	// pages show the placeholder, so the error is not fatal here.
 	dates, _ := docsdates.Lookup("web/docs")
 	return buildSite(os.DirFS("web/docs"), withDates(dates))
-})
+}
 
 // loadEmbeddedSite builds the site from the docs compiled into the binary,
-// with the dates the deploy stamped into it. It is what production serves
-// once the section goes public.
+// with the dates the deploy stamped into it.
 func loadEmbeddedSite() (*docsSite, error) {
 	return siteFromFS(docs.FS)
+}
+
+// cachedSite builds the site on the first request and returns that same
+// site afterwards. The embedded docs never change while the binary runs. A
+// failed build is not kept, so the next request tries again.
+func cachedSite(load func() (*docsSite, error)) func() (*docsSite, error) {
+	var mu sync.Mutex
+	var site *docsSite
+	return func() (*docsSite, error) {
+		mu.Lock()
+		defer mu.Unlock()
+		if site != nil {
+			return site, nil
+		}
+		s, err := load()
+		if err != nil {
+			return nil, err
+		}
+		site = s
+		return site, nil
+	}
 }
 
 // docsHandler serves pages from the site returned by load. Requests are
