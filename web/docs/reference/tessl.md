@@ -34,8 +34,8 @@ The CLI is listed as a prerequisite in the contributing guide, and
 ## What it adds to a skill
 
 - **`.tessl-plugin/plugin.json`** is made by `tessl skill import`. It
-  holds the name `openkata/<skill>`, the `private` flag, tessl's own
-  `version`, and the `score`.
+  holds the name `openkata/<skill>`, the description, the `skills`
+  list, the `private` flag, tessl's own `version`, and the `score`.
 - **`.tesslignore`** lists what is left out of the published package,
   such as `CHANGELOG.md` and `evals/`.
 
@@ -95,7 +95,8 @@ workspace. A skill's registry page is at
 
 The `private` field of `plugin.json` records whether a skill is
 published. A skill with `private: false` counts as published, and
-the Benchmarks tab then links to its registry page. Publishing to the
+the Benchmarks tab then adds a "View on Tessl Registry" link. The
+quality score always links to the registry page. Publishing to the
 registry is separate from publishing to the artifact bucket, which
 the git tag triggers, as described in
 [where artifacts are stored](storage.md).
