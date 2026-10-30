@@ -81,6 +81,11 @@ commit workflow.
 - Do not push without explicit user confirmation
 - Do not force push without explaining the impact first
 - Commit freely when asked, but pushing is a separate action
+- `make push` pushes the branch and any tags that were not
+  pushed yet, after asking. The user runs it, except when the
+  agent opens a new pull request: the user has authorized the
+  agent to run `make push YES=1` then, before creating the
+  PR. Never push at any other time without confirmation
 
 ## Skills and rules
 

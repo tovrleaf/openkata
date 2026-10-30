@@ -83,11 +83,11 @@ When in doubt, ask the user.
    git tag <type>/<name>/vX.Y.Z
    ```
 
-8. Push (only with user confirmation):
-   ```bash
-   git push origin main
-   git push origin <type>/<name>/vX.Y.Z
-   ```
+8. Push by telling the user to run `make push`. It lists
+   the commits and the tags that exist only locally, asks,
+   then pushes the branch and each tag separately. Run it
+   yourself (`make push YES=1`) only when opening a new pull
+   request, which the user has authorized.
 
 9. Ask the user: "Release to tessl registry as well? (y/n)"
    If yes:

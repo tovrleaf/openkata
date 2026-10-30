@@ -91,9 +91,14 @@ major, as described in the versioning page.
 8. **Push the commit and the tag.**
 
    ```bash
-   git push origin main
-   git push origin <type>/<name>/vX.Y.Z
+   make push
    ```
+
+   It shows the commits and the tags that exist only in your clone,
+   asks first, then pushes the branch and each tag with a push of its
+   own, so no tag is forgotten. It ends with the check described under
+   "Check that releases went out" below. To push by hand, push the
+   tag separately: `git push origin <type>/<name>/vX.Y.Z`.
 
 9. **For a skill, optionally publish it to the Tessl registry.**
 

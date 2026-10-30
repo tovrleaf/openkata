@@ -13,7 +13,8 @@ versions index.
    (`SKILL.md`, `RULE.md` or `<name>.md`) to match
 3. Commit the changelog and the version
 4. Create a tag: `git tag <type>/<name>/v<version>`
-5. Push the tag: `git push origin <type>/<name>/v<version>`
+5. Push the commit and the tag: `make push`. It lists what it
+   will push, asks first, and pushes each tag on its own
 
 CI (`.github/workflows/publish.yaml`) handles the rest:
 - Extracts the artifact's directory at the tagged commit
