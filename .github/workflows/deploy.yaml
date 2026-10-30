@@ -7,6 +7,12 @@ on:
     # pushing one deploys again with it.
     tags: ['v[0-9]*']
 
+# A push to main and a release tag arrive together and would update the
+# same functions at the same time
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
 permissions:
   id-token: write
   contents: read
