@@ -29,5 +29,7 @@ help: ## Show this help
 	@printf "  \033[36m%-16s\033[0m %s\n" "chat eval" "Start Kiro chat with kata-author for eval work"
 	@printf "  \033[36m%-16s\033[0m %s\n" "versions" "Generate versions.json from local files"
 	@printf "  \033[36m%-16s\033[0m %s\n" "stats" "Fetch analytics data to .local/stats/"
+	@printf "  \033[36m%-16s\033[0m %s\n" "push" "Push the branch and unpushed tags, after asking"
+	@printf "  \033[36m%-16s\033[0m %s\n" "published" "Check that release tags are pushed and published"
 	@printf "  \033[36m%-16s\033[0m %s\n" "deploy web" "Deploy web server to AWS Lambda"
 	@printf "  \033[36m%-16s\033[0m %s\n" "deploy mcp" "Deploy MCP server to AWS Lambda"

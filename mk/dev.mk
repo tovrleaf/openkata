@@ -15,6 +15,10 @@ dev:
 versions:
 	@go run ./cmd/generate-versions/ --local
 
+.PHONY: push
+push: ## Push the branch and any tags that were not pushed, after asking
+	@./scripts/push.sh $(if $(YES),--yes)
+
 .PHONY: published
 published: ## Check that artifact tags are pushed and on the site
 	@./scripts/check-published.sh

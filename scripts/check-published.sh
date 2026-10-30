@@ -1,27 +1,13 @@
 #!/usr/bin/env bash
-# Check that artifact tags were pushed and that the pushed ones are on
-# the site. Exits 1 if a tag was never pushed or a version is missing,
-# and 2 if the site could not be reached.
+# Check that release tags were pushed and that the pushed artifact tags
+# are on the site. Exits 1 if a tag was never pushed or a version is
+# missing, and 2 if the site could not be reached.
 set -euo pipefail
 
-readonly REMOTE="${OPENKATA_REMOTE:-origin}"
 readonly SITE="${OPENKATA_SITE:-https://openkata.dev}"
-readonly TAG_RE='^(skills|rules|profiles)/[^/]+/v[0-9]+\.[0-9]+\.[0-9]+$'
 
-# Prints the artifact tags of the local clone, sorted.
-local_tags() {
-  git tag -l 'skills/*/v*' 'rules/*/v*' 'profiles/*/v*' \
-    | grep -E "${TAG_RE}" | sort || true
-}
-
-# Prints the artifact tags on the remote, sorted.
-remote_tags() {
-  git ls-remote --tags "${REMOTE}" \
-    'refs/tags/skills/*' 'refs/tags/rules/*' 'refs/tags/profiles/*' \
-    | sed -e 's/^[^[:space:]]*[[:space:]]*refs\/tags\///' \
-      -e 's/\^{}$//' \
-    | grep -E "${TAG_RE}" | sort -u || true
-}
+# shellcheck source=scripts/tag_lib.sh
+source "$(dirname "${BASH_SOURCE[0]}")/tag_lib.sh"
 
 # Prints the URL of a file of the tagged version. The site answers 200
 # only for a file that is in the bucket, so it is the check.
@@ -48,8 +34,9 @@ main() {
     failed=1
   fi
 
+  # Site tags (vX.Y.Z) have no files in the bucket to look for.
   while read -r tag; do
-    [[ -n "${tag}" ]] || continue
+    [[ "${tag}" == */* ]] || continue
     if ! code="$(curl -s -o /dev/null -w '%{http_code}' \
       "$(probe_url "${tag}")")"; then
       echo "error: cannot reach ${SITE}" >&2
@@ -72,12 +59,11 @@ main() {
     echo "Publish one with: gh workflow run publish.yaml -f tag=<tag>"
     failed=1
   fi
-
   if (( renamed > 0 )); then
     echo "Skipped ${renamed} tags of renamed artifacts (redirected)."
   fi
   if (( failed == 0 )); then
-    echo "All artifact tags are pushed and published."
+    echo "All release tags are pushed and published."
   fi
   exit "${failed}"
 }
