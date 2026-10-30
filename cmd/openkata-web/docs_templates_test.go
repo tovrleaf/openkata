@@ -246,10 +246,12 @@ func TestDocsPageUsesSiteLayout(t *testing.T) {
 		})
 	}
 
-	t.Run("nav has no Docs link yet", func(t *testing.T) {
+	t.Run("nav links to the docs, in both menus", func(t *testing.T) {
 		body := docsBody(t, "/docs/guides/")
-		if strings.Contains(body, `class="nav-link">Docs`) || strings.Contains(body, `class="nav-menu-link">Docs`) {
-			t.Error("nav has a Docs link, want none until go-live")
+		for _, want := range []string{`class="nav-link">Docs`, `class="nav-menu-link">Docs`} {
+			if !strings.Contains(body, want) {
+				t.Errorf("nav is missing the Docs link %q", want)
+			}
 		}
 	})
 }

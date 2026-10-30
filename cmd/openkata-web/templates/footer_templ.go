@@ -10,10 +10,6 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import "github.com/tovrleaf/openkata/internal/siteversion"
 
-// DocsEnabled is set when the site serves the docs section, so that the
-// footer links to it only where the link works.
-var DocsEnabled bool
-
 // Footer is the footer of every page: what the site is, links to the
 // community and the rest of the site, and below them the copyright and the
 // release of the site, linked to its page on GitHub.
@@ -38,67 +34,57 @@ func Footer() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<footer class=\"footer\"><div class=\"footer-columns\"><div class=\"footer-about\"><a href=\"/\" class=\"footer-brand\">OPENKATA.dev</a><p class=\"footer-tagline\">Codified practices for AI agents — teach your agents the way.</p></div><nav class=\"footer-column\" aria-label=\"Community\"><h2 class=\"footer-heading\">Community</h2><a href=\"https://github.com/tovrleaf/openkata\" target=\"_blank\" rel=\"noopener\">GitHub</a></nav><nav class=\"footer-column\" aria-label=\"Explore\"><h2 class=\"footer-heading\">Explore</h2>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		if DocsEnabled {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<a href=\"/docs/\">Documentation</a> ")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<a href=\"https://github.com/tovrleaf/openkata/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT License</a></nav></div><div class=\"footer-bottom\"><span>© 2026 OPENKATA.dev. All rights reserved.</span> <span class=\"footer-release\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<footer class=\"footer\"><div class=\"footer-columns\"><div class=\"footer-about\"><a href=\"/\" class=\"footer-brand\">OPENKATA.dev</a><p class=\"footer-tagline\">Codified practices for AI agents — teach your agents the way.</p></div><nav class=\"footer-column\" aria-label=\"Community\"><h2 class=\"footer-heading\">Community</h2><a href=\"https://github.com/tovrleaf/openkata\" target=\"_blank\" rel=\"noopener\">GitHub</a></nav><nav class=\"footer-column\" aria-label=\"Explore\"><h2 class=\"footer-heading\">Explore</h2><a href=\"/docs/\">Documentation</a> <a href=\"https://github.com/tovrleaf/openkata/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT License</a></nav></div><div class=\"footer-bottom\"><span>© 2026 OPENKATA.dev. All rights reserved.</span> <span class=\"footer-release\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if url := releaseURL(siteversion.Current()); url != "" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<a href=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<a href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var2 templ.SafeURL
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(url))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/footer.templ`, Line: 35, Col: 33}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/footer.templ`, Line: 29, Col: 33}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\" target=\"_blank\" rel=\"noopener\">Release ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\" target=\"_blank\" rel=\"noopener\">Release ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(siteversion.Current())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/footer.templ`, Line: 35, Col: 98}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/footer.templ`, Line: 29, Col: 98}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</a>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</a>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "Release ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "Release ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(siteversion.Current())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/footer.templ`, Line: 37, Col: 36}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/footer.templ`, Line: 31, Col: 36}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</span></div></footer>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</span></div></footer>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

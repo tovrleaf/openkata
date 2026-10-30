@@ -2,10 +2,6 @@ package templates
 
 import "github.com/tovrleaf/openkata/internal/siteversion"
 
-// DocsEnabled is set when the site serves the docs section, so that the
-// footer links to it only where the link works.
-var DocsEnabled bool
-
 // Footer is the footer of every page: what the site is, links to the
 // community and the rest of the site, and below them the copyright and the
 // release of the site, linked to its page on GitHub.
@@ -22,9 +18,7 @@ templ Footer() {
 			</nav>
 			<nav class="footer-column" aria-label="Explore">
 				<h2 class="footer-heading">Explore</h2>
-				if DocsEnabled {
-					<a href="/docs/">Documentation</a>
-				}
+				<a href="/docs/">Documentation</a>
 				<a href="https://github.com/tovrleaf/openkata/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
 			</nav>
 		</div>
