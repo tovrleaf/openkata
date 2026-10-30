@@ -77,21 +77,21 @@ local-only.
 
 ### Go-Live
 
-- Go-live happens after spec 0026, so the live site shows the
-  benchmarks and version list that the Guides and Reference
-  describe
-- Go-live also happens after spec 0025 decides how diagrams are
-  rendered and where its libraries are served from, so the
-  first public page does not show raw diagram source
-- The pages above do not wait for either; they are written while
-  the section is local-only
+- Decision, 2026-10-30: go-live does not wait for spec 0025 or for
+  the benchmarks and version list of spec 0026 to show on the live
+  site. Diagrams stay as they are until 0025 decides how they are
+  rendered, and the benchmarks and the missing versions are handled
+  separately
+- The pages above did not wait for go-live; they were written while
+  the section was local-only
 - `/docs/` moves out of the local-only block and is served in
   production from the embedded tree, with the `Site` built
   once and cached
 - A "Docs" link is added to the main nav and the mobile nav
   menu
 - `search.js` loads `/docs/search-index.json` and shows docs
-  results in the overlay; `/catalog/` filters them out
+  results in the overlay; `/catalog/` filters them out. This is
+  task 21, built after go-live
 
 ## Open Questions
 

@@ -285,7 +285,7 @@ yet would fail the strict loader. Pages ship one section per PR.
   trailer, code style, testing, and the no-squash merge rule
 
 ### 20. Go-live
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Make the docs public
 - **Boundary**: `cmd/openkata-web/main.go`,
   `cmd/openkata-web/docs_handler.go`,
@@ -294,12 +294,9 @@ yet would fail the strict loader. Pages ship one section per PR.
 - **Key files**: `docs_handler.go` (`handleDocs`),
   `docs_embedded_test.go`
 - **Note**: the search part of the spec is task 21
-- **Depends**: 1-19, spec 0025's diagram decision, and spec 0026
-  (benchmarks and the version list in production)
-- **Done when**: the live site shows what the docs describe: a
-  Benchmarks tab for skills that have scores and every released
-  version in the version control (spec 0026); `/docs/` is
-  registered outside the local-only
+- **Depends**: 1-19. Not spec 0025's diagram decision or the live
+  benchmarks of spec 0026: both were set aside on 2026-10-30
+- **Done when**: `/docs/` is registered outside the local-only
   block and serves `docs.FS` with the site built once and cached;
   the main and mobile nav have a Docs link; the footer's
   Documentation link shows in production (`templates.DocsEnabled`
@@ -311,7 +308,7 @@ yet would fail the strict loader. Pages ship one section per PR.
   `go test ./cmd/openkata-web/...`
 
 ### 21. Search includes the docs
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: The search overlay finds docs pages as well as artifacts
 - **Boundary**: `web/static/js/search.js`,
   `cmd/openkata-web/templates/catalog.templ` and the catalog page

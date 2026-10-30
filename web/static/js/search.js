@@ -8,6 +8,10 @@
 
   var catalogData = null;
   var fetching = false;
+  // Docs pages, from /docs/search-index.json. They show in the overlay only,
+  // never on the catalog page.
+  var docsData = null;
+  var docsFetching = false;
 
   if (!overlay || !openBtn) return;
 
@@ -18,7 +22,12 @@
     searchInput.value = '';
     searchInput.focus();
     document.body.style.overflow = 'hidden';
-    if (!catalogData && !fetching) fetchData();
+    if (!catalogData && !fetching) fetchData(renderIfOpen);
+    if (!docsData && !docsFetching) fetchDocs(renderIfOpen);
+  }
+
+  function renderIfOpen() {
+    if (!overlay.hidden) renderOverlayResults(searchInput.value);
   }
 
   function closeSearch() {
@@ -50,6 +59,37 @@
         if (cb) cb();
       })
       .catch(function() { fetching = false; });
+  }
+
+  // A failed or missing docs index leaves the docs out and nothing else.
+  function fetchDocs(cb) {
+    if (docsData) { if (cb) cb(); return; }
+    docsFetching = true;
+    fetch('/docs/search-index.json')
+      .then(function(r) {
+        if (!r.ok) throw new Error('docs index ' + r.status);
+        return r.json();
+      })
+      .then(function(entries) { docsData = parseDocs(entries); })
+      .catch(function() { docsData = []; })
+      .then(function() {
+        docsFetching = false;
+        if (cb) cb();
+      });
+  }
+
+  function parseDocs(entries) {
+    if (!Array.isArray(entries)) return [];
+    return entries.filter(function(e) { return e && e.title && e.path; }).map(function(e) {
+      return {
+        name: e.title,
+        type: 'docs',
+        path: e.path,
+        description: e.description || '',
+        tags: '',
+        headings: (e.headings || []).join(' ')
+      };
+    });
   }
 
   function parseData(data) {
@@ -100,26 +140,38 @@
         var nameMatch = item.name.toLowerCase().indexOf(lower) >= 0;
         var tagMatch = item.tags.toLowerCase().indexOf(lower) >= 0;
         var descMatch = item.description.toLowerCase().indexOf(lower) >= 0;
-        if (!nameMatch && !tagMatch && !descMatch) return 0;
+        var headingMatch = !!item.headings && item.headings.toLowerCase().indexOf(lower) >= 0;
+        if (!nameMatch && !tagMatch && !descMatch && !headingMatch) return 0;
         if (nameMatch) score += 100;
         if (tagMatch) score += 50;
         if (descMatch) score += 25;
+        if (headingMatch) score += 25;
       }
       total += score;
     }
     return total;
   }
 
-  function search(query) {
+  // Searches the catalog, and with withDocs also the docs pages. A search
+  // with no words lists the catalog only. Catalog items always come first and
+  // docs pages last, each group in order of how well it matches, so a docs
+  // page never pushes a skill, rule or profile out of the results.
+  function search(query, withDocs) {
     if (!catalogData) return [];
     var tokens = tokenize(query);
     if (tokens.length === 0) return catalogData.slice();
+    var items = withDocs && docsData ? catalogData.concat(docsData) : catalogData;
     var results = [];
-    for (var i = 0; i < catalogData.length; i++) {
-      var score = scoreItem(catalogData[i], tokens);
-      if (score > 0) results.push({ item: catalogData[i], score: score });
+    for (var i = 0; i < items.length; i++) {
+      var score = scoreItem(items[i], tokens);
+      if (score > 0) results.push({ item: items[i], score: score });
     }
-    results.sort(function(a, b) { return b.score - a.score; });
+    results.sort(function(a, b) {
+      var aDocs = a.item.type === 'docs';
+      var bDocs = b.item.type === 'docs';
+      if (aDocs !== bDocs) return aDocs ? 1 : -1;
+      return b.score - a.score;
+    });
     return results.map(function(r) { return r.item; });
   }
 
@@ -170,7 +222,7 @@
 
   function renderOverlayResults(query) {
     if (!searchResults) return;
-    var results = search(query);
+    var results = search(query, true);
     var tokens = tokenize(query);
     var max = 7;
     var html = '';
@@ -179,16 +231,21 @@
       html = '<div class="search-overlay__empty">No results found.</div>';
     } else {
       var shown = results.slice(0, max);
+      var shownCatalog = 0;
       for (var i = 0; i < shown.length; i++) {
         var item = shown[i];
+        if (item.type !== 'docs') shownCatalog++;
         html += '<a href="' + item.path + '" class="search-overlay__item">';
         html += '<span class="search-overlay__item-name">' + highlightText(item.name, tokens) + '</span>';
         html += '<span class="search-overlay__item-type">' + item.type + '</span>';
         html += '</a>';
       }
-      if (results.length > max) {
+      // The catalog page lists skills, rules and profiles only, so the link
+      // counts those.
+      var catalogCount = results.filter(function(r) { return r.type !== 'docs'; }).length;
+      if (catalogCount > shownCatalog) {
         var q = encodeURIComponent(query);
-        html += '<a href="/catalog/?q=' + q + '" class="search-overlay__view-all">View all ' + results.length + ' results</a>';
+        html += '<a href="/catalog/?q=' + q + '" class="search-overlay__view-all">View all ' + catalogCount + ' results</a>';
       }
     }
     searchResults.innerHTML = html;
@@ -198,7 +255,7 @@
 
   searchInput.addEventListener('input', function() {
     if (!catalogData) {
-      fetchData(function() { renderOverlayResults(searchInput.value); });
+      fetchData(renderIfOpen);
       return;
     }
     renderOverlayResults(searchInput.value);

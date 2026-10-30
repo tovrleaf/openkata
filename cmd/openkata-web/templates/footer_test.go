@@ -35,26 +35,15 @@ func TestFooterLinksTheRelease(t *testing.T) {
 }
 
 func TestFooterLinks(t *testing.T) {
-	old := DocsEnabled
-	t.Cleanup(func() { DocsEnabled = old })
-
-	DocsEnabled = false
 	got := renderFooter(t, "v0.14.0")
 	for _, want := range []string{
 		"Community", `href="https://github.com/tovrleaf/openkata"`,
-		"Explore", "MIT License", `blob/main/LICENSE`,
+		"Explore", `<a href="/docs/">Documentation</a>`,
+		"MIT License", `blob/main/LICENSE`,
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("Footer() = %s\nwant it to contain %q", got, want)
 		}
-	}
-	if strings.Contains(got, `href="/docs/"`) {
-		t.Errorf("Footer() = %s\nwant no docs link where the docs are not served", got)
-	}
-
-	DocsEnabled = true
-	if got := renderFooter(t, "v0.14.0"); !strings.Contains(got, `<a href="/docs/">Documentation</a>`) {
-		t.Errorf("Footer() = %s\nwant a Documentation link where the docs are served", got)
 	}
 }
 

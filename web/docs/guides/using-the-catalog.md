@@ -38,7 +38,17 @@ a link to a search.
 The magnifying glass in the top bar opens the same search in an
 overlay, from any page. It shows the first seven matches. Press
 Enter to continue on the catalog page, or choose **View all** when
-more than seven match, and press Escape to close it.
+more than seven skills, rules and profiles match, and press Escape
+to close it.
+
+The overlay also finds pages of this documentation. They are marked
+`docs`, and a page matches on its title, its description and its
+headings. Skills, rules and profiles always come first, in order of
+how well they match, and documentation pages always come last, in the
+same order, however well they match. The catalog page and **View all** list
+skills, rules and profiles only. A search with nothing typed lists
+artifacts only, and a term with a colon, which is a tag, never
+matches a documentation page.
 
 ### What a search matches
 
