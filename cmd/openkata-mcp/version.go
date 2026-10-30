@@ -1,22 +1,42 @@
 package main
 
-import "runtime/debug"
+import (
+	"regexp"
+	"runtime/debug"
+	"strings"
 
-// baseVersion is the version of the server's tools and behavior. Change it
-// by hand when a change deserves a new number. The build adds the commit.
-const baseVersion = "0.3.0"
+	"github.com/tovrleaf/openkata/internal/siteversion"
+)
 
-// serverVersion returns the version that clients see in the handshake:
-// baseVersion followed by the commit the binary was built from, as semantic
-// version build metadata, for example "0.3.0+4f2a9c1". A build from a
-// working tree with uncommitted changes adds ".dirty", and a build without
-// version control information, such as go run, gets "+dev".
+// baseVersion is the version of a build that does not come from a release,
+// such as go run. A deployed server reports the release it was built from.
+const baseVersion = "0.0.0"
+
+var releaseNumber = regexp.MustCompile(`^[0-9]+\.[0-9]+\.[0-9]+$`)
+
+// releaseBase returns the version of a release tag such as "v0.14.0" without
+// the v, or baseVersion for anything that is not a release, such as "dev".
+func releaseBase(release string) string {
+	number := strings.TrimPrefix(release, "v")
+	if !releaseNumber.MatchString(number) {
+		return baseVersion
+	}
+	return number
+}
+
+// serverVersion returns the version that clients see in the handshake: the
+// release the binary was built from, followed by the commit, as semantic
+// version build metadata, for example "0.14.0+4f2a9c1". A build from a
+// working tree with uncommitted changes adds ".dirty", a build without
+// version control information, such as go run, gets "+dev", and a build
+// that is not from a release starts with baseVersion.
 func serverVersion() string {
+	base := releaseBase(siteversion.Current())
 	info, ok := debug.ReadBuildInfo()
 	if !ok {
-		return versionWithCommit(baseVersion, nil)
+		return versionWithCommit(base, nil)
 	}
-	return versionWithCommit(baseVersion, info.Settings)
+	return versionWithCommit(base, info.Settings)
 }
 
 // versionWithCommit builds the version string from the build settings that

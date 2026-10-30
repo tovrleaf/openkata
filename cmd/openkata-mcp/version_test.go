@@ -5,6 +5,8 @@ import (
 	"runtime/debug"
 	"strings"
 	"testing"
+
+	"github.com/tovrleaf/openkata/internal/siteversion"
 )
 
 func TestVersionWithCommit(t *testing.T) {
@@ -68,6 +70,43 @@ func TestServerVersion(t *testing.T) {
 	}
 	if !semverBuild.MatchString(got) {
 		t.Errorf("serverVersion() = %q, want a semantic version with build metadata", got)
+	}
+}
+
+func TestReleaseBase(t *testing.T) {
+	tests := []struct{ release, want string }{
+		{"v0.14.0", "0.14.0"},
+		{"v1.2.3", "1.2.3"},
+		{"0.14.0", "0.14.0"},
+		{"dev", baseVersion},
+		{"", baseVersion},
+		{"v0.14", baseVersion},
+		{"v0.14.0-rc1", baseVersion},
+		{"skills/grill-me/v1.0.1", baseVersion},
+	}
+	for _, tt := range tests {
+		if got := releaseBase(tt.release); got != tt.want {
+			t.Errorf("releaseBase(%q) = %q, want %q", tt.release, got, tt.want)
+		}
+	}
+}
+
+func TestServerVersionOfARelease(t *testing.T) {
+	old := siteversion.Release
+	t.Cleanup(func() { siteversion.Release = old })
+
+	siteversion.Release = "v0.14.0"
+	got := serverVersion()
+	if !strings.HasPrefix(got, "0.14.0+") {
+		t.Errorf("serverVersion() = %q, want it to start with 0.14.0+", got)
+	}
+	if !semverBuild.MatchString(got) {
+		t.Errorf("serverVersion() = %q, want a semantic version with build metadata", got)
+	}
+
+	siteversion.Release = ""
+	if got := serverVersion(); !strings.HasPrefix(got, baseVersion+"+") {
+		t.Errorf("serverVersion() without a release = %q, want it to start with %s+", got, baseVersion)
 	}
 }
 
