@@ -517,7 +517,11 @@ func RuleDetailPage(rule ArtifactDetail) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 51, "</main><footer class=\"footer\">© 2026 OPENKATA.dev // License: <a href=\"https://github.com/tovrleaf/openkata/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT</a></footer>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 51, "</main>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = Footer().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

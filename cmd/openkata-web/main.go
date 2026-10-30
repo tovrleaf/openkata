@@ -14,6 +14,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
+	"github.com/tovrleaf/openkata/cmd/openkata-web/templates"
 	"github.com/tovrleaf/openkata/web/static"
 )
 
@@ -87,6 +88,7 @@ func main() {
 		mux.HandleFunc("/stats/", handleStats)
 		mux.HandleFunc("/stats/detail", handleStatsDetail)
 		mux.HandleFunc("/docs/", handleDocs)
+		templates.DocsEnabled = true
 	}
 
 	handler := requestLogger(mux)

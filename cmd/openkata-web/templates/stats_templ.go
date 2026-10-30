@@ -382,7 +382,11 @@ func Stats(data StatsData) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "</main><footer class=\"footer\">© 2026 OPENKATA.dev // License: <a href=\"https://github.com/tovrleaf/openkata/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT</a></footer>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "</main>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = Footer().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -424,7 +428,7 @@ func StatsDetail(data StatsDetailData) templ.Component {
 		var templ_7745c5c3_Var22 string
 		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(data.Artifact)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 269, Col: 21}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 267, Col: 21}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 		if templ_7745c5c3_Err != nil {
@@ -437,7 +441,7 @@ func StatsDetail(data StatsDetailData) templ.Component {
 		var templ_7745c5c3_Var23 string
 		templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/stats/detail?artifact=%s", data.Artifact))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 273, Col: 68}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 271, Col: 68}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 		if templ_7745c5c3_Err != nil {
@@ -455,7 +459,7 @@ func StatsDetail(data StatsDetailData) templ.Component {
 			var templ_7745c5c3_Var24 string
 			templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(v)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 281, Col: 22}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 279, Col: 22}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 			if templ_7745c5c3_Err != nil {
@@ -478,7 +482,7 @@ func StatsDetail(data StatsDetailData) templ.Component {
 			var templ_7745c5c3_Var25 string
 			templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(v)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 281, Col: 60}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 279, Col: 60}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 			if templ_7745c5c3_Err != nil {
@@ -496,7 +500,7 @@ func StatsDetail(data StatsDetailData) templ.Component {
 		var templ_7745c5c3_Var26 string
 		templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d downloads", data.Total))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 284, Col: 72}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 282, Col: 72}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 		if templ_7745c5c3_Err != nil {
@@ -519,7 +523,7 @@ func StatsDetail(data StatsDetailData) templ.Component {
 				var templ_7745c5c3_Var27 string
 				templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(c.Client)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 293, Col: 30}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 291, Col: 30}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
 				if templ_7745c5c3_Err != nil {
@@ -532,7 +536,7 @@ func StatsDetail(data StatsDetailData) templ.Component {
 				var templ_7745c5c3_Var28 string
 				templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", c.Downloads))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 293, Col: 80}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 291, Col: 80}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var28))
 				if templ_7745c5c3_Err != nil {
@@ -561,7 +565,7 @@ func StatsDetail(data StatsDetailData) templ.Component {
 				var templ_7745c5c3_Var29 string
 				templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.JoinStringErrs(c.Country)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 305, Col: 25}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 303, Col: 25}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var29))
 				if templ_7745c5c3_Err != nil {
@@ -574,7 +578,7 @@ func StatsDetail(data StatsDetailData) templ.Component {
 				var templ_7745c5c3_Var30 string
 				templ_7745c5c3_Var30, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", c.Downloads))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 305, Col: 68}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/stats.templ`, Line: 303, Col: 68}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var30))
 				if templ_7745c5c3_Err != nil {

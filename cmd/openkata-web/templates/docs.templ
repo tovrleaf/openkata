@@ -20,6 +20,7 @@ templ DocsHome(m DocsHomeModel) {
 			</ul>
 			@docsUpdated(m.Updated)
 		</main>
+		@Footer()
 	}
 }
 
@@ -40,6 +41,7 @@ templ DocsPage(m DocsPageModel) {
 				</article>
 			</div>
 		</main>
+		@Footer()
 		<script src="/static/js/docs.js" defer></script>
 	}
 }
