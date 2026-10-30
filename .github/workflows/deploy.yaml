@@ -3,6 +3,9 @@ name: Deploy
 on:
   push:
     branches: [main]
+    # A release of the site: the footer shows the newest release tag, so
+    # pushing one deploys again with it.
+    tags: ['v[0-9]*']
 
 permissions:
   id-token: write
@@ -12,38 +15,76 @@ jobs:
   deploy-web:
     runs-on: ubuntu-latest
     steps:
+      # Full history: the docs last-updated dates and the release come
+      # from git
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      # A tag on an older commit, such as one made to record the past,
+      # must not put that commit's code in production.
+      - name: Check the ref
+        id: ref
+        run: |
+          deploy=true
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]] \
+            && [[ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]]; then
+            deploy=false
+            echo "::notice::${GITHUB_REF_NAME} is not the head of main, nothing is deployed"
+          fi
+          echo "deploy=${deploy}" >> "${GITHUB_OUTPUT}"
 
       - uses: actions/setup-go@v6
+        if: steps.ref.outputs.deploy == 'true'
         with:
           go-version-file: go.mod
 
       - name: Configure AWS credentials
+        if: steps.ref.outputs.deploy == 'true'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::152406482128:role/openkata-ci
           aws-region: eu-north-1
 
       - name: Install templ
+        if: steps.ref.outputs.deploy == 'true'
         run: go install github.com/a-h/templ/cmd/templ@v0.3.1001
 
       - name: Deploy
+        if: steps.ref.outputs.deploy == 'true'
         run: ./scripts/deploy-web.sh
 
   deploy-mcp:
     runs-on: ubuntu-latest
     steps:
+      # Full history: the release comes from git tags
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Check the ref
+        id: ref
+        run: |
+          deploy=true
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]] \
+            && [[ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]]; then
+            deploy=false
+            echo "::notice::${GITHUB_REF_NAME} is not the head of main, nothing is deployed"
+          fi
+          echo "deploy=${deploy}" >> "${GITHUB_OUTPUT}"
 
       - uses: actions/setup-go@v6
+        if: steps.ref.outputs.deploy == 'true'
         with:
           go-version-file: go.mod
 
       - name: Configure AWS credentials
+        if: steps.ref.outputs.deploy == 'true'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::152406482128:role/openkata-ci
           aws-region: eu-north-1
 
       - name: Deploy
+        if: steps.ref.outputs.deploy == 'true'
         run: ./scripts/deploy-mcp.sh

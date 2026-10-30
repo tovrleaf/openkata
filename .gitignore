@@ -9,3 +9,8 @@ tmp/
 specs/_current
 .worktrees/
 .local/
+
+# Docs last-updated dates, generated at deploy time and embedded in the
+# web binary
+web/docs/generated/*
+!web/docs/generated/.gitkeep

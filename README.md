@@ -21,7 +21,7 @@ See the [Manifesto](MANIFESTO.md) for why this exists.
 |---------|-----------|-------------|
 | Skills | **kata** | Codified practices agents follow |
 | Rules | **dojo kun** | Always-on constraints applied to every session |
-| Roles | **sensei profiles** | Agent role definitions with scoped permissions |
+| Profiles | **sensei profiles** | Agent role definitions with scoped permissions |
 | Prompts | **kata forms** | Standardized templates for commits, PRs, reviews |
 | ADRs | **dojo records** | Architecture decisions preserved for the school |
 | MCP server | **the dojo** | Where kata are served and practiced |
@@ -29,8 +29,8 @@ See the [Manifesto](MANIFESTO.md) for why this exists.
 
 ## Design philosophy
 
-Kata in this repo are **platform-agnostic**. They follow the
-[Agent Skills specification](https://github.com/anthropics/agent-skills-spec)
+Kata in this repo are **platform-agnostic**. Skills follow the
+[Agent Skills](https://agentskills.io/) standard
 and work with any agent that supports it — Kiro, Claude Code,
 OpenCode, or others. Skills avoid coupling to specific tooling,
 MCP servers, or platform-specific features so they remain

@@ -14,11 +14,19 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
+	"github.com/tovrleaf/openkata/cmd/openkata-web/templates"
 	"github.com/tovrleaf/openkata/web/static"
 )
 
+// bucketAPI is the part of the S3 client the site uses, so tests can supply a
+// fake bucket.
+type bucketAPI interface {
+	GetObject(ctx context.Context, in *s3.GetObjectInput, opts ...func(*s3.Options)) (*s3.GetObjectOutput, error)
+	ListObjectsV2(ctx context.Context, in *s3.ListObjectsV2Input, opts ...func(*s3.Options)) (*s3.ListObjectsV2Output, error)
+}
+
 var (
-	s3Client *s3.Client
+	s3Client bucketAPI
 	dbClient *dynamodb.Client
 	bucket   string
 	table    string
@@ -80,6 +88,7 @@ func main() {
 		mux.HandleFunc("/stats/", handleStats)
 		mux.HandleFunc("/stats/detail", handleStatsDetail)
 		mux.HandleFunc("/docs/", handleDocs)
+		templates.DocsEnabled = true
 	}
 
 	handler := requestLogger(mux)

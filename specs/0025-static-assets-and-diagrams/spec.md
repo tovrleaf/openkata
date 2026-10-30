@@ -81,7 +81,8 @@ the docs will realistically have after spec 0024.
 ## Open Questions
 
 - Is the live cache policy really *CachingDisabled*?
-- Does the 0024 go-live need rendered diagrams, or can this
-  spec land after it?
+- Decided: spec 0024 go-live waits for the diagram decision in
+  this spec, once it is known where the libraries are served
+  from. The caching half of Part 1 does not block go-live
 - If S3 is chosen, is it a new bucket or a prefix in
   `openkata-artifacts`?

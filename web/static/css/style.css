@@ -7,6 +7,7 @@
 @import "components/card.css";
 @import "components/theme-switcher.css";
 @import "components/docs.css";
+@import "components/footer.css";
 @import "layouts/grid.css";
 
 /* Page-specific */
@@ -743,39 +744,6 @@ hr {
 
 section {
   margin-bottom: var(--space-lg);
-}
-
-/* Footer */
-
-.footer {
-  margin-top: var(--space-xl);
-  padding-top: var(--space-md);
-  font-family: var(--font-body);
-  font-size: var(--font-size-sm);
-  letter-spacing: 0.05em;
-  color: var(--color-ink-muted);
-  text-align: center;
-  position: relative;
-}
-
-.footer::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100vw;
-  height: 1px;
-  background: var(--color-border);
-}
-
-.footer a {
-  color: var(--color-ink-muted);
-  text-decoration: underline;
-}
-
-.footer a:hover {
-  color: var(--color-accent);
 }
 
 /* Theme toggle */

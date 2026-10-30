@@ -6,4 +6,5 @@ order: 1
 
 # Guides
 
-Guides are coming soon.
+Guides explain what OpenKata offers and how to use it. Start with
+the [manifesto](manifesto.md) for why it exists.

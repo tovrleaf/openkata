@@ -13,11 +13,21 @@ import (
 
 func embeddedSite(t *testing.T) *docsSite {
 	t.Helper()
-	site, err := buildSite(docs.FS)
+	site, err := loadEmbeddedSite()
 	if err != nil {
-		t.Fatalf("buildSite(docs.FS) error = %v", err)
+		t.Fatalf("loadEmbeddedSite() error = %v", err)
 	}
 	return site
+}
+
+// TestEmbeddedGeneratedDir checks the directory the deploy writes the dates
+// into is part of the binary even when nothing was generated. Without
+// generated/.gitkeep the go:embed pattern would not compile on a clean
+// checkout.
+func TestEmbeddedGeneratedDir(t *testing.T) {
+	if _, err := fs.Stat(docs.FS, "generated/.gitkeep"); err != nil {
+		t.Errorf("fs.Stat(docs.FS, generated/.gitkeep) error = %v, want the file embedded", err)
+	}
 }
 
 func TestEmbeddedDocsTree(t *testing.T) {

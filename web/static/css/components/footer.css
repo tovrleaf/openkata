@@ -1,0 +1,97 @@
+/* Footer: what the site is, two link columns, then the copyright and the
+   release on one line. */
+
+.footer {
+  margin-top: var(--space-xl);
+  padding: var(--space-lg) 0 var(--space-md);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.05em;
+  color: var(--color-ink-muted);
+  position: relative;
+}
+
+.footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.footer a {
+  color: var(--color-ink-muted);
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: var(--color-accent);
+}
+
+.footer-columns {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+.footer-brand {
+  font-weight: 600;
+  font-size: var(--font-size-base);
+}
+
+.footer-brand::before {
+  content: "// ";
+  color: var(--color-accent);
+}
+
+.footer-tagline {
+  margin: var(--space-sm) 0 0;
+  line-height: var(--line-height);
+}
+
+.footer-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.footer-heading {
+  margin: 0 0 var(--space-xs);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+}
+
+/* The global h2 style puts "// " in front of headings. */
+.footer-heading::before {
+  content: none;
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .footer-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+}

@@ -20,6 +20,7 @@ import (
 	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
 	"github.com/tovrleaf/openkata/internal/analytics"
 	"github.com/tovrleaf/openkata/internal/exclude"
+	"github.com/tovrleaf/openkata/internal/versionindex"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
@@ -31,20 +32,8 @@ var (
 	table    string
 	s3Client *s3.Client
 	dbClient *dynamodb.Client
-	versions *versionsFile
+	versions *versionindex.Index
 )
-
-type artifactInfo struct {
-	Version     string `json:"version"`
-	Description string `json:"description"`
-	Tags        string `json:"tags,omitempty"`
-}
-
-type versionsFile struct {
-	Skills   map[string]artifactInfo `json:"skills"`
-	Rules    map[string]artifactInfo `json:"rules"`
-	Profiles map[string]artifactInfo `json:"profiles"`
-}
 
 func main() {
 	bucket = os.Getenv("OPENKATA_BUCKET")
@@ -70,14 +59,10 @@ func main() {
 	versions, err = loadVersions(ctx)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "load versions: %v\n", err)
-		versions = &versionsFile{
-			Skills:   make(map[string]artifactInfo),
-			Rules:    make(map[string]artifactInfo),
-			Profiles: make(map[string]artifactInfo),
-		}
+		versions = versionindex.New()
 	}
 
-	s := server.NewMCPServer("openkata", "0.3.0",
+	s := server.NewMCPServer("openkata", serverVersion(),
 		server.WithToolCapabilities(false),
 	)
 
@@ -292,7 +277,7 @@ func installArtifact(ctx context.Context, req mcp.CallToolRequest, artifactType,
 	}
 
 	// Resolve version
-	var info artifactInfo
+	var info versionindex.Artifact
 	var found bool
 	switch artifactType {
 	case "skills":
@@ -387,7 +372,7 @@ func listArtifactVersions(ctx context.Context, req mcp.CallToolRequest, artifact
 
 // --- S3 helpers ---
 
-func loadVersions(ctx context.Context) (*versionsFile, error) {
+func loadVersions(ctx context.Context) (*versionindex.Index, error) {
 	key := "versions.json"
 	resp, err := s3Client.GetObject(ctx, &s3.GetObjectInput{
 		Bucket: &bucket,
@@ -398,20 +383,11 @@ func loadVersions(ctx context.Context) (*versionsFile, error) {
 	}
 	defer resp.Body.Close()
 
-	var v versionsFile
-	if err := json.NewDecoder(resp.Body).Decode(&v); err != nil {
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
 		return nil, err
 	}
-	if v.Skills == nil {
-		v.Skills = make(map[string]artifactInfo)
-	}
-	if v.Rules == nil {
-		v.Rules = make(map[string]artifactInfo)
-	}
-	if v.Profiles == nil {
-		v.Profiles = make(map[string]artifactInfo)
-	}
-	return &v, nil
+	return versionindex.Parse(data)
 }
 
 func listPrefixes(ctx context.Context, prefix string) ([]string, error) {

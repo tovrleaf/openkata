@@ -299,3 +299,10 @@ needed.
 - Auth can be layered on later via CloudFront or
   Lambda authorizer
 - ADR 0005 manifest format is extended, not replaced
+
+## Update — 2026-10-28
+
+The MCP server is also served at `https://openkata.dev/mcp`. The
+CloudFront distribution has the MCP Lambda's Function URL as a
+second origin for `/mcp*`, added by `infra/add-mcp-to-cloudfront.sh`.
+The Function URL itself is still public.

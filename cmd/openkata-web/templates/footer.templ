@@ -1,0 +1,42 @@
+package templates
+
+import "github.com/tovrleaf/openkata/internal/siteversion"
+
+// DocsEnabled is set when the site serves the docs section, so that the
+// footer links to it only where the link works.
+var DocsEnabled bool
+
+// Footer is the footer of every page: what the site is, links to the
+// community and the rest of the site, and below them the copyright and the
+// release of the site, linked to its page on GitHub.
+templ Footer() {
+	<footer class="footer">
+		<div class="footer-columns">
+			<div class="footer-about">
+				<a href="/" class="footer-brand">OPENKATA.dev</a>
+				<p class="footer-tagline">Codified practices for AI agents — teach your agents the way.</p>
+			</div>
+			<nav class="footer-column" aria-label="Community">
+				<h2 class="footer-heading">Community</h2>
+				<a href="https://github.com/tovrleaf/openkata" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<nav class="footer-column" aria-label="Explore">
+				<h2 class="footer-heading">Explore</h2>
+				if DocsEnabled {
+					<a href="/docs/">Documentation</a>
+				}
+				<a href="https://github.com/tovrleaf/openkata/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+			</nav>
+		</div>
+		<div class="footer-bottom">
+			<span>© 2026 OPENKATA.dev. All rights reserved.</span>
+			<span class="footer-release">
+				if url := releaseURL(siteversion.Current()); url != "" {
+					<a href={ templ.SafeURL(url) } target="_blank" rel="noopener">Release { siteversion.Current() }</a>
+				} else {
+					Release { siteversion.Current() }
+				}
+			</span>
+		</div>
+	</footer>
+}

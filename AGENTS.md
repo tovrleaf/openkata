@@ -31,9 +31,12 @@ go build -o bin/openkata-web ./cmd/openkata-web/
 go test ./cmd/openkata-web/...
 ```
 
-Run these before every push to catch stale generated
-files. CI regenerates templ output — if the committed
-`_templ.go` files are out of sync, the build fails.
+Run these before every push so the committed `_templ.go`
+files match the `.templ` sources. CI and the deploy
+regenerate them, but neither compares them with what is
+committed. The pull request build does fail when the README
+badge counts are stale: run `make badges` after adding or
+removing a skill, rule or profile.
 
 Before opening a pull request for a spec'd feature, run
 `/validate-spec`. It has a fresh agent check the diff against
@@ -78,6 +81,11 @@ commit workflow.
 - Do not push without explicit user confirmation
 - Do not force push without explaining the impact first
 - Commit freely when asked, but pushing is a separate action
+- `make push` pushes the branch and any tags that were not
+  pushed yet, after asking. The user runs it, except when the
+  agent opens a new pull request: the user has authorized the
+  agent to run `make push YES=1` then, before creating the
+  PR. Never push at any other time without confirmation
 
 ## Skills and rules
 
@@ -109,5 +117,5 @@ is a command:
 - Distributable artifacts get git tags:
   `skills/<name>/v<version>`
 - Local artifacts (in `.agents/`) are not tagged
-- Changelogs must not mention dev-only files (tile.json,
-  tessl.json)
+- Changelogs must not mention dev-only files
+  (`.tessl-plugin/`, `.tesslignore`, tessl.json)

@@ -129,6 +129,18 @@ support, update propagation).
 - Runtime skill serving (live/hot updates without file copies) — users
   get hard copies
 
+## Update — 2026-10-28
+
+The decision stands. These parts of the text no longer describe the
+code:
+
+- The install tools do not detect the agent. Each tool's
+  description names the folder for Kiro and the standard location,
+  and the folder for Claude Code, and the agent writes the files to
+  the one it uses.
+- The server is reached at `https://openkata.dev/mcp`, through
+  CloudFront (see ADR 0010).
+
 ## References
 
 - [skills.sh](https://skills.sh) — existing skills ecosystem by Vercel Labs

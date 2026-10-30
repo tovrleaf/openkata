@@ -13,6 +13,7 @@ coordinate their output.
 | `spec-planner` | Feature planning | specs/ |
 | `spec-validator` | Spec validation | specs/NNNN/validation-report.md |
 | `frontend-developer` | Web UI | web/, templates, CSS |
+| `backend-developer` | Go handlers, types, tests | cmd/openkata-web/ handlers, types, tests; cmd/openkata-mcp/ |
 
 ## Routing Rules
 
@@ -41,6 +42,8 @@ Match the user's request to the right agent:
 - Implementation complete, "validate", "review against spec"
   → `spec-validator`
 - UI work, templates, CSS, design → `frontend-developer`
+- Go handlers, types, data loading, tests, the MCP server
+  → `backend-developer`
 
 ## Agent Switch Suggestions
 
@@ -69,9 +72,9 @@ Commands `kata-author` can run via `tessl`:
 | `tessl skill lint` | Structural validation |
 | `tessl skill review` | Quality scoring |
 | `tessl skill review --optimize` | AI-suggested improvements |
-| `tessl skill import` | Generate tile.json |
+| `tessl skill import` | Set a skill up for tessl (`.tessl-plugin/plugin.json`) |
 | `create-evals` skill | Generate eval scenarios |
-| `tessl eval run` | Run evals (95%+ required) |
+| `openkata-eval-runner` skill | Run evals locally (95%+ required) |
 | `tessl tile publish` | Publish to registry |
 
 ## Workflow

@@ -18,7 +18,9 @@ templ DocsHome(m DocsHomeModel) {
 					</li>
 				}
 			</ul>
+			@docsUpdated(m.Updated)
 		</main>
+		@Footer()
 	}
 }
 
@@ -35,11 +37,25 @@ templ DocsPage(m DocsPageModel) {
 						@templ.Raw(m.Body)
 					</div>
 					@docsPager(m.Prev, m.Next)
+					@docsUpdated(m.Updated)
 				</article>
 			</div>
 		</main>
+		@Footer()
 		<script src="/static/js/docs.js" defer></script>
 	}
+}
+
+// docsUpdated is rendered on every docs page, with the same markup
+// whether or not the date is known, so pages look alike everywhere.
+templ docsUpdated(u DocsUpdated) {
+	<footer class="docs-updated">
+		if u.ISO != "" {
+			Last updated <time datetime={ u.ISO }>{ u.Label }</time>
+		} else {
+			Last updated: <span class="docs-updated__pending">not committed yet</span>
+		}
+	</footer>
 }
 
 templ docsBreadcrumb(crumbs []DocsLink) {

@@ -6,8 +6,10 @@
 |----------|----------|-------|
 | Distributable skill | `skills/<name>/` | Portable, platform-agnostic |
 | Distributable rule | `rules/<name>/` | Portable, platform-agnostic |
+| Distributable profile | `profiles/<name>/` | Portable, platform-agnostic |
 | Local skill | `.agents/skills/<name>/` | Repo-specific, not distributed |
 | Local rule | `.agents/rules/<name>/` | Repo-specific, not distributed |
+| Local profile | `.agents/profiles/<name>.md` | Repo-specific, not distributed |
 
 ## Prerequisites
 
@@ -33,13 +35,24 @@
 2. Place in `rules/<name>/` for distributable,
    `.agents/rules/<name>/` for local
 3. Symlink distributable rules into `.agents/rules/`
-4. Validate against the [rule design checklist](skills/create-rule/references/rule-design-checklist.md)
+4. Validate against the Quality Checklist in
+   [`create-rule`](skills/create-rule/SKILL.md)
 5. Include CHANGELOG.md and ACKNOWLEDGMENTS.md as needed
+
+## Adding a profile
+
+1. Use the `create-profile` skill or follow its workflow manually
+2. Place in `profiles/<name>/<name>.md` for distributable,
+   `.agents/profiles/<name>.md` for local
+3. Symlink distributable profiles into `.agents/profiles/`
+4. Include CHANGELOG.md (Keep a Changelog format)
+5. Check that the scope matches the repository, that it does not
+   overlap another profile, and that the rules it names exist
 
 ## Quality bar
 
 - Skills must score 95%+ on `tessl skill review`
-- Rules must pass the rule design checklist
+- Rules must pass the Quality Checklist in `create-rule`
 - All conventions in SKILL.md/RULE.md must be specific and
   literally enforceable
 - Token cost matters — keep SKILL.md under 500 lines,
@@ -57,7 +70,8 @@ See the `commit-conventions` skill for full details.
 
 - Follow Keep a Changelog format
 - Blank lines around `###` headings
-- Do not mention dev-only artifacts (tile.json, tessl.json)
+- Do not mention dev-only artifacts (`.tessl-plugin/`,
+  `.tesslignore`, tessl.json)
 
 ## Design principles
 

@@ -25,6 +25,7 @@ import (
 	"github.com/tovrleaf/openkata/cmd/openkata-web/templates"
 	"github.com/tovrleaf/openkata/internal/analytics"
 	"github.com/tovrleaf/openkata/internal/exclude"
+	"github.com/tovrleaf/openkata/internal/versionindex"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/renderer/html"
@@ -78,20 +79,12 @@ func buildArtifactLinks() map[string]string {
 	if err != nil {
 		return links
 	}
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
+	idx, err := versionindex.Parse(data)
+	if err != nil {
 		return links
 	}
 	for _, artifactType := range []string{"skills", "rules", "profiles"} {
-		artifactData, ok := raw[artifactType]
-		if !ok {
-			continue
-		}
-		var artifacts map[string]struct{ Version string }
-		if err := json.Unmarshal(artifactData, &artifacts); err != nil {
-			continue
-		}
-		for name := range artifacts {
+		for name := range idx.Of(artifactType) {
 			links[name] = "/" + artifactType + "/" + name + "/"
 		}
 	}
@@ -120,7 +113,47 @@ func gitVersions(artifactType, name string) []string {
 			versions = append(versions, strings.TrimPrefix(line, prefix))
 		}
 	}
-	sort.Sort(sort.Reverse(sort.StringSlice(versions)))
+	sortVersionsNewestFirst(versions)
+	return versions
+}
+
+// sortVersionsNewestFirst orders versions by number, so 1.10.0 comes before
+// 1.9.0.
+func sortVersionsNewestFirst(versions []string) {
+	sort.SliceStable(versions, func(i, j int) bool {
+		return compareVersions(versions[i], versions[j]) > 0
+	})
+}
+
+// bucketVersions returns the versions published for an artifact, newest
+// first, from the version folders in the bucket.
+func bucketVersions(ctx context.Context, artifactType, name string) []string {
+	prefix := artifactType + "/" + name + "/"
+	delimiter := "/"
+	var versions []string
+	var token *string
+	for {
+		resp, err := s3Client.ListObjectsV2(ctx, &s3.ListObjectsV2Input{
+			Bucket:            &bucket,
+			Prefix:            &prefix,
+			Delimiter:         &delimiter,
+			ContinuationToken: token,
+		})
+		if err != nil {
+			return nil
+		}
+		for _, p := range resp.CommonPrefixes {
+			v := strings.TrimSuffix(strings.TrimPrefix(*p.Prefix, prefix), "/")
+			if v != "" {
+				versions = append(versions, v)
+			}
+		}
+		if resp.IsTruncated == nil || !*resp.IsTruncated || resp.NextContinuationToken == nil {
+			break
+		}
+		token = resp.NextContinuationToken
+	}
+	sortVersionsNewestFirst(versions)
 	return versions
 }
 
@@ -295,34 +328,11 @@ func loadArtifactList(ctx context.Context, artifactType string) []templates.Skil
 		return nil
 	}
 
-	var raw map[string]json.RawMessage
-	if err := json.Unmarshal(data, &raw); err != nil {
+	idx, err := versionindex.Parse(data)
+	if err != nil {
 		return nil
 	}
-
-	artifactData, ok := raw[artifactType]
-	if !ok {
-		return nil
-	}
-
-	var artifacts map[string]struct {
-		Version     string `json:"version"`
-		Description string `json:"description"`
-		Tags        string `json:"tags"`
-		Models      map[string]struct {
-			Label         string `json:"label"`
-			Effectiveness int    `json:"effectiveness"`
-			Scenarios     []struct {
-				Name        string `json:"name"`
-				Description string `json:"description"`
-				Pass        bool   `json:"pass"`
-				Score       int    `json:"score"`
-			} `json:"scenarios"`
-		} `json:"models"`
-	}
-	if err := json.Unmarshal(artifactData, &artifacts); err != nil {
-		return nil
-	}
+	artifacts := idx.Of(artifactType)
 
 	counts := loadDownloadCounts(ctx)
 
@@ -411,26 +421,15 @@ func loadArtifactDetailS3(ctx context.Context, artifactType, name, version, docF
 	}
 	defer resp.Body.Close()
 
-	var raw map[string]json.RawMessage
-	if err := json.NewDecoder(resp.Body).Decode(&raw); err != nil {
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
 		return nil
 	}
-
-	artifactData, ok := raw[artifactType]
-	if !ok {
+	idx, err := versionindex.Parse(data)
+	if err != nil {
 		return nil
 	}
-
-	var artifacts map[string]struct {
-		Version     string `json:"version"`
-		Description string `json:"description"`
-		Tags        string `json:"tags"`
-	}
-	if err := json.Unmarshal(artifactData, &artifacts); err != nil {
-		return nil
-	}
-
-	info, ok := artifacts[name]
+	info, ok := idx.Of(artifactType)[name]
 	if !ok {
 		return nil
 	}
@@ -451,7 +450,7 @@ func loadArtifactDetailS3(ctx context.Context, artifactType, name, version, docF
 		Version:      version,
 		Description:  info.Description,
 		Tags:         info.Tags,
-		Versions:     []string{version},
+		Versions:     versionsWith(bucketVersions(ctx, artifactType, name), version),
 		FileContents: make(map[string]string),
 	}
 
@@ -525,8 +524,53 @@ func loadArtifactDetailS3(ctx context.Context, artifactType, name, version, docF
 		}
 	}
 
+	if artifactType == "skills" {
+		applyIndexScores(detail, info)
+	}
+
 	sort.Strings(detail.Files)
 	return detail
+}
+
+// versionsWith returns the listed versions, newest first, and makes sure the
+// shown version is among them, so the version control always has it.
+func versionsWith(listed []string, version string) []string {
+	for _, v := range listed {
+		if v == version {
+			return listed
+		}
+	}
+	listed = append(listed, version)
+	sortVersionsNewestFirst(listed)
+	return listed
+}
+
+// applyIndexScores sets the quality score, the published flag and the
+// benchmark models from the index entry. The index holds only the latest
+// version of an artifact, so a page for any other version gets none of them:
+// a result must never be shown for a version it was not run against.
+func applyIndexScores(detail *templates.ArtifactDetail, info versionindex.Artifact) {
+	if detail.Version != info.Version {
+		return
+	}
+	detail.TesslScore = info.TesslScore
+	detail.Published = info.Published
+
+	ids := make([]string, 0, len(info.Models))
+	for id := range info.Models {
+		ids = append(ids, id)
+	}
+	sort.Strings(ids)
+	for _, id := range ids {
+		m := info.Models[id]
+		bm := templates.BenchmarkModel{ID: id, Label: m.Label, Effectiveness: m.Effectiveness}
+		for _, s := range m.Scenarios {
+			bm.Scenarios = append(bm.Scenarios, templates.BenchmarkScenario{
+				Name: s.Name, Description: s.Description, Pass: s.Pass, Score: s.Score,
+			})
+		}
+		detail.Models = append(detail.Models, bm)
+	}
 }
 
 func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templates.ArtifactDetail {
@@ -539,23 +583,14 @@ func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templ
 
 	// Get version, description, and tags from versions.json
 	var latestVersion, description, tags string
-	vjData, err := os.ReadFile("web/static/versions.json")
-	if err == nil {
-		var raw map[string]json.RawMessage
-		if json.Unmarshal(vjData, &raw) == nil {
-			if artifactData, ok := raw[artifactType]; ok {
-				var artifacts map[string]struct {
-					Version     string `json:"version"`
-					Description string `json:"description"`
-					Tags        string `json:"tags"`
-				}
-				if json.Unmarshal(artifactData, &artifacts) == nil {
-					if info, ok := artifacts[name]; ok {
-						latestVersion = info.Version
-						description = info.Description
-						tags = info.Tags
-					}
-				}
+	var bundled *versionindex.Index
+	if vjData, err := os.ReadFile("web/static/versions.json"); err == nil {
+		if idx, err := versionindex.Parse(vjData); err == nil {
+			bundled = idx
+			if info, ok := idx.Of(artifactType)[name]; ok {
+				latestVersion = info.Version
+				description = info.Description
+				tags = info.Tags
 			}
 		}
 	}
@@ -629,39 +664,9 @@ func loadArtifactDetailLocal(artifactType, name, version, docFile string) *templ
 		return nil
 	})
 	// Load benchmark data for skills
-	if artifactType == "skills" && vjData != nil {
-		var parsed map[string]map[string]struct {
-			TesslScore int  `json:"tessl_score"`
-			Published  bool `json:"published"`
-			Models     map[string]struct {
-				Label         string `json:"label"`
-				Effectiveness int    `json:"effectiveness"`
-				Scenarios     []struct {
-					Name        string `json:"name"`
-					Description string `json:"description"`
-					Pass        bool   `json:"pass"`
-					Score       int    `json:"score"`
-				} `json:"scenarios"`
-			} `json:"models"`
-		}
-		if json.Unmarshal(vjData, &parsed) == nil {
-			if skills, ok := parsed["skills"]; ok {
-				if info, ok := skills[name]; ok {
-					detail.TesslScore = info.TesslScore
-					detail.Published = info.Published
-					for id, m := range info.Models {
-						bm := templates.BenchmarkModel{
-							ID: id, Label: m.Label, Effectiveness: m.Effectiveness,
-						}
-						for _, s := range m.Scenarios {
-							bm.Scenarios = append(bm.Scenarios, templates.BenchmarkScenario{
-								Name: s.Name, Description: s.Description, Pass: s.Pass, Score: s.Score,
-							})
-						}
-						detail.Models = append(detail.Models, bm)
-					}
-				}
-			}
+	if artifactType == "skills" && bundled != nil {
+		if info, ok := bundled.Skills[name]; ok {
+			applyIndexScores(detail, info)
 		}
 	}
 	sort.Strings(detail.Files)
@@ -1258,24 +1263,12 @@ func handleArchiveLocal(w http.ResponseWriter, r *http.Request, artifactType, na
 			http.NotFound(w, r)
 			return
 		}
-		var raw map[string]json.RawMessage
-		if err := json.Unmarshal(data, &raw); err != nil {
+		idx, err := versionindex.Parse(data)
+		if err != nil {
 			http.NotFound(w, r)
 			return
 		}
-		artifactData, ok := raw[artifactType]
-		if !ok {
-			http.NotFound(w, r)
-			return
-		}
-		var artifacts map[string]struct {
-			Version string `json:"version"`
-		}
-		if err := json.Unmarshal(artifactData, &artifacts); err != nil {
-			http.NotFound(w, r)
-			return
-		}
-		info, ok := artifacts[name]
+		info, ok := idx.Of(artifactType)[name]
 		if !ok || info.Version == "0.0.0" {
 			http.NotFound(w, r)
 			return
@@ -1362,30 +1355,15 @@ func resolveLatestVersion(ctx context.Context, artifactType, name string) string
 	}
 	defer resp.Body.Close()
 
-	var v struct {
-		Skills   map[string]struct{ Version string } `json:"skills"`
-		Rules    map[string]struct{ Version string } `json:"rules"`
-		Profiles map[string]struct{ Version string } `json:"profiles"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&v); err != nil {
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
 		return ""
 	}
-
-	switch artifactType {
-	case "skills":
-		if s, ok := v.Skills[name]; ok {
-			return s.Version
-		}
-	case "rules":
-		if r, ok := v.Rules[name]; ok {
-			return r.Version
-		}
-	case "profiles":
-		if p, ok := v.Profiles[name]; ok {
-			return p.Version
-		}
+	idx, err := versionindex.Parse(data)
+	if err != nil {
+		return ""
 	}
-	return ""
+	return idx.Of(artifactType)[name].Version
 }
 
 func incrementDownload(ctx context.Context, artifact string) {

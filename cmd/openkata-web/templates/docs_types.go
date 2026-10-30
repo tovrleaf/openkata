@@ -18,15 +18,23 @@ type DocsNavSection struct {
 	Pages []DocsNavPage
 }
 
+// DocsUpdated is a page's last-updated date. ISO is empty when the date
+// is unknown, and the footer then shows a placeholder.
+type DocsUpdated struct {
+	ISO   string // 2026-10-25
+	Label string // 25 October 2026
+}
+
 // DocsPageModel is everything DocsPage needs. Body is trusted HTML
 // rendered from repository Markdown.
 type DocsPageModel struct {
-	Title  string
-	Body   string
-	Crumbs []DocsLink // breadcrumb trail; the last item is the current page
-	Nav    []DocsNavSection
-	Prev   *DocsLink
-	Next   *DocsLink
+	Title   string
+	Body    string
+	Crumbs  []DocsLink // breadcrumb trail; the last item is the current page
+	Nav     []DocsNavSection
+	Prev    *DocsLink
+	Next    *DocsLink
+	Updated DocsUpdated
 }
 
 // DocsHomeSection is one section card on the docs home page.
@@ -40,4 +48,5 @@ type DocsHomeModel struct {
 	Title    string
 	Body     string
 	Sections []DocsHomeSection
+	Updated  DocsUpdated
 }
