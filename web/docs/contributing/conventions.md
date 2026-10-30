@@ -39,8 +39,8 @@ Footer references.
   codebase that changed.
 - **The types** are `feat`, `fix`, `docs`, `style`, `refactor`, `test`,
   `chore`, `perf`, `ci`, `build` and `release`. `release` is for the
-  commit that releases an artifact, as in
-  `release(skills): grill-me v1.0.1`.
+  commit that releases an artifact or the site, as in
+  `release(skills): grill-me v1.0.1` or `release(site): v0.15.0`.
 - **The body** is optional when the diff is under 20 lines and touches
   one file. It is required when the change involves a decision, a
   trade-off, or behavior that is not obvious. If someone would ask
@@ -70,6 +70,9 @@ Agents are asked to follow three rules about git:
 - Do not push without explicit confirmation.
 - Do not force push without first explaining what it will do.
 - Committing is fine when asked, but pushing is a separate action.
+
+The one exception: an agent may run `make push YES=1` when it opens a
+new pull request.
 
 [Releasing a new version of the site](release-site.md) lists the checks
 to run before you push.
