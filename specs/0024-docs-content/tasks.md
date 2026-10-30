@@ -308,7 +308,7 @@ yet would fail the strict loader. Pages ship one section per PR.
   `go test ./cmd/openkata-web/...`
 
 ### 21. Search includes the docs
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: The search overlay finds docs pages as well as artifacts
 - **Boundary**: `web/static/js/search.js`,
   `cmd/openkata-web/templates/catalog.templ` and the catalog page
