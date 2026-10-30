@@ -9,7 +9,7 @@ set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/tag_lib.sh"
 
 main() {
-  local branch commits tags answer tag assume_yes=0
+  local branch base commits tags answer tag assume_yes=0
 
   if [[ "${1:-}" == "--yes" || "${1:-}" == "-y" ]]; then
     assume_yes=1
@@ -21,12 +21,16 @@ main() {
     exit 1
   fi
 
-  if git rev-parse --verify --quiet "${branch}@{upstream}" >/dev/null; then
-    commits="$(git log --oneline "${branch}@{upstream}..HEAD")"
+  # Compare with the branch on the remote, whether or not this clone has it
+  # set as its upstream, and with main when the branch is new there.
+  if git rev-parse --verify --quiet \
+    "refs/remotes/${REMOTE}/${branch}" >/dev/null; then
+    base="${REMOTE}/${branch}"
   else
     echo "Branch ${branch} is new on ${REMOTE}, compared with main."
-    commits="$(git log --oneline "${REMOTE}/main..HEAD")"
+    base="${REMOTE}/main"
   fi
+  commits="$(git log --oneline "${base}..HEAD")"
   tags="$(comm -23 <(local_tags) <(remote_tags))"
 
   if [[ -z "${commits}" && -z "${tags}" ]]; then
