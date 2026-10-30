@@ -43,9 +43,11 @@ Header rules:
 Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`,
 `chore`, `perf`, `ci`, `build`, `release`
 
-`release` is for the commit that releases an artifact. The
-scope is the artifact type and the description is the name
-and version: `release(skills): grill-me v1.0.1`.
+`release` is for the commit that releases an artifact or the
+site. The scope is the artifact type, or `site`, and the
+description is the name and version, or just the version for
+the site: `release(skills): grill-me v1.0.1`,
+`release(site): v0.15.0`.
 
 Body is optional when the diff is under 20 lines and touches
 one file. Required when the change involves a decision,

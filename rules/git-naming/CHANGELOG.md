@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `release` commit type for the commit that releases an artifact
+- `site` scope for `release`, for the commit that releases the site
 
 ### Changed
 
