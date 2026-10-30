@@ -35,6 +35,12 @@ Run these before every push to catch stale generated
 files. CI regenerates templ output — if the committed
 `_templ.go` files are out of sync, the build fails.
 
+Before opening a pull request for a spec'd feature, run
+`/validate-spec`. It has a fresh agent check the diff against
+`spec.md` alone and writes
+`specs/NNNN-slug/validation-report.md`. See
+[`.agents/prompts/validate-spec.md`](.agents/prompts/validate-spec.md).
+
 ## Code style
 
 ### Go
@@ -91,6 +97,12 @@ local use:
 
     .agents/skills/create-adr -> ../../skills/create-adr
     .agents/rules/bash-style -> ../../rules/bash-style
+
+Claude Code reads slash commands from `.claude/commands`, which
+links to the local prompts, so each file in `.agents/prompts/`
+is a command:
+
+    .claude/commands -> ../.agents/prompts
 
 ## Releasing
 
