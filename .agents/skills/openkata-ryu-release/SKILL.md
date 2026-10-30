@@ -15,7 +15,8 @@ for the current published version.
 ## Trigger
 
 Activate when the user says "release", "bump", "version",
-"tag", or "publish" an artifact.
+"tag", or "publish" an artifact, or "release the site". The
+site steps are under Releasing the Site.
 
 ## Determine Current Version
 
@@ -144,6 +145,38 @@ Old git tags are preserved — old S3 artifacts are deleted.
    ```go
    "<old-name>": "<new-name>",
    ```
+
+## Releasing the Site
+
+The site, docs and MCP server share one release number, the
+newest tag of the form `vMAJOR.MINOR.PATCH` (no prefix). The
+footer shows it and links to its GitHub release. Decide it at
+each push, and state the number and why before the user
+confirms the push.
+
+1. Find the current release and what changed since:
+   ```bash
+   git tag -l 'v[0-9]*' | sort -V | tail -1
+   git log --oneline <that-tag>..HEAD
+   ```
+
+2. Pick the next number. While the major is 0, a `feat` or
+   a breaking change raises the minor; anything else raises
+   the patch. If nothing a visitor or contributor could
+   notice changed (for example only specs), do not release.
+
+3. If there is something to commit with the release, use
+   `release(site): vX.Y.Z` as its message.
+
+4. Tag the head of `main`, after the change is merged:
+   ```bash
+   git tag vX.Y.Z
+   ```
+   A tag that is not on the head of `main` deploys nothing.
+
+5. Push (only with user confirmation). Pushing the tag
+   deploys again with the new number. Then write the release
+   notes as a GitHub release for the tag.
 
 ## Common Failures
 

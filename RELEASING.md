@@ -68,7 +68,10 @@ Both are in `.github/workflows/deploy.yaml`.
 The web deploy checks out the full git history. Before it
 builds, it runs `go run ./cmd/docs-dates -require`, which
 writes each docs page's last-updated date from git into the
-binary and fails if a page has no date.
+binary and fails if a page has no date, and
+`go run ./cmd/site-version -require`, which reads the release
+number and fails if the commit contains no release tag. Pushing
+a release tag (`v*`) starts the same deploy.
 
 ### Manual deploy
 
@@ -76,3 +79,21 @@ binary and fails if a page has no date.
 AWS_PROFILE=openkata ./scripts/deploy-web.sh
 AWS_PROFILE=openkata ./scripts/deploy-mcp.sh
 ```
+
+### Releasing the site
+
+The site, the docs and the MCP server share a release number,
+shown in the footer as `Release v0.x.y`. It is the newest git
+tag of the form `vMAJOR.MINOR.PATCH` that the deployed commit
+contains. Artifact tags (`skills/<name>/v1.0.0`) are not
+counted.
+
+1. Decide the number from the commits since the last release
+   tag: while the major is 0, a `feat` or a breaking change
+   raises the minor, anything else the patch. Skip a release
+   for a change nobody would notice, such as a spec change.
+2. Tag the head of `main`: `git tag v0.x.y`
+3. Push the tag with `make push`. Pushing a tag deploys again,
+   with the new number.
+4. Write the release notes as a GitHub release for the tag.
+   The footer links to it.

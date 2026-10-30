@@ -182,3 +182,9 @@ these ways:
 - [Semantic Versioning](https://semver.org/)
 - ADR 0002 — MCP server for distribution (the dojo needs version info)
 - ADR 0004 — Kata vocabulary (artifact type names)
+
+## Update — 2026-10-30
+
+The repo itself now has a release number: the site, docs and MCP server
+share a `vMAJOR.MINOR.PATCH` git tag, shown in the footer of the site.
+Artifact versioning is unchanged. See `web/docs/reference/versioning.md`.

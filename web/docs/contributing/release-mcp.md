@@ -15,14 +15,17 @@ workflow as the website, described in
 
 ## Its version
 
-The server is not published like an artifact, so it has no release tags.
-An early decision record planned tags for it, but none were ever made.
-Its version has two parts, which clients see together in the
-`serverInfo` of the handshake, for example `0.3.0+4f2a9c1`:
+The server is not published like an artifact, so it has no release tags
+of its own. It has the release number of the whole project, which comes
+from the `vMAJOR.MINOR.PATCH` tags described in
+[releasing a new version of the site](release-site.md). Its version has
+two parts, which clients see together in the `serverInfo` of the
+handshake, for example `0.15.0+4f2a9c1`:
 
-- **The base**, `0.3.0`, is the `baseVersion` constant in
-  `cmd/openkata-mcp/version.go`. Nothing changes it by itself. Bump it
-  by hand when a change deserves a new number.
+- **The base**, `0.15.0`, is the release the binary was built from, put
+  in by the deploy script. A build that is not from a release, such as
+  `go run`, starts with `0.0.0`, which is `baseVersion` in
+  `cmd/openkata-mcp/version.go`.
 - **The part after the `+`** is the git commit that the binary was
   built from, which the Go toolchain records in every build. It is added
   automatically, so the version always says which commit is deployed. A
