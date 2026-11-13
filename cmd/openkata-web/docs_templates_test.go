@@ -45,7 +45,7 @@ func TestDocsPageSidebar(t *testing.T) {
 	})
 
 	t.Run("body is rendered HTML, not escaped", func(t *testing.T) {
-		if !strings.Contains(body, `<h2 id="setup">Setup</h2>`) {
+		if !strings.Contains(body, `<h2 id="setup">Setup <a class="heading-anchor"`) {
 			t.Errorf("page = %q, want the rendered h2 from the Markdown body", body)
 		}
 	})

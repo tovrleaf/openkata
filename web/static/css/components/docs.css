@@ -215,6 +215,40 @@
   border-bottom: 0;
 }
 
+/* Heading anchors: a "#" after each h2 and h3 that shows on hover or
+   focus, and stays faint where there is no hover. docs.js copies it. */
+
+.heading-anchor {
+  color: var(--color-ink-muted);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.docs-content h2:hover .heading-anchor,
+.docs-content h3:hover .heading-anchor,
+.heading-anchor:focus-visible,
+.heading-anchor.is-copied {
+  opacity: 1;
+}
+
+.heading-anchor:hover {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.heading-anchor.is-copied::after {
+  content: " Copied";
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+}
+
+@media (hover: none) {
+  .heading-anchor {
+    opacity: 0.5;
+  }
+}
+
 /* Page title: a dimmed Markdown heading mark, as h2 has its // */
 
 .docs h1::before {

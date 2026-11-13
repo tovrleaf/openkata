@@ -137,6 +137,28 @@ func TestRenderDocsMarkdown(t *testing.T) {
 	})
 }
 
+func TestRenderHeadingAnchors(t *testing.T) {
+	got := renderedBody(t, "# Title\n\n## Install `it`\n\n### Then\n\n#### Deep\n").Body
+
+	for _, want := range []string{
+		`<h2 id="install-it">Install <code>it</code> <a class="heading-anchor" href="#install-it" aria-label="Copy link to this section">#</a></h2>`,
+		`<h3 id="then">Then <a class="heading-anchor" href="#then" aria-label="Copy link to this section">#</a></h3>`,
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("Body = %q, want it to contain %q", got, want)
+		}
+	}
+	if n := strings.Count(got, `class="heading-anchor"`); n != 2 {
+		t.Errorf("Body has %d heading anchors, want 2: h2 and h3 only", n)
+	}
+
+	t.Run("headings text has no anchor", func(t *testing.T) {
+		if h := renderedBody(t, "## Install it\n").Headings; !slices.Equal(h, []string{"Install it"}) {
+			t.Errorf("Headings = %v, want [Install it]", h)
+		}
+	})
+}
+
 func TestRenderHeadings(t *testing.T) {
 	tests := []struct {
 		name string
