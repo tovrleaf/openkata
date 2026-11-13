@@ -1,0 +1,251 @@
+#!/usr/bin/env python3
+"""Flag sentences that are hard to read in Markdown or plain text.
+
+Usage:
+    check.py [--max-words N] [--changed REF] PATH...
+    check.py - < text.md
+
+PATH can be a file or a directory; directories are searched for
+.md, .markdown, .mdx and .txt files. Code blocks, inline code,
+frontmatter, headings, tables and HTML are skipped.
+
+Prints one line per flagged sentence:
+
+    path:line: reason, reason | sentence
+
+Reasons marked "(weak)" are fine on their own; act on them only
+when they make the sentence harder to read.
+
+Exit status: 0 nothing flagged, 1 sentences flagged, 2 error.
+"""
+
+import argparse
+import os
+import re
+import subprocess
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+WATCH_LIST = os.path.join(HERE, "..", "references", "watch-list.md")
+TEXT_EXTENSIONS = (".md", ".markdown", ".mdx", ".txt")
+SKIP_DIRS = {"node_modules", "vendor", "dist", "build"}
+
+CODE = "‹code›"
+ABBREVIATIONS = {"e.g.", "i.e.", "etc.", "vs.", "cf.", "approx.",
+                 "no.", "mr.", "ms.", "dr.", "fig."}
+
+LIST_ITEM = re.compile(r"^\s*(?:[-*+]|\d+[.)])\s+")
+FENCE = re.compile(r"^\s*(`{3,}|~{3,})")
+LINK_DEF = re.compile(r"^\s*\[[^\]]+\]:\s")
+WORD = re.compile(r"[A-Za-z0-9][\w'’-]*|" + CODE)
+BOUNDARY = re.compile(r"(?<=[.!?])[\"'’”)\]]*\s+(?=[A-Z0-9\"'“(\[‹])")
+CONNECTORS = re.compile(
+    r"\b(?:which|because|so that|while|whereas)\b|,\s+(?:and|but|so|or)\b",
+    re.IGNORECASE)
+DASH = re.compile(r"\s[—–]\s|\s--\s|\w—\w")
+ASIDE = re.compile(r"\(([^()]*)\)")
+
+
+def load_watch_list(path):
+    """Return (label, regex) pairs for every term in the watch list."""
+    terms = []
+    section = None
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            if line.startswith("## "):
+                section = line[3:].strip().lower()
+                continue
+            if (section not in ("words", "phrases")
+                    or not line.startswith("- ")):
+                continue
+            head = line.split("→")[0]
+            for term in re.findall(r"`([^`]+)`", head):
+                body = r"\s+".join(re.escape(w) for w in term.split())
+                body = body.replace("'", "['’]")
+                if section == "words":
+                    body += r"(?:s|es|d|ed|ing|ly)?"
+                pattern = re.compile(r"(?<![\w-])" + body + r"(?![\w-])",
+                                     re.IGNORECASE)
+                terms.append((len(term), f"{section[:-1]} '{term}'", pattern))
+    # Longest first, so "a testament to" is reported instead of
+    # "testament" inside it.
+    terms.sort(key=lambda t: -t[0])
+    return [(label, pattern) for _, label, pattern in terms]
+
+
+def clean_inline(text):
+    """Turn a Markdown line into plain prose for counting."""
+    text = re.sub(r"`[^`]*`", CODE, text)
+    text = re.sub(r"!\[([^\]]*)\]\([^)]*\)", r"\1", text)
+    text = re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", text)
+    text = re.sub(r"\[([^\]]+)\]\[[^\]]*\]", r"\1", text)
+    text = re.sub(r"<https?://[^>]+>|https?://\S+", "link", text)
+    text = re.sub(r"<[^>]+>", "", text)
+    return text.replace("**", "").replace("__", "")
+
+
+def prose_blocks(lines):
+    """Yield blocks of prose as lists of (line number, text)."""
+    block = []
+    fence = None
+    in_frontmatter = bool(lines) and lines[0].strip() == "---"
+    for number, raw in enumerate(lines, 1):
+        line = raw.rstrip("\n")
+        stripped = line.strip()
+        if in_frontmatter:
+            if number > 1 and stripped in ("---", "..."):
+                in_frontmatter = False
+            continue
+        opening = FENCE.match(line)
+        if fence:
+            if opening and opening.group(1)[0] == fence[0]:
+                fence = None
+            continue
+        if opening:
+            fence = opening.group(1)
+            yield block
+            block = []
+            continue
+        if (not stripped or stripped.startswith(("#", "|", "<"))
+                or LINK_DEF.match(line)):
+            yield block
+            block = []
+            continue
+        text = re.sub(r"^(?:>\s?)+", "", stripped)
+        if LIST_ITEM.match(line):
+            yield block
+            block = []
+            text = LIST_ITEM.sub("", line)
+        block.append((number, clean_inline(text.strip())))
+    yield block
+
+
+def sentences(block):
+    """Split a block into (first line, last line, sentence) tuples."""
+    text = ""
+    starts = []
+    for number, part in block:
+        if text:
+            text += " "
+        starts.append((len(text), number))
+        text += part
+
+    def line_at(offset):
+        found = starts[0][1]
+        for start, number in starts:
+            if start <= offset:
+                found = number
+        return found
+
+    begin = 0
+    for match in BOUNDARY.finditer(text):
+        before = text[begin:match.start()].split()
+        if before and before[-1].lower() in ABBREVIATIONS:
+            continue
+        yield line_at(begin), line_at(match.start()), text[begin:match.start()]
+        begin = match.end()
+    if text[begin:].strip():
+        yield line_at(begin), line_at(len(text) - 1), text[begin:]
+
+
+def reasons_for(sentence, max_words, terms):
+    words = len(WORD.findall(sentence))
+    reasons = []
+    if words > max_words:
+        reasons.append(f"long ({words} words)")
+    clauses = len(CONNECTORS.findall(sentence))
+    if clauses >= 3 or (clauses >= 2 and words >= 20):
+        reasons.append(f"tangled ({clauses + 1} clauses)")
+    taken = set()
+    for label, pattern in terms:
+        match = pattern.search(sentence)
+        if match and taken.isdisjoint(range(*match.span())):
+            taken.update(range(*match.span()))
+            reasons.append(label)
+    if DASH.search(sentence):
+        reasons.append("dash joins clauses (weak)")
+    if ";" in sentence.replace(CODE, ""):
+        reasons.append("semicolon (weak)")
+    for aside in ASIDE.findall(sentence):
+        if len(WORD.findall(aside)) > 8:
+            reasons.append("long aside in parentheses (weak)")
+            break
+    return reasons
+
+
+def changed_lines(path, ref):
+    """Return the line numbers of path that differ from ref in git."""
+    folder, name = os.path.split(os.path.abspath(path))
+    out = subprocess.run(
+        ["git", "-C", folder, "diff", "-U0", ref, "--", name],
+        capture_output=True, text=True, check=True).stdout
+    lines = set()
+    for start, count in re.findall(r"^@@ .* \+(\d+)(?:,(\d+))? @@", out, re.M):
+        first = int(start)
+        lines.update(range(first, first + int(count or "1")))
+    return lines
+
+
+def text_files(paths):
+    for path in paths:
+        if path == "-" or os.path.isfile(path):
+            yield path
+            continue
+        if not os.path.isdir(path):
+            raise FileNotFoundError(path)
+        for root, dirs, files in os.walk(path):
+            dirs[:] = sorted(d for d in dirs
+                             if not d.startswith(".") and d not in SKIP_DIRS)
+            for name in sorted(files):
+                if name.lower().endswith(TEXT_EXTENSIONS):
+                    yield os.path.join(root, name)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Flag sentences that are hard to read.")
+    parser.add_argument("paths", nargs="+", metavar="PATH",
+                        help="file, directory, or - for standard input")
+    parser.add_argument("--max-words", type=int, default=25,
+                        help="flag sentences longer than this (default 25)")
+    parser.add_argument("--changed", metavar="REF",
+                        help="only report sentences on lines changed since "
+                             "the git REF")
+    args = parser.parse_args()
+
+    try:
+        terms = load_watch_list(WATCH_LIST)
+        flagged = 0
+        for path in text_files(args.paths):
+            if path == "-":
+                name, lines = "<stdin>", sys.stdin.read().splitlines(True)
+            else:
+                with open(path, encoding="utf-8") as f:
+                    name, lines = path, f.readlines()
+            keep = None
+            if args.changed and path != "-":
+                keep = changed_lines(path, args.changed)
+            for block in prose_blocks(lines):
+                if not block:
+                    continue
+                for first, last, sentence in sentences(block):
+                    if keep is not None and not keep.intersection(
+                            range(first, last + 1)):
+                        continue
+                    reasons = reasons_for(sentence, args.max_words, terms)
+                    if reasons:
+                        flagged += 1
+                        print(f"{name}:{first}: {', '.join(reasons)} | "
+                              f"{sentence.strip()}")
+    except subprocess.CalledProcessError as err:
+        print(f"check.py: git diff failed: {err.stderr.strip()}",
+              file=sys.stderr)
+        return 2
+    except OSError as err:
+        print(f"check.py: {err}", file=sys.stderr)
+        return 2
+    return 1 if flagged else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
