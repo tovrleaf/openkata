@@ -117,7 +117,7 @@ func writeDocsPage(w http.ResponseWriter, r *http.Request, site *docsSite, p *do
 func (s *docsSite) homeModel() templates.DocsHomeModel {
 	m := templates.DocsHomeModel{Title: s.Home.Title, Body: s.Home.Body, Updated: updatedFor(s.Home)}
 	for _, sec := range s.Sections {
-		m.Sections = append(m.Sections, templates.DocsHomeSection{
+		m.Sections = append(m.Sections, templates.DocsCard{
 			DocsLink:    templates.DocsLink{Title: sec.Title, URL: sec.Index.URL},
 			Description: sec.Index.Description,
 		})
@@ -128,7 +128,27 @@ func (s *docsSite) homeModel() templates.DocsHomeModel {
 func (s *docsSite) pageModel(p *docsPage) templates.DocsPageModel {
 	m := templates.DocsPageModel{Title: p.Title, Body: p.Body, Crumbs: s.crumbs(p), Nav: s.navFor(p), Updated: updatedFor(p)}
 	m.Prev, m.Next = s.pager(p)
+	m.Pages = s.sectionPages(p)
 	return m
+}
+
+// sectionPages returns a card for each page of the section that p is the
+// index of, or nil when p is not a section index.
+func (s *docsSite) sectionPages(p *docsPage) []templates.DocsCard {
+	for _, sec := range s.Sections {
+		if sec.Index != p {
+			continue
+		}
+		var cards []templates.DocsCard
+		for _, q := range sec.Pages {
+			cards = append(cards, templates.DocsCard{
+				DocsLink:    templates.DocsLink{Title: q.Title, URL: q.URL},
+				Description: q.Description,
+			})
+		}
+		return cards
+	}
+	return nil
 }
 
 // updatedFor formats the last-updated date of p for display, for example
