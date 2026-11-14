@@ -39,7 +39,7 @@
     },
     {
       "name": "Edited in place",
-      "description": "inputs/stats-guide.md itself is changed",
+      "description": "stats-guide.md in the working folder is changed",
       "max_score": 8
     }
   ]

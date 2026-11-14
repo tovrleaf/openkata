@@ -3,8 +3,8 @@
 ## Problem Description
 
 The Ledger team gets support questions from developers who misread
-the README in `inputs/README.md`. Many of them read English as a
-second language. The team lead wants the hard parts of the README
+the project's `README.md`. Many of them read English as a second
+language. The team lead wants the hard parts of the README
 made easier to read before the next release.
 
 The rest of the README is fine and the team does not want it
@@ -13,6 +13,6 @@ much easier for them to accept.
 
 ## Output Specification
 
-Edit `inputs/README.md` in place. Then write `summary.md` saying
+Edit `README.md` in place. Then write `summary.md` saying
 how many sentences you changed, and listing any sentence you
 considered but decided to keep, with the reason.

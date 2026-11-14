@@ -4,7 +4,7 @@
   "checklist": [
     {
       "name": "Edited in place",
-      "description": "inputs/README.md itself is changed. The agent did not only propose changes or write the rewrite to a different file",
+      "description": "README.md in the working folder is changed. The agent did not only propose changes or write the rewrite to a different file",
       "max_score": 10
     },
     {
