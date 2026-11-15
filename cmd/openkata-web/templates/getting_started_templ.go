@@ -45,7 +45,7 @@ func GettingStarted() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <main><section class=\"hero hero--kanji\"><span class=\"hero-kanji\">道</span><div class=\"hero-text\"><h1 class=\"cursor\">Getting Started</h1><p class=\"comment\">Teach once, reuse everywhere.</p></div></section><h2>What is OpenKata?</h2><p>Codified practices for AI agents. Engineering knowledge in files: portable, reusable, version-controlled. Kata follow the <a href=\"https://agentskills.io/\" target=\"_blank\" rel=\"noopener\">Agent Skills specification</a> and work with any agent that supports it.</p><h3>Vocabulary</h3><table class=\"gs-vocab\"><tr><td>Skills</td><td><strong>kata</strong></td><td>Multi-step workflows agents follow</td></tr><tr><td>Rules</td><td><strong>dojo kun</strong></td><td>Always-on constraints applied to every session</td></tr><tr><td>Profiles</td><td><strong>sensei profiles</strong></td><td>Agent role definitions with scoped permissions</td></tr><tr><td>MCP server</td><td><strong>the dojo</strong></td><td>Where kata are served and practiced</td></tr><tr><td>Framework</td><td><strong>the ryu</strong></td><td>The complete system of practices</td></tr></table><h2>Design Philosophy</h2><p>Kata are platform-agnostic. They avoid coupling to specific tooling, MCP servers, or platform features so they remain portable across environments.</p><ul><li><strong>Humans govern, agents execute.</strong> The engineer is always responsible for the outcome.</li><li><strong>Portable by default.</strong> No vendor lock-in. Works with any agent supporting the Agent Skills spec.</li><li><strong>Explain the why.</strong> Practices carry their reasoning, so agents understand the intent as well as the rule.</li></ul><h2>How It Works</h2><div class=\"gs-tabs\"><button class=\"gs-tab gs-tab--active\" data-tab=\"mcp\">MCP Server</button> <button class=\"gs-tab\" data-tab=\"download\">Download Skills</button></div><div class=\"gs-panel gs-panel--active\" id=\"panel-mcp\"><p>Zero install. Zero dependencies. Always up-to-date. No packages to install. No local runtime. Add one URL to your agent config and you have instant access to the full catalog.</p><pre><code>https://openkata.dev/mcp</code></pre><div class=\"gs-client-tabs\"><button class=\"gs-ctab\" data-ctab=\"claude-code\">Claude Code</button> <button class=\"gs-ctab\" data-ctab=\"claude-desktop\">Claude Desktop</button> <button class=\"gs-ctab\" data-ctab=\"cursor\">Cursor</button> <button class=\"gs-ctab\" data-ctab=\"kiro\">Kiro</button> <button class=\"gs-ctab\" data-ctab=\"vscode\">VS Code</button> <button class=\"gs-ctab\" data-ctab=\"windsurf\">Windsurf</button> <button class=\"gs-ctab\" data-ctab=\"cline\">Cline</button> <button class=\"gs-ctab\" data-ctab=\"codex\">Codex CLI</button> <button class=\"gs-ctab\" data-ctab=\"gemini\">Gemini CLI</button> <button class=\"gs-ctab\" data-ctab=\"antigravity\">Antigravity</button> <button class=\"gs-ctab\" data-ctab=\"openclaw\">OpenClaw</button> <button class=\"gs-ctab\" data-ctab=\"opencode\">OpenCode</button> <button class=\"gs-ctab\" data-ctab=\"roo\">Roo Code</button> <button class=\"gs-ctab\" data-ctab=\"continue\">Continue</button> <button class=\"gs-ctab\" data-ctab=\"zed\">Zed</button></div><div class=\"gs-cpanel\" id=\"cpanel-claude-code\"><p class=\"gs-filepath\">.mcp.json</p><pre><code>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <main><section class=\"hero hero--kanji\"><span class=\"hero-kanji\">道</span><div class=\"hero-text\"><h1 class=\"cursor\">Getting Started</h1><p class=\"comment\">Teach once, reuse everywhere.</p></div></section><h2>What is OpenKata?</h2><p>Codified practices for AI agents. Engineering knowledge in files: portable, reusable, version-controlled. Kata follow the <a href=\"https://agentskills.io/\" target=\"_blank\" rel=\"noopener\">Agent Skills specification</a> and work with any agent that supports it.</p><h3>Vocabulary</h3><table class=\"gs-vocab\"><tr><td>Skills</td><td><strong>kata</strong></td><td>Multi-step workflows agents follow</td></tr><tr><td>Rules</td><td><strong>dojo kun</strong></td><td>Always-on constraints applied to every session</td></tr><tr><td>Profiles</td><td><strong>sensei profiles</strong></td><td>Agent role definitions with scoped permissions</td></tr><tr><td>MCP server</td><td><strong>the dojo</strong></td><td>Where kata are served and practiced</td></tr><tr><td>Framework</td><td><strong>the ryu</strong></td><td>The complete system of practices</td></tr></table><h2>Design Philosophy</h2><p>Kata are platform-agnostic. They avoid coupling to specific tooling, MCP servers, or platform features so they remain portable across environments.</p><ul><li><strong>Humans govern, agents execute.</strong> The engineer is always responsible for the outcome.</li><li><strong>Portable by default.</strong> No vendor lock-in. Works with any agent supporting the Agent Skills spec.</li><li><strong>Explain the why.</strong> Practices carry their reasoning, so agents understand the intent as well as the rule.</li></ul><h2>How It Works</h2><div class=\"gs-tabs\"><button class=\"gs-tab gs-tab--active\" data-tab=\"mcp\">MCP Server</button> <button class=\"gs-tab\" data-tab=\"download\">Download Skills</button></div><div class=\"gs-panel gs-panel--active\" id=\"panel-mcp\"><p>Zero install. Zero dependencies. Always up-to-date. No packages to install. No local runtime. Add one URL to your agent config and you have instant access to the full catalog.</p><pre><code>https://openkata.dev/mcp</code></pre><div class=\"gs-client-tabs\"><button class=\"gs-ctab\" data-ctab=\"claude-code\">Claude Code</button> <button class=\"gs-ctab\" data-ctab=\"claude-desktop\">Claude Desktop</button> <button class=\"gs-ctab\" data-ctab=\"cursor\">Cursor</button> <button class=\"gs-ctab\" data-ctab=\"vscode\">VS Code</button> <button class=\"gs-ctab\" data-ctab=\"windsurf\">Windsurf</button> <button class=\"gs-ctab\" data-ctab=\"cline\">Cline</button> <button class=\"gs-ctab\" data-ctab=\"codex\">Codex CLI</button> <button class=\"gs-ctab\" data-ctab=\"gemini\">Gemini CLI</button> <button class=\"gs-ctab\" data-ctab=\"antigravity\">Antigravity</button> <button class=\"gs-ctab\" data-ctab=\"openclaw\">OpenClaw</button> <button class=\"gs-ctab\" data-ctab=\"opencode\">OpenCode</button> <button class=\"gs-ctab\" data-ctab=\"roo\">Roo Code</button> <button class=\"gs-ctab\" data-ctab=\"continue\">Continue</button> <button class=\"gs-ctab\" data-ctab=\"zed\">Zed</button></div><div class=\"gs-cpanel\" id=\"cpanel-claude-code\"><p class=\"gs-filepath\">.mcp.json</p><pre><code>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -58,7 +58,7 @@ func GettingStarted() templ.Component {
   }
 }`)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 88, Col: 2}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 87, Col: 2}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -77,7 +77,7 @@ func GettingStarted() templ.Component {
   }
 }`)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 98, Col: 2}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 97, Col: 2}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -96,13 +96,13 @@ func GettingStarted() templ.Component {
   }
 }`)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 108, Col: 2}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 107, Col: 2}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-kiro\"><p class=\"gs-filepath\">.kiro/settings/mcp.json</p><pre><code>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-vscode\"><p class=\"gs-filepath\">.vscode/mcp.json</p><pre><code>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -115,13 +115,13 @@ func GettingStarted() templ.Component {
   }
 }`)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 118, Col: 2}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 117, Col: 2}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-vscode\"><p class=\"gs-filepath\">.vscode/mcp.json</p><pre><code>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-windsurf\"><p class=\"gs-filepath\">.windsurf/mcp.json</p><pre><code>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -134,13 +134,13 @@ func GettingStarted() templ.Component {
   }
 }`)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 128, Col: 2}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 127, Col: 2}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-windsurf\"><p class=\"gs-filepath\">.windsurf/mcp.json</p><pre><code>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-cline\"><p class=\"gs-filepath\">cline_mcp_settings.json</p><pre><code>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -153,18 +153,32 @@ func GettingStarted() templ.Component {
   }
 }`)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 138, Col: 2}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 137, Col: 2}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-cline\"><p class=\"gs-filepath\">cline_mcp_settings.json</p><pre><code>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-codex\"><p class=\"gs-filepath\">~/.codex/config.toml</p><pre><code>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var9 string
-			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(`{
+			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(`[mcp_servers.openkata]
+url = "https://openkata.dev/mcp"`)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 142, Col: 33}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-gemini\"><p class=\"gs-filepath\">.gemini/settings.json</p><pre><code>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var10 string
+			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(`{
   "mcpServers": {
     "openkata": {
       "url": "https://openkata.dev/mcp"
@@ -172,27 +186,13 @@ func GettingStarted() templ.Component {
   }
 }`)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 148, Col: 2}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-codex\"><p class=\"gs-filepath\">~/.codex/config.toml</p><pre><code>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var10 string
-			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(`[mcp_servers.openkata]
-url = "https://openkata.dev/mcp"`)
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 153, Col: 33}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 152, Col: 2}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-gemini\"><p class=\"gs-filepath\">.gemini/settings.json</p><pre><code>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-antigravity\"><p class=\"gs-filepath\">~/.gemini/antigravity/mcp_config.json</p><pre><code>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -205,13 +205,13 @@ url = "https://openkata.dev/mcp"`)
   }
 }`)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 163, Col: 2}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 162, Col: 2}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-antigravity\"><p class=\"gs-filepath\">~/.gemini/antigravity/mcp_config.json</p><pre><code>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-openclaw\"><p class=\"gs-filepath\">~/.openclaw/openclaw.json</p><pre><code>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -224,13 +224,13 @@ url = "https://openkata.dev/mcp"`)
   }
 }`)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 173, Col: 2}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 172, Col: 2}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-openclaw\"><p class=\"gs-filepath\">~/.openclaw/openclaw.json</p><pre><code>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-opencode\"><p class=\"gs-filepath\">~/.config/opencode/opencode.json</p><pre><code>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -243,13 +243,13 @@ url = "https://openkata.dev/mcp"`)
   }
 }`)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 183, Col: 2}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 182, Col: 2}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-opencode\"><p class=\"gs-filepath\">~/.config/opencode/opencode.json</p><pre><code>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-roo\"><p class=\"gs-filepath\">roo_mcp_settings.json</p><pre><code>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -262,13 +262,13 @@ url = "https://openkata.dev/mcp"`)
   }
 }`)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 193, Col: 2}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 192, Col: 2}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-roo\"><p class=\"gs-filepath\">roo_mcp_settings.json</p><pre><code>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-continue\"><p class=\"gs-filepath\">~/.continue/config.json</p><pre><code>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -281,37 +281,18 @@ url = "https://openkata.dev/mcp"`)
   }
 }`)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 203, Col: 2}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 202, Col: 2}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-continue\"><p class=\"gs-filepath\">~/.continue/config.json</p><pre><code>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-zed\"><p class=\"gs-filepath\">~/.config/zed/settings.json</p><pre><code>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var16 string
 			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(`{
-  "mcpServers": {
-    "openkata": {
-      "url": "https://openkata.dev/mcp"
-    }
-  }
-}`)
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 213, Col: 2}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</code></pre></div><div class=\"gs-cpanel\" id=\"cpanel-zed\"><p class=\"gs-filepath\">~/.config/zed/settings.json</p><pre><code>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var17 string
-			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(`{
   "context_servers": {
     "openkata": {
       "url": "https://openkata.dev/mcp"
@@ -319,13 +300,27 @@ url = "https://openkata.dev/mcp"`)
   }
 }`)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 223, Col: 2}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 212, Col: 2}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</code></pre></div></div><div class=\"gs-panel\" id=\"panel-download\"><p>For offline or local-first workflows: download skills from the catalog and extract to your repository. Your agent picks them up automatically.</p><h4 id=\"install-paths\">Where agents read skills</h4><p>Most agents read skills from the shared folder <code>.agents/skills/&lt;name&gt;/</code>. Install there. If your agent reads its own folder, link each skill into it, so the files exist only once. In Claude Code:</p><pre><code>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var17 string
+			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(`mkdir -p .claude/skills
+ln -s ../../.agents/skills/grill-me .claude/skills/grill-me`)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/getting_started.templ`, Line: 230, Col: 60}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "</code></pre></div></div><div class=\"gs-panel\" id=\"panel-download\"><p>For offline or local-first workflows: download skills from the catalog and extract to your repository. Your agent picks them up automatically.</p><h4>Install path by client</h4><table class=\"gs-vocab\"><tr><td>Kiro, VS Code, Cursor, Windsurf</td><td><code>.agents/skills/&lt;name&gt;/</code></td></tr><tr><td>Claude Code, Claude Desktop</td><td><code>.claude/skills/&lt;name&gt;/</code></td></tr></table><p>The MCP install tools do not detect your client. They name two folders: one for Kiro and the standard location, and one for Claude Code. Your agent writes the files to the folder it uses. If your project already has one convention, follow it.</p></div><h2>What to Install First</h2><ul><li><a href=\"/skills/commit-conventions/\">commit-conventions</a> — git workflows</li><li><a href=\"/skills/create-adr/\">create-adr</a> — architecture decisions</li><li><a href=\"/skills/spec-workflow/\">spec-workflow</a> — feature planning</li><li><a href=\"/skills/grill-me/\">grill-me</a> — challenge your designs</li></ul><p><a href=\"/catalog/\" class=\"btn-open\">Browse the full catalog</a></p><h2>Contributing</h2><p>Open Kata is open source. Add your own skills and rules, improve existing ones, or help build the dojo.</p><p><a href=\"https://github.com/tovrleaf/openkata\" target=\"_blank\" rel=\"noopener\" class=\"btn-open\">View on GitHub</a></p><script src=\"/static/js/getting-started.js\"></script></main>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "</code></pre><table class=\"gs-vocab\"><tr><td>Amp, Antigravity, Cline, Codex, Cursor, Gemini CLI, GitHub Copilot, Kilo Code, OpenCode, Warp, Zed</td><td><code>.agents/skills/</code></td></tr><tr><td>Claude Code</td><td><code>.claude/skills/</code></td></tr><tr><td>Continue</td><td><code>.continue/skills/</code></td></tr><tr><td>Goose</td><td><code>.goose/skills/</code></td></tr><tr><td>Junie</td><td><code>.junie/skills/</code></td></tr><tr><td>Qwen Code</td><td><code>.qwen/skills/</code></td></tr><tr><td>Roo Code</td><td><code>.roo/skills/</code></td></tr><tr><td>Windsurf</td><td><code>.windsurf/skills/</code></td></tr></table><p>The <a href=\"https://github.com/vercel-labs/skills/blob/main/docs/agents.md\" target=\"_blank\" rel=\"noopener\">vercel-labs/skills agent list</a> has the folders of many more agents. The MCP install tools write to <code>.agents/skills/</code> and add the link when your agent reads its own folder.</p></div><h2>What to Install First</h2><ul><li><a href=\"/skills/commit-conventions/\">commit-conventions</a> — git workflows</li><li><a href=\"/skills/create-adr/\">create-adr</a> — architecture decisions</li><li><a href=\"/skills/spec-workflow/\">spec-workflow</a> — feature planning</li><li><a href=\"/skills/grill-me/\">grill-me</a> — challenge your designs</li></ul><p><a href=\"/catalog/\" class=\"btn-open\">Browse the full catalog</a></p><h2>Contributing</h2><p>Open Kata is open source. Add your own skills and rules, improve existing ones, or help build the dojo.</p><p><a href=\"https://github.com/tovrleaf/openkata\" target=\"_blank\" rel=\"noopener\" class=\"btn-open\">View on GitHub</a></p><script src=\"/static/js/getting-started.js\"></script></main>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -68,16 +68,25 @@ from OpenKata." The agent calls `install_skill` and gets back a
 JSON document with the name, the version, a manifest and the
 files. It then writes the files into your project:
 
-| Type | Standard location (Kiro and others) | Claude Code |
-|------|-------------------------------------|-------------|
-| Skills | `.agents/skills/<name>/` | `.claude/skills/<name>/` |
-| Rules | `.agents/rules/<name>/` | `.claude/rules/<name>/` |
-| Profiles | `.agents/profiles/<name>/` | `.claude/profiles/<name>/` |
+| Type | Location | Claude Code also links it to |
+|------|----------|------------------------------|
+| Skills | `.agents/skills/<name>/` | `.claude/skills/<name>` |
+| Rules | `.agents/rules/<name>/` | `.claude/rules/<name>` |
+| Profiles | `.agents/profiles/<name>/` | Nothing yet |
 
-The server does not detect your client. Its tool descriptions
-name both locations and the agent writes to the one its client
-uses. If your project already follows one convention, tell the
-agent to use it.
+`.agents/` is the shared folder that most agents read. Some agents
+read their own folder instead, such as `.claude/skills/` in Claude
+Code. For those agents, the install links each artifact into their
+folder, so the files exist only once. If your project already
+follows another convention, tell the agent to use it. See
+[which folder each agent reads skills from](/getting-started/#install-paths)
+on the Getting Started page.
+
+A rule works only when the agent loads it. Most agents load
+always-on instructions from `AGENTS.md`, so a rule install adds a
+line there that points to the rule's `RULE.md`. Claude Code loads
+every rule in `.claude/rules/` on its own, so the link is enough
+there.
 
 The manifest is a record of what was installed: the artifact name,
 the version, the source (`github.com/tovrleaf/openkata`) and a
