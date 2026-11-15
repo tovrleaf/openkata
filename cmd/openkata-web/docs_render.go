@@ -10,7 +10,9 @@ import (
 	"sort"
 	"strings"
 
+	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
 	"github.com/yuin/goldmark"
+	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
@@ -20,8 +22,15 @@ import (
 
 var errDocsLink = errors.New("invalid link")
 
+// Code blocks are highlighted with CSS classes instead of inline
+// colors, so docs.css can color them from the theme tokens.
 var docsMarkdown = goldmark.New(
-	goldmark.WithExtensions(extension.Table),
+	goldmark.WithExtensions(
+		extension.Table,
+		highlighting.NewHighlighting(
+			highlighting.WithFormatOptions(chromahtml.WithClasses(true)),
+		),
+	),
 	goldmark.WithParserOptions(parser.WithAutoHeadingID()),
 	goldmark.WithRendererOptions(html.WithUnsafe()),
 )

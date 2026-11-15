@@ -100,7 +100,8 @@ func TestRenderDocsMarkdown(t *testing.T) {
 		{"unsafe html passes", "<div class=\"note\">x</div>\n", `<div class="note">x</div>`},
 		{"mermaid block marked", "```mermaid\ngraph TD\n  A-->B\n```\n", `<pre class="mermaid-source"><code class="language-mermaid">graph TD`},
 		{"mermaid source escaped", "```mermaid\nA-->B\n```\n", "A--&gt;B"},
-		{"other code not marked", "```go\nx := 1\n```\n", `<pre><code class="language-go">`},
+		{"other code highlighted", "```go\nx := 1\n```\n", `<pre class="chroma"><code>`},
+		{"highlight uses classes", "```go\nx := 1\n```\n", `<span class="mi">1</span>`},
 		{"plain fence not marked", "```\nbox\n```\n", "<pre><code>box"},
 	}
 	for _, tt := range tests {

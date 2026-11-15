@@ -256,6 +256,27 @@
   color: var(--color-ink-muted);
 }
 
+/* Code highlighting: chroma's token classes, colored from the theme */
+
+/* Builtins stay plain: in shell, chroma marks words such as the "test"
+   in "go test" as builtins. */
+.chroma :is(.k, .kc, .kd, .kn, .kp, .kr, .kt) {
+  color: var(--color-accent);
+}
+
+.chroma :is(.nt, .na, .nf, .fm, .nc, .nv, .vg, .vi, .vc) {
+  color: var(--color-accent-muted);
+}
+
+.chroma :is(.s, .s1, .s2, .sa, .sb, .sc, .sd, .se, .sh, .si, .sx, .sr,
+  .ss, .dl, .m, .mi, .mf, .mh, .mo, .mb, .il) {
+  color: var(--color-accent-secondary);
+}
+
+.chroma :is(.c, .c1, .cm, .ch, .cs, .cp, .cpf, .o, .ow, .p) {
+  color: var(--color-ink-muted);
+}
+
 /* Last updated: the same footer on every page, with or without a date */
 
 .docs-updated {
