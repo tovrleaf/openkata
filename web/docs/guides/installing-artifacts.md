@@ -87,9 +87,13 @@ artifact's `.openkata-manifest.json`, for the agent to save next to
 the files. An archive download contains the file itself.
 
 An install leaves out the files that only matter to the project
-that maintains the artifact: the changelog, the rationale, the
-acknowledgments file (`references/ACKNOWLEDGMENTS.md`), the `evals/`
-folder and the tessl metadata.
+that maintains the artifact:
+
+- the changelog
+- the rationale
+- the acknowledgments file (`references/ACKNOWLEDGMENTS.md`)
+- the `evals/` folder
+- the tessl metadata
 
 ## Choose a version
 
