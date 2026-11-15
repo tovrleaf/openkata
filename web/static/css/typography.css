@@ -30,6 +30,15 @@ h2::before {
 h3 {
   font-size: var(--font-size-base);
   font-weight: 500;
+  margin-bottom: var(--space-sm);
+}
+
+/* One slash more than h2, the way Markdown adds a #. The # itself is
+   kept for the heading anchors. */
+h3::before {
+  content: "/// ";
+  content: "/// " / "";
+  color: var(--color-ink-muted);
 }
 
 p {
