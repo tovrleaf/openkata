@@ -23,8 +23,8 @@ depends on it.
 | `tessl tile publish --bump patch` | Publishes to the registry, an optional release step. |
 
 The linter checks Markdown links in `SKILL.md` as file paths relative
-to the skill folder, so a link to a file outside the skill fails
-the lint. The optimize command asks questions interactively. When
+to the skill folder. So a link to a file outside the skill fails the
+lint. The optimize command asks questions interactively. When
 that prompt cannot be answered, the proposed diff is applied by
 hand.
 
@@ -64,8 +64,9 @@ workflow for a skill is:
    `## Boundaries` section fails it.
 
 To bring several skills up to the bar, the optimize workflow runs
-the review and the evals for each one, up to three rounds, and
-stops and reports the final score if a skill is still below 95%.
+the review and the evals for each one, up to three rounds. If a
+skill is still below 95% after that, it stops and reports the final
+score.
 
 The score is the quality score that the site shows on a skill's
 Benchmarks tab. [How we score skills](scoring.md) explains it next to

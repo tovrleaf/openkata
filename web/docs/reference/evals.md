@@ -82,15 +82,20 @@ runs it with the path you give. Running a whole skill is the normal
 case. Running one scenario is for debugging a failure, and it always
 exits with status 0.
 
-The runner needs `SKILL.md` in the skill folder. It also needs
-`kiro-cli` on the `PATH` when the backend is `kiro`, which is the
-default, and Docker running when any scenario is sandboxed.
+The runner needs `SKILL.md` in the skill folder. With the default
+backend, `kiro`, it also needs `kiro-cli` on the `PATH`. When any
+scenario is sandboxed, Docker must be running.
 
 ### Settings
 
-Settings are resolved in this order, and a later one wins: built-in
-defaults, then a `.openkata-eval.yaml` file in the working directory,
-then environment variables, then command-line flags. The repository
+Settings are resolved in this order, and a later one wins:
+
+1. built-in defaults
+2. a `.openkata-eval.yaml` file in the working directory
+3. environment variables
+4. command-line flags
+
+The repository
 does not include a `.openkata-eval.yaml`, so the defaults apply
 unless you add one.
 
@@ -103,12 +108,16 @@ unless you add one.
 | `--output` | File or folder for the JSON report | see Results |
 | `--model-label` | Readable model name stored in the report | none |
 
-The file sets more than the flags do: `concurrency` (how many
-scenarios run at once, default 2), `direct_timeout` (120 seconds),
-the HTTP backend's `http.base_url` and `http.api_key`, and the Docker
-`sandbox.image` (default `openkata-eval:latest`), `sandbox.timeout`
-(300 seconds) and `sandbox.network` (default `host`). The
-environment variables cover the backend, models, threshold, HTTP
+The file sets more than the flags do:
+
+- `concurrency`: how many scenarios run at once, default 2
+- `direct_timeout`: 120 seconds
+- `http.base_url` and `http.api_key`: the HTTP backend
+- `sandbox.image`: the Docker image, default `openkata-eval:latest`
+- `sandbox.timeout`: 300 seconds
+- `sandbox.network`: default `host`
+
+The environment variables cover the backend, models, threshold, HTTP
 settings and direct timeout: `OPENKATA_EVAL_BACKEND`, `_MODEL`,
 `_JUDGE_MODEL`, `_THRESHOLD`, `_HTTP_BASE_URL`, `_HTTP_API_KEY` and
 `_DIRECT_TIMEOUT`. Concurrency and the Docker settings come only from
@@ -146,9 +155,9 @@ A sandboxed scenario runs in a fresh Docker container made from
 `Dockerfile.eval`, which is Ubuntu 24.04 with `git`, `curl`, `jq` and
 `kiro-cli`. For each scenario the runner:
 
-1. creates and starts a container on the scenario's network (the
-   `host` network unless set otherwise), with your `~/.aws` folder
-   mounted read-only and `/workspace` as the working folder
+1. creates and starts a container on the scenario's network, which
+   is `host` unless set otherwise. It mounts your `~/.aws` folder
+   read-only and uses `/workspace` as the working folder
 2. copies the skill (`SKILL.md`, `references/`, `scripts/` and
    `assets/`) into `/workspace/skill/`, and `task.md` and the
    contents of `inputs/` into `/workspace/`
@@ -160,9 +169,10 @@ A sandboxed scenario runs in a fresh Docker container made from
 6. takes a second snapshot, and removes the container
 
 The judge is given the agent's output and the difference between the
-two snapshots: the contents of the added and modified files, and the
-names of the deleted ones. That is how a scenario can check what the
-agent did to files, not only what it said.
+two snapshots. The difference holds the contents of the added and
+modified files, and the names of the deleted ones. That is how a
+scenario can check what the agent did to files, as well as what it
+said.
 
 Two things follow from how the sandbox is started. It always uses
 `kiro-cli`, whatever `--backend` says. And it does not pass `--model`,
@@ -205,9 +215,16 @@ the `--model` value and the time is in UTC, such as
 folder instead, with a timestamp added to the name. A single
 scenario writes nothing unless you give `--output`.
 
-The report holds the skill name, its `skill_version`, the time, the
-backend and models, the threshold, every scenario with its criteria
-and points, the overall percentage and whether it passed. The
+The report holds:
+
+- the skill name and its `skill_version`
+- the time
+- the backend and models
+- the threshold
+- every scenario, with its criteria and points
+- the overall percentage, and whether it passed
+
+The
 `skill_version` is the first released version heading, such as
 `## [1.0.1]`, in the skill's `CHANGELOG.md`.
 
@@ -216,9 +233,9 @@ and points, the overall percentage and whether it passed. The
 `make versions` reads these reports when it builds `versions.json`
 from the repository, as described in
 [where artifacts are stored](storage.md). For each model it takes
-the newest report and keeps it only if its `skill_version` is the
-skill's current version, so a report for an older version never
-shows up. The overall result becomes that model's effectiveness, and
+the newest report. It keeps the report only if its `skill_version`
+is the skill's current version, so a report for an older version
+never shows up. The overall result becomes that model's effectiveness, and
 `--model-label` becomes its name on the site. These are the figures
 on the Benchmarks tab, described in
 [using the catalog](../guides/using-the-catalog.md).
