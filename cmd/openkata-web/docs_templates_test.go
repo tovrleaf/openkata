@@ -45,7 +45,7 @@ func TestDocsPageSidebar(t *testing.T) {
 	})
 
 	t.Run("body is rendered HTML, not escaped", func(t *testing.T) {
-		if !strings.Contains(body, `<h2 id="setup">Setup</h2>`) {
+		if !strings.Contains(body, `<h2 id="setup">Setup <a class="heading-anchor"`) {
 			t.Errorf("page = %q, want the rendered h2 from the Markdown body", body)
 		}
 	})
@@ -132,6 +132,42 @@ func TestDocsHomePage(t *testing.T) {
 	}
 	if strings.Contains(body, `aria-current`) {
 		t.Error("home page marks a current link, want none")
+	}
+}
+
+func TestDocsSectionPageCards(t *testing.T) {
+	t.Run("section index lists its pages", func(t *testing.T) {
+		body := docsBody(t, "/docs/guides/")
+		for _, want := range []string{
+			`<a href="/docs/guides/intro/" class="docs-section-link">Intro &lt;b&gt;</a>`,
+			`<p class="docs-section-desc">Start here.</p>`,
+			`<a href="/docs/guides/other/" class="docs-section-link">Other</a>`,
+		} {
+			if !strings.Contains(body, want) {
+				t.Errorf("/docs/guides/ is missing %s", want)
+			}
+		}
+		intro := strings.Index(body, `class="docs-section-link">Intro`)
+		other := strings.Index(body, `class="docs-section-link">Other`)
+		pager := strings.Index(body, `class="docs-pager"`)
+		if !(intro < other && other < pager) {
+			t.Errorf("positions intro=%d other=%d pager=%d, want the pages in order, above the pager", intro, other, pager)
+		}
+	})
+
+	t.Run("page without a description has no description", func(t *testing.T) {
+		body := docsBody(t, "/docs/guides/")
+		if n := strings.Count(body, `class="docs-section-desc"`); n != 1 {
+			t.Errorf("/docs/guides/ has %d card descriptions, want 1", n)
+		}
+	})
+
+	for _, target := range []string{"/docs/guides/intro/", "/docs/reference/"} {
+		t.Run(target+" has no cards", func(t *testing.T) {
+			if body := docsBody(t, target); strings.Contains(body, `class="docs-sections"`) {
+				t.Errorf("GET %s has a card list, want none", target)
+			}
+		})
 	}
 }
 

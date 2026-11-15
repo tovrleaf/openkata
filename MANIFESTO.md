@@ -34,8 +34,9 @@ Three principles guide the design:
 - **Humans govern, agents execute.** The framework
   coordinates; the engineer is always responsible for
   the outcome.
-- **Portable by default.** Kata follow the Agent Skills
-  specification and work with any agent that supports it.
+- **Portable by default.** Kata follow the
+  [Agent Skills specification](https://agentskills.io/) and
+  work with any agent that supports it.
   No coupling to specific tools, platforms, or MCP servers.
 - **Explain the why.** Practices carry their reasoning so
   agents and future humans understand the intent, not just

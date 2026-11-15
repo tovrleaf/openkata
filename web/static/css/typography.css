@@ -32,6 +32,16 @@ p {
   margin-bottom: var(--space-md);
 }
 
+/* Bullets as Markdown writes them, dimmed like the heading marks */
+ul {
+  list-style-type: "- ";
+}
+
+ul > li::marker {
+  font-family: var(--font-mono);
+  color: var(--color-ink-muted);
+}
+
 code, pre {
   font-family: var(--font-mono);
   font-size: var(--font-size-sm);

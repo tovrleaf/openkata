@@ -171,6 +171,89 @@
   display: block;
   max-width: 100%;
   overflow-x: auto;
+  line-height: 1.5;
+  margin: var(--space-md) 0 var(--space-lg);
+}
+
+/* Tables: lean rows, a quiet header, and the text edge kept straight.
+   The page selectors outrank the site's plain table rules. */
+
+.docs-content th,
+.docs-content td {
+  padding: var(--space-xs) var(--space-lg) var(--space-xs) 0;
+  vertical-align: top;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+}
+
+.docs-content th:last-child,
+.docs-content td:last-child {
+  padding-right: 0;
+}
+
+/* Short row labels, such as "What it is", stay on one line */
+.docs-content th:first-child,
+.docs-content td:first-child {
+  min-width: 6rem;
+}
+
+.docs-content th {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--color-ink-muted);
+  padding-bottom: var(--space-sm);
+  border-bottom-color: var(--color-border);
+}
+
+.docs-content td {
+  padding-top: var(--space-sm);
+  padding-bottom: var(--space-sm);
+}
+
+.docs-content tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Heading anchors: a "#" after each h2 and h3 that shows on hover or
+   focus, and stays faint where there is no hover. docs.js copies it. */
+
+.heading-anchor {
+  color: var(--color-ink-muted);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.docs-content h2:hover .heading-anchor,
+.docs-content h3:hover .heading-anchor,
+.heading-anchor:focus-visible,
+.heading-anchor.is-copied {
+  opacity: 1;
+}
+
+.heading-anchor:hover {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.heading-anchor.is-copied::after {
+  content: " Copied";
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+}
+
+@media (hover: none) {
+  .heading-anchor {
+    opacity: 0.5;
+  }
+}
+
+/* Page title: a dimmed Markdown heading mark, as h2 has its // */
+
+.docs h1::before {
+  content: "# ";
+  color: var(--color-ink-muted);
 }
 
 /* Last updated: the same footer on every page, with or without a date */
