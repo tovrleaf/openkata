@@ -38,7 +38,8 @@ type, keyed by artifact name:
   `tags` is one string of comma-separated tags, and is left out
   when the artifact has none.
 - The file can carry more than the MCP server uses. The website
-  also reads the tessl score of each skill from it, for example.
+  also reads the [tessl score](tessl.md) of each skill from it, for
+  example.
   The server reads only `version`, `description` and `tags`.
 
 The publish workflow rebuilds the file each time an artifact is
