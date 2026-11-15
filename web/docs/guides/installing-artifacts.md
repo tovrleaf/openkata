@@ -82,6 +82,11 @@ follows another convention, tell the agent to use it. See
 [which folder each agent reads skills from](/getting-started/#install-paths)
 on the Getting Started page.
 
+The server does not know which agent called it, and it writes
+nothing itself. It only returns the files. Each install tool's
+description tells the agent where to write them, and the agent
+follows it. To use another folder, name it in your request.
+
 A rule works only when the agent loads it. Most agents load
 always-on instructions from `AGENTS.md`, so a rule install adds a
 line there that points to the rule's `RULE.md`. Claude Code loads

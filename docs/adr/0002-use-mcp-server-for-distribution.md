@@ -141,6 +141,16 @@ code:
 - The server is reached at `https://openkata.dev/mcp`, through
   CloudFront (see ADR 0010).
 
+## Update — 2026-11-15
+
+The decision stands. The install tools still do not detect the
+agent. Their descriptions now name one location, the shared
+`.agents/` folder that most agents read. An agent that reads its
+own folder, such as `.claude/skills/` in Claude Code, also links the
+artifact there. A rule install adds a line to `AGENTS.md` that
+points to the rule. Profiles go to `.agents/profiles/` only, since
+no agent loads them from a folder yet (see spec 0029).
+
 ## References
 
 - [skills.sh](https://skills.sh) — existing skills ecosystem by Vercel Labs
