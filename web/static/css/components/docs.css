@@ -250,7 +250,12 @@
   }
 }
 
-/* Page title: a dimmed Markdown heading mark, as h2 has its // */
+/* Page title: a dimmed Markdown heading mark, as h2 has its //, and
+   room below it so the title stands apart from the first paragraph */
+
+.docs h1 {
+  margin-bottom: var(--space-lg);
+}
 
 .docs h1::before {
   content: "# ";
