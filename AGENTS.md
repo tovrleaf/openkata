@@ -79,18 +79,21 @@ before you commit it. This covers docs, READMEs, site pages
 `RATIONALE.md`, `SKILL.md`, `RULE.md`, commit messages and pull
 request descriptions.
 
-Check the files you changed on the branch:
+Turn on the git hooks once per clone with `make hooks`. They run
+the skill's check script on every commit. `pre-commit` checks the
+changed lines of staged text files, and `commit-msg` checks the
+message. Either one stops the commit when a sentence is flagged.
+To keep a flagged sentence, commit with `--no-verify`.
+
+Without the hooks, run the checks by hand:
 
 ```bash
 python3 .agents/skills/clear-writing/scripts/check.py \
-  --changed main .
-```
-
-Check a commit message before you commit it:
-
-```bash
+  --changed HEAD <files>
 python3 .agents/skills/clear-writing/scripts/check.py - < msg.txt
 ```
+
+Check a pull request description the same way, with `-`.
 
 Fix only the sentences it flags, as the skill describes. This
 applies to how agents write in this repo. No skill or rule
