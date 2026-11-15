@@ -107,6 +107,7 @@
 
 .nav-brand::before {
   content: "// ";
+  content: "// " / "";
   color: var(--color-ink-muted);
 }
 
@@ -269,6 +270,7 @@ a.badge:hover {
 
 .artifact-toggle-icon::after {
   content: "\25B8";
+  content: "\25B8" / "";
   font-family: var(--font-mono);
   font-size: var(--font-size-sm);
   color: var(--color-ink-muted);
@@ -276,6 +278,7 @@ a.badge:hover {
 
 .artifact-entry[open] .artifact-toggle-icon::after {
   content: "\25BC";
+  content: "\25BC" / "";
 }
 
 .artifact-sep {
@@ -336,6 +339,7 @@ a.badge:hover {
 
 .artifact-description::before {
   content: "> ";
+  content: "> " / "";
 }
 
 .artifact-description strong {
@@ -644,6 +648,7 @@ a.badge:hover {
 
 .file-block-header::before {
   content: "▶";
+  content: "▶" / "";
   font-size: 0.6em;
   color: var(--color-ink-muted);
   margin-right: var(--space-sm);
@@ -651,6 +656,7 @@ a.badge:hover {
 
 .file-block[open] > .file-block-header::before {
   content: "▼";
+  content: "▼" / "";
 }
 
 .file-block-name {
@@ -729,6 +735,7 @@ a.badge:hover {
 
 .file-preview h1::before {
   content: "// ";
+  content: "// " / "";
   color: var(--color-ink-muted);
 }
 
@@ -1144,12 +1151,14 @@ section {
 
 .gs-arrow::after {
   content: "\25B8";
+  content: "\25B8" / "";
   margin-right: var(--space-sm);
   color: var(--color-ink-muted);
 }
 
 .gs-client[open] .gs-arrow::after {
   content: "\25BC";
+  content: "\25BC" / "";
 }
 
 .gs-client pre {

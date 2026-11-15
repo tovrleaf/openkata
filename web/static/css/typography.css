@@ -18,8 +18,12 @@ h2 {
   margin-bottom: var(--space-md);
 }
 
+/* Decorative marks are drawn but not read: the second content line
+   gives them empty alt text, so screen readers skip them. Browsers
+   without that syntax ignore it and keep the first line. */
 h2::before {
   content: "// ";
+  content: "// " / "";
   color: var(--color-ink-muted);
 }
 
@@ -73,15 +77,18 @@ hr {
 
 .comment::before {
   content: "/* ";
+  content: "/* " / "";
 }
 
 .comment::after {
   content: " */";
+  content: " */" / "";
 }
 
 /* Blinking cursor on hero */
 .cursor::after {
   content: "_";
+  content: "_" / "";
   animation: blink 1s step-end infinite;
   color: var(--color-ink-muted);
 }

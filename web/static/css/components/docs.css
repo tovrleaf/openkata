@@ -72,6 +72,7 @@
 
 .docs-breadcrumb__item:not(:last-child)::after {
   content: "›";
+  content: "›" / "";
   margin-left: var(--space-sm);
   color: var(--color-border);
 }
@@ -253,6 +254,7 @@
 
 .docs h1::before {
   content: "# ";
+  content: "# " / "";
   color: var(--color-ink-muted);
 }
 
@@ -262,6 +264,7 @@
 .docs-content strong::before,
 .docs-content strong::after {
   content: "**";
+  content: "**" / "";
   color: var(--color-ink-muted);
   font-weight: 400;
 }
@@ -269,16 +272,19 @@
 .docs-content :not(pre) > code::before,
 .docs-content :not(pre) > code::after {
   content: "`";
+  content: "`" / "";
   color: var(--color-ink-muted);
 }
 
 .docs-content a:not(.heading-anchor)::before {
   content: "[";
+  content: "[" / "";
   color: var(--color-ink-muted);
 }
 
 .docs-content a:not(.heading-anchor)::after {
   content: "]";
+  content: "]" / "";
   color: var(--color-ink-muted);
 }
 
