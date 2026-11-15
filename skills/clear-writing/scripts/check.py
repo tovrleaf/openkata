@@ -6,8 +6,9 @@ Usage:
     check.py - < text.md
 
 PATH can be a file or a directory; directories are searched for
-.md, .markdown, .mdx and .txt files. Code blocks, inline code,
-frontmatter, headings, tables and HTML are skipped.
+.md, .markdown, .mdx, .txt and .templ files. Code blocks, inline
+code, frontmatter, headings, tables and HTML are skipped. In .templ
+files only the text between tags inside components is read.
 
 Prints one line per flagged sentence:
 
@@ -20,6 +21,7 @@ Exit status: 0 nothing flagged, 1 sentences flagged, 2 error.
 """
 
 import argparse
+import html
 import os
 import re
 import subprocess
@@ -27,7 +29,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 WATCH_LIST = os.path.join(HERE, "..", "references", "watch-list.md")
-TEXT_EXTENSIONS = (".md", ".markdown", ".mdx", ".txt")
+TEXT_EXTENSIONS = (".md", ".markdown", ".mdx", ".txt", ".templ")
 SKIP_DIRS = {"node_modules", "vendor", "dist", "build"}
 
 CODE = "‹code›"
@@ -44,6 +46,16 @@ CONNECTORS = re.compile(
     re.IGNORECASE)
 DASH = re.compile(r"\s[—–]\s|\s--\s|\w—\w")
 ASIDE = re.compile(r"\(([^()]*)\)")
+
+TEMPL_START = re.compile(r"^templ\s+\w")
+TEMPL_CONTROL = re.compile(
+    r"^(?:(?:if|for|switch)\b.*\{|(?:case|default)\b.*:|[}@]|//)")
+TAG_NAME = re.compile(r"<(/?)([A-Za-z][\w-]*)")
+INLINE_TAGS = {"a", "abbr", "b", "bdi", "bdo", "br", "cite", "data", "dfn",
+               "em", "i", "kbd", "mark", "q", "s", "samp", "small", "span",
+               "strong", "sub", "sup", "time", "u", "var", "wbr"}
+SKIPPED_TAGS = {"h1", "h2", "h3", "h4", "h5", "h6", "pre", "script",
+                "style", "td", "th", "title", "textarea", "svg"}
 
 
 def load_watch_list(path):
@@ -117,6 +129,95 @@ def prose_blocks(lines):
             block = []
             text = LIST_ITEM.sub("", line)
         block.append((number, clean_inline(text.strip())))
+    yield block
+
+
+def add_text(block, number, parts):
+    """Add the text found on one templ line to a block."""
+    text = re.sub(r"\s+", " ", html.unescape("".join(parts))).strip()
+    if text:
+        block.append((number, text))
+
+
+def templ_blocks(lines):
+    """Yield the page text of templ components as prose blocks.
+
+    Only text between tags inside `templ Name() { ... }` is read. Go
+    code, control flow, attributes, headings, tables, <pre>, <script>
+    and <style> are skipped; `{ expr }` and <code> count as code.
+    """
+    block = []
+    in_templ = False
+    skip = None      # tag whose content is skipped until it closes
+    tag = None       # a tag that continues on the next line
+    comment = False
+    for number, raw in enumerate(lines, 1):
+        line = raw.rstrip("\n")
+        if not in_templ:
+            in_templ = TEMPL_START.match(line) is not None
+            continue
+        if line.startswith("}"):
+            in_templ = False
+            yield block
+            block = []
+            continue
+        if (tag is None and skip is None and not comment
+                and TEMPL_CONTROL.match(line.strip())):
+            yield block
+            block = []
+            continue
+        text = []
+        i = 0
+        while i < len(line):
+            if comment:
+                end = line.find("-->", i)
+                if end < 0:
+                    break
+                comment, i = False, end + 3
+            elif skip is not None:
+                end = re.compile(r"</" + skip + r"\s*>", re.I).search(line, i)
+                if end is None:
+                    break
+                skip, i = None, end.end()
+            elif tag is not None:
+                end = line.find(">", i)
+                if end < 0:
+                    tag += line[i:] + " "
+                    break
+                tag_text, tag = tag + line[i:end + 1], None
+                i = end + 1
+                closing, name = TAG_NAME.match(tag_text).groups()
+                name = name.lower()
+                if name in INLINE_TAGS:
+                    text.append(" " if name == "br" else "")
+                elif name == "code" and not closing:
+                    text.append(CODE)
+                    skip = "code"
+                else:
+                    if (name in SKIPPED_TAGS and not closing
+                            and not tag_text.endswith("/>")):
+                        skip = name
+                    add_text(block, number, text)
+                    yield block
+                    block, text = [], []
+            elif line.startswith("<!--", i):
+                comment, i = True, i + 4
+            elif re.match(r"</?[A-Za-z]", line[i:i + 3]):
+                tag = ""
+            elif line[i] == "{":
+                depth = 0
+                for j in range(i, len(line)):
+                    depth += {"{": 1, "}": -1}.get(line[j], 0)
+                    if depth == 0:
+                        break
+                text.append(CODE)
+                i = j + 1
+            else:
+                end = min([k for k in (line.find("<", i), line.find("{", i))
+                           if k > i] or [len(line)])
+                text.append(line[i:end])
+                i = end
+        add_text(block, number, text)
     yield block
 
 
@@ -225,7 +326,11 @@ def main():
             keep = None
             if args.changed and path != "-":
                 keep = changed_lines(path, args.changed)
-            for block in prose_blocks(lines):
+            if name.lower().endswith(".templ"):
+                blocks = templ_blocks(lines)
+            else:
+                blocks = prose_blocks(lines)
+            for block in blocks:
                 if not block:
                     continue
                 for first, last, sentence in sentences(block):

@@ -39,3 +39,11 @@ version control already makes each change easy to review and undo.
 The script reads its terms from `references/watch-list.md`, the same
 file the agent reads for the plain alternatives. One list means the
 two can never disagree about what a term is or how to fix it.
+
+## Why templ files are supported
+
+Page text is often written in templates, not in Markdown. templ is
+a widely used way to write HTML pages in Go. Its markup is regular
+enough for a script to find the text between tags. Checking only
+that text keeps Go code, attributes and expressions out of the
+results. Other template languages can be added the same way.

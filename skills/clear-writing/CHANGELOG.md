@@ -10,8 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Check script that flags long, tangled and machine-sounding
-  sentences in Markdown and text, for files, folders, pasted text
-  or a branch's changed lines
+  sentences in Markdown, text and templ files, for files, folders,
+  pasted text or a branch's changed lines
 - Watch list of inflated words and phrases with plain alternatives
 - Workflow to judge each flagged sentence and rewrite only those in
   place

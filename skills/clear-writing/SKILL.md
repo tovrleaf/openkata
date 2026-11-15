@@ -1,12 +1,13 @@
 ---
 name: clear-writing
 description: >
-  Finds sentences that are long, tangled or sound machine-written in
-  Markdown and text files, and rewrites only those, in place, in plain
-  English. Use when the user wants docs or a README easier to read,
-  asks to simplify or shorten sentences, to deslop or humanize text,
-  to remove AI writing tells, or to check the writing in a branch
-  before a pull request.
+  Finds sentences in Markdown, text and templ files that are long,
+  tangled or sound machine-written, rewrites only those in place in
+  plain English, and reports the flagged sentences it kept. Use when
+  the user wants docs, a README or page copy easier to read, asks to
+  simplify, shorten or tighten wordy sentences, to deslop or humanize
+  text, to remove AI writing tells, or to check the writing in a
+  branch before a pull request.
 metadata:
   version: "1.0.0"
   tags: "category:documentation, category:review, language:markdown"
@@ -32,6 +33,9 @@ need it. Every other sentence stays exactly as the author wrote it.
    ```bash
    python3 <skill-folder>/scripts/check.py [--changed main] <paths>
    ```
+
+   In `.templ` files only the page text inside components is read,
+   not the Go code or the attributes.
 
    Pasted text goes in on standard input with `-` as the path. Each
    output line is `path:line: reasons | sentence`. Exit status 1
@@ -130,3 +134,5 @@ weak dash was fixed because its sentence also had a word reason.
   original.
 - **Breaking Markdown.** Splitting across a link or inline code
   breaks it. Keep each link and code span whole.
+- **Breaking markup.** In a templ file, change only the text between
+  tags. Keep every tag, attribute and `{ expression }` as it was.
