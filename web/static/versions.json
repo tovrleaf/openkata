@@ -1,5 +1,11 @@
 {
   "skills": {
+    "clear-writing": {
+      "version": "0.0.0",
+      "description": "Finds sentences in Markdown, text and templ files that are long, tangled or sound machine-written, rewrites only those in place in plain English, and reports the flagged sentences it kept. Use when the user wants docs, a README or page copy easier to read, asks to simplify, shorten or tighten wordy sentences, to deslop or humanize text, to remove AI writing tells, or to check the writing in a branch before a pull request.",
+      "tags": "category:documentation, category:review, language:markdown",
+      "tessl_score": 93
+    },
     "commit-conventions": {
       "version": "1.4.0",
       "description": "Enforces Conventional Commits format and branch naming conventions, validating commit message structure (type/scope/description header), suggesting branch name patterns (feature/*, fix/*, hotfix/*), and enforcing breaking change notation. Use when the user is about to commit, creating a branch, reviewing commit history, preparing a pull request, setting up commit linting, or asking about commit message format, branch naming, or Conventional Commits.",
@@ -132,6 +138,11 @@
       "version": "1.0.0",
       "description": "Branch naming, commit message format, and trailer conventions for git operations.",
       "tags": "category:conventions, tool:git"
+    },
+    "go-testing": {
+      "version": "1.0.0",
+      "description": "Go testing conventions applied to all _test.go files. Standard library only, table-driven, behavior-focused.",
+      "tags": "category:conventions, language:go"
     },
     "markdown-style": {
       "version": "1.0.0",
