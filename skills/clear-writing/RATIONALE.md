@@ -50,6 +50,15 @@ The script reads its terms from `references/watch-list.md`, the same
 file the agent reads for the plain alternatives. One list means the
 two can never disagree about what a term is or how to fix it.
 
+## Why git hooks are optional
+
+A hook makes the check automatic, and costs nothing when no sentence
+is flagged. It checks only the changed lines, so sentences the author
+already kept do not come back. But it blocks every commit with a
+flagged sentence, even one kept on purpose. Whether that trade is
+worth it is the team's choice, so the skill sets hooks up only when
+asked.
+
 ## Why templ files are supported
 
 Page text is often written in templates, not in Markdown. templ is

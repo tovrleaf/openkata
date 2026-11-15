@@ -84,6 +84,10 @@ need it. Every other sentence stays exactly as the author wrote it.
    each flagged sentence you kept, with the reason. Leave the
    changes for the user to review in the diff.
 
+To run the check on every commit, set up the git hooks in
+[references/git-hooks.md](references/git-hooks.md). Do this only
+when the user asks for it.
+
 ## Example
 
 Input `docs/skills.md`:

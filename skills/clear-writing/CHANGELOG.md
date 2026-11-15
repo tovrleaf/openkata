@@ -15,3 +15,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Watch list of inflated words and phrases with plain alternatives
 - Workflow to judge each flagged sentence and rewrite only those in
   place
+- Optional git hooks that check the staged text and the commit
+  message on every commit
