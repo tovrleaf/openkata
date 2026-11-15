@@ -43,8 +43,8 @@ type, keyed by artifact name:
   The server reads only `version`, `description` and `tags`.
 
 The publish workflow rebuilds the file each time an artifact is
-published: it copies the tagged version to the bucket, then runs
-`go run ./cmd/generate-versions/`, which reads the bucket and
+published. It copies the tagged version to the bucket, then runs
+`go run ./cmd/generate-versions/`. That command reads the bucket and
 uploads a new `versions.json`.
 
 ## The tools
@@ -77,15 +77,15 @@ are zero and the list is still returned.
 ### The tag filter
 
 The `tag` argument takes one tag. The server splits each
-artifact's `tags` string on commas, trims the spaces, and keeps the
-artifact if one of the tags is equal to the filter.
+artifact's `tags` string on commas and trims the spaces. It keeps
+the artifact if one of the tags is equal to the filter.
 
 - The comparison is exact and case-sensitive. `category:review`
   matches an artifact tagged `category:review`. `review` does not,
   and neither does `Category:Review`.
 - Only one tag works. A filter such as `a,b` is compared as one
-  string and matches nothing, even though the tool description
-  mentions comma-separated tags: that describes the tags in the
+  string and matches nothing. The tool description mentions
+  comma-separated tags, but that describes the tags in the
   artifact's metadata, not the filter.
 - The search on the website behaves differently. It is
   case-insensitive, matches parts of names and descriptions, and
@@ -111,7 +111,7 @@ newest, and returns an error if there are none.
 The server reads `versions.json` once, when it starts, and keeps it
 in memory. If it cannot read the file at startup, it still starts,
 with empty lists. On Lambda, a start happens when a function
-instance is created, so an instance can keep serving the index it
+instance is created. So an instance can keep serving the index it
 loaded for as long as it lives.
 
 This means a release becomes visible in steps:
@@ -121,8 +121,8 @@ This means a release becomes visible in steps:
   to an artifact that is already in the index can be installed by
   asking for it.
 - **After the server restarts:** `list_*` and the default (latest)
-  version of `install_*` follow the index, so they change only when
-  an instance loads the new file. A brand-new artifact cannot be
+  version of `install_*` follow the index. They change only when an
+  instance loads the new file. A brand-new artifact cannot be
   installed until then, because its name is not in the index the
   instance holds.
 
