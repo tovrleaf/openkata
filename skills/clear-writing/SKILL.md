@@ -46,7 +46,9 @@ need it. Every other sentence stays exactly as the author wrote it.
    - sentences of more than 25 words
    - sentences of three or more clauses
    - the terms in [the watch list](references/watch-list.md)
-   - clauses joined by a dash or a semicolon (weak)
+   - clauses joined by a dash, unless at most three words come
+     before it
+   - clauses joined by a semicolon (weak)
    - asides of more than eight words in parentheses (weak)
 
 3. **Judge each flagged sentence.** Read it in its paragraph and
@@ -54,6 +56,8 @@ need it. Every other sentence stays exactly as the author wrote it.
    - Fix every sentence flagged `long` or `tangled`.
    - Fix a watch-list term unless it is the precise word in this
      context, such as `robust` for a statistical method.
+   - Fix a dash that joins clauses, unless the sentence is a slogan
+     or tagline, or a quote.
    - Leave a `(weak)` reason alone unless it makes the sentence
      harder to read, or the sentence has other reasons too.
 
@@ -94,7 +98,7 @@ Check output:
 
 ```text
 docs/skills.md:1: phrase 'by design' | Skills are context-efficient by design.
-docs/skills.md:1: word 'actually', dash joins clauses (weak) | Your agent reads a one-line description at session start — the full workflow only loads when it's actually triggered.
+docs/skills.md:1: word 'actually', dash joins clauses | Your agent reads a one-line description at session start — the full workflow only loads when it's actually triggered.
 ```
 
 Rewritten in place:
@@ -105,8 +109,8 @@ description at session start. It loads the full workflow only when
 the skill is triggered.
 ```
 
-`by design` and `actually` were deleted as the watch list says. The
-weak dash was fixed because its sentence also had a word reason.
+`by design` and `actually` were deleted as the watch list says, and
+the dash became a period.
 
 ## Boundaries
 

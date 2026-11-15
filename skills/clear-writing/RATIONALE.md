@@ -24,9 +24,19 @@ second language. A stricter limit splits sentences that read fine.
 
 ## Why weak signs are acted on only together
 
-A dash, a semicolon or an aside is normal punctuation. On its own it
-says little, and banning it would rewrite good sentences. Next to a
-long clause or an inflated word, it is part of the problem.
+A semicolon or an aside is normal punctuation. On its own it says
+little, and banning it would rewrite good sentences. Next to a long
+clause or an inflated word, it is part of the problem.
+
+## Why a dash between clauses is always fixed
+
+A dash that joins two clauses makes the reader hold the first clause
+while working out how the second one relates to it. A period or a
+colon says that directly. Many readers also now take the dash as a
+sign of machine-written text, and stop trusting the page. A dash
+after a few words is different: it separates a name from its
+meaning, as in a definition list. Slogans and quotes keep their
+dashes because their wording is the point.
 
 ## Why it edits in place
 

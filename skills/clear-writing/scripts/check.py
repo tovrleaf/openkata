@@ -266,8 +266,11 @@ def reasons_for(sentence, max_words, terms):
         if match and taken.isdisjoint(range(*match.span())):
             taken.update(range(*match.span()))
             reasons.append(label)
-    if DASH.search(sentence):
-        reasons.append("dash joins clauses (weak)")
+    dash = DASH.search(sentence)
+    # A dash after a few words is a label or definition, as in
+    # "create-adr — architecture decisions", not two clauses.
+    if dash and len(WORD.findall(sentence[:dash.start() + 1])) > 3:
+        reasons.append("dash joins clauses")
     if ";" in sentence.replace(CODE, ""):
         reasons.append("semicolon (weak)")
     for aside in ASIDE.findall(sentence):
