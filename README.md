@@ -31,14 +31,14 @@ See the [Manifesto](MANIFESTO.md) for why this exists.
 
 Kata in this repo are **platform-agnostic**. Skills follow the
 [Agent Skills](https://agentskills.io/) standard
-and work with any agent that supports it — Kiro, Claude Code,
-OpenCode, or others. Skills avoid coupling to specific tooling,
+and work with any agent that supports it, such as Kiro, Claude
+Code, or OpenCode. Skills avoid coupling to specific tooling,
 MCP servers, or platform-specific features so they remain
 portable across environments.
 
 ## Using kata
 
-The fastest way to use kata is via the MCP server — add
+The fastest way to use kata is via the MCP server: add
 `https://openkata.dev/mcp` to your agent config. Zero install,
 always up-to-date.
 

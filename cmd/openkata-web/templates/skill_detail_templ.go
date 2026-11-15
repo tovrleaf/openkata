@@ -544,7 +544,7 @@ func SkillDetailPage(skill ArtifactDetail) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 54, "\" target=\"_blank\">tessl</a> lint — measures formatting, metadata, and SKILL.md structure.</p>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 54, "\" target=\"_blank\">tessl</a> lint. It measures formatting, metadata, and SKILL.md structure.</p>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -609,7 +609,7 @@ func SkillDetailPage(skill ArtifactDetail) templ.Component {
 							return templ_7745c5c3_Err
 						}
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 62, "</tbody></table><p class=\"benchmark-effectiveness-desc\">How well the skill performs across eval scenarios — averaged score when tested against an LLM.</p></div><div class=\"benchmark-scenarios\"><h3>Scenarios</h3>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 62, "</tbody></table><p class=\"benchmark-effectiveness-desc\">How well the skill performs across eval scenarios. The score is an average over runs with an LLM.</p></div><div class=\"benchmark-scenarios\"><h3>Scenarios</h3>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
