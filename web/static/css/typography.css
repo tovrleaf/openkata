@@ -46,6 +46,39 @@ ul > li::marker {
   color: var(--color-ink-muted);
 }
 
+/* Inline Markdown marks around bold, code and links in running text,
+   dimmed like the heading marks. Links with a class are buttons, tags
+   or cards, and links in a nav are navigation, so they get none. The
+   pages of a single skill, rule or profile show their files as they
+   are, without marks. */
+
+main:not([data-artifact-name]) strong::before,
+main:not([data-artifact-name]) strong::after {
+  content: "**";
+  content: "**" / "";
+  color: var(--color-ink-muted);
+  font-weight: 400;
+}
+
+main:not([data-artifact-name]) :not(pre) > code::before,
+main:not([data-artifact-name]) :not(pre) > code::after {
+  content: "`";
+  content: "`" / "";
+  color: var(--color-ink-muted);
+}
+
+main:not([data-artifact-name]) a:not([class], nav a)::before {
+  content: "[";
+  content: "[" / "";
+  color: var(--color-ink-muted);
+}
+
+main:not([data-artifact-name]) a:not([class], nav a)::after {
+  content: "]";
+  content: "]" / "";
+  color: var(--color-ink-muted);
+}
+
 code, pre {
   font-family: var(--font-mono);
   font-size: var(--font-size-sm);

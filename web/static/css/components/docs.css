@@ -258,36 +258,6 @@
   color: var(--color-ink-muted);
 }
 
-/* Inline Markdown marks around bold, code and links, dimmed like the
-   heading marks */
-
-.docs-content strong::before,
-.docs-content strong::after {
-  content: "**";
-  content: "**" / "";
-  color: var(--color-ink-muted);
-  font-weight: 400;
-}
-
-.docs-content :not(pre) > code::before,
-.docs-content :not(pre) > code::after {
-  content: "`";
-  content: "`" / "";
-  color: var(--color-ink-muted);
-}
-
-.docs-content a:not(.heading-anchor)::before {
-  content: "[";
-  content: "[" / "";
-  color: var(--color-ink-muted);
-}
-
-.docs-content a:not(.heading-anchor)::after {
-  content: "]";
-  content: "]" / "";
-  color: var(--color-ink-muted);
-}
-
 /* Code highlighting: chroma's token classes, colored from the theme */
 
 /* Builtins stay plain: in shell, chroma marks words such as the "test"
