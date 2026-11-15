@@ -2,14 +2,14 @@
 
 ## The shift
 
-Software has always moved toward higher abstraction — every
+Software has always moved toward higher abstraction. Every
 new generation of languages, tools, and platforms hides the
-complexity beneath it and lets engineers think at a higher
+complexity beneath it. Engineers can then think at a higher
 level. Agents continue that arc. What was implicit craft
 must become codified practice.
 
-Engineering knowledge has always lived in people's heads —
-learned by doing, lost when people move on. Codifying
+Engineering knowledge has always lived in people's heads. It
+is learned by doing and lost when people move on. Codifying
 practices and workflows for AI to follow is what turns
 craft into efficiency, repeatability, and predictability.
 
@@ -39,5 +39,5 @@ Three principles guide the design:
   work with any agent that supports it.
   No coupling to specific tools, platforms, or MCP servers.
 - **Explain the why.** Practices carry their reasoning so
-  agents and future humans understand the intent, not just
+  agents and future humans understand the intent as well as
   the rule.
