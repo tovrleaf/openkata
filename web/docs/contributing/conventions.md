@@ -55,7 +55,7 @@ the agent and the model:
 Assisted-by: Claude Code:claude-sonnet-5-5
 ```
 
-The agent is the tool you used, such as Kiro, Claude Code or OpenCode,
+The agent is the tool you used, such as Claude Code, Codex or OpenCode,
 and the model is the one it ran on. The trailer makes AI contributions
 visible in the history, so they can be filtered and reviewed.
 
