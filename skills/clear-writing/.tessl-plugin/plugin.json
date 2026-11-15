@@ -1,10 +1,10 @@
 {
   "name": "openkata/clear-writing",
-  "description": "Finds sentences that are long, tangled or sound machine-written in Markdown and text files, and rewrites only those, in place, in plain English. Use when the user wants docs or a README easier to read, asks to simplify or shorten sentences, to deslop or humanize text, to remove AI writing tells, or to check the writing in a branch before a pull request.",
+  "description": "Finds sentences in Markdown, text and templ files that are long, tangled or sound machine-written, rewrites only those in place in plain English, and reports the flagged sentences it kept. Use when the user wants docs, a README or page copy easier to read, asks to simplify, shorten or tighten wordy sentences, to deslop or humanize text, to remove AI writing tells, or to check the writing in a branch before a pull request.",
   "private": true,
   "skills": [
     "."
   ],
   "version": "0.1.0",
-  "score": 96
+  "score": 93
 }
