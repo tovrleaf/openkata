@@ -71,6 +71,31 @@ Before opening a pull request for a spec'd feature, run
 - See [`rules/markdown-style/RULE.md`](rules/markdown-style/RULE.md)
   for full conventions
 
+## Writing
+
+Use the `clear-writing` skill on all text that people read,
+before you commit it. This covers docs, READMEs, site pages
+(`web/docs/` and the `.templ` templates), `CHANGELOG.md`,
+`RATIONALE.md`, `SKILL.md`, `RULE.md`, commit messages and pull
+request descriptions.
+
+Check the files you changed on the branch:
+
+```bash
+python3 .agents/skills/clear-writing/scripts/check.py \
+  --changed main .
+```
+
+Check a commit message before you commit it:
+
+```bash
+python3 .agents/skills/clear-writing/scripts/check.py - < msg.txt
+```
+
+Fix only the sentences it flags, as the skill describes. This
+applies to how agents write in this repo. No skill or rule
+may depend on `clear-writing` or tell other agents to use it.
+
 ## Git
 
 Follow [`rules/git-naming/RULE.md`](rules/git-naming/RULE.md)
