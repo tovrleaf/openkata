@@ -151,18 +151,21 @@ def templ_blocks(lines):
     skip = None      # tag whose content is skipped until it closes
     tag = None       # a tag that continues on the next line
     comment = False
+    expr = 0         # depth of a { expression } that spans lines
     for number, raw in enumerate(lines, 1):
         line = raw.rstrip("\n")
         if not in_templ:
             in_templ = TEMPL_START.match(line) is not None
             continue
-        if line.startswith("}"):
+        # A multi-line string in a tag or expression can hold any line,
+        # so code and the component's end are only seen outside them.
+        open_span = tag is not None or skip is not None or comment or expr
+        if line.startswith("}") and not open_span:
             in_templ = False
             yield block
             block = []
             continue
-        if (tag is None and skip is None and not comment
-                and TEMPL_CONTROL.match(line.strip())):
+        if not open_span and TEMPL_CONTROL.match(line.strip()):
             yield block
             block = []
             continue
@@ -204,14 +207,14 @@ def templ_blocks(lines):
                 comment, i = True, i + 4
             elif re.match(r"</?[A-Za-z]", line[i:i + 3]):
                 tag = ""
-            elif line[i] == "{":
-                depth = 0
-                for j in range(i, len(line)):
-                    depth += {"{": 1, "}": -1}.get(line[j], 0)
-                    if depth == 0:
+            elif expr or line[i] == "{":
+                if not expr:
+                    text.append(CODE)
+                while i < len(line):
+                    expr += {"{": 1, "}": -1}.get(line[i], 0)
+                    i += 1
+                    if expr == 0:
                         break
-                text.append(CODE)
-                i = j + 1
             else:
                 end = min([k for k in (line.find("<", i), line.find("{", i))
                            if k > i] or [len(line)])
