@@ -1,25 +1,27 @@
 package templates
 
+import "github.com/tovrleaf/openkata/internal/assets"
+
 templ Layout(title string) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-			<link rel="icon" type="image/png" href="/static/favicon-96x96.png" sizes="96x96"/>
-			<link rel="icon" type="image/svg+xml" href="/static/favicon.svg"/>
-			<link rel="shortcut icon" href="/static/favicon.ico"/>
-			<link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png"/>
-			<link rel="manifest" href="/static/site.webmanifest"/>
+			<link rel="icon" type="image/png" href={ assets.URL("favicon-96x96.png") } sizes="96x96"/>
+			<link rel="icon" type="image/svg+xml" href={ assets.URL("favicon.svg") }/>
+			<link rel="shortcut icon" href={ assets.URL("favicon.ico") }/>
+			<link rel="apple-touch-icon" sizes="180x180" href={ assets.URL("apple-touch-icon.png") }/>
+			<link rel="manifest" href={ assets.URL("site.webmanifest") }/>
 			<title>{ title } — Open Kata</title>
 			<link rel="preconnect" href="https://fonts.googleapis.com"/>
 			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 			<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400;500&family=Noto+Sans+JP:wght@400;500;600&family=Noto+Sans+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-			<link rel="stylesheet" href="/static/css/style.css"/>
-			<script src="/static/js/theme.js"></script>
-			<script src="/static/js/htmx.min.js"></script>
-			<script src="/static/js/detail.js" defer></script>
-			<script src="/static/js/search.js" defer></script>
+			<link rel="stylesheet" href={ assets.URL("css/style.css") }/>
+			<script src={ assets.URL("js/theme.js") }></script>
+			<script src={ assets.URL("js/htmx.min.js") }></script>
+			<script src={ assets.URL("js/detail.js") } defer></script>
+			<script src={ assets.URL("js/search.js") } defer></script>
 		</head>
 		<body>
 			{ children... }

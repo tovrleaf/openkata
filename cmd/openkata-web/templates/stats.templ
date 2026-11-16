@@ -1,6 +1,10 @@
 package templates
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/tovrleaf/openkata/internal/assets"
+)
 
 templ Stats(data StatsData) {
 	@Layout("Download Statistics") {
@@ -161,7 +165,7 @@ templ Stats(data StatsData) {
 					}
 				</section>
 
-				<script src="/static/js-local/chart.min.js"></script>
+				<script src={ assets.URL("js-local/chart.min.js") }></script>
 				@templ.JSONScript("events-data", data.Events)
 				@templ.JSONScript("metrics-data", data.PageMetrics)
 

@@ -1,5 +1,7 @@
 package templates
 
+import "github.com/tovrleaf/openkata/internal/assets"
+
 templ DocsHome(m DocsHomeModel) {
 	@Layout(m.Title) {
 		@Nav()
@@ -34,7 +36,7 @@ templ DocsPage(m DocsPageModel) {
 			</div>
 		</main>
 		@Footer()
-		<script src="/static/js/docs.js" defer></script>
+		<script src={ assets.URL("js/docs.js") } defer></script>
 	}
 }
 

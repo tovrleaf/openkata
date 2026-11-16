@@ -8,6 +8,8 @@ package templates
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
+import "github.com/tovrleaf/openkata/internal/assets"
+
 func Home() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -45,7 +47,33 @@ func Home() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <main><section class=\"hero hero--kanji\"><span class=\"hero-kanji\">型</span><div class=\"hero-text\"><h1 class=\"cursor\">OpenKata</h1><p class=\"comment\">Codified practices for AI agents — teach your agents the way.</p></div></section><div class=\"logo-section\"><img src=\"/static/img/logo.webp\" alt=\"OpenKata logo\" class=\"site-logo site-logo--light\"> <img src=\"/static/img/logo-dark.webp\" alt=\"OpenKata logo\" class=\"site-logo site-logo--dark\"></div><h2>About</h2><p>What was implicit craft must become codified practice. Open Kata turns engineering knowledge into portable, reusable workflows that AI agents can follow. Good patterns are then shared, not lost.</p><p>A collection of platform-agnostic skills and rules that work with any agent supporting the <a href=\"https://agentskills.io/\" target=\"_blank\" rel=\"noopener\">Agent Skills specification</a>. No vendor lock-in. No build step. Just files.</p><h2>Why Skills, Rules &amp; Profiles</h2><p>Skills are context-efficient. Your agent reads a one-line description at session start. It loads the full workflow only when the skill is triggered. No wasted tokens on practices you're not using right now.</p><p>Rules are always-on. They load into every session. They are small, strict constraints that must never be violated. Commit format, code style, naming conventions. Kept short because they're always in context.</p><p>Profiles isolate work into fresh context. A subagent starts clean, does its job, and returns a summary. Your main session never gets bloated by specialized work happening in the background.</p><h2>Connect Your Agent</h2><p>Grounding your agent context with the OpenKata knowledge base.</p><h3>Model Context Protocol (MCP)</h3><p>AI agents can connect directly to browse, search, and retrieve OpenKata content via the /mcp endpoint.</p><p>Server endpoint: <code>https://openkata.dev/mcp</code></p><p class=\"comment\">We suggest enabling the MCP only when scaffolding a new project or maintaining agentic structure.</p><h3>Downloadable Static Skills</h3><p>For offline or local-first workflows, download skills from this site and drop them into your repository to give your local agent OpenKata superpowers.</p></main>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <main><section class=\"hero hero--kanji\"><span class=\"hero-kanji\">型</span><div class=\"hero-text\"><h1 class=\"cursor\">OpenKata</h1><p class=\"comment\">Codified practices for AI agents — teach your agents the way.</p></div></section><div class=\"logo-section\"><img src=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var3 string
+			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(assets.URL("img/logo.webp"))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/home.templ`, Line: 19, Col: 42}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\" alt=\"OpenKata logo\" class=\"site-logo site-logo--light\"> <img src=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var4 string
+			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(assets.URL("img/logo-dark.webp"))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `cmd/openkata-web/templates/home.templ`, Line: 20, Col: 47}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\" alt=\"OpenKata logo\" class=\"site-logo site-logo--dark\"></div><h2>About</h2><p>What was implicit craft must become codified practice. Open Kata turns engineering knowledge into portable, reusable workflows that AI agents can follow. Good patterns are then shared, not lost.</p><p>A collection of platform-agnostic skills and rules that work with any agent supporting the <a href=\"https://agentskills.io/\" target=\"_blank\" rel=\"noopener\">Agent Skills specification</a>. No vendor lock-in. No build step. Just files.</p><h2>Why Skills, Rules &amp; Profiles</h2><p>Skills are context-efficient. Your agent reads a one-line description at session start. It loads the full workflow only when the skill is triggered. No wasted tokens on practices you're not using right now.</p><p>Rules are always-on. They load into every session. They are small, strict constraints that must never be violated. Commit format, code style, naming conventions. Kept short because they're always in context.</p><p>Profiles isolate work into fresh context. A subagent starts clean, does its job, and returns a summary. Your main session never gets bloated by specialized work happening in the background.</p><h2>Connect Your Agent</h2><p>Grounding your agent context with the OpenKata knowledge base.</p><h3>Model Context Protocol (MCP)</h3><p>AI agents can connect directly to browse, search, and retrieve OpenKata content via the /mcp endpoint.</p><p>Server endpoint: <code>https://openkata.dev/mcp</code></p><p class=\"comment\">We suggest enabling the MCP only when scaffolding a new project or maintaining agentic structure.</p><h3>Downloadable Static Skills</h3><p>For offline or local-first workflows, download skills from this site and drop them into your repository to give your local agent OpenKata superpowers.</p></main>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

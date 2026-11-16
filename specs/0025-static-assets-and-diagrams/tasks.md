@@ -24,7 +24,7 @@ other. Task 3 changes AWS, and the account owner runs it.
   and `curl -I` against the local server
 
 ### 2. Templates use hashed URLs
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Every `/static/` link in a template carries its hash
 - **Boundary**: `cmd/openkata-web/templates/*.templ`, generated
   `_templ.go` files, a new template test
@@ -115,3 +115,12 @@ and a directory gets `404`. Against the real `static.FS`, a
 matching `v` gets one year and no `v` gets 5 minutes. Directory listings under `/static/` now return
 `404`. `site.webmanifest` is still served as `text/plain`, as
 before.
+
+### 2026-11-16: Task 2
+
+Every `/static/` link in the templates goes through `assets.URL`,
+including the local-only chart script on the stats page. A new
+test fails on a literal `/static/` URL in a template and on a link
+to a missing file. A temporary bad link in `nav.templ` made it
+fail as expected. On the local server, the home, docs and getting
+started pages render every static link with `?v=`.
