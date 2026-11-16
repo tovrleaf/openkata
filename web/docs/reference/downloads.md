@@ -44,8 +44,8 @@ Each counted download makes two writes in DynamoDB.
 The `openkata-downloads` table has one row for each artifact. Its key
 is `<type>/<name>`, for example `skills/grill-me`, and its
 `downloads` attribute goes up by one with an atomic add. All
-versions of an artifact share the same counter, so the count says how
-often the artifact was fetched, not which version.
+versions of an artifact share the same counter. So the count says
+how often the artifact was fetched, not which version.
 
 ### The event
 
@@ -62,9 +62,15 @@ keyed by artifact and timestamp. It keeps these fields:
 | `country` | The viewer's country, for archive downloads |
 
 For an archive download, the client is guessed from the
-`User-Agent` header, checking in this order: a name containing
-`claude` gives `Claude-Desktop`, `cursor` gives `Cursor`, `kiro`
-gives `Kiro`, `curl` gives `curl`, and `mozilla` gives `browser`.
+`User-Agent` header. The header is checked for these names, in this
+order:
+
+- `claude` gives `Claude-Desktop`
+- `cursor` gives `Cursor`
+- `kiro` gives `Kiro`
+- `curl` gives `curl`
+- `mozilla` gives `browser`
+
 Anything else is `unknown`. The country comes from the
 `CloudFront-Viewer-Country` header that CloudFront adds.
 
@@ -92,5 +98,5 @@ show `0` for every artifact.
   `list_rules` and `list_profiles` tools return.
 
 The counts are read from the table each time a listing, an artifact
-page or an MCP list result is built, so a new download shows up on
+page or an MCP list result is built. So a new download shows up on
 the next load.

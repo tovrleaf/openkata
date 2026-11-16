@@ -113,7 +113,7 @@ func listRulesTool() mcp.Tool {
 
 func installSkillTool() mcp.Tool {
 	return mcp.NewTool("install_skill",
-		mcp.WithDescription("Install an OpenKata skill. Returns all files and a .openkata-manifest.json. Write files to the skills directory in your project: .agents/skills/<name>/ (Kiro, standard) or .claude/skills/<name>/ (Claude Code)."),
+		mcp.WithDescription("Install an OpenKata skill. Returns all files and a .openkata-manifest.json. Write the files to .agents/skills/<name>/ in the project, the shared skills folder most agents read. If your agent reads skills from its own folder instead, also link the skill there, for example in Claude Code: .claude/skills/<name> -> ../../.agents/skills/<name>."),
 		mcp.WithString("skill", mcp.Required(), mcp.Description("Name of the skill to install")),
 		mcp.WithString("version", mcp.Description("Version to install (default: latest)")),
 	)
@@ -121,7 +121,7 @@ func installSkillTool() mcp.Tool {
 
 func installRuleTool() mcp.Tool {
 	return mcp.NewTool("install_rule",
-		mcp.WithDescription("Install an OpenKata rule. Returns all files and a .openkata-manifest.json. Write files to the rules directory in your project: .agents/rules/<name>/ (Kiro, standard) or .claude/rules/<name>/ (Claude Code)."),
+		mcp.WithDescription("Install an OpenKata rule. Returns all files and a .openkata-manifest.json. Write the files to .agents/rules/<name>/ in the project. Then add a line to AGENTS.md, creating it if needed, that tells agents to follow .agents/rules/<name>/RULE.md. If your agent loads rules from its own folder, also link the rule there, for example in Claude Code: .claude/rules/<name> -> ../../.agents/rules/<name>."),
 		mcp.WithString("rule", mcp.Required(), mcp.Description("Name of the rule to install")),
 		mcp.WithString("version", mcp.Description("Version to install (default: latest)")),
 	)
@@ -150,7 +150,7 @@ func listProfilesTool() mcp.Tool {
 
 func installProfileTool() mcp.Tool {
 	return mcp.NewTool("install_profile",
-		mcp.WithDescription("Install an OpenKata agent profile. Returns the profile file and a .openkata-manifest.json. Write to the profiles directory in your project: .agents/profiles/<name>/ (Kiro, standard) or .claude/profiles/<name>/ (Claude Code)."),
+		mcp.WithDescription("Install an OpenKata agent profile. Returns the profile file and a .openkata-manifest.json. Write the files to .agents/profiles/<name>/ in the project."),
 		mcp.WithString("profile", mcp.Required(), mcp.Description("Name of the profile to install")),
 		mcp.WithString("version", mcp.Description("Version to install (default: latest)")),
 	)

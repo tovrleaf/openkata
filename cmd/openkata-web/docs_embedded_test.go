@@ -6,6 +6,7 @@ import (
 	"os"
 	"slices"
 	"sort"
+	"strings"
 	"testing"
 
 	"github.com/tovrleaf/openkata/web/docs"
@@ -27,6 +28,26 @@ func embeddedSite(t *testing.T) *docsSite {
 func TestEmbeddedGeneratedDir(t *testing.T) {
 	if _, err := fs.Stat(docs.FS, "generated/.gitkeep"); err != nil {
 		t.Errorf("fs.Stat(docs.FS, generated/.gitkeep) error = %v, want the file embedded", err)
+	}
+}
+
+// TestManifestoMatchesRoot checks the manifesto in the docs is the same as
+// MANIFESTO.md, after its frontmatter, so the two copies cannot drift.
+func TestManifestoMatchesRoot(t *testing.T) {
+	root, err := os.ReadFile("../../MANIFESTO.md")
+	if err != nil {
+		t.Fatalf("os.ReadFile(MANIFESTO.md) error = %v", err)
+	}
+	page, err := fs.ReadFile(docs.FS, "guides/manifesto.md")
+	if err != nil {
+		t.Fatalf("fs.ReadFile(guides/manifesto.md) error = %v", err)
+	}
+	_, body, found := strings.Cut(string(page), "\n---\n\n")
+	if !found {
+		t.Fatal("guides/manifesto.md has no frontmatter followed by a blank line")
+	}
+	if body != string(root) {
+		t.Error("guides/manifesto.md differs from MANIFESTO.md after its frontmatter, want the same text: copy MANIFESTO.md into it")
 	}
 }
 

@@ -6,10 +6,13 @@ import (
 	"fmt"
 	"net/url"
 	"path"
+	"regexp"
 	"sort"
 	"strings"
 
+	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
 	"github.com/yuin/goldmark"
+	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
@@ -19,8 +22,15 @@ import (
 
 var errDocsLink = errors.New("invalid link")
 
+// Code blocks are highlighted with CSS classes instead of inline
+// colors, so docs.css can color them from the theme tokens.
 var docsMarkdown = goldmark.New(
-	goldmark.WithExtensions(extension.Table),
+	goldmark.WithExtensions(
+		extension.Table,
+		highlighting.NewHighlighting(
+			highlighting.WithFormatOptions(chromahtml.WithClasses(true)),
+		),
+	),
 	goldmark.WithParserOptions(parser.WithAutoHeadingID()),
 	goldmark.WithRendererOptions(html.WithUnsafe()),
 )
@@ -78,11 +88,24 @@ func (s *docsSite) renderPage(p *docsPage) error {
 	}
 	out := addTargetBlankToExternalLinks(buf.String())
 	out = stripFirstH1(out)
+	out = addHeadingAnchors(out)
 	out = strings.ReplaceAll(out,
 		`<pre><code class="language-mermaid">`,
 		`<pre class="mermaid-source"><code class="language-mermaid">`)
 	p.Body = out
 	return nil
+}
+
+// docsHeadingRe matches a rendered h2 or h3 with its id. A heading's
+// content cannot hold a closing heading tag, so the first one ends it.
+var docsHeadingRe = regexp.MustCompile(`(?s)<(h[23]) id="([^"]+)">(.*?)</h[23]>`)
+
+// addHeadingAnchors ends every h2 and h3 with a "#" link to itself.
+// docs.js copies the link when it is clicked; without the script it is
+// an ordinary link to the section.
+func addHeadingAnchors(html string) string {
+	return docsHeadingRe.ReplaceAllString(html,
+		`<$1 id="$2">$3 <a class="heading-anchor" href="#$2" aria-label="Copy link to this section">#</a></$1>`)
 }
 
 // rewriteLink turns a relative link to a docs page into its /docs/ URL.

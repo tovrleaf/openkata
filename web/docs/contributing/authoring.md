@@ -19,9 +19,9 @@ to review skills.
 
 ## Where artifacts live
 
-Each kind can be distributable, which means it is published and
-installed by users, or local, which means only this repository uses
-it.
+Each kind can be distributable or local. A distributable artifact is
+published and installed by users. A local one is used only by this
+repository.
 
 | Kind | Distributable | Local |
 |------|---------------|-------|
@@ -92,8 +92,8 @@ metadata:
   `references/`, and deterministic steps move to `scripts/`.
 - A new skill starts at version `1.0.0`, never `0.x.y`.
 - Sources the skill draws on go in `references/ACKNOWLEDGMENTS.md`,
-  one line for each: the name and link, the license, what was
-  adapted, and the version it was adopted in.
+  one line for each. A line gives the name and link, the license,
+  what was adapted, and the version it was adopted in.
 
 Distributable skills also have `evals/`, described in
 [how we use evals](../reference/evals.md). A skill that has been set
@@ -111,9 +111,9 @@ rules/<name>/
 └── RATIONALE.md
 ```
 
-`RULE.md` has a `name`, a `description` and `tags` in its frontmatter,
-then a heading, a line saying what the rule enforces, and sections
-grouped by concern, each a list of conventions.
+`RULE.md` has a `name`, a `description` and `tags` in its frontmatter.
+Then come a heading, a line saying what the rule enforces, and
+sections grouped by concern. Each section is a list of conventions.
 
 - **Every convention must be enforceable by reading it literally.**
   "Use `-` for unordered lists" can be applied. "Use consistent
@@ -195,9 +195,9 @@ Nothing is committed until the review passes.
 
 **Rules**
 
-- They pass the Quality Checklist in `create-rule`: every convention
-  is specific enough to apply mechanically, none needs the agent to
-  guess an intent, and sections are grouped by concern.
+- They pass the Quality Checklist in `create-rule`. Every convention
+  is specific enough to apply mechanically, and none needs the agent
+  to guess an intent. Sections are grouped by concern.
 - The rule was checked against two or three existing files, and
   against any `.editorconfig`, linter or formatter settings, for
   conflicts.

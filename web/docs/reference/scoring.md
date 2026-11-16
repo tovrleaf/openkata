@@ -30,8 +30,8 @@ are committed. The review workflow records the score in
 ## Effectiveness
 
 Each scenario is scored as the share of its criteria points that the
-judge passed, and a model's effectiveness is the average over all
-the scenarios, rounded to a whole percent. [How we use
+judge passed. A model's effectiveness is the average over all the
+scenarios, rounded to a whole percent. [How we use
 evals](evals.md) describes the scenarios, the judge and the scoring
 in detail.
 
@@ -55,15 +55,15 @@ the score as a structural quality measure covering formatting,
 metadata and the structure of `SKILL.md`.
 
 The same file has a `private` flag. A skill that is not private is
-treated as published on the Tessl registry, and the Benchmarks tab
-then links to its registry page at
+treated as published on the Tessl registry. The Benchmarks tab then
+links to its registry page at
 `https://tessl.io/registry/openkata/<name>`. A score of zero is
 treated as no score.
 
 ## Where the scores are shown
 
 Both scores appear only for skills that have them. A skill without
-evals or without a review simply shows no scores, and a skill with
+evals or without a review shows no scores, and a skill with
 neither has no Benchmarks tab.
 
 - **On the listing**, a skill with eval results shows its best
@@ -74,9 +74,9 @@ neither has no Benchmarks tab.
   - the **Quality score**, linked to the registry page, with a
     **View on Tessl Registry** link when the skill is published
   - the **Effectiveness** table, one row for each model
-  - the **Scenarios**, for each model, with the score and the
-    description of each scenario and a bar that is green from 95%,
-    yellow from 70% and red below that
+  - the **Scenarios** for each model, with each scenario's score
+    and description. A bar shows the score: green from 95%, yellow
+    from 70% and red below that
 
 [Using the catalog](../guides/using-the-catalog.md) shows how to open
 the tab.
@@ -95,7 +95,7 @@ Both read the eval reports in the skill's `evals/results/` and its
 `plugin.json`, and apply the two rules above. The index built from
 the repository, with `make versions`, reads the working tree. The
 index built from the bucket by the publish workflow reads the
-released version's own folder, so what the site shows for a version
+released version's own folder. So what the site shows for a version
 is what was committed with that version.
 
 The index holds one entry for each artifact, the latest version. The
@@ -111,9 +111,9 @@ typical round for a skill is:
 2. Run the evals until the overall result is 95% or more, and the
    review until its score is 95% or more.
 3. Commit the new eval report and `plugin.json` with the change.
-4. Release the skill. Bump the version first and run the evals
-   after the bump, because only a report for the released version
-   counts, and commit the report with the release commit. CI then
+4. Release the skill. Bump the version before you run the evals,
+   since only a report for the released version counts. Commit the
+   report with the release commit. CI then
    rebuilds the index from the tag.
 
 A skill that is new, or changed since its last run, shows no

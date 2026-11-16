@@ -88,11 +88,11 @@ The `generate-versions` command builds the index in one of two ways.
 
 **From the bucket**, which is what the publish workflow runs. For
 each type it lists the artifact names, and for each name the version
-folders. It takes the highest version, reads the description and
+folders. It takes the highest version and reads the description and
 tags from the frontmatter of the artifact's main file in that
-version, and, for skills, reads the tessl score from
+version. For skills, it also reads the tessl score from
 `.tessl-plugin/plugin.json` and the eval results from
-`evals/results/` in that version's folder, using the same rules as
+`evals/results/` in that version's folder. It uses the same rules as
 the repository mode. A skill counts as published unless the plugin
 file marks it private. It then uploads the result as
 `s3://openkata-artifacts/versions.json`.
@@ -101,9 +101,9 @@ file marks it private. It then uploads the result as
 folders in the working tree. The version is the newest git tag for
 the artifact, or `0.0.0` if it has never been tagged. For skills it
 also reads the eval results in
-`skills/<name>/evals/results/<model>/`: the newest result file of
-each model, kept only when it was run against the skill's current
-version. The output is written to `web/static/versions.json`.
+`skills/<name>/evals/results/<model>/`. It takes the newest result
+file of each model, and keeps it only when it was run against the
+skill's current version. The output is written to `web/static/versions.json`.
 
 Both modes write the eval results (`models`) and the tessl score.
 The bucket mode reads them from the files uploaded with the version,

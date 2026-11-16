@@ -100,7 +100,8 @@ func TestRenderDocsMarkdown(t *testing.T) {
 		{"unsafe html passes", "<div class=\"note\">x</div>\n", `<div class="note">x</div>`},
 		{"mermaid block marked", "```mermaid\ngraph TD\n  A-->B\n```\n", `<pre class="mermaid-source"><code class="language-mermaid">graph TD`},
 		{"mermaid source escaped", "```mermaid\nA-->B\n```\n", "A--&gt;B"},
-		{"other code not marked", "```go\nx := 1\n```\n", `<pre><code class="language-go">`},
+		{"other code highlighted", "```go\nx := 1\n```\n", `<pre class="chroma"><code>`},
+		{"highlight uses classes", "```go\nx := 1\n```\n", `<span class="mi">1</span>`},
 		{"plain fence not marked", "```\nbox\n```\n", "<pre><code>box"},
 	}
 	for _, tt := range tests {
@@ -133,6 +134,28 @@ func TestRenderDocsMarkdown(t *testing.T) {
 		got := renderedBody(t, "text\n").Body
 		if strings.Contains(got, "title:") {
 			t.Errorf("Body = %q, want no frontmatter", got)
+		}
+	})
+}
+
+func TestRenderHeadingAnchors(t *testing.T) {
+	got := renderedBody(t, "# Title\n\n## Install `it`\n\n### Then\n\n#### Deep\n").Body
+
+	for _, want := range []string{
+		`<h2 id="install-it">Install <code>it</code> <a class="heading-anchor" href="#install-it" aria-label="Copy link to this section">#</a></h2>`,
+		`<h3 id="then">Then <a class="heading-anchor" href="#then" aria-label="Copy link to this section">#</a></h3>`,
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("Body = %q, want it to contain %q", got, want)
+		}
+	}
+	if n := strings.Count(got, `class="heading-anchor"`); n != 2 {
+		t.Errorf("Body has %d heading anchors, want 2: h2 and h3 only", n)
+	}
+
+	t.Run("headings text has no anchor", func(t *testing.T) {
+		if h := renderedBody(t, "## Install it\n").Headings; !slices.Equal(h, []string{"Install it"}) {
+			t.Errorf("Headings = %v, want [Install it]", h)
 		}
 	})
 }

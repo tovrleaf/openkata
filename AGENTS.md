@@ -71,6 +71,34 @@ Before opening a pull request for a spec'd feature, run
 - See [`rules/markdown-style/RULE.md`](rules/markdown-style/RULE.md)
   for full conventions
 
+## Writing
+
+Use the `clear-writing` skill on all text that people read,
+before you commit it. This covers docs, READMEs, site pages
+(`web/docs/` and the `.templ` templates), `CHANGELOG.md`,
+`RATIONALE.md`, `SKILL.md`, `RULE.md`, commit messages and pull
+request descriptions.
+
+Turn on the git hooks once per clone with `make hooks`. They run
+the skill's check script on every commit. `pre-commit` checks the
+changed lines of staged text files, and `commit-msg` checks the
+message. Either one stops the commit when a sentence is flagged.
+To keep a flagged sentence, commit with `--no-verify`.
+
+Without the hooks, run the checks by hand:
+
+```bash
+python3 .agents/skills/clear-writing/scripts/check.py \
+  --changed HEAD <files>
+python3 .agents/skills/clear-writing/scripts/check.py - < msg.txt
+```
+
+Check a pull request description the same way, with `-`.
+
+Fix only the sentences it flags, as the skill describes. This
+applies to how agents write in this repo. No skill or rule
+may depend on `clear-writing` or tell other agents to use it.
+
 ## Git
 
 Follow [`rules/git-naming/RULE.md`](rules/git-naming/RULE.md)

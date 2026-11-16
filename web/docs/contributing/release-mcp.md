@@ -9,7 +9,7 @@ order: 4
 The MCP server is the Go program in `cmd/openkata-mcp`. It runs as the
 `openkata-mcp` Lambda function, and agents reach it at
 `https://openkata.dev/mcp`. It has no release process of its own. A
-change goes out when it is merged into `main`, in the same Deploy
+change goes out when it is merged into `main`. It uses the same Deploy
 workflow as the website, described in
 [releasing a new version of the site](release-site.md).
 
@@ -103,12 +103,12 @@ curl -s https://openkata.dev/mcp \
 
 The answer holds the server's name and version. The commit in the version
 should be the commit you merged. Replace the `method` with
-`tools/list` and the `params` with `{}` to get the list of tools, which
-should be the nine described in the discovery page.
+`tools/list` and the `params` with `{}` to get the list of tools. It
+should hold the nine tools described in the discovery page.
 
 ## Going back
 
 There is no rollback step. The deploy overwrites the function code, and
 no versions or aliases are kept. To go back, revert the change and merge
-the revert, which deploys again, or check out an earlier commit and
-deploy it by hand.
+the revert. That deploys again. You can also check out an earlier
+commit and deploy it by hand.

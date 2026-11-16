@@ -18,18 +18,74 @@ h2 {
   margin-bottom: var(--space-md);
 }
 
+/* Decorative marks are drawn but not read: the second content line
+   gives them empty alt text, so screen readers skip them. Browsers
+   without that syntax ignore it and keep the first line. */
 h2::before {
   content: "// ";
+  content: "// " / "";
   color: var(--color-ink-muted);
 }
 
 h3 {
   font-size: var(--font-size-base);
   font-weight: 500;
+  margin-bottom: var(--space-sm);
+}
+
+/* One slash more than h2, the way Markdown adds a #. The # itself is
+   kept for the heading anchors. */
+h3::before {
+  content: "/// ";
+  content: "/// " / "";
+  color: var(--color-ink-muted);
 }
 
 p {
   margin-bottom: var(--space-md);
+}
+
+/* Bullets as Markdown writes them, dimmed like the heading marks */
+ul {
+  list-style-type: "- ";
+}
+
+ul > li::marker {
+  font-family: var(--font-mono);
+  color: var(--color-ink-muted);
+}
+
+/* Inline Markdown marks around bold, code and links in running text,
+   dimmed like the heading marks. Links with a class are buttons, tags
+   or cards, and links in a nav are navigation, so they get none. The
+   pages of a single skill, rule or profile show their files as they
+   are, without marks. */
+
+main:not([data-artifact-name]) strong::before,
+main:not([data-artifact-name]) strong::after {
+  content: "**";
+  content: "**" / "";
+  color: var(--color-ink-muted);
+  font-weight: 400;
+}
+
+main:not([data-artifact-name]) :not(pre) > code::before,
+main:not([data-artifact-name]) :not(pre) > code::after {
+  content: "`";
+  content: "`" / "";
+  color: var(--color-ink-muted);
+}
+
+main:not([data-artifact-name]) a:not([class], nav a)::before {
+  content: "[";
+  content: "[" / "";
+  color: var(--color-ink-muted);
+}
+
+main:not([data-artifact-name]) a:not([class], nav a)::after {
+  content: "]";
+  content: "]" / "";
+  color: var(--color-ink-muted);
 }
 
 code, pre {
@@ -63,15 +119,18 @@ hr {
 
 .comment::before {
   content: "/* ";
+  content: "/* " / "";
 }
 
 .comment::after {
   content: " */";
+  content: " */" / "";
 }
 
 /* Blinking cursor on hero */
 .cursor::after {
   content: "_";
+  content: "_" / "";
   animation: blink 1s step-end infinite;
   color: var(--color-ink-muted);
 }

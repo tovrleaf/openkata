@@ -23,7 +23,7 @@ apply and what they are for.
 
 Every artifact folder also holds a `CHANGELOG.md` and a
 `RATIONALE.md`. The rationale explains why the artifact is the way
-it is, because practices should carry their reasoning and not only
+it is, because practices should carry their reasoning as well as
 the rule.
 
 ## Skills
@@ -45,10 +45,10 @@ metadata:
   tags: "category:review, category:architecture"
 ```
 
-Besides `SKILL.md`, a skill folder can hold `references/` for
-detail the workflow reads when it needs it (the `spec-workflow`
-skill keeps its phase details there), and `evals/` with the
-scenarios used to score the skill.
+Besides `SKILL.md`, a skill folder can hold two more folders.
+`references/` holds detail the workflow reads when it needs it, as
+the `spec-workflow` skill does with its phase details. `evals/`
+holds the scenarios used to score the skill.
 
 ## Rules
 
@@ -89,8 +89,9 @@ standards, and the skill supplies the workflow.
 
 OpenKata names its parts after the martial art that inspired it:
 kata are codified sequences of movements, practiced until they are
-mastered. The vocabulary is an overlay on the technical terms,
-which stay valid, and it applies across the docs and the tooling.
+mastered. The vocabulary is an overlay on the technical terms. The
+technical terms stay valid, and the vocabulary applies across the
+docs and the tooling.
 
 | Concept | Kata term | Description |
 |---------|-----------|-------------|

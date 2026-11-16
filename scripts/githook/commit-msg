@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Check the commit message with the clear-writing script and stop the
+# commit when a sentence is flagged. Git comments and the diff that
+# "git commit -v" adds below the scissors line are not checked.
+# Turn the hooks on with "make hooks".
+set -euo pipefail
+
+root="$(git rev-parse --show-toplevel)"
+check="${root}/.agents/skills/clear-writing/scripts/check.py"
+
+if ! sed '/^# -\{24\} >8 -\{24\}$/,$d' "${1}" \
+  | git stripspace --strip-comments \
+  | python3 -B "${check}" -; then
+  echo "commit-msg: rewrite the flagged sentences, or keep them with" \
+    "git commit --no-verify" >&2
+  exit 1
+fi

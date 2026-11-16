@@ -34,11 +34,12 @@ type DocsPageModel struct {
 	Nav     []DocsNavSection
 	Prev    *DocsLink
 	Next    *DocsLink
+	Pages   []DocsCard // the section's pages, on a section index only
 	Updated DocsUpdated
 }
 
-// DocsHomeSection is one section card on the docs home page.
-type DocsHomeSection struct {
+// DocsCard is one card in a list of sections or pages.
+type DocsCard struct {
 	DocsLink
 	Description string
 }
@@ -47,6 +48,6 @@ type DocsHomeSection struct {
 type DocsHomeModel struct {
 	Title    string
 	Body     string
-	Sections []DocsHomeSection
+	Sections []DocsCard
 	Updated  DocsUpdated
 }

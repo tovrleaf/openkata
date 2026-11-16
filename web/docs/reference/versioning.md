@@ -57,8 +57,8 @@ for that.
   available.
 - In `versions.json`, an artifact's `version` is its newest one. The
   index built from the repository gives `0.0.0` to an artifact that
-  has never been tagged, and such an entry is not listed on the site
-  or found by the catalog search.
+  has never been tagged. Such an entry is not listed on the site or
+  found by the catalog search.
 - The MCP list tools return that version, and `install_*` installs it
   unless a version is named. The guide to
   [installing artifacts](../guides/installing-artifacts.md) shows how
@@ -140,15 +140,15 @@ generic `.manifest.json` that other tools use.
 
 ## The release of the site
 
-The site, the docs, the MCP server and the tooling that makes them,
-such as the eval runner and the scoring, have a release number too. It
-is shown in the footer of every page, for example `Release v0.15.0`,
-and links to that release on GitHub.
+The site has a release number too. It covers the docs, the MCP
+server and the tooling that makes them, such as the eval runner and
+the scoring. The number is shown in the footer of every page, for
+example `Release v0.15.0`, and links to that release on GitHub.
 
 - It is a git tag of the form `vMAJOR.MINOR.PATCH`, with no prefix, so
   it is never mistaken for an artifact tag.
 - It starts at `0`. While the major number is 0, a `feat` or a
-  breaking change raises the minor number, and anything else raises the
+  breaking change raises the minor number. Anything else raises the
   patch.
 - The deploy reads the newest such tag that the deployed commit
   contains and builds it into the binaries. The MCP server reports it in

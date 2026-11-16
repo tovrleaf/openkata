@@ -11,6 +11,11 @@ dev:
 	@lsof -ti:8080 | xargs kill 2>/dev/null || true
 	@$(shell go env GOPATH)/bin/air
 
+.PHONY: hooks
+hooks: ## Turn on the git hooks in scripts/githook
+	@git config core.hooksPath scripts/githook
+	@echo "Git hooks on: scripts/githook"
+
 .PHONY: versions
 versions:
 	@go run ./cmd/generate-versions/ --local

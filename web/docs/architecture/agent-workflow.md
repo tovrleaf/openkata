@@ -55,7 +55,7 @@ graph TD
 ```mermaid
 flowchart TD
     Request([Request]) --> IsPlanning{Planning?}
-    IsPlanning -->|yes| Direct["Switch to spec-planner<br/>kiro-cli --agent spec-planner"]
+    IsPlanning -->|yes| Direct["Switch to spec-planner"]
     IsPlanning -->|no| DM[dojo-master]
     DM --> IsUI{Templates,<br/>CSS, JS?}
     DM --> IsGo{Handlers,<br/>types, tests?}

@@ -10,7 +10,8 @@ go build -o bin/openkata-mcp ./cmd/openkata-mcp/
 
 ## Configure
 
-Add to your project's `.kiro/settings/mcp.json`:
+Add to your agent's MCP configuration, such as `.mcp.json` in
+Claude Code:
 
 ```json
 {

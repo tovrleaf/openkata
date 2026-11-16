@@ -8,16 +8,7 @@ templ DocsHome(m DocsHomeModel) {
 			<div class="docs-content">
 				@templ.Raw(m.Body)
 			</div>
-			<ul class="docs-sections">
-				for _, s := range m.Sections {
-					<li class="docs-section-card">
-						<a href={ templ.SafeURL(s.URL) } class="docs-section-link">{ s.Title }</a>
-						if s.Description != "" {
-							<p class="docs-section-desc">{ s.Description }</p>
-						}
-					</li>
-				}
-			</ul>
+			@docsCards(m.Sections)
 			@docsUpdated(m.Updated)
 		</main>
 		@Footer()
@@ -36,6 +27,7 @@ templ DocsPage(m DocsPageModel) {
 					<div class="docs-content">
 						@templ.Raw(m.Body)
 					</div>
+					@docsCards(m.Pages)
 					@docsPager(m.Prev, m.Next)
 					@docsUpdated(m.Updated)
 				</article>
@@ -43,6 +35,23 @@ templ DocsPage(m DocsPageModel) {
 		</main>
 		@Footer()
 		<script src="/static/js/docs.js" defer></script>
+	}
+}
+
+// docsCards lists the sections on the home page, and a section's pages
+// on its index. An empty list renders nothing.
+templ docsCards(cards []DocsCard) {
+	if len(cards) > 0 {
+		<ul class="docs-sections">
+			for _, c := range cards {
+				<li class="docs-section-card">
+					<a href={ templ.SafeURL(c.URL) } class="docs-section-link">{ c.Title }</a>
+					if c.Description != "" {
+						<p class="docs-section-desc">{ c.Description }</p>
+					}
+				</li>
+			}
+		</ul>
 	}
 }
 

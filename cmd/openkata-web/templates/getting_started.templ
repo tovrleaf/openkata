@@ -16,7 +16,7 @@ templ GettingStarted() {
 			<h2>What is OpenKata?</h2>
 			<p>
 				Codified practices for AI agents. Engineering knowledge
-				in files — portable, reusable, version-controlled.
+				in files: portable, reusable, version-controlled.
 				Kata follow the
 				<a href="https://agentskills.io/" target="_blank" rel="noopener">Agent Skills specification</a>
 				and work with any agent that supports it.
@@ -40,7 +40,7 @@ templ GettingStarted() {
 			<ul>
 				<li><strong>Humans govern, agents execute.</strong> The engineer is always responsible for the outcome.</li>
 				<li><strong>Portable by default.</strong> No vendor lock-in. Works with any agent supporting the Agent Skills spec.</li>
-				<li><strong>Explain the why.</strong> Practices carry their reasoning so agents understand the intent, not just the rule.</li>
+				<li><strong>Explain the why.</strong> Practices carry their reasoning, so agents understand the intent as well as the rule.</li>
 			</ul>
 
 			<h2>How It Works</h2>
@@ -63,7 +63,6 @@ templ GettingStarted() {
 					<button class="gs-ctab" data-ctab="claude-code">Claude Code</button>
 					<button class="gs-ctab" data-ctab="claude-desktop">Claude Desktop</button>
 					<button class="gs-ctab" data-ctab="cursor">Cursor</button>
-					<button class="gs-ctab" data-ctab="kiro">Kiro</button>
 					<button class="gs-ctab" data-ctab="vscode">VS Code</button>
 					<button class="gs-ctab" data-ctab="windsurf">Windsurf</button>
 					<button class="gs-ctab" data-ctab="cline">Cline</button>
@@ -99,16 +98,6 @@ templ GettingStarted() {
 				</div>
 				<div class="gs-cpanel" id="cpanel-cursor">
 					<p class="gs-filepath">.cursor/mcp.json</p>
-					<pre><code>{`{
-  "mcpServers": {
-    "openkata": {
-      "url": "https://openkata.dev/mcp"
-    }
-  }
-}`}</code></pre>
-				</div>
-				<div class="gs-cpanel" id="cpanel-kiro">
-					<p class="gs-filepath">.kiro/settings/mcp.json</p>
 					<pre><code>{`{
   "mcpServers": {
     "openkata": {
@@ -230,17 +219,31 @@ url = "https://openkata.dev/mcp"`}</code></pre>
 					from the catalog and extract to your repository.
 					Your agent picks them up automatically.
 				</p>
-				<h4>Install path by client</h4>
+				<h4 id="install-paths">Where agents read skills</h4>
+				<p>
+					Most agents read skills from the shared folder
+					<code>.agents/skills/&lt;name&gt;/</code>. Install there.
+					If your agent reads its own folder, link each skill into
+					it, so the files exist only once. In Claude Code:
+				</p>
+				<pre><code>{`mkdir -p .claude/skills
+ln -s ../../.agents/skills/grill-me .claude/skills/grill-me`}</code></pre>
 				<table class="gs-vocab">
-					<tr><td>Kiro, VS Code, Cursor, Windsurf</td><td><code>.agents/skills/&lt;name&gt;/</code></td></tr>
-					<tr><td>Claude Code, Claude Desktop</td><td><code>.claude/skills/&lt;name&gt;/</code></td></tr>
+					<tr><td>Amp, Antigravity, Cline, Codex, Cursor, Gemini CLI, GitHub Copilot, Kilo Code, OpenCode, Warp, Zed</td><td><code>.agents/skills/</code></td></tr>
+					<tr><td>Claude Code</td><td><code>.claude/skills/</code></td></tr>
+					<tr><td>Continue</td><td><code>.continue/skills/</code></td></tr>
+					<tr><td>Goose</td><td><code>.goose/skills/</code></td></tr>
+					<tr><td>Junie</td><td><code>.junie/skills/</code></td></tr>
+					<tr><td>Qwen Code</td><td><code>.qwen/skills/</code></td></tr>
+					<tr><td>Roo Code</td><td><code>.roo/skills/</code></td></tr>
+					<tr><td>Windsurf</td><td><code>.windsurf/skills/</code></td></tr>
 				</table>
 				<p>
-					The MCP install tools do not detect your client. They
-					name the folder for Kiro and the standard location,
-					and the folder for Claude Code, and your agent writes
-					the files to the one it uses. If your project already
-					has one convention, follow it.
+					The
+					<a href="https://github.com/vercel-labs/skills/blob/main/docs/agents.md" target="_blank" rel="noopener">vercel-labs/skills agent list</a>
+					has the folders of many more agents. The MCP install tools
+					write to <code>.agents/skills/</code> and add the link when
+					your agent reads its own folder.
 				</p>
 			</div>
 

@@ -1,0 +1,46 @@
+{
+  "context": "Tests whether the agent judges each flagged item instead of applying the watch list blindly. 'robust estimator' is the precise statistical term and must stay. The dashes in the 'Terms' list are definition separators and must stay. The 'Picking one' sentence combines several signs ('actually', 'showcases', 'pivotal', a dash joining clauses, an inner 'which' clause) and must be rewritten. The last sentence has only a weak sign (a parenthetical aside) and may be kept or lightly changed.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Technical robust kept",
+      "description": "'robust estimator' is still in the first paragraph, unchanged",
+      "max_score": 16
+    },
+    {
+      "name": "Definition dashes kept",
+      "description": "Both items in the 'Terms' list still use the dash after the bold term, and their wording is unchanged",
+      "max_score": 14
+    },
+    {
+      "name": "Inflated words removed",
+      "description": "'actually', 'showcases' and 'pivotal' no longer appear in the 'Picking one' paragraph",
+      "max_score": 14
+    },
+    {
+      "name": "Dash sentence rewritten",
+      "description": "The 'Picking one' paragraph no longer joins its clauses with a dash, and is split so no sentence has more than one 'which' clause",
+      "max_score": 12
+    },
+    {
+      "name": "Facts kept",
+      "description": "The rewrite still says the dashboard shows the mean by default, that the finance team relies on it, and that it is used for the monthly report",
+      "max_score": 14
+    },
+    {
+      "name": "Clear text untouched",
+      "description": "The title, the headings and the sentence 'Use the median when your data has outliers.' are unchanged word for word",
+      "max_score": 12
+    },
+    {
+      "name": "Kept items explained",
+      "description": "summary.md names at least one flagged wording that was kept on purpose, such as 'robust' or the definition dashes, with the reason",
+      "max_score": 10
+    },
+    {
+      "name": "Edited in place",
+      "description": "stats-guide.md in the working folder is changed",
+      "max_score": 8
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "context": "Tests whether the agent rewrites only the long, tangled and inflated sentences of a README, in place, without touching clear sentences or code, and without losing facts. The input has two hard sentences: the 'How it works' paragraph (one sentence of more than 50 words using 'is designed to', 'seamlessly', 'leverage' and 'in order to') and the 'Retention' paragraph (one sentence of more than 40 words with an inner 'which' clause). Everything else is clear.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "Edited in place",
+      "description": "README.md in the working folder is changed. The agent did not only propose changes or write the rewrite to a different file",
+      "max_score": 10
+    },
+    {
+      "name": "How it works split",
+      "description": "The 'How it works' paragraph is rewritten as several sentences, none longer than 25 words",
+      "max_score": 12
+    },
+    {
+      "name": "Retention split",
+      "description": "The 'Retention' paragraph is rewritten as several sentences, none longer than 25 words, with the conditions (older than seven years, no audit hold) stated before or clearly attached to the deletion",
+      "max_score": 12
+    },
+    {
+      "name": "Inflated words removed",
+      "description": "'is designed to', 'seamlessly', 'leverage' and 'in order to' no longer appear in the 'How it works' paragraph",
+      "max_score": 10
+    },
+    {
+      "name": "Facts kept",
+      "description": "The rewrite still says that Ledger reads the database write-ahead log, captures payments when they are committed, replays the log on start, skips payments already stored, deletes files older than seven years unless an audit hold applies, that seven years is what the tax office requires, and that the cleanup runs nightly",
+      "max_score": 16
+    },
+    {
+      "name": "Clear sentences untouched",
+      "description": "The title, the first paragraph, the 'Install' paragraph and the paragraph about daily files are unchanged word for word",
+      "max_score": 14
+    },
+    {
+      "name": "Code untouched",
+      "description": "The bash code block, including its long comment, and the inline code `2026-03-14.ledger` are unchanged",
+      "max_score": 10
+    },
+    {
+      "name": "No telegraph style",
+      "description": "The rewritten sentences are complete sentences with articles and verbs, not clipped fragments such as 'Reads log. Captures payments.'",
+      "max_score": 8
+    },
+    {
+      "name": "Summary written",
+      "description": "summary.md states the number of sentences changed",
+      "max_score": 8
+    }
+  ]
+}

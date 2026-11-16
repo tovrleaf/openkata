@@ -55,7 +55,7 @@ the agent and the model:
 Assisted-by: Claude Code:claude-sonnet-5-5
 ```
 
-The agent is the tool you used, such as Kiro, Claude Code or OpenCode,
+The agent is the tool you used, such as Claude Code, Codex or OpenCode,
 and the model is the one it ran on. The trailer makes AI contributions
 visible in the history, so they can be filtered and reviewed.
 
@@ -135,9 +135,10 @@ These apply to every markdown file, including these docs.
 
 ## Changelogs
 
-Every changelog follows Keep a Changelog, with an `## [Unreleased]`
-section at the top and versions below it, newest first, as described in
-[versioning and the manifest](../reference/versioning.md). Entries say
+Every changelog follows Keep a Changelog, as described in
+[versioning and the manifest](../reference/versioning.md). It has an
+`## [Unreleased]` section at the top and versions below it, newest
+first. Entries say
 what changed in a sentence. "Fixed bug" is not enough, and "Fixed crash
 when uploading files larger than 10MB" is. A changelog does not mention
 the tessl files.

@@ -1,7 +1,7 @@
 # Open Kata
 
 <!-- badges:start -->
-[![Skills](https://img.shields.io/badge/skills-13-blue?style=flat-square)](skills/)
+[![Skills](https://img.shields.io/badge/skills-14-blue?style=flat-square)](skills/)
 [![Rules](https://img.shields.io/badge/rules-6-blue?style=flat-square)](rules/)
 [![Profiles](https://img.shields.io/badge/profiles-2-blue?style=flat-square)](profiles/)
 [![MCP Server](https://img.shields.io/badge/MCP_server-ready-green?style=flat-square)](https://openkata.dev/getting-started/)
@@ -31,14 +31,14 @@ See the [Manifesto](MANIFESTO.md) for why this exists.
 
 Kata in this repo are **platform-agnostic**. Skills follow the
 [Agent Skills](https://agentskills.io/) standard
-and work with any agent that supports it — Kiro, Claude Code,
-OpenCode, or others. Skills avoid coupling to specific tooling,
+and work with any agent that supports it, such as Claude
+Code, Codex, or OpenCode. Skills avoid coupling to specific tooling,
 MCP servers, or platform-specific features so they remain
 portable across environments.
 
 ## Using kata
 
-The fastest way to use kata is via the MCP server — add
+The fastest way to use kata is via the MCP server: add
 `https://openkata.dev/mcp` to your agent config. Zero install,
 always up-to-date.
 
@@ -51,7 +51,7 @@ directory. Your agent discovers them automatically.
 - See the [full catalog](https://openkata.dev/catalog/) for
   all available artifacts
 - See [Getting Started](https://openkata.dev/getting-started/)
-  for client-specific setup (Kiro, Claude Code, OpenCode,
+  for client-specific setup (Claude Code, Codex, Cursor,
   and others)
 
 ## Contributing

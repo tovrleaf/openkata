@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Check the staged text files with the clear-writing script and stop the
+# commit when a sentence is flagged. Only lines changed since HEAD are
+# checked. Eval fixtures are skipped, since they may hold hard-to-read
+# text on purpose. Turn the hooks on with "make hooks".
+set -euo pipefail
+
+cd "$(git rev-parse --show-toplevel)"
+check=".agents/skills/clear-writing/scripts/check.py"
+
+files=()
+while IFS= read -r file; do
+  case "${file}" in
+    */evals/*) ;;
+    *.md | *.markdown | *.mdx | *.txt | *.templ) files+=("${file}") ;;
+  esac
+done < <(git diff --cached --name-only --diff-filter=ACMR)
+
+if [[ ${#files[@]} -eq 0 ]]; then
+  exit 0
+fi
+
+if ! python3 -B "${check}" --changed HEAD "${files[@]}"; then
+  echo "pre-commit: rewrite the flagged sentences, or keep them with" \
+    "git commit --no-verify" >&2
+  exit 1
+fi
