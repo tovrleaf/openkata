@@ -6,7 +6,7 @@ other. Task 3 changes AWS, and the account owner runs it.
 ## Tasks
 
 ### 1. Static handler with hashes and cache headers
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: Static responses carry `ETag` and `Cache-Control`,
   and code can ask for a file's hashed URL
 - **Boundary**: `internal/assets/` (new),
@@ -104,3 +104,14 @@ other. Task 3 changes AWS, and the account owner runs it.
 - **Verify**: `go test ./cmd/openkata-web/ -run Embedded`
 
 ## Progress Log
+
+### 2026-11-16: Task 1
+
+Added `internal/assets`. The handler sets the hash as `ETag` and
+picks `Cache-Control` from the `v` query. `main.go` serves
+`/static/` through `assets.Default` in both modes. On the local
+server a file gets `no-cache`, a repeat with its ETag gets `304`,
+and a directory gets `404`. Against the real `static.FS`, a
+matching `v` gets one year and no `v` gets 5 minutes. Directory listings under `/static/` now return
+`404`. `site.webmanifest` is still served as `text/plain`, as
+before.

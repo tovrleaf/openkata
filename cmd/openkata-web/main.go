@@ -14,6 +14,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
+	"github.com/tovrleaf/openkata/internal/assets"
 	"github.com/tovrleaf/openkata/web/static"
 )
 
@@ -68,12 +69,14 @@ func main() {
 
 	// Static files: embedded in prod, filesystem in dev
 	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") != "" {
-		mux.Handle("/static/", http.StripPrefix("/static/",
-			http.FileServerFS(static.FS)))
+		assets.Default, err = assets.NewEmbedded(static.FS)
+		if err != nil {
+			log.Fatalf("static files: %v", err)
+		}
 	} else {
-		mux.Handle("/static/", http.StripPrefix("/static/",
-			http.FileServer(http.Dir("web/static"))))
+		assets.Default = assets.NewLive(os.DirFS("web/static"))
 	}
+	mux.Handle("/static/", http.StripPrefix("/static/", assets.Default))
 
 	// Routes
 	mux.HandleFunc("/", handleHome)
