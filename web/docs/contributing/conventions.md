@@ -135,9 +135,10 @@ These apply to every markdown file, including these docs.
 
 ## Changelogs
 
-Every changelog follows Keep a Changelog, with an `## [Unreleased]`
-section at the top and versions below it, newest first, as described in
-[versioning and the manifest](../reference/versioning.md). Entries say
+Every changelog follows Keep a Changelog, as described in
+[versioning and the manifest](../reference/versioning.md). It has an
+`## [Unreleased]` section at the top and versions below it, newest
+first. Entries say
 what changed in a sentence. "Fixed bug" is not enough, and "Fixed crash
 when uploading files larger than 10MB" is. A changelog does not mention
 the tessl files.

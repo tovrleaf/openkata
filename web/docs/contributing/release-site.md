@@ -81,7 +81,7 @@ To release the site:
    ```
 
    While the major number is 0, a `feat` or a breaking change raises the
-   minor number, and anything else raises the patch. Do not release a
+   minor number. Anything else raises the patch. Do not release a
    change that no visitor or contributor could notice, such as one that
    only touches specs.
 
@@ -93,23 +93,23 @@ To release the site:
    git tag v0.15.0
    ```
 
-3. Push the tag, which deploys again with the new number, and write the
+3. Push the tag. It deploys again with the new number. Then write the
    release notes as a
    [GitHub release](https://github.com/tovrleaf/openkata/releases) for
    the tag. The footer links to it. `make push` pushes tags that were
    not pushed yet, and asks first.
 
 Tag the head of `main`. The deploy of a tag does nothing unless the tag
-is on the head of `main`, so a tag on an older commit, such as one made
+is on the head of `main`. So a tag on an older commit, such as one made
 to record the past, never puts old code in production. The deploy also
-only sees a tag that its commit contains, so a pull request merged by
+only sees a tag that its commit contains. So a pull request merged by
 rebasing is released by tagging after the merge, not before.
 
 ## What happens on merge
 
-Pushing to `main`, or pushing a release tag, starts the Deploy workflow,
-which runs two jobs at the same time. They authenticate to AWS with the `openkata-ci` role, through
-GitHub's OIDC, so no keys are stored.
+Pushing to `main`, or pushing a release tag, starts the Deploy workflow.
+It runs two jobs at the same time. They authenticate to AWS with the
+`openkata-ci` role, through GitHub's OIDC, so no keys are stored.
 
 **Web server.** The job checks out the full git history, then runs
 `scripts/deploy-web.sh`:
@@ -122,8 +122,8 @@ GitHub's OIDC, so no keys are stored.
    built in
 5. zip it and replace the code of the `openkata-web` Lambda function
 
-**MCP server.** The job also checks out the full history, reads the
-release number and builds `cmd/openkata-mcp` the same way, then
+**MCP server.** The job also checks out the full history and reads the
+release number. It builds `cmd/openkata-mcp` the same way, then
 replaces the code of the `openkata-mcp` function.
 
 Both jobs run on every merge, whatever changed. A deploy replaces
@@ -157,5 +157,5 @@ the change.
 
 There is no rollback step. A deploy overwrites the function code, and
 the scripts create no versions or aliases to switch back to. To go
-back, revert the change and merge the revert, which deploys again, or
-check out an earlier commit and deploy it by hand.
+back, revert the change and merge the revert. That deploys again.
+You can also check out an earlier commit and deploy it by hand.

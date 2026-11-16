@@ -65,8 +65,8 @@ major, as described in the versioning page.
 5. **For a skill that has evals, run them.** Do this after the
    version bump and before the commit, with `make eval-local
    skills/<name>`. A result counts only when its `skill_version` is the
-   skill's current version, so a report from before the bump is
-   ignored and the release would show no effectiveness. The new
+   skill's current version. A report from before the bump is ignored,
+   and the release would show no effectiveness. The new
    report in `skills/<name>/evals/results/` goes into the release
    commit. How the evals work is in
    [how we use evals](../reference/evals.md).
@@ -96,8 +96,8 @@ major, as described in the versioning page.
    ```
 
    It shows the commits and the tags that exist only in your clone,
-   asks first, then pushes the branch and each tag with a push of its
-   own, so no tag is forgotten. It ends with the check described under
+   and asks first. Then it pushes the branch, and each tag with a push
+   of its own, so no tag is forgotten. It ends with the check described under
    "Check that releases went out" below. To push by hand, push the
    tag separately: `git push origin <type>/<name>/vX.Y.Z`.
 
@@ -127,9 +127,9 @@ Before you tag, these must all be true:
 
 Pushing a tag that matches `skills/*/v*`, `rules/*/v*` or
 `profiles/*/v*` starts the publish workflow. It uploads the artifact
-as it was at the tag to `<type>/<name>/<version>/` in the bucket and
-regenerates `versions.json`, reading a skill's eval results from the
-uploaded version.
+as it was at the tag to `<type>/<name>/<version>/` in the bucket.
+Then it regenerates `versions.json`, reading a skill's eval results
+from the uploaded version.
 
 If the tag cannot start the workflow, for example because the AWS
 trust policy does not allow tag-triggered runs, start it by hand:
@@ -153,7 +153,7 @@ make published
 ```
 
 It lists tags that exist only in your clone, and pushed tags whose
-files are not on the site, and exits with an error if there are any.
+files are not on the site. If there are any, it exits with an error.
 Tags of renamed artifacts are skipped, since their old files are
 deleted on purpose. A missing version is published with the `gh
 workflow run` command shown above. The check reads the live site and
