@@ -47,6 +47,9 @@ Mermaid team brings browser-free rendering to v12.
   rendered SVG, or when the SVG is older than the block
 - The hand-drawn SVGs from spec 0025 are replaced with `mermaid`
   blocks, unless a diagram reads better hand-drawn
+- `specs/0025-static-assets-and-diagrams/generate_diagrams.py`,
+  which made the first versions of those SVGs, is deleted once
+  none of the SVGs it made remain
 
 ## Out of Scope
 
