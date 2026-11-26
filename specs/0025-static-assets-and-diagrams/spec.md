@@ -53,9 +53,10 @@ fast and the docs can grow without bloating the deploy.
 
 ### Part 2: Diagram rendering
 
-- Diagrams are drawn by hand as SVG files next to the docs page
-  that uses them, linked with Markdown image syntax and
-  descriptive alt text
+- Diagrams are SVG files, drawn by hand or by an agent, next to
+  the docs page that uses them. The files are the source: nothing
+  in the build generates them. They are linked with Markdown
+  image syntax and descriptive alt text
 - The docs renderer inlines a linked local `.svg` file into the
   page, so the SVG's CSS variables follow the site theme
 - Colors in the SVG use the site's design tokens, with fallback

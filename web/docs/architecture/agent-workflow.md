@@ -9,8 +9,8 @@ order: 1
 ## Feature Development
 
 ![Plan with spec-planner, implement with the frontend and backend
-developers, then validate with spec-validator. A failed validation
-goes back to implement.](agent-workflow/feature-development.svg)
+developers, then validate with spec-validator. A failed validation goes
+back to implement.](agent-workflow/feature-development.svg)
 
 ## Parallel Implementation
 
@@ -31,16 +31,18 @@ backend-developer  │ Handlers ─── Types ─────────┘
 
 ## Agent Responsibilities
 
-![The user works through dojo-master, or one to one with
-spec-planner. dojo-master delegates to frontend-developer,
-backend-developer, spec-validator, adr-author and
+![The user works through dojo-master, or one to one with spec-planner.
+dojo-master delegates to frontend-developer, backend-developer,
+spec-validator, adr-author and
 kata-author.](agent-workflow/agent-responsibilities.svg)
 
 ## Routing
 
 ![A planning request switches to spec-planner. Anything else goes to
-dojo-master, which routes each kind of work to one
-agent.](agent-workflow/routing.svg)
+dojo-master. It sends templates, CSS and JS to frontend-developer, and
+handlers, types and tests to backend-developer. Decisions go to
+adr-author, conventions to kata-author and validation to
+spec-validator.](agent-workflow/routing.svg)
 
 ## Agents
 

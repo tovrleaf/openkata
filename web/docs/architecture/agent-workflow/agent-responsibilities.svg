@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" id="aw-agents" viewBox="0 0 440 390" width="503" role="img" aria-labelledby="aw-agents-title">
-  <title id="aw-agents-title">Agent responsibilities: the user works through dojo-master, or one to one with spec-planner. dojo-master delegates to frontend-developer, backend-developer, spec-validator, adr-author and kata-author.</title>
+  <title id="aw-agents-title">The user works through dojo-master, or one to one with spec-planner. dojo-master delegates to frontend-developer, backend-developer, spec-validator, adr-author and kata-author.</title>
   <style>
     #aw-agents { font-family: var(--font-body, system-ui, sans-serif); font-size: 14px; }
     #aw-agents .box { fill: var(--color-surface-raised, #fff); stroke: var(--color-ink-muted, #6b6b6b); stroke-width: 1.25; }

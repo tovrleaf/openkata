@@ -164,8 +164,10 @@ Each SVG follows these conventions.
   every other `id` in the file with it, and start every rule in the
   `<style>` block with it. Inlined, the styles apply to the whole
   page.
-- Add a `<title>` that describes the diagram, with `role="img"` and
-  `aria-labelledby` on the `svg` element pointing to it.
+- Add a `<title>` with `role="img"` and `aria-labelledby` on the
+  `svg` element pointing to it. The title is the image link's alt
+  text, word for word. Screen readers read the title on the site and
+  the alt text on GitHub, and a test checks that the two match.
 - Take every color from a semantic token, with the japandi value as
   the fallback. Repeat the color rules in an
   `@media (prefers-color-scheme: dark)` block with the indigo values

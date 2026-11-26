@@ -189,3 +189,24 @@ links the script that made the workflow diagrams. The template is
 valid XML, and on its own it showed its light and dark fallbacks.
 The light fallbacks of the workflow diagrams, not checked in task
 5, also showed.
+
+### 2026-11-26: Fixes after the first validation
+
+The first `/validate-spec` run passed with one partial and three
+issues. Three of them led to changes:
+
+- The spec said "drawn by hand", but a script made the diagrams.
+  The spec now says hand or agent, and that the files are the
+  source.
+- Screen readers on the site read the SVG `<title>`, which was
+  worded differently from the alt text. Each title is now the alt
+  text word for word. A new test, `TestDiagramTitlesMatchAltText`,
+  parses every docs page and fails on a mismatch. A changed title
+  made it fail.
+- `TestStaticLinksCarryHashes` now also catches `/static/` links in
+  single quotes, backticks or unquoted attributes, and links in the
+  package's Go helpers. A single-quoted link added to `nav.templ`
+  made it fail.
+
+The fourth issue, that the live CloudFront setup was not checked,
+needs no change. Task 3 records the live check.

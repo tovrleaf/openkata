@@ -24,6 +24,35 @@ DARK = {
 }
 
 
+# Each title is also the alt text of the image link on the docs page.
+# The page's test checks that the two match.
+TITLES = {
+    "feature-development": (
+        "Plan with spec-planner, implement with the frontend and backend "
+        "developers, then validate with spec-validator. A failed "
+        "validation goes back to implement."
+    ),
+    "parallel-implementation": (
+        "dojo-master hands templates, CSS and JS to frontend-developer, "
+        "and handlers, types and tests to backend-developer. Their work "
+        "converges into integration tasks that both agents do in "
+        "sequence."
+    ),
+    "agent-responsibilities": (
+        "The user works through dojo-master, or one to one with "
+        "spec-planner. dojo-master delegates to frontend-developer, "
+        "backend-developer, spec-validator, adr-author and kata-author."
+    ),
+    "routing": (
+        "A planning request switches to spec-planner. Anything else goes "
+        "to dojo-master. It sends templates, CSS and JS to "
+        "frontend-developer, and handlers, types and tests to "
+        "backend-developer. Decisions go to adr-author, conventions to "
+        "kata-author and validation to spec-validator."
+    ),
+}
+
+
 def rules(p, c):
     return f"""\
     #{p} {{ font-family: var(--font-body, system-ui, sans-serif); font-size: 14px; }}
@@ -116,9 +145,7 @@ def feature_development():
         arrow(p, "M280,220 H330 V128 H280"),
         note(338, 178, "fail", start=True),
     ])
-    title = ("Feature development: plan with spec-planner, implement with "
-             "the frontend and backend developers, then validate with "
-             "spec-validator. A pass is done; a fail goes back to implement.")
+    title = TITLES["feature-development"]
     return svg(p, title, 380, 346, body)
 
 
@@ -140,10 +167,7 @@ def parallel_implementation():
         arrow(p, "M230,260 V300"),
         box(115, 300, 230, 52, ["Integration tasks", "both agents sequential"]),
     ])
-    title = ("Parallel implementation: dojo-master hands templates, CSS and "
-             "JS to frontend-developer, and handlers, types and tests to "
-             "backend-developer. Their work converges into integration tasks "
-             "that both agents do in sequence.")
+    title = TITLES["parallel-implementation"]
     return svg(p, title, 460, 362, body)
 
 
@@ -164,10 +188,7 @@ def agent_responsibilities():
         y = 160 + 46 * i
         parts.append(arrow(p, f"M70,{y + 18} H100"))
         parts.append(box(100, y, 180, 36, [name]))
-    title = ("Agent responsibilities: the user works through dojo-master, "
-             "or one to one with spec-planner. dojo-master delegates to "
-             "frontend-developer, backend-developer, spec-validator, "
-             "adr-author and kata-author.")
+    title = TITLES["agent-responsibilities"]
     return svg(p, title, 440, 390, "\n".join(parts))
 
 
@@ -199,11 +220,7 @@ def routing():
         parts.append(arrow(p, f"M245,{cy} H300"))
         parts.append(note(272, cy - 7, "yes"))
         parts.append(box(300, cy - 20, 170, 40, [agent]))
-    title = ("Routing: a planning request switches to spec-planner. "
-             "Anything else goes to dojo-master, which sends templates, CSS "
-             "and JS to frontend-developer, handlers, types and tests to "
-             "backend-developer, decisions to adr-author, conventions to "
-             "kata-author and validation to spec-validator.")
+    title = TITLES["routing"]
     return svg(p, title, 480, 612, "\n".join(parts))
 
 
