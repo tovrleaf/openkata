@@ -98,11 +98,9 @@ func TestRenderDocsMarkdown(t *testing.T) {
 		{"table", "| a | b |\n|---|---|\n| 1 | 2 |\n", "<table>"},
 		{"heading anchor", "## Install it\n", `<h2 id="install-it">`},
 		{"unsafe html passes", "<div class=\"note\">x</div>\n", `<div class="note">x</div>`},
-		{"mermaid block marked", "```mermaid\ngraph TD\n  A-->B\n```\n", `<pre class="mermaid-source"><code class="language-mermaid">graph TD`},
-		{"mermaid source escaped", "```mermaid\nA-->B\n```\n", "A--&gt;B"},
 		{"other code highlighted", "```go\nx := 1\n```\n", `<pre class="chroma"><code>`},
 		{"highlight uses classes", "```go\nx := 1\n```\n", `<span class="mi">1</span>`},
-		{"plain fence not marked", "```\nbox\n```\n", "<pre><code>box"},
+		{"plain fence not highlighted", "```\nbox\n```\n", "<pre><code>box"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -112,13 +110,6 @@ func TestRenderDocsMarkdown(t *testing.T) {
 			}
 		})
 	}
-
-	t.Run("plain fence is not marked as mermaid", func(t *testing.T) {
-		got := renderedBody(t, "```\nbox\n```\n").Body
-		if strings.Contains(got, "mermaid-source") {
-			t.Errorf("Body = %q, want no mermaid-source class", got)
-		}
-	})
 
 	t.Run("first h1 is stripped", func(t *testing.T) {
 		got := renderedBody(t, "# Page title\n\ntext\n\n## Sub\n").Body

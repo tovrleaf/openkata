@@ -84,7 +84,7 @@ other. Task 3 changes AWS, and the account owner runs it.
   narrow screens
 
 ### 6. Remove the Mermaid source view
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: No Mermaid handling remains
 - **Boundary**: `cmd/openkata-web/docs_render.go`,
   `cmd/openkata-web/docs_render_test.go`
@@ -169,3 +169,10 @@ local page in both themes, at desktop width and in a 375px frame,
 showed every diagram whole and readable. Opened on its own with
 the OS in dark mode, as GitHub shows it, each SVG used its dark
 fallbacks.
+
+### 2026-11-26: Task 6
+
+Removed the rewrite that marked `mermaid` code blocks as
+`mermaid-source`, and its three tests. A `mermaid` block now
+renders like any other code block. `grep -rn mermaid cmd web`
+prints nothing.

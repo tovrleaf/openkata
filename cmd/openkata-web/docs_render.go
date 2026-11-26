@@ -134,9 +134,6 @@ func (s *docsSite) renderPage(p *docsPage) error {
 	out := addTargetBlankToExternalLinks(buf.String())
 	out = stripFirstH1(out)
 	out = addHeadingAnchors(out)
-	out = strings.ReplaceAll(out,
-		`<pre><code class="language-mermaid">`,
-		`<pre class="mermaid-source"><code class="language-mermaid">`)
 	p.Body = out
 	return nil
 }
