@@ -131,7 +131,10 @@
         "cloudfront:DescribeFunction",
         "cloudfront:DeleteFunction",
         "cloudfront:TagResource",
-        "cloudfront:ListDistributions"
+        "cloudfront:ListDistributions",
+        "cloudfront:ListCachePolicies",
+        "cloudfront:GetCachePolicy",
+        "cloudfront:CreateCachePolicy"
       ],
       "Resource": "*"
     },

@@ -9,6 +9,7 @@ import (
 	"io/fs"
 	"path"
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
 	"time"
@@ -64,6 +65,7 @@ type docsSite struct {
 	Sections []*docsSection
 	byURL    map[string]*docsPage
 	byFile   map[string]*docsPage
+	fsys     fs.FS // the docs tree, for files that pages inline
 }
 
 type docsFrontmatter struct {
@@ -94,7 +96,7 @@ func buildSite(fsys fs.FS, opts ...siteOption) (*docsSite, error) {
 	for _, opt := range opts {
 		opt(&cfg)
 	}
-	site := &docsSite{byURL: map[string]*docsPage{}, byFile: map[string]*docsPage{}}
+	site := &docsSite{byURL: map[string]*docsPage{}, byFile: map[string]*docsPage{}, fsys: fsys}
 
 	home, err := loadDocsPage(fsys, "index.md", "", "/docs/")
 	if err != nil {
@@ -155,10 +157,12 @@ func loadDocsSection(fsys fs.FS, site *docsSite, dir string) (*docsSection, erro
 
 	sec := &docsSection{Slug: dir}
 	hasIndex := false
+	var fileDirs []string
 	for _, e := range entries {
 		file := path.Join(dir, e.Name())
 		if e.IsDir() {
-			return nil, fmt.Errorf("%s: %w: sections cannot contain directories", file, errDocsLayout)
+			fileDirs = append(fileDirs, e.Name())
+			continue
 		}
 		if !strings.HasSuffix(e.Name(), ".md") {
 			continue
@@ -191,6 +195,9 @@ func loadDocsSection(fsys fs.FS, site *docsSite, dir string) (*docsSection, erro
 	if !hasIndex {
 		return nil, fmt.Errorf("%s: %w", dir, errDocsNoIndex)
 	}
+	if err := checkPageFileDirs(fsys, dir, sec.Pages, fileDirs); err != nil {
+		return nil, err
+	}
 
 	sort.SliceStable(sec.Pages, func(i, j int) bool {
 		a, b := sec.Pages[i], sec.Pages[j]
@@ -203,6 +210,31 @@ func loadDocsSection(fsys fs.FS, site *docsSite, dir string) (*docsSection, erro
 		return a.name < b.name
 	})
 	return sec, nil
+}
+
+// checkPageFileDirs allows a directory in a section only when it holds a
+// page's files, such as its diagrams: it is named after a page in the
+// section and holds no pages or directories of its own. Anything else
+// would hide pages from the site.
+func checkPageFileDirs(fsys fs.FS, section string, pages []*docsPage, dirs []string) error {
+	for _, d := range dirs {
+		dir := path.Join(section, d)
+		if !slices.ContainsFunc(pages, func(p *docsPage) bool {
+			return p.name == dir+".md"
+		}) {
+			return fmt.Errorf("%s: %w: a directory in a section must be named after one of its pages", dir, errDocsLayout)
+		}
+		entries, err := fs.ReadDir(fsys, dir)
+		if err != nil {
+			return fmt.Errorf("read %s: %w", dir, err)
+		}
+		for _, e := range entries {
+			if e.IsDir() || strings.HasSuffix(e.Name(), ".md") {
+				return fmt.Errorf("%s: %w: a page's file directory cannot hold pages or directories", path.Join(dir, e.Name()), errDocsLayout)
+			}
+		}
+	}
+	return nil
 }
 
 // datesFromFS reads the dates the deploy stamped into generated/dates.json,

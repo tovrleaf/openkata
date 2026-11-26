@@ -168,6 +168,20 @@
   height: auto;
 }
 
+/* Diagrams: inline SVG files. The viewBox sets the shape, and the
+   width follows the column. */
+
+.docs-diagram {
+  margin: var(--space-md) 0 var(--space-lg);
+}
+
+.docs-diagram svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
 .docs-content table {
   display: block;
   max-width: 100%;

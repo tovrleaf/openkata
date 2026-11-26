@@ -2,6 +2,8 @@ package templates
 
 import (
 	"fmt"
+
+	"github.com/tovrleaf/openkata/internal/assets"
 )
 
 templ SkillDetailPage(skill ArtifactDetail) {
@@ -105,8 +107,8 @@ templ SkillDetailPage(skill ArtifactDetail) {
 							<p class="benchmark-score">
 								<a href={ templ.SafeURL(fmt.Sprintf("https://tessl.io/registry/openkata/%s", skill.Name)) } target="_blank" class="benchmark-score-link">{ fmt.Sprintf("%d", skill.TesslScore) }%</a>
 								<a href={ templ.SafeURL(fmt.Sprintf("https://tessl.io/registry/openkata/%s", skill.Name)) } target="_blank" class="benchmark-tessl-logo-link">
-									<img class="benchmark-tessl-logo benchmark-tessl-logo--light" src="/static/img/tessl-icon-black.svg" alt="Tessl"/>
-									<img class="benchmark-tessl-logo benchmark-tessl-logo--dark" src="/static/img/tessl-icon-white.svg" alt="Tessl"/>
+									<img class="benchmark-tessl-logo benchmark-tessl-logo--light" src={ assets.URL("img/tessl-icon-black.svg") } alt="Tessl"/>
+									<img class="benchmark-tessl-logo benchmark-tessl-logo--dark" src={ assets.URL("img/tessl-icon-white.svg") } alt="Tessl"/>
 								</a>
 							</p>
 							<p class="benchmark-tessl-desc">Structural quality score from <a href={ templ.SafeURL(fmt.Sprintf("https://tessl.io/registry/openkata/%s", skill.Name)) } target="_blank">tessl</a> lint. It measures formatting, metadata, and SKILL.md structure.</p>

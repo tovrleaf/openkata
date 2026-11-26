@@ -4,12 +4,16 @@ import (
 	"errors"
 	"io/fs"
 	"os"
+	"path"
+	"regexp"
 	"slices"
 	"sort"
 	"strings"
 	"testing"
 
 	"github.com/tovrleaf/openkata/web/docs"
+	"github.com/yuin/goldmark/ast"
+	"github.com/yuin/goldmark/text"
 )
 
 func embeddedSite(t *testing.T) *docsSite {
@@ -144,4 +148,72 @@ func TestArchitectureDocsMoved(t *testing.T) {
 			t.Errorf("os.Stat(%s) error = %v, want the file gone (moved to web/docs/architecture)", old, err)
 		}
 	}
+}
+
+var svgTitle = regexp.MustCompile(`(?s)<title[^>]*>(.*?)</title>`)
+
+// TestDiagramTitlesMatchAltText checks that every diagram's <title> is the
+// alt text of the image link that shows it. On the site, screen readers
+// read the title, because the inlined SVG replaces the image and its alt
+// text. On GitHub they read the alt text.
+func TestDiagramTitlesMatchAltText(t *testing.T) {
+	found := 0
+	err := fs.WalkDir(docs.FS, ".", func(file string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() || !strings.HasSuffix(file, ".md") {
+			return err
+		}
+		src, err := fs.ReadFile(docs.FS, file)
+		if err != nil {
+			return err
+		}
+		// Parse as the renderer does, so links in code blocks are skipped.
+		doc := docsMarkdown.Parser().Parse(text.NewReader(src))
+		var images []*ast.Image
+		_ = ast.Walk(doc, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
+			if img, ok := n.(*ast.Image); ok && entering && isLocalSVG(string(img.Destination)) {
+				images = append(images, img)
+			}
+			return ast.WalkContinue, nil
+		})
+		for _, img := range images {
+			found++
+			alt := strings.Join(strings.Fields(altText(img, src)), " ")
+			svgFile := path.Join(path.Dir(file), string(img.Destination))
+			svg, err := fs.ReadFile(docs.FS, svgFile)
+			if err != nil {
+				t.Errorf("%s: read %s: %v", file, svgFile, err)
+				continue
+			}
+			tm := svgTitle.FindSubmatch(svg)
+			if tm == nil {
+				t.Errorf("%s has no <title>, want one that matches the alt text in %s", svgFile, file)
+				continue
+			}
+			if title := strings.Join(strings.Fields(string(tm[1])), " "); title != alt {
+				t.Errorf("%s <title> = %q, want the alt text in %s: %q", svgFile, title, file, alt)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatalf("WalkDir(docs.FS) error = %v", err)
+	}
+	if found == 0 {
+		t.Error("found no diagram image links in the docs, want at least the agent workflow diagrams")
+	}
+}
+
+// altText returns an image's alt text. A line break inside it counts as
+// a space, as it does when the page is shown.
+func altText(img *ast.Image, src []byte) string {
+	var b strings.Builder
+	for c := img.FirstChild(); c != nil; c = c.NextSibling() {
+		if t, ok := c.(*ast.Text); ok {
+			b.Write(t.Segment.Value(src))
+			if t.SoftLineBreak() || t.HardLineBreak() {
+				b.WriteByte(' ')
+			}
+		}
+	}
+	return b.String()
 }

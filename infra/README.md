@@ -40,6 +40,10 @@ Run in order:
 # 5. Update CI role
 #    Console: IAM → Roles → openkata-ci → Update inline policy
 #    Replace with contents of iam-ci-policy.json
+
+# 6. Cache /static/* at the edge (after a deploy that sets
+#    Cache-Control on static files)
+./infra/add-static-cache-behavior.sh
 ```
 
 ## Deploy code

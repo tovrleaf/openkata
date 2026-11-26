@@ -1,5 +1,7 @@
 package templates
 
+import "github.com/tovrleaf/openkata/internal/assets"
+
 templ GettingStarted() {
 	@Layout("Getting Started") {
 		@Nav()
@@ -266,7 +268,7 @@ ln -s ../../.agents/skills/grill-me .claude/skills/grill-me`}</code></pre>
 			<p>
 				<a href="https://github.com/tovrleaf/openkata" target="_blank" rel="noopener" class="btn-open">View on GitHub</a>
 			</p>
-			<script src="/static/js/getting-started.js"></script>
+			<script src={ assets.URL("js/getting-started.js") }></script>
 		</main>
 
 		@Footer()

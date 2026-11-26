@@ -1,5 +1,7 @@
 package templates
 
+import "github.com/tovrleaf/openkata/internal/assets"
+
 templ Home() {
 	@Layout("Home") {
 		@Nav()
@@ -14,8 +16,8 @@ templ Home() {
 			</section>
 
 			<div class="logo-section">
-				<img src="/static/img/logo.webp" alt="OpenKata logo" class="site-logo site-logo--light"/>
-				<img src="/static/img/logo-dark.webp" alt="OpenKata logo" class="site-logo site-logo--dark"/>
+				<img src={ assets.URL("img/logo.webp") } alt="OpenKata logo" class="site-logo site-logo--light"/>
+				<img src={ assets.URL("img/logo-dark.webp") } alt="OpenKata logo" class="site-logo site-logo--dark"/>
 			</div>
 
 			<h2>About</h2>

@@ -8,24 +8,16 @@ order: 1
 
 ## Feature Development
 
-```mermaid
-flowchart LR
-    Plan["1. Plan<br/>spec-planner"] --> Implement["2. Implement<br/>frontend + backend"]
-    Implement --> Validate["3. Validate<br/>spec-validator"]
-    Validate -->|pass| Done["Done"]
-    Validate -->|fail| Implement
-```
+![Plan with spec-planner, implement with the frontend and backend
+developers, then validate with spec-validator. A failed validation goes
+back to implement.](agent-workflow/feature-development.svg)
 
 ## Parallel Implementation
 
-```mermaid
-flowchart TD
-    DM[dojo-master] --> FD[frontend-developer]
-    DM --> BD[backend-developer]
-    FD --> |templates, CSS, JS| Merge[Converge]
-    BD --> |handlers, types, tests| Merge
-    Merge --> Integration[Integration tasks<br/>both agents sequential]
-```
+![dojo-master hands templates, CSS and JS to frontend-developer, and
+handlers, types and tests to backend-developer. Their work converges
+into integration tasks that both agents do in
+sequence.](agent-workflow/parallel-implementation.svg)
 
 ## Task Parallelization Example
 
@@ -39,35 +31,18 @@ backend-developer  │ Handlers ─── Types ─────────┘
 
 ## Agent Responsibilities
 
-```mermaid
-graph TD
-    User([User]) --> DM[dojo-master]
-    User -.->|direct 1-1| SP[spec-planner]
-    DM --> FD[frontend-developer]
-    DM --> BD[backend-developer]
-    DM --> SV[spec-validator]
-    DM --> AA[adr-author]
-    DM --> KA[kata-author]
-```
+![The user works through dojo-master, or one to one with spec-planner.
+dojo-master delegates to frontend-developer, backend-developer,
+spec-validator, adr-author and
+kata-author.](agent-workflow/agent-responsibilities.svg)
 
 ## Routing
 
-```mermaid
-flowchart TD
-    Request([Request]) --> IsPlanning{Planning?}
-    IsPlanning -->|yes| Direct["Switch to spec-planner"]
-    IsPlanning -->|no| DM[dojo-master]
-    DM --> IsUI{Templates,<br/>CSS, JS?}
-    DM --> IsGo{Handlers,<br/>types, tests?}
-    DM --> IsDecision{Decision?}
-    DM --> IsConvention{Convention?}
-    DM --> IsValidation{Validate?}
-    IsUI -->|yes| FD[frontend-developer]
-    IsGo -->|yes| BD[backend-developer]
-    IsDecision -->|yes| ADR[adr-author]
-    IsConvention -->|yes| KA[kata-author]
-    IsValidation -->|yes| SV[spec-validator]
-```
+![A planning request switches to spec-planner. Anything else goes to
+dojo-master. It sends templates, CSS and JS to frontend-developer, and
+handlers, types and tests to backend-developer. Decisions go to
+adr-author, conventions to kata-author and validation to
+spec-validator.](agent-workflow/routing.svg)
 
 ## Agents
 
