@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="aw-feature" viewBox="0 0 380 346" width="434" role="img" aria-labelledby="aw-feature-title">
+  <title id="aw-feature-title">Feature development: plan with spec-planner, implement with the frontend and backend developers, then validate with spec-validator. A pass is done; a fail goes back to implement.</title>
+  <style>
+    #aw-feature { font-family: var(--font-body, system-ui, sans-serif); font-size: 14px; }
+    #aw-feature .box { fill: var(--color-surface-raised, #fff); stroke: var(--color-ink-muted, #6b6b6b); stroke-width: 1.25; }
+    #aw-feature .end { fill: var(--color-surface, #fcfcfc); stroke: var(--color-ink, #0a0a0a); stroke-width: 1.25; }
+    #aw-feature .choice { fill: var(--color-surface-raised, #fff); stroke: var(--color-accent-muted, #4a7fa5); stroke-width: 1.5; }
+    #aw-feature .edge { fill: none; stroke: var(--color-ink-muted, #6b6b6b); stroke-width: 1.25; }
+    #aw-feature .head { fill: var(--color-ink-muted, #6b6b6b); }
+    #aw-feature text { fill: var(--color-ink, #0a0a0a); text-anchor: middle; }
+    #aw-feature .note { fill: var(--color-ink-muted, #6b6b6b); font-size: 12px; }
+    #aw-feature .strong { font-weight: 600; }
+    #aw-feature .dashed { stroke-dasharray: 5 4; }
+    #aw-feature .start { text-anchor: start; }
+    @media (prefers-color-scheme: dark) {
+    #aw-feature { font-family: var(--font-body, system-ui, sans-serif); font-size: 14px; }
+    #aw-feature .box { fill: var(--color-surface-raised, #2a2a3e); stroke: var(--color-ink-muted, #a0a0a0); stroke-width: 1.25; }
+    #aw-feature .end { fill: var(--color-surface, #1a1a2e); stroke: var(--color-ink, #f0eeeb); stroke-width: 1.25; }
+    #aw-feature .choice { fill: var(--color-surface-raised, #2a2a3e); stroke: var(--color-accent-muted, #5a9fd4); stroke-width: 1.5; }
+    #aw-feature .edge { fill: none; stroke: var(--color-ink-muted, #a0a0a0); stroke-width: 1.25; }
+    #aw-feature .head { fill: var(--color-ink-muted, #a0a0a0); }
+    #aw-feature text { fill: var(--color-ink, #f0eeeb); text-anchor: middle; }
+    #aw-feature .note { fill: var(--color-ink-muted, #a0a0a0); font-size: 12px; }
+    }
+  </style>
+  <defs>
+    <marker id="aw-feature-arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+  <rect class="box" x="100" y="10" width="180" height="52" rx="3"/>
+  <text class="strong" x="190" y="32">1. Plan</text>
+  <text class="note" x="190" y="50">spec-planner</text>
+  <rect class="box" x="100" y="102" width="180" height="52" rx="3"/>
+  <text class="strong" x="190" y="124">2. Implement</text>
+  <text class="note" x="190" y="142">frontend + backend</text>
+  <rect class="box" x="100" y="194" width="180" height="52" rx="3"/>
+  <text class="strong" x="190" y="216">3. Validate</text>
+  <text class="note" x="190" y="234">spec-validator</text>
+  <rect class="end" x="130" y="296" width="120" height="40" rx="20.0"/>
+  <text x="190" y="321">Done</text>
+  <path class="edge" d="M190,62 V102" marker-end="url(#aw-feature-arrow)"/>
+  <path class="edge" d="M190,154 V194" marker-end="url(#aw-feature-arrow)"/>
+  <path class="edge" d="M190,246 V296" marker-end="url(#aw-feature-arrow)"/>
+  <text class="note start" x="198" y="275">pass</text>
+  <path class="edge" d="M280,220 H330 V128 H280" marker-end="url(#aw-feature-arrow)"/>
+  <text class="note start" x="338" y="178">fail</text>
+</svg>

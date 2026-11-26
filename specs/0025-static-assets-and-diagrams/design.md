@@ -101,14 +101,25 @@ The SVG file lives in a folder named after the page:
 
 ### SVG conventions
 
-- Each SVG sets a `viewBox` and no fixed `width` or `height`.
-  CSS sets `max-width: 100%`
+- Each SVG sets a `viewBox`, and a `width` of 8/7 of the
+  viewBox width, with no `height`. Text drawn at 14 units then
+  shows at the 16px body size. CSS sets `max-width: 100%` and
+  `height: auto`, so a diagram shrinks on narrow screens. Without
+  a `width`, the SVG fills the column and its text grows to about
+  twice the body size
+- Keep the viewBox at most about 480 units wide. Lay out top to
+  bottom rather than side by side, so text stays readable on a
+  phone
 - It has a `<title>` and `role="img"` with `aria-labelledby`
 - Colors come only from tokens with fallbacks, in a `<style>`
   block: `fill: var(--color-surface-raised, #fff)`
 - An `@media (prefers-color-scheme: dark)` rule in the same block
   sets dark fallbacks for GitHub. On the site the tokens win
-- Text uses `font-family: inherit`
+- Text uses `font-family: var(--font-body, system-ui, sans-serif)`.
+  `inherit` would fall back to a serif font on GitHub, which shows
+  the SVG as an image
+- The `<style>` block applies to the whole page once the SVG is
+  inlined, so every rule starts with the SVG's own id
 - IDs inside the SVG (markers, title) carry a prefix unique to
   the diagram, because several SVGs share one page
 - No Mermaid source is kept in the file

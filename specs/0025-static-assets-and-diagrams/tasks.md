@@ -69,7 +69,7 @@ other. Task 3 changes AWS, and the account owner runs it.
 - **Verify**: `go test ./cmd/openkata-web/ -run 'Docs|Embedded'`
 
 ### 5. Redraw the agent workflow diagrams
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: The four diagrams show as pictures in both themes
 - **Boundary**: `web/docs/architecture/agent-workflow.md`,
   `web/docs/architecture/agent-workflow/*.svg` (new)
@@ -155,3 +155,17 @@ inside a sentence fails the build with `errDocsLink`. The loader
 now allows a directory named after a page in the same section,
 which is where the SVG files go. With inlining turned off, all
 seven diagram tests failed.
+
+### 2026-11-26: Task 5
+
+The four `mermaid` blocks in `agent-workflow.md` are now image
+links to SVG files in `architecture/agent-workflow/`, each with
+alt text. Each diagram keeps the nodes and edges of its Mermaid
+block. The two wide ones are laid out top to bottom, so they fit
+a phone. The first draft filled the column and its text came out
+at about twice the body size. Each SVG now sets a `width` of 8/7
+of its viewBox width, and `design.md` says so. Screenshots of the
+local page in both themes, at desktop width and in a 375px frame,
+showed every diagram whole and readable. Opened on its own with
+the OS in dark mode, as GitHub shows it, each SVG used its dark
+fallbacks.
