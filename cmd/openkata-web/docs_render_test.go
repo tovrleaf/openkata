@@ -138,6 +138,99 @@ func TestRenderDocsMarkdown(t *testing.T) {
 	})
 }
 
+const testSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" role="img"><title>Flow</title></svg>`
+
+// diagramFixture is renderFixture with SVG files added under
+// architecture/page/, the page's own file directory.
+func diagramFixture(body string, files map[string]string) fstest.MapFS {
+	fsys := renderFixture(body)
+	for name, data := range files {
+		fsys["architecture/page/"+name] = docsFile(data)
+	}
+	return fsys
+}
+
+func TestRenderDiagrams(t *testing.T) {
+	render := func(t *testing.T, body string, files map[string]string) string {
+		t.Helper()
+		site, err := buildSite(diagramFixture(body, files))
+		if err != nil {
+			t.Fatalf("buildSite() error = %v", err)
+		}
+		return site.byURL["/docs/architecture/page/"].Body
+	}
+
+	t.Run("local svg is inlined in a figure", func(t *testing.T) {
+		got := render(t, "Before.\n\n![A flow](page/flow.svg)\n\nAfter.\n", map[string]string{"flow.svg": testSVG})
+		want := "<figure class=\"docs-diagram\">\n" + testSVG + "\n</figure>"
+		if !strings.Contains(got, want) {
+			t.Errorf("Body = %q, want it to contain %q", got, want)
+		}
+		if strings.Contains(got, "<img") || strings.Contains(got, "<p><figure") {
+			t.Errorf("Body = %q, want no <img> and no figure inside <p>", got)
+		}
+		if !strings.Contains(got, "<p>Before.</p>") || !strings.Contains(got, "<p>After.</p>") {
+			t.Errorf("Body = %q, want the paragraphs around the diagram kept", got)
+		}
+	})
+
+	t.Run("xml declaration is dropped", func(t *testing.T) {
+		got := render(t, "![A flow](page/flow.svg)\n", map[string]string{
+			"flow.svg": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + testSVG + "\n",
+		})
+		if strings.Contains(got, "<?xml") || !strings.Contains(got, testSVG) {
+			t.Errorf("Body = %q, want the <svg> element without the XML declaration", got)
+		}
+	})
+
+	t.Run("two diagrams on one page", func(t *testing.T) {
+		got := render(t, "![a](page/a.svg)\n\n![b](./page/b.svg)\n", map[string]string{"a.svg": testSVG, "b.svg": testSVG})
+		if n := strings.Count(got, `<figure class="docs-diagram">`); n != 2 {
+			t.Errorf("Body has %d diagrams, want 2: %q", n, got)
+		}
+	})
+
+	unchanged := []struct {
+		name string
+		in   string
+		want string
+	}{
+		{"external svg", "![x](https://example.com/a.svg)\n", `<img src="https://example.com/a.svg" alt="x">`},
+		{"site-absolute svg", "![x](/static/img/a.svg)\n", `<img src="/static/img/a.svg" alt="x">`},
+		{"relative png", "![x](pic.png)\n", `<img src="pic.png" alt="x">`},
+	}
+	for _, tt := range unchanged {
+		t.Run("unchanged/"+tt.name, func(t *testing.T) {
+			got := render(t, tt.in, nil)
+			if !strings.Contains(got, tt.want) || strings.Contains(got, "docs-diagram") {
+				t.Errorf("Body of %q = %q, want the plain image %q", tt.in, got, tt.want)
+			}
+		})
+	}
+
+	errTests := []struct {
+		name  string
+		in    string
+		files map[string]string
+	}{
+		{"missing file", "![x](page/nope.svg)\n", nil},
+		{"leaves docs tree", "![x](../../static/img/a.svg)\n", nil},
+		{"inside a sentence", "See ![x](page/flow.svg) here.\n", map[string]string{"flow.svg": testSVG}},
+		{"not an svg element", "![x](page/flow.svg)\n", map[string]string{"flow.svg": "<html></html>"}},
+	}
+	for _, tt := range errTests {
+		t.Run("error/"+tt.name, func(t *testing.T) {
+			_, err := buildSite(diagramFixture(tt.in, tt.files))
+			if !errors.Is(err, errDocsLink) {
+				t.Fatalf("buildSite() with %q error = %v, want %v", tt.in, err, errDocsLink)
+			}
+			if !strings.Contains(err.Error(), "architecture/page.md") {
+				t.Errorf("buildSite() with %q error = %q, want it to name architecture/page.md", tt.in, err)
+			}
+		})
+	}
+}
+
 func TestRenderHeadingAnchors(t *testing.T) {
 	got := renderedBody(t, "# Title\n\n## Install `it`\n\n### Then\n\n#### Deep\n").Body
 

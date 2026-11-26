@@ -97,6 +97,10 @@ func TestBuildSite(t *testing.T) {
 		{"section without index", with(map[string]string{"reference/a.md": "# A"}), errDocsNoIndex},
 		{"top-level page", with(map[string]string{"extra.md": "# Extra"}), errDocsLayout},
 		{"nested directory", with(map[string]string{"guides/sub/a.md": "# A"}), errDocsLayout},
+		{"file directory without a page", with(map[string]string{"guides/sub/a.svg": "<svg/>"}), errDocsLayout},
+		{"file directory named after index", with(map[string]string{"guides/index/a.svg": "<svg/>"}), errDocsLayout},
+		{"page in a file directory", with(map[string]string{"guides/intro.md": "# Intro", "guides/intro/a.md": "# A"}), errDocsLayout},
+		{"directory in a file directory", with(map[string]string{"guides/intro.md": "# Intro", "guides/intro/sub/a.svg": "<svg/>"}), errDocsLayout},
 		{"uppercase file name", with(map[string]string{"guides/Intro.md": "# Intro"}), errDocsLayout},
 		{"space in file name", with(map[string]string{"guides/my page.md": "# Page"}), errDocsLayout},
 		{"uppercase section", with(map[string]string{"Guides2/index.md": "# G"}), errDocsLayout},
@@ -109,6 +113,16 @@ func TestBuildSite(t *testing.T) {
 			}
 		})
 	}
+
+	t.Run("file directory named after a page", func(t *testing.T) {
+		site, err := buildSite(with(map[string]string{"guides/intro.md": "# Intro", "guides/intro/flow.svg": "<svg/>"}))
+		if err != nil {
+			t.Fatalf("buildSite() error = %v", err)
+		}
+		if n := len(site.byFile); n != 3 {
+			t.Errorf("site has %d pages, want 3: the directory adds none", n)
+		}
+	})
 
 	t.Run("missing root index", func(t *testing.T) {
 		fsys := base()

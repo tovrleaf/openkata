@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io/fs"
 	"net/url"
 	"path"
 	"regexp"
@@ -16,8 +17,10 @@ import (
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
+	"github.com/yuin/goldmark/renderer"
 	"github.com/yuin/goldmark/renderer/html"
 	"github.com/yuin/goldmark/text"
+	"github.com/yuin/goldmark/util"
 )
 
 var errDocsLink = errors.New("invalid link")
@@ -32,8 +35,38 @@ var docsMarkdown = goldmark.New(
 		),
 	),
 	goldmark.WithParserOptions(parser.WithAutoHeadingID()),
-	goldmark.WithRendererOptions(html.WithUnsafe()),
+	goldmark.WithRendererOptions(
+		html.WithUnsafe(),
+		renderer.WithNodeRenderers(util.Prioritized(docsDiagramRenderer{}, 500)),
+	),
 )
+
+// docsDiagram is an SVG file's contents, inlined in place of the
+// paragraph that held only its image link. Inline SVG follows the site
+// theme through the design tokens, which an <img> cannot.
+type docsDiagram struct {
+	ast.BaseBlock
+	SVG []byte
+}
+
+var kindDocsDiagram = ast.NewNodeKind("DocsDiagram")
+
+func (n *docsDiagram) Kind() ast.NodeKind { return kindDocsDiagram }
+
+func (n *docsDiagram) Dump(src []byte, level int) { ast.DumpHelper(n, src, level, nil, nil) }
+
+type docsDiagramRenderer struct{}
+
+func (docsDiagramRenderer) RegisterFuncs(r renderer.NodeRendererFuncRegisterer) {
+	r.Register(kindDocsDiagram, func(w util.BufWriter, _ []byte, n ast.Node, entering bool) (ast.WalkStatus, error) {
+		if entering {
+			_, _ = w.WriteString("<figure class=\"docs-diagram\">\n")
+			_, _ = w.Write(n.(*docsDiagram).SVG)
+			_, _ = w.WriteString("\n</figure>\n")
+		}
+		return ast.WalkSkipChildren, nil
+	})
+}
 
 // renderDocs fills Body and Headings of every page. It runs after all
 // pages are registered so links can be checked against the whole site.
@@ -56,6 +89,7 @@ func (s *docsSite) renderPage(p *docsPage) error {
 	doc := docsMarkdown.Parser().Parse(reader)
 
 	var linkErr error
+	var diagrams []*ast.Image
 	err := ast.Walk(doc, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
 		if !entering {
 			return ast.WalkContinue, nil
@@ -68,6 +102,10 @@ func (s *docsSite) renderPage(p *docsPage) error {
 				return ast.WalkStop, nil
 			}
 			n.Destination = []byte(dest)
+		case *ast.Image:
+			if isLocalSVG(string(n.Destination)) {
+				diagrams = append(diagrams, n)
+			}
 		case *ast.Heading:
 			if n.Level == 2 || n.Level == 3 {
 				p.Headings = append(p.Headings, nodeText(n, p.Source))
@@ -80,6 +118,13 @@ func (s *docsSite) renderPage(p *docsPage) error {
 	}
 	if linkErr != nil {
 		return fmt.Errorf("%s: %w", p.name, linkErr)
+	}
+	// The tree is changed after the walk, so the walk never sees a
+	// node it has replaced.
+	for _, img := range diagrams {
+		if err := s.inlineDiagram(p, img); err != nil {
+			return fmt.Errorf("%s: %w", p.name, err)
+		}
 	}
 
 	var buf bytes.Buffer
@@ -137,6 +182,63 @@ func (s *docsSite) rewriteLink(from *docsPage, dest string) (string, error) {
 		return page.URL + "#" + u.Fragment, nil
 	}
 	return page.URL, nil
+}
+
+// isLocalSVG reports whether an image destination is a relative path to
+// an .svg file, which the renderer inlines. Absolute paths and URLs are
+// left as images.
+func isLocalSVG(dest string) bool {
+	if dest == "" || strings.HasPrefix(dest, "/") || strings.HasPrefix(dest, "#") {
+		return false
+	}
+	u, err := url.Parse(dest)
+	if err != nil || u.Scheme != "" || u.Host != "" {
+		return false
+	}
+	return strings.HasSuffix(u.Path, ".svg")
+}
+
+// inlineDiagram replaces the paragraph that holds img with the SVG file
+// it links to. The image must be alone in its paragraph, because a
+// figure cannot sit inside a <p>.
+func (s *docsSite) inlineDiagram(from *docsPage, img *ast.Image) error {
+	dest := string(img.Destination)
+	para, ok := img.Parent().(*ast.Paragraph)
+	if !ok || para.ChildCount() != 1 {
+		return fmt.Errorf("%w: diagram %q must be alone in its paragraph", errDocsLink, dest)
+	}
+	u, _ := url.Parse(dest) // isLocalSVG has parsed it
+	target := path.Join(path.Dir(from.name), u.Path)
+	if target == ".." || strings.HasPrefix(target, "../") {
+		return fmt.Errorf("%w: diagram %q leaves web/docs", errDocsLink, dest)
+	}
+	data, err := fs.ReadFile(s.fsys, target)
+	if err != nil {
+		return fmt.Errorf("%w: diagram %q: no file at %s", errDocsLink, dest, target)
+	}
+	svg, err := svgElement(data)
+	if err != nil {
+		return fmt.Errorf("%w: diagram %s: %v", errDocsLink, target, err)
+	}
+	para.Parent().ReplaceChild(para.Parent(), para, &docsDiagram{SVG: svg})
+	return nil
+}
+
+// svgElement returns the <svg> element of an SVG file, without the XML
+// declaration that is not allowed inside an HTML page.
+func svgElement(data []byte) ([]byte, error) {
+	data = bytes.TrimSpace(data)
+	if bytes.HasPrefix(data, []byte("<?xml")) {
+		end := bytes.Index(data, []byte("?>"))
+		if end == -1 {
+			return nil, errors.New("unclosed XML declaration")
+		}
+		data = bytes.TrimSpace(data[end+2:])
+	}
+	if !bytes.HasPrefix(data, []byte("<svg")) {
+		return nil, errors.New("file does not start with an <svg> element")
+	}
+	return data, nil
 }
 
 // nodeText returns the plain text of a node and its children.

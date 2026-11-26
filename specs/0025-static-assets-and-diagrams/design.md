@@ -91,7 +91,11 @@ The SVG file lives in a folder named after the page:
   `<figure class="docs-diagram">`
 - Any other image renders as goldmark does today
 - The strict loader reports a missing SVG file like a broken
-  link
+  link. It also rejects a diagram that shares its paragraph with
+  text, because a `<figure>` cannot sit inside a `<p>`
+- A section may hold a directory named after one of its pages.
+  That directory holds files only, with no pages or directories.
+  Before, the loader rejected every directory in a section
 - `web/docs` is already embedded for the docs, so the SVG files
   ship in the binary. Each diagram adds about 3 KB
 

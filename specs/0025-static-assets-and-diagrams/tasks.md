@@ -55,7 +55,7 @@ other. Task 3 changes AWS, and the account owner runs it.
   `x-cache: Hit from cloudfront`
 
 ### 4. Renderer inlines SVG diagrams
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: A Markdown image of a local `.svg` file shows as an
   inline SVG that follows the theme
 - **Boundary**: `cmd/openkata-web/docs_render.go`, the docs
@@ -143,3 +143,15 @@ site, a second request for `/static/favicon.svg` returned
 1–2 are not deployed yet, so these files are cached for the
 policy's 300-second default. Check a hashed URL for the one-year
 hit after this branch deploys.
+
+### 2026-11-26: Task 4
+
+A relative `.svg` image alone in its paragraph now renders as the
+file's `<svg>` element inside `<figure class="docs-diagram">`,
+with any XML declaration dropped. External, site-absolute and
+non-SVG images render as before. A missing file, a path outside
+`web/docs`, a file without an `<svg>` element, or a diagram
+inside a sentence fails the build with `errDocsLink`. The loader
+now allows a directory named after a page in the same section,
+which is where the SVG files go. With inlining turned off, all
+seven diagram tests failed.
