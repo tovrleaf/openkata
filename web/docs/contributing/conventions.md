@@ -133,6 +133,86 @@ These apply to every markdown file, including these docs.
 - One blank line around headings, lists, code blocks and tables. No
   trailing spaces, and a single newline at the end of the file.
 
+## Diagrams
+
+A diagram in these docs is an SVG file, drawn by hand or by an agent.
+The site puts the file's contents into the page, so the diagram
+follows the theme and needs no JavaScript. GitHub shows the same file
+as an image.
+
+Put the file in a directory named after the page, and link it with
+image syntax on a line of its own. The alt text says what the diagram
+shows:
+
+```markdown
+![Plan, implement and validate a feature. A failed validation
+goes back to implement.](agent-workflow/feature-development.svg)
+```
+
+That link lives in `architecture/agent-workflow.md`, and the file is
+`architecture/agent-workflow/feature-development.svg`. The build
+fails when the file is missing, lies outside `web/docs`, does not
+start with `<svg`, or shares its paragraph with text.
+
+Each SVG follows these conventions.
+
+- Set a `viewBox` and a `width` of 8/7 of the viewBox width, with no
+  `height`. Text drawn at 14 units then shows at the body size.
+- Keep the viewBox about 480 units wide or less. Lay the diagram out
+  top to bottom. Its text then stays readable on a phone.
+- Give the `svg` element an `id` that no other diagram uses. Start
+  every other `id` in the file with it, and start every rule in the
+  `<style>` block with it. Inlined, the styles apply to the whole
+  page.
+- Add a `<title>` that describes the diagram, with `role="img"` and
+  `aria-labelledby` on the `svg` element pointing to it.
+- Take every color from a semantic token, with the japandi value as
+  the fallback. Repeat the color rules in an
+  `@media (prefers-color-scheme: dark)` block with the indigo values
+  as fallbacks. The fallbacks are used only on GitHub. On the site
+  the tokens win.
+- Set `font-family: var(--font-body, system-ui, sans-serif)` and
+  `font-size: 14px` on the `svg`.
+- Keep no Mermaid or other source in the file.
+
+This template has two boxes and an arrow. Copy it as a starting
+point:
+
+```xml
+<svg xmlns="http://www.w3.org/2000/svg" id="ex-flow" viewBox="0 0 300 120" width="343" role="img" aria-labelledby="ex-flow-title">
+  <title id="ex-flow-title">Start leads to end.</title>
+  <style>
+    #ex-flow { font-family: var(--font-body, system-ui, sans-serif); font-size: 14px; }
+    #ex-flow .box { fill: var(--color-surface-raised, #fff); stroke: var(--color-ink-muted, #6b6b6b); stroke-width: 1.25; }
+    #ex-flow .edge { fill: none; stroke: var(--color-ink-muted, #6b6b6b); stroke-width: 1.25; }
+    #ex-flow .head { fill: var(--color-ink-muted, #6b6b6b); }
+    #ex-flow text { fill: var(--color-ink, #0a0a0a); text-anchor: middle; }
+    @media (prefers-color-scheme: dark) {
+      #ex-flow .box { fill: var(--color-surface-raised, #2a2a3e); stroke: var(--color-ink-muted, #a0a0a0); }
+      #ex-flow .edge { stroke: var(--color-ink-muted, #a0a0a0); }
+      #ex-flow .head { fill: var(--color-ink-muted, #a0a0a0); }
+      #ex-flow text { fill: var(--color-ink, #f0eeeb); }
+    }
+  </style>
+  <defs>
+    <marker id="ex-flow-arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="head" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+  <rect class="box" x="10" y="40" width="100" height="40" rx="3"/>
+  <text x="60" y="65">Start</text>
+  <path class="edge" d="M110,60 H190" marker-end="url(#ex-flow-arrow)"/>
+  <rect class="box" x="190" y="40" width="100" height="40" rx="3"/>
+  <text x="240" y="65">End</text>
+</svg>
+```
+
+The diagrams on the [agent workflow](../architecture/agent-workflow.md)
+page add pills, diamonds and edge labels. They were made with
+[a script](https://github.com/tovrleaf/openkata/blob/main/specs/0025-static-assets-and-diagrams/generate_diagrams.py)
+that can start a new diagram too. Once a file is edited by hand,
+edit the file, not the script.
+
 ## Changelogs
 
 Every changelog follows Keep a Changelog, as described in

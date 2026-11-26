@@ -95,10 +95,10 @@ other. Task 3 changes AWS, and the account owner runs it.
   `grep -rn mermaid cmd web` prints nothing
 
 ### 7. Document how to add a diagram
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: A contributor can add a diagram that follows the
   conventions
-- **Boundary**: `web/docs/contributing/authoring.md`
+- **Boundary**: `web/docs/contributing/conventions.md`
 - **Depends**: 4
 - **Done when**: the page shows the image link, where the SVG
   file goes, and the SVG conventions from `design.md`
@@ -176,3 +176,16 @@ Removed the rewrite that marked `mermaid` code blocks as
 `mermaid-source`, and its three tests. A `mermaid` block now
 renders like any other code block. `grep -rn mermaid cmd web`
 prints nothing.
+
+### 2026-11-26: Task 7
+
+The diagram section went into `conventions.md` instead of
+`authoring.md`. `authoring.md` covers skills, rules and profiles,
+while `conventions.md` already holds the Markdown and design token
+rules that diagrams build on. The new section shows the image link,
+where the SVG file goes and what fails the build. It lists the SVG
+conventions from `design.md`, with a template to copy. It also
+links the script that made the workflow diagrams. The template is
+valid XML, and on its own it showed its light and dark fallbacks.
+The light fallbacks of the workflow diagrams, not checked in task
+5, also showed.
