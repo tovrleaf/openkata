@@ -37,16 +37,17 @@ other. Task 3 changes AWS, and the account owner runs it.
   with `?v=` on CSS, JS and images
 
 ### 3. CloudFront: cache `/static/*` at the edge
-- **Status**: Pending
+- **Status**: Done
 - **Goal**: The Lambda only sees the first request for each
   static URL
 - **Boundary**: `infra/add-static-cache-behavior.sh` (new),
-  `infra/README.md`
+  `infra/iam-admin-policy.json`, `infra/README.md`
 - **Depends**: 1–2 deployed
 - **Done when**:
-  - The script adds the `/static/*` behavior on the `lambda`
-    origin with the managed
-    *UseOriginCacheControlHeaders-QueryStrings* policy
+  - The admin policy grants the three cache policy actions
+  - The script finds or creates the `openkata-static` cache
+    policy and adds the `/static/*` behavior on the `lambda`
+    origin
   - A second run changes nothing
   - The README lists the script
 - **Verify**: after the account owner runs it, two requests for
@@ -124,3 +125,21 @@ test fails on a literal `/static/` URL in a template and on a link
 to a missing file. A temporary bad link in `nav.templ` made it
 fail as expected. On the local server, the home, docs and getting
 started pages render every static link with `?v=`.
+
+### 2026-11-26: Task 3
+
+Added `infra/add-static-cache-behavior.sh`. The managed
+*UseOriginCacheControlHeaders-QueryStrings* policy was dropped,
+because it keys on `Host` and the Function URL rejects a foreign
+`Host`. The script now creates a custom `openkata-static` policy
+that keys on `v` alone, and the admin policy grants the actions
+it needs. The behavior copies the default behavior's CloudFront
+functions, so `www` still redirects. Against a mocked `aws`, the
+first run created the policy and added the behavior after
+`/mcp*`, and a second run left the behavior alone. The account
+owner applied the admin policy and ran the script. On the live
+site, a second request for `/static/favicon.svg` returned
+`x-cache: Hit from cloudfront`, and `www` still redirects. Tasks
+1–2 are not deployed yet, so these files are cached for the
+policy's 300-second default. Check a hashed URL for the one-year
+hit after this branch deploys.

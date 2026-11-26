@@ -4,7 +4,7 @@
 
 ```text
 Browser ─► CloudFront E1X978YU1XMI3Q
-             ├─ /static/*  ─► Lambda openkata-web   (UseOriginCacheControlHeaders-QueryStrings)
+             ├─ /static/*  ─► Lambda openkata-web   (openkata-static)
              ├─ /mcp*      ─► Lambda openkata-mcp   (CachingDisabled)
              └─ default    ─► Lambda openkata-web   (CachingDisabled)
 ```
@@ -13,25 +13,29 @@ Browser ─► CloudFront E1X978YU1XMI3Q
 
 - A new `/static/*` behavior sends requests to the existing
   `lambda` origin, with compression on and `GET` and `HEAD` only
-- It uses the managed cache policy
-  *UseOriginCacheControlHeaders-QueryStrings*
-  (`4cc15a8a-d715-48a4-82b8-cc0b614638fe`). All query strings
-  are in the cache key, so `?v=` works at the edge. TTLs come
-  from the response's `Cache-Control`, between 0 seconds and one
-  year
-- The policy also keys on cookies and `Host`. The site sets no
-  cookies, and `www` redirects to the apex, so neither splits
-  the cache
-- A made-up query string skips the cache and reaches the Lambda,
-  as every request does today
+- It uses a new custom cache policy, `openkata-static`. Only the
+  query string `v` is in the cache key, with no headers or
+  cookies. TTLs come from the response's `Cache-Control`,
+  between 0 seconds and one year, with a default of 300 seconds
 - New script: `infra/add-static-cache-behavior.sh`, idempotent
-  like `add-mcp-to-cloudfront.sh`. It adds the behavior with
-  `GetDistributionConfig` and `UpdateDistribution`, which the
-  admin policy already grants. No IAM change is needed
+  like `add-mcp-to-cloudfront.sh`. It finds or creates the cache
+  policy and adds the behavior
+- The behavior copies the default behavior's CloudFront
+  functions, so `www` still redirects to the apex for static
+  files
+- `infra/iam-admin-policy.json` gains `cloudfront:ListCachePolicies`,
+  `GetCachePolicy` and `CreateCachePolicy`. The account owner
+  applies the policy before running the script
 
-A custom policy that keys on `v` alone was rejected. It would
-need cache policy actions added to the admin policy, for a gain
-that only matters against deliberate cache busting.
+Managed policies were rejected:
+
+- *UseOriginCacheControlHeaders-QueryStrings* keys on `Host`, and
+  CloudFront forwards every header in the cache key to the
+  origin. A Lambda Function URL rejects a request whose `Host` is
+  not its own domain, which is why `/mcp*` uses the
+  *AllViewerExceptHostHeader* origin request policy
+- *CachingOptimized* leaves the query string out of the cache
+  key, so `?v=` would not give a new URL at the edge
 
 ### Static handler
 
@@ -171,5 +175,5 @@ inlines.
 ## Dependencies
 
 - Spec 0023: docs renderer and strict loader
-- AWS: one cache behavior, added by the account owner with the
-  admin credentials
+- AWS: a cache policy and a cache behavior, added by the account
+  owner with the admin credentials
